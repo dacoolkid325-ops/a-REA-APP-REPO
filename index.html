@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=manifest href=manifest.json>
+<title>a-REA</title>
+<style>
+body{margin:0;background:#000;color:#fff;font-family:system-ui}
+nav{position:fixed;bottom:0;width:100%;display:flex;background:#111}
+button{flex:1;padding:12px;background:none;border:none;color:#888}
+button.active{color:#4da3ff}
+section{display:none;padding-bottom:70px}
+section.active{display:block}
+</style>
+</head>
+<body>
+
+<section id=home class=active>
+<iframe src="https://aqeelchy02.wixsite.com/a-rea" style="width:100%;height:100vh;border:none"></iframe>
+</section>
+
+<section id=songs>
+<h1>Musical Story</h1>
+<p>02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3<br><audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio></p><p>05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3<br><audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio></p><p>04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3<br><audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio></p><p>01 - Aqeel Ahmed Choudhury - a-REA.mp3<br><audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio></p><p>03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3<br><audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio></p><p>aREAREVAMP.m4a<br><audio controls src="audio/aREAREVAMP.m4a"></audio></p>
+</section>
+
+<section id=games>
+<a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" target=_blank>Launch Roblox</a>
+<iframe src="file.html" style="height:400px;width:100%"></iframe>
+</section>
+
+<section id=settings><p>Dark mode via system</p></section>
+
+<nav>
+<button onclick="show('home')" class=active>Home</button>
+<button onclick="show('songs')">Songs</button>
+<button onclick="show('games')">Games</button>
+<button onclick="show('settings')">Settings</button>
+</nav>
+
+<script>
+function show(id){
+document.querySelectorAll('section').forEach(s=>s.classList.remove('active'))
+document.getElementById(id).classList.add('active')
+}
+if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js')}
+</script>
+
+</body></html>
