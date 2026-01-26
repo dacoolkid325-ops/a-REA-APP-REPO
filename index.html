@@ -1,49 +1,177 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel=manifest href=manifest.json>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>a-REA</title>
+<link rel="manifest" href="manifest.json">
+
 <style>
-body{margin:0;background:#000;color:#fff;font-family:system-ui}
-nav{position:fixed;bottom:0;width:100%;display:flex;background:#111}
-button{flex:1;padding:12px;background:none;border:none;color:#888}
-button.active{color:#4da3ff}
-section{display:none;padding-bottom:70px}
-section.active{display:block}
+:root {
+  --bg: #000;
+  --fg: #fff;
+  --nav: #111;
+  --accent: #4da3ff;
+}
+
+body.light {
+  --bg: #fff;
+  --fg: #000;
+  --nav: #eee;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+section {
+  display: none;
+  padding-bottom: 80px;
+}
+
+section.active {
+  display: block;
+}
+
+iframe {
+  border: none;
+  width: 100%;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  background: var(--nav);
+  border-top: 1px solid #333;
+}
+
+nav button {
+  flex: 1;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 12px;
+}
+
+nav button.active {
+  color: var(--accent);
+}
+
+nav span {
+  display: block;
+  font-size: 20px;
+}
+
+h1 {
+  padding: 16px;
+  margin: 0;
+}
 </style>
 </head>
+
 <body>
 
-<section id=home class=active>
-<iframe src="https://aqeelchy02.wixsite.com/a-rea" style="width:100%;height:100vh;border:none"></iframe>
+<!-- HOME -->
+<section id="home" class="active">
+  <iframe
+    src="https://aqeelchy02.wixsite.com/a-rea"
+    style="height:100vh">
+  </iframe>
 </section>
 
-<section id=songs>
-<h1>Musical Story</h1>
-<p>02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3<br><audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio></p><p>05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3<br><audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio></p><p>04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3<br><audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio></p><p>01 - Aqeel Ahmed Choudhury - a-REA.mp3<br><audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio></p><p>03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3<br><audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio></p><p>aREAREVAMP.m4a<br><audio controls src="audio/aREAREVAMP.m4a"></audio></p>
+<!-- SONGS -->
+<section id="songs">
+  <h1>Musical Story</h1>
+
+  <p>01 – a-REA (Original)</p>
+  <audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
+
+  <p>02 – L-INE GRAPHS!</p>
+  <audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
+
+  <p>03 – T-ABES!!</p>
+  <audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
+
+  <p>04 – T-IMETABLES!!!</p>
+  <audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
+
+  <p>05 – A-NGLES!!!!</p>
+  <audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
+
+  <p>Bonus – a-REA Revamp</p>
+  <audio controls src="audio/aREAREVAMP.m4a"></audio>
 </section>
 
-<section id=games>
-<a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" target=_blank>Launch Roblox</a>
-<iframe src="file.html" style="height:400px;width:100%"></iframe>
+<!-- GAMES -->
+<section id="games">
+  <h1>Games</h1>
+
+  <p>
+    <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT"
+       target="_blank">
+      ▶ Launch Roblox Hangout
+    </a>
+  </p>
+
+  <iframe
+    src="file.html"
+    style="height:400px">
+  </iframe>
 </section>
 
-<section id=settings><p>Dark mode via system</p></section>
+<!-- SETTINGS -->
+<section id="settings">
+  <h1>Settings</h1>
 
+  <label style="padding:16px; display:block;">
+    <input type="checkbox" onchange="toggleTheme(this)">
+    Light Mode
+  </label>
+</section>
+
+<!-- NAV BAR -->
 <nav>
-<button onclick="show('home')" class=active>Home</button>
-<button onclick="show('songs')">Songs</button>
-<button onclick="show('games')">Games</button>
-<button onclick="show('settings')">Settings</button>
+  <button class="active" onclick="showTab('home', this)">
+    <span>🏠</span>Home
+  </button>
+  <button onclick="showTab('songs', this)">
+    <span>🎵</span>Songs
+  </button>
+  <button onclick="showTab('games', this)">
+    <span>🎮</span>Games
+  </button>
+  <button onclick="showTab('settings', this)">
+    <span>⚙️</span>Settings
+  </button>
 </nav>
 
 <script>
-function show(id){
-document.querySelectorAll('section').forEach(s=>s.classList.remove('active'))
-document.getElementById(id).classList.add('active')
+function showTab(id, btn) {
+  document.querySelectorAll('section').forEach(s =>
+    s.classList.remove('active')
+  )
+  document.querySelectorAll('nav button').forEach(b =>
+    b.classList.remove('active')
+  )
+  document.getElementById(id).classList.add('active')
+  btn.classList.add('active')
 }
-if('serviceWorker'in navigator){navigator.serviceWorker.register('sw.js')}
+
+function toggleTheme(box) {
+  document.body.classList.toggle('light', box.checked)
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+}
 </script>
 
-</body></html>
+</body>
+</html>
