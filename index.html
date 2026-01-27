@@ -6,6 +6,7 @@
 
 <title>a-REA</title>
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
 
 <style>
 :root {
@@ -30,14 +31,14 @@ body {
 
 section {
   display: none;
-  padding-bottom: 80px;
+  padding-bottom: 90px;
 }
 
 section.active {
   display: block;
 }
 
-iframe {
+iframe, video {
   border: none;
   width: 100%;
 }
@@ -73,6 +74,12 @@ h1 {
   padding: 16px;
   margin: 0;
 }
+
+.news {
+  padding: 16px;
+  background: rgba(255,0,0,0.08);
+  border-bottom: 1px solid #333;
+}
 </style>
 </head>
 
@@ -80,6 +87,13 @@ h1 {
 
 <!-- HOME -->
 <section id="home" class="active">
+
+  <!-- ALEXANDRU NEWS (EDIT FREELY) -->
+  <div class="news">
+    <strong>Alexandru News</strong><br>
+    Find out about Alexandru and why i'm commiting to his legacy!
+  </div>
+
   <iframe
     src="https://aqeelchy02.wixsite.com/a-rea"
     style="height:100vh">
@@ -107,6 +121,21 @@ h1 {
 
   <p>Bonus – a-REA Revamp</p>
   <audio controls src="audio/aREAREVAMP.m4a"></audio>
+
+  <p>NEW – MASTER</p>
+  <audio controls
+    src="https://music.wixstatic.com/mp3/b2c5ce_6e54c2b4d03a4bea909b260792e50e2b?dn=MASTER.m4a">
+  </audio>
+</section>
+
+<!-- VIDEOS -->
+<section id="videos">
+  <h1>Videos</h1>
+
+  <p>aq.co direct</p>
+  <video controls
+    src="videos/aq-co-direct.mp4">
+  </video>
 </section>
 
 <!-- GAMES -->
@@ -143,6 +172,9 @@ h1 {
   </button>
   <button onclick="showTab('songs', this)">
     <span>🎵</span>Songs
+  </button>
+  <button onclick="showTab('videos', this)">
+    <span>🎬</span>Videos
   </button>
   <button onclick="showTab('games', this)">
     <span>🎮</span>Games
