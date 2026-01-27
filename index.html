@@ -147,14 +147,38 @@ h1 {
 <!-- GAMES -->
 <section id="games">
   <h1>Games</h1>
+<!-- iOS Button Styles -->
+<style>
+  .ios-launch-link {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: #007AFF; /* iOS System Blue */
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    border-radius: 12px;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-  <p>
-    <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT"
-       target="_blank">
-      ▶ Launch Roblox Hangout
-    </a>
-  </p>
+  .ios-launch-link:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+</style>
 
+<!-- iOS Link -->
+<a href="https://www.roblox.com" class="ios-launch-link">
+  Launch a-REA Hangout
+</a>
+
+  
+
+<p> MASTER </p>
   <iframe
     src="file.html"
     style="height:400px">
