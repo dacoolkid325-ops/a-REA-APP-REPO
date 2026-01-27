@@ -77,7 +77,7 @@
         .title-logo {
             max-width: 80%;
             height: auto;
-            max-height: 200px;
+            max-height: 180px;
             margin-bottom: 20px;
             filter: drop-shadow(0 0 10px rgba(255, 71, 87, 0.5));
         }
@@ -105,7 +105,6 @@
             text-transform: uppercase;
         }
 
-        /* Responsive Mobile Controls */
         #mobile-controls {
             position: absolute;
             bottom: 0; left: 0;
@@ -153,7 +152,7 @@
     
     <div class="ui-layer">
         <div id="hud">
-            <div class="hud-panel">TIMER: <span id="timer">05:00</span></div>
+            <div class="hud-panel">TIMER: <span id="timer">01:00</span></div>
             <div class="hud-panel" id="status-box">STATUS: <span id="status">SURVIVE</span></div>
         </div>
 
@@ -363,10 +362,10 @@ class Player {
                 this.angle = Math.atan2(mouse.y - this.y, mouse.x - this.x);
             }
         } else {
-            // Updated NPC AI - Avoid Corners
             const master = gameState.players.find(p => p.isMaster);
             let avoidX = 0; let avoidY = 0;
-            const margin = 100;
+            // Reduced margin so they don't hit an invisible barrier
+            const margin = 30;
             if(this.x < margin) avoidX = 1;
             if(this.x > canvas.width - margin) avoidX = -1;
             if(this.y < margin) avoidY = 1;
@@ -376,7 +375,9 @@ class Player {
                 let target = gameState.players.find(p => !p.isMaster);
                 this.targetAngle = Math.atan2(target.y - this.y, target.x - this.x);
                 moveX = Math.cos(this.targetAngle); moveY = Math.sin(this.targetAngle);
-                if(Math.hypot(target.x - this.x, target.y - this.y) < 300 && this.cooldown <= 0) this.shoot();
+                
+                const distToTarget = Math.hypot(target.x - this.x, target.y - this.y);
+                if(distToTarget < 300 && this.cooldown <= 0) this.shoot();
             } else {
                 const dist = Math.hypot(this.x - master.x, this.y - master.y);
                 if(dist < 300) {
@@ -398,11 +399,11 @@ class Player {
             this.angle = lerpAngle(this.angle, this.targetAngle, 0.1);
         }
 
-        const s = this.isBlocking ? this.speed * 0.4 : this.speed;
+        // Removed speed penalty for shielding
+        const s = this.speed;
         this.x += moveX * s;
         this.y += moveY * s;
 
-        // Hard Boundaries
         this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
         this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
     }
@@ -458,7 +459,7 @@ class Player {
 
 function startGame(mode) {
     gameState.mode = mode;
-    gameState.timer = 300;
+    gameState.timer = 60;
     gameState.players = [new Player(canvas.width/2, canvas.height/2, false, SKINS[gameState.selectedSkin].color)];
     for(let i=0; i<6; i++) {
         gameState.players.push(new Player(Math.random()*canvas.width, Math.random()*canvas.height, true, '#95a5a6'));
@@ -494,6 +495,25 @@ function gameLoop() {
     const p1 = gameState.players[0];
     document.getElementById('status').innerText = p1.isMaster ? 'TAG OTHERS!' : 'RUN!';
     document.getElementById('status').style.color = p1.isMaster ? '#ff4757' : '#2ed573';
+
+    // Player touch tagging logic (EXCLUSIVE TO MODERN MODE)
+    if(gameState.mode === 'modern') {
+        const master = gameState.players.find(p => p.isMaster);
+        if(master && master.immunityTimer <= 0) {
+            for(let pl of gameState.players) {
+                if(pl === master) continue;
+                // Tagging by touch in Modern Mode
+                if(Math.hypot(pl.x - master.x, pl.y - master.y) < pl.radius + master.radius) {
+                    spawnParticles(pl.x, pl.y, '#ff4757');
+                    gameState.players.forEach(x => x.isMaster = false);
+                    pl.isMaster = true;
+                    pl.immunityTimer = 50;
+                    pl.isBlocking = false;
+                    break;
+                }
+            }
+        }
+    }
 
     gameState.players.forEach(p => { p.update(); p.draw(); });
 
