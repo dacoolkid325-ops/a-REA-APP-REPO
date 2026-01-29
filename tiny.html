@@ -2,33 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiny Dash: The Full Experience</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tiny Dash: Math Master Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700&display=swap');
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Lexend Exa', sans-serif; color: white; user-select: none; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Lexend Exa', sans-serif; color: white; user-select: none; touch-action: none; }
         canvas { display: block; }
         #ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        .panel { background: rgba(0,0,0,0.8); padding: 40px; border-radius: 20px; border: 4px solid #fff; text-align: center; pointer-events: auto; cursor: pointer; }
-        h1 { font-size: 50px; margin: 0 0 20px 0; text-shadow: 4px 4px #00f; }
-        .btn { background: #0f0; color: #000; padding: 15px 40px; font-size: 24px; border-radius: 10px; display: inline-block; transition: 0.2s; }
-        .btn:hover { transform: scale(1.1); }
-        #loading { position: absolute; inset: 0; background: #111; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 100; }
+        .panel { background: rgba(0,0,0,0.9); padding: 40px; border-radius: 20px; border: 4px solid #0f0; text-align: center; pointer-events: auto; box-shadow: 0 0 30px #0f0; }
+        h1 { font-size: clamp(30px, 8vw, 60px); margin: 0 0 20px 0; text-shadow: 4px 4px #000, 0 0 15px #0f0; color: #0f0; }
+        .btn { background: #0f0; color: #000; padding: 15px 40px; font-size: 24px; border-radius: 10px; display: inline-block; cursor: pointer; }
+        #loading { position: absolute; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 100; color: #0f0; }
+        #score { position: absolute; top: 20px; width: 100%; text-align: center; font-size: 20px; pointer-events: none; text-shadow: 2px 2px #000; }
     </style>
 </head>
 <body>
 
-    <div id="loading">LOADING ASSETS...</div>
+    <div id="loading">CALCULATING TINY...</div>
+    <div id="score">Attempt: 1</div>
 
     <div id="ui">
         <div id="menu" class="panel">
             <h1>TINY DASH</h1>
-            <div class="btn">PLAY</div>
-            <p style="margin-top:20px; font-size: 14px; opacity: 0.7;">SPACE / CLICK TO JUMP & FLY</p>
+            <div class="btn" id="playBtn">START MATH</div>
+            <p style="margin-top:20px; font-size: 14px; opacity: 0.8;">TAP or SPACE to JUMP & FLY</p>
         </div>
-        <div id="death" class="panel" style="display:none; border-color: #f00;">
-            <h1 style="color:#f00; text-shadow: 4px 4px #500;">CRASHED</h1>
-            <div class="btn" style="background: #f00; color: #fff;">RETRY</div>
+        <div id="death" class="panel" style="display:none; border-color: #f00; box-shadow: 0 0 30px #f00;">
+            <h1 style="color:#f00; text-shadow: 0 0 15px #f00;">FALSIFIED</h1>
+            <div class="btn" id="retryBtn" style="background: #f00; color: #fff;">RETRY</div>
         </div>
     </div>
 
@@ -40,6 +41,7 @@ const ctx = canvas.getContext('2d');
 const menu = document.getElementById('menu');
 const death = document.getElementById('death');
 const loading = document.getElementById('loading');
+const scoreDisplay = document.getElementById('score');
 
 // --- Assets ---
 const img = new Image();
@@ -49,42 +51,54 @@ const menuMusic = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
 menuMusic.loop = true;
 
 const gameMusic = new Audio("https://uce2e02b3d17bc677c487dae66e2.dl.dropboxusercontent.com/cd/0/inline/C51w5BdUrUlDgP1gYjJGHxW8BV6nzJy4qvmE198rfxvtKO-t2XIJINGHGwwkDlcFrUzu6ISJ3toiDduxk1mZlC0Dgyi0b-ueON4JXDNWCgH3pWjDUtU4yazKm4vo04E5yxS6ogaKoKZslItAeYWaaf6U/file#");
-gameMusic.loop = false;
 
-let loaded = 0;
-const checkLoaded = () => {
-    loaded++;
-    if(loaded >= 1) loading.style.display = 'none';
-};
-img.onload = checkLoaded;
+img.onload = () => loading.style.display = 'none';
 
 // --- Constants ---
-const GRAVITY = 0.8;
-const JUMP = -12;
+const GRAVITY = 0.75;
+const JUMP = -11.5;
 const SHIP_THRUST = -0.7;
 const SPEED = 8;
 const TILE = 60;
+const MATH_SYMBOLS = ["π", "√x", "∑", "∞", "∫", "x²", "sinθ", "Δ"];
 
 // --- State ---
 let mode = 'MENU';
+let attempts = 1;
 let player = { x: 200, y: 0, vy: 0, angle: 0, isShip: false, w: 50, h: 50 };
 let camX = 0;
 let level = [];
+let equations = [];
 
-// Level Generator (Fixed spacing)
 function initLevel() {
     const m = [];
-    for(let i=0; i<15; i++) m.push(0); // Start safe
-    // Cube section
-    m.push(1,0,0,2,0,0,1,1,0,0,2,2,0,0,1,2,1,0,0);
-    // Ship transition trigger (using type 3 as ship portal)
+    for(let i=0; i<15; i++) m.push(0);
+    // Cube Intro
+    m.push(1,0,0,2,0,0,1,1,0,2,2,0,1,0,0,2,0,1,1,1,0,0);
+    // Text trigger
+    m.push(5,0,0,0); 
+    // Portal to Ship
     m.push(3,0,0,0); 
-    // Ship section (Floating obstacles)
-    for(let i=0; i<20; i++) {
-        m.push(Math.random() > 0.7 ? 4 : 0); // 4 = Top/Bottom Spikes
+    // Ship Section
+    for(let i=0; i<25; i++) {
+        let r = Math.random();
+        if(r > 0.8) m.push(4); // Spike pillars
+        else if(r > 0.6) m.push(6); // Floating blocks
+        else m.push(0);
     }
-    // Cube transition back
-    m.push(3,0,0,1,0,2,0,1,2,1,0,0,9);
+    // Portal back
+    m.push(3,0,0,1,0,2,0,2,2,0,1,1,0,0,9);
+    
+    // Create background equations
+    equations = [];
+    for(let i=0; i<50; i++) {
+        equations.push({
+            x: Math.random() * 5000,
+            y: Math.random() * 600,
+            text: MATH_SYMBOLS[Math.floor(Math.random() * MATH_SYMBOLS.length)],
+            s: 15 + Math.random() * 20
+        });
+    }
     return m;
 }
 
@@ -95,18 +109,26 @@ function resize() {
 window.onresize = resize;
 resize();
 
-// --- Input ---
+// --- Input Handling (Fixed Tap) ---
 let isPressing = false;
-const handleInput = (down) => {
-    if(down && (mode === 'MENU' || mode === 'DEAD')) {
+
+function handleInteraction(e) {
+    if(mode === 'MENU' || mode === 'DEAD') {
         start();
+    } else {
+        isPressing = true;
     }
-    isPressing = down;
-};
-window.onmousedown = () => handleInput(true);
-window.onmouseup = () => handleInput(false);
-window.onkeydown = (e) => { if(e.code === 'Space') handleInput(true); };
-window.onkeyup = (e) => { if(e.code === 'Space') handleInput(false); };
+    if(e.cancelable) e.preventDefault();
+}
+
+window.addEventListener('pointerdown', handleInteraction);
+window.addEventListener('pointerup', () => isPressing = false);
+window.addEventListener('keydown', (e) => {
+    if(e.code === 'Space' || e.code === 'ArrowUp') handleInteraction(e);
+});
+window.addEventListener('keyup', (e) => {
+    if(e.code === 'Space' || e.code === 'ArrowUp') isPressing = false;
+});
 
 function start() {
     mode = 'PLAYING';
@@ -122,6 +144,16 @@ function start() {
     gameMusic.play();
 }
 
+function die() {
+    if(mode === 'DEAD') return;
+    mode = 'DEAD';
+    attempts++;
+    scoreDisplay.innerText = "Attempt: " + attempts;
+    gameMusic.pause();
+    death.style.display = 'block';
+    menuMusic.play();
+}
+
 function update() {
     if(mode !== 'PLAYING') return;
 
@@ -129,7 +161,6 @@ function update() {
     let floor = canvas.height - 100;
 
     if(!player.isShip) {
-        // Cube Physics
         player.vy += GRAVITY;
         player.y += player.vy;
         if(isPressing && player.y >= floor - player.h) player.vy = JUMP;
@@ -141,35 +172,49 @@ function update() {
             player.angle = Math.round(player.angle/(Math.PI/2))*(Math.PI/2);
         }
     } else {
-        // Ship Physics
         player.vy += isPressing ? SHIP_THRUST : GRAVITY * 0.6;
         player.y += player.vy;
         player.angle = player.vy * 0.05;
-        // Ceiling/Floor bounds
-        if(player.y < 50 || player.y > floor - player.h) die();
+        if(player.y < 20 || player.y > floor - player.h) die();
     }
 
-    // Collision
+    // Collision check
     let curIdx = Math.floor(camX / TILE);
-    for(let i = curIdx; i < curIdx + 5; i++) {
+    for(let i = curIdx; i < curIdx + 8; i++) {
         if(!level[i]) continue;
         let tx = i * TILE - camX + 200;
         let ty = floor - TILE;
 
-        if(level[i] === 1 && checkRect(player.x, player.y, player.w, player.h, tx, ty, TILE, TILE)) {
-            if(player.vy > 0 && player.y + player.h < ty + 20) {
-                player.y = ty - player.h;
-                player.vy = 0;
-            } else die();
+        // Block collision
+        if((level[i] === 1 || level[i] === 6)) {
+            let blockY = level[i] === 6 ? floor - 250 : ty;
+            if(checkRect(player.x, player.y, player.w, player.h, tx, blockY, TILE, TILE)) {
+                if(player.vy > 0 && player.y + player.h < blockY + 25) {
+                    player.y = blockY - player.h;
+                    player.vy = 0;
+                    if(!player.isShip) player.onGround = true;
+                } else die();
+            }
         }
-        if(level[i] === 2 && checkRect(player.x+10, player.y+10, player.w-20, player.h-20, tx+15, ty+15, TILE-30, TILE-15)) die();
-        if(level[i] === 3 && checkRect(player.x, player.y, player.w, player.h, tx, 0, TILE, canvas.height)) {
+        // Spike collision
+        if(level[i] === 2 && checkRect(player.x+12, player.y+12, player.w-24, player.h-15, tx+15, ty+20, TILE-30, TILE-20)) die();
+        // Portal
+        if(level[i] === 3 && checkRect(player.x, player.y, player.w, player.h, tx, 0, 20, canvas.height)) {
             player.isShip = !player.isShip;
-            level[i] = 0; // Trigger once
+            level[i] = 0;
+            player.vy = 0;
         }
-        if(level[i] === 4) { // Ship obstacles
-            if(checkRect(player.x, player.y, player.w, player.h, tx, floor - 250, 40, 40)) die();
-            if(checkRect(player.x, player.y, player.w, player.h, tx, floor - 450, 40, 40)) die();
+        // Pillar spikes (Ship mode)
+        if(level[i] === 4) {
+            if(checkRect(player.x+5, player.y+5, player.w-10, player.h-10, tx, floor - 150, 40, 40)) die();
+            if(checkRect(player.x+5, player.y+5, player.w-10, player.h-10, tx, floor - 400, 40, 40)) die();
+        }
+        // Win
+        if(level[i] === 9 && tx < player.x) {
+            mode = 'MENU';
+            menu.style.display = 'block';
+            gameMusic.pause();
+            menuMusic.play();
         }
     }
 }
@@ -178,61 +223,86 @@ function checkRect(x1,y1,w1,h1,x2,y2,w2,h2) {
     return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
 }
 
-function die() {
-    mode = 'DEAD';
-    gameMusic.pause();
-    death.style.display = 'block';
-    menuMusic.play();
-}
-
 function draw() {
-    ctx.fillStyle = player.isShip ? '#100' : '#001';
+    // 1. Background
+    ctx.fillStyle = player.isShip ? '#1a001a' : '#000c00';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Grid
-    ctx.strokeStyle = '#fff1';
-    for(let i=0; i<canvas.width; i+=TILE) {
-        ctx.beginPath(); ctx.moveTo(i - (camX%TILE), 0); ctx.lineTo(i - (camX%TILE), canvas.height); ctx.stroke();
+    // 2. Neon Grid
+    ctx.strokeStyle = player.isShip ? 'rgba(255, 0, 255, 0.15)' : 'rgba(0, 255, 0, 0.15)';
+    ctx.lineWidth = 2;
+    let gridOff = -(camX * 0.5) % 100;
+    for(let x = gridOff; x < canvas.width; x += 100) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for(let y = 0; y < canvas.height; y += 100) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
     }
 
+    // 3. Floating Math Equations
+    ctx.fillStyle = player.isShip ? '#f0f3' : '#0f03';
+    equations.forEach(eq => {
+        let eqX = (eq.x - camX * 0.3) % (canvas.width + 200);
+        if(eqX < -50) eqX += (canvas.width + 200);
+        ctx.font = eq.s + "px Courier New";
+        ctx.fillText(eq.text, eqX, eq.y);
+    });
+
     let floor = canvas.height - 100;
+    
+    // 4. Ground
     ctx.fillStyle = '#000';
     ctx.fillRect(0, floor, canvas.width, 100);
-    ctx.strokeStyle = '#0ff';
-    ctx.strokeRect(-10, floor, canvas.width+20, 100);
+    ctx.strokeStyle = player.isShip ? '#f0f' : '#0f0';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(-5, floor, canvas.width+10, 105);
 
-    // Level
+    // 5. Level
     for(let i=0; i<level.length; i++) {
         let tx = i * TILE - camX + 200;
         if(tx < -TILE || tx > canvas.width) continue;
         
-        if(level[i] === 1) { // Block
+        if(level[i] === 1 || level[i] === 6) { // Blocks
+            let by = level[i] === 6 ? floor - 250 : floor - TILE;
             ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff';
-            ctx.fillRect(tx, floor - TILE, TILE, TILE);
-            ctx.strokeRect(tx, floor - TILE, TILE, TILE);
+            ctx.lineWidth = 2;
+            ctx.fillRect(tx, by, TILE, TILE);
+            ctx.strokeRect(tx, by, TILE, TILE);
         }
         if(level[i] === 2) { // Spike
             ctx.fillStyle = '#f00';
             ctx.beginPath(); ctx.moveTo(tx, floor); ctx.lineTo(tx+TILE/2, floor-TILE); ctx.lineTo(tx+TILE, floor); ctx.fill();
         }
         if(level[i] === 3) { // Portal
-            ctx.fillStyle = '#f0f'; ctx.fillRect(tx, 0, 20, canvas.height);
+            let gradient = ctx.createLinearGradient(tx, 0, tx+30, 0);
+            gradient.addColorStop(0, 'transparent');
+            gradient.addColorStop(0.5, '#f0f');
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(tx, 0, 30, floor);
         }
-        if(level[i] === 4) { // Ship Spikes
+        if(level[i] === 4) { // Ship Pillars
             ctx.fillStyle = '#fff';
-            ctx.fillRect(tx, floor - 250, 40, 40);
-            ctx.fillRect(tx, floor - 450, 40, 40);
+            ctx.fillRect(tx, floor - 150, 40, 40);
+            ctx.fillRect(tx, floor - 400, 40, 40);
+        }
+        if(level[i] === 5) { // Text
+            ctx.fillStyle = '#0f08';
+            ctx.font = '30px Lexend Exa';
+            ctx.fillText("WHO IS TINY?", tx, 200);
         }
     }
 
-    // Player
+    // 6. Player (Tiny)
     ctx.save();
     ctx.translate(player.x + player.w/2, player.y + player.h/2);
     ctx.rotate(player.angle);
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = player.isShip ? '#f0f' : '#0f0';
     ctx.drawImage(img, -player.w/2, -player.h/2, player.w, player.h);
     if(player.isShip) {
         ctx.strokeStyle = '#f0f'; ctx.lineWidth = 3;
-        ctx.strokeRect(-player.w/2 - 5, -player.h/2 - 5, player.w + 10, player.h + 10);
+        ctx.strokeRect(-player.w/2, -player.h/2, player.w, player.h);
     }
     ctx.restore();
 }
@@ -243,8 +313,8 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-// Initial Menu Audio trigger
-window.addEventListener('click', () => {
+// Initial Audio Trigger
+document.body.addEventListener('click', () => {
     if(menuMusic.paused && mode === 'MENU') menuMusic.play();
 }, {once: true});
 
