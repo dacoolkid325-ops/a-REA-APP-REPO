@@ -3,505 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiny Dash: Math Edition</title>
+    <title>Tiny Dash: The Full Experience</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #050505;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        canvas {
-            display: block;
-        }
-        #ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            flex-direction: column;
-        }
-        .message-box {
-            background: rgba(0, 0, 0, 0.85);
-            border: 3px solid #00ff00;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 0 20px #00ff00;
-            pointer-events: auto;
-            cursor: pointer;
-            animation: pulse 2s infinite;
-        }
-        h1 { margin: 0 0 10px 0; font-size: 40px; text-transform: uppercase; letter-spacing: 2px; }
-        p { font-size: 18px; color: #ccc; }
-        .hint { font-size: 12px; color: #666; margin-top: 15px; }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 15px #00ff00; }
-            50% { box-shadow: 0 0 30px #00ff00; }
-            100% { box-shadow: 0 0 15px #00ff00; }
-        }
-        
-        #score-display {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 2px 2px 0 #000;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700&display=swap');
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Lexend Exa', sans-serif; color: white; user-select: none; }
+        canvas { display: block; }
+        #ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+        .panel { background: rgba(0,0,0,0.8); padding: 40px; border-radius: 20px; border: 4px solid #fff; text-align: center; pointer-events: auto; cursor: pointer; }
+        h1 { font-size: 50px; margin: 0 0 20px 0; text-shadow: 4px 4px #00f; }
+        .btn { background: #0f0; color: #000; padding: 15px 40px; font-size: 24px; border-radius: 10px; display: inline-block; transition: 0.2s; }
+        .btn:hover { transform: scale(1.1); }
+        #loading { position: absolute; inset: 0; background: #111; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div id="score-display">Attempt: 1</div>
+    <div id="loading">LOADING ASSETS...</div>
 
-    <div id="ui-layer">
-        <div id="start-screen" class="message-box">
+    <div id="ui">
+        <div id="menu" class="panel">
             <h1>TINY DASH</h1>
-            <p>Tap, Click, or Space to Jump</p>
-            <p style="color:#00ff00; font-size: 14px;">Featuring "Tiny" by The User</p>
-            <p class="hint">(Click to Start)</p>
+            <div class="btn">PLAY</div>
+            <p style="margin-top:20px; font-size: 14px; opacity: 0.7;">SPACE / CLICK TO JUMP & FLY</p>
         </div>
-        <div id="game-over-screen" class="message-box" style="display: none; border-color: red; box-shadow: 0 0 20px red;">
-            <h1 style="color:red">CRASH!</h1>
-            <p>Tiny hit a math problem.</p>
-            <p class="hint">(Click to Restart)</p>
-        </div>
-        <div id="win-screen" class="message-box" style="display: none; border-color: gold; box-shadow: 0 0 20px gold;">
-            <h1 style="color:gold">LEVEL COMPLETE!</h1>
-            <p>Tiny is the Math Master.</p>
-            <p class="hint">(Click to Play Again)</p>
+        <div id="death" class="panel" style="display:none; border-color: #f00;">
+            <h1 style="color:#f00; text-shadow: 4px 4px #500;">CRASHED</h1>
+            <div class="btn" style="background: #f00; color: #fff;">RETRY</div>
         </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="cvs"></canvas>
 
 <script>
-    // --- ASSETS ---
-    const ASSETS = {
-        // The Turtle Image (Direct Link)
-        image: "https://www.dropbox.com/scl/fi/achgz4b20pbp4t5kfzuts/IMG_0963.png?rlkey=zc14q2o3gw3epn8fibxgsutpj&st=tm9833na&raw=1",
-        // The Song (Direct Link)
-        audio: "https://uce2e02b3d17bc677c487dae66e2.dl.dropboxusercontent.com/cd/0/inline/C51w5BdUrUlDgP1gYjJGHxW8BV6nzJy4qvmE198rfxvtKO-t2XIJINGHGwwkDlcFrUzu6ISJ3toiDduxk1mZlC0Dgyi0b-ueON4JXDNWCgH3pWjDUtU4yazKm4vo04E5yxS6ogaKoKZslItAeYWaaf6U/file#"
-    };
+const canvas = document.getElementById('cvs');
+const ctx = canvas.getContext('2d');
+const menu = document.getElementById('menu');
+const death = document.getElementById('death');
+const loading = document.getElementById('loading');
 
-    // --- SETUP ---
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Screens
-    const startScreen = document.getElementById('start-screen');
-    const gameOverScreen = document.getElementById('game-over-screen');
-    const winScreen = document.getElementById('win-screen');
-    const scoreDisplay = document.getElementById('score-display');
+// --- Assets ---
+const img = new Image();
+img.src = "https://www.dropbox.com/scl/fi/achgz4b20pbp4t5kfzuts/IMG_0963.png?rlkey=zc14q2o3gw3epn8fibxgsutpj&st=tm9833na&raw=1";
 
-    // Resize handling
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+const menuMusic = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
+menuMusic.loop = true;
+
+const gameMusic = new Audio("https://uce2e02b3d17bc677c487dae66e2.dl.dropboxusercontent.com/cd/0/inline/C51w5BdUrUlDgP1gYjJGHxW8BV6nzJy4qvmE198rfxvtKO-t2XIJINGHGwwkDlcFrUzu6ISJ3toiDduxk1mZlC0Dgyi0b-ueON4JXDNWCgH3pWjDUtU4yazKm4vo04E5yxS6ogaKoKZslItAeYWaaf6U/file#");
+gameMusic.loop = false;
+
+let loaded = 0;
+const checkLoaded = () => {
+    loaded++;
+    if(loaded >= 1) loading.style.display = 'none';
+};
+img.onload = checkLoaded;
+
+// --- Constants ---
+const GRAVITY = 0.8;
+const JUMP = -12;
+const SHIP_THRUST = -0.7;
+const SPEED = 8;
+const TILE = 60;
+
+// --- State ---
+let mode = 'MENU';
+let player = { x: 200, y: 0, vy: 0, angle: 0, isShip: false, w: 50, h: 50 };
+let camX = 0;
+let level = [];
+
+// Level Generator (Fixed spacing)
+function initLevel() {
+    const m = [];
+    for(let i=0; i<15; i++) m.push(0); // Start safe
+    // Cube section
+    m.push(1,0,0,2,0,0,1,1,0,0,2,2,0,0,1,2,1,0,0);
+    // Ship transition trigger (using type 3 as ship portal)
+    m.push(3,0,0,0); 
+    // Ship section (Floating obstacles)
+    for(let i=0; i<20; i++) {
+        m.push(Math.random() > 0.7 ? 4 : 0); // 4 = Top/Bottom Spikes
     }
-    window.addEventListener('resize', resize);
-    resize();
+    // Cube transition back
+    m.push(3,0,0,1,0,2,0,1,2,1,0,0,9);
+    return m;
+}
 
-    // Audio Object
-    const bgMusic = new Audio(ASSETS.audio);
-    bgMusic.loop = true;
-    bgMusic.volume = 0.6;
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.onresize = resize;
+resize();
 
-    // Image Object
-    const tinySprite = new Image();
-    tinySprite.src = ASSETS.image;
-    // Fallback if image fails to load
-    let imageLoaded = false;
-    tinySprite.onload = () => { imageLoaded = true; };
-
-    // --- GAME CONSTANTS ---
-    const TILE_SIZE = 64;
-    const GRAVITY = 0.65;
-    const JUMP_FORCE = -11.5;
-    const SPEED = 7.5;
-    const ROTATION_SPEED = 0.12;
-    
-    // --- GAME STATE ---
-    let gameState = 'MENU'; // MENU, PLAYING, DEAD, WIN
-    let attempts = 1;
-    let cameraX = 0;
-    let floorY = 0;
-    let particles = [];
-
-    // Player Object
-    const player = {
-        x: 200, // Screen X (fixed)
-        worldX: 200, // World X (increases)
-        y: 0,
-        w: 50,
-        h: 50,
-        vy: 0,
-        angle: 0,
-        onGround: false
-    };
-
-    // Level Map (0=Empty, 1=Block, 2=Spike, 3=FloatBlock, 4=Text, 9=End)
-    let level = [];
-    
-    // Generate the Level (Manually designed to match the prompt "weird stuff")
-    function createLevel() {
-        let map = [];
-        // Intro (Safe)
-        for(let i=0; i<15; i++) map.push(0);
-        
-        // Basic Jumps
-        map.push(1,0,0,1,0,0,2,0,0,2,0,0,1,2,1);
-        map.push(0,0,0,0,0);
-        
-        // "Tiny is that one guy from math" section
-        map.push(4); // Text trigger
-        map.push(0,1,0,2,0,3,3,0,0,2,2,0,0);
-        
-        // Random floating stuff
-        map.push(0,0,3,0,0,3,0,0,3,0,0);
-        
-        // "Buy the Plushy" section (Harder)
-        map.push(5); // Text trigger 2
-        map.push(1,0,2,0,1,2,1,0,2,2,2,0,3,0,0);
-        
-        // The Math Part (Weird structures)
-        map.push(0,1,1,3,0,0,2,0,1,3,1,2,0);
-        map.push(0,0,0,5,0,0,0); // More text
-        
-        // Big finish
-        map.push(1,0,0,2,0,0,3,3,3,2,0,1,0);
-        
-        // End
-        map.push(0,0,0,0,0,0,9);
-        return map;
+// --- Input ---
+let isPressing = false;
+const handleInput = (down) => {
+    if(down && (mode === 'MENU' || mode === 'DEAD')) {
+        start();
     }
+    isPressing = down;
+};
+window.onmousedown = () => handleInput(true);
+window.onmouseup = () => handleInput(false);
+window.onkeydown = (e) => { if(e.code === 'Space') handleInput(true); };
+window.onkeyup = (e) => { if(e.code === 'Space') handleInput(false); };
 
-    level = createLevel();
+function start() {
+    mode = 'PLAYING';
+    menu.style.display = 'none';
+    death.style.display = 'none';
+    player.y = canvas.height - 150;
+    player.vy = 0;
+    player.isShip = false;
+    camX = 0;
+    level = initLevel();
+    menuMusic.pause();
+    gameMusic.currentTime = 0;
+    gameMusic.play();
+}
 
-    // --- INPUT ---
-    function jump() {
-        if (gameState === 'PLAYING' && player.onGround) {
-            player.vy = JUMP_FORCE;
-            player.onGround = false;
-            // Spawn jump particles
-            for(let i=0; i<5; i++) {
-                particles.push({
-                    x: player.x, 
-                    y: player.y + player.h, 
-                    vx: (Math.random()-0.5)*4, 
-                    vy: (Math.random())*2, 
-                    life: 20,
-                    color: '#fff'
-                });
-            }
-        } else if (gameState !== 'PLAYING') {
-            startGame();
-        }
-    }
+function update() {
+    if(mode !== 'PLAYING') return;
 
-    window.addEventListener('mousedown', jump);
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' || e.code === 'ArrowUp') jump();
-    });
-    window.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
+    camX += SPEED;
+    let floor = canvas.height - 100;
 
-    // --- LOGIC ---
-    function startGame() {
-        if (gameState === 'PLAYING') return;
-        
-        // Logic to switch states
-        if (gameState === 'DEAD') attempts++;
-        scoreDisplay.innerText = "Attempt: " + attempts;
-
-        gameState = 'PLAYING';
-        startScreen.style.display = 'none';
-        gameOverScreen.style.display = 'none';
-        winScreen.style.display = 'none';
-        
-        // Reset Player
-        player.y = canvas.height - 150;
-        player.vy = 0;
-        player.angle = 0;
-        player.onGround = true;
-        player.worldX = 200;
-        cameraX = 0;
-        
-        // Restart Music (Browser requires user interaction first, which this click does)
-        bgMusic.currentTime = 0;
-        bgMusic.play().catch(e => console.log("Audio waiting for interaction"));
-
-        level = createLevel(); // Reload level
-        loop();
-    }
-
-    function update() {
-        if (gameState !== 'PLAYING') return;
-
-        floorY = canvas.height - 100; // Floor height
-
-        // Move World
-        cameraX += SPEED;
-        player.worldX += SPEED;
-
-        // Apply Gravity
+    if(!player.isShip) {
+        // Cube Physics
         player.vy += GRAVITY;
         player.y += player.vy;
-
-        // Rotation
-        if (!player.onGround) {
-            player.angle += ROTATION_SPEED;
-        } else {
-            // Snap rotation on ground
-            let target = Math.round(player.angle / (Math.PI/2)) * (Math.PI/2);
-            player.angle += (target - player.angle) * 0.2;
-        }
-
-        // Floor Collision
-        if (player.y + player.h > floorY) {
-            player.y = floorY - player.h;
+        if(isPressing && player.y >= floor - player.h) player.vy = JUMP;
+        
+        if(player.y < floor - player.h) player.angle += 0.15;
+        else {
+            player.y = floor - player.h;
             player.vy = 0;
-            player.onGround = true;
-        } else {
-            player.onGround = false;
+            player.angle = Math.round(player.angle/(Math.PI/2))*(Math.PI/2);
         }
+    } else {
+        // Ship Physics
+        player.vy += isPressing ? SHIP_THRUST : GRAVITY * 0.6;
+        player.y += player.vy;
+        player.angle = player.vy * 0.05;
+        // Ceiling/Floor bounds
+        if(player.y < 50 || player.y > floor - player.h) die();
+    }
 
-        checkCollisions();
+    // Collision
+    let curIdx = Math.floor(camX / TILE);
+    for(let i = curIdx; i < curIdx + 5; i++) {
+        if(!level[i]) continue;
+        let tx = i * TILE - camX + 200;
+        let ty = floor - TILE;
 
-        // Particles
-        particles.forEach((p, index) => {
-            p.x -= SPEED; // Move with world
-            p.y += p.vy;
-            p.life--;
-            if (p.life <= 0) particles.splice(index, 1);
-        });
+        if(level[i] === 1 && checkRect(player.x, player.y, player.w, player.h, tx, ty, TILE, TILE)) {
+            if(player.vy > 0 && player.y + player.h < ty + 20) {
+                player.y = ty - player.h;
+                player.vy = 0;
+            } else die();
+        }
+        if(level[i] === 2 && checkRect(player.x+10, player.y+10, player.w-20, player.h-20, tx+15, ty+15, TILE-30, TILE-15)) die();
+        if(level[i] === 3 && checkRect(player.x, player.y, player.w, player.h, tx, 0, TILE, canvas.height)) {
+            player.isShip = !player.isShip;
+            level[i] = 0; // Trigger once
+        }
+        if(level[i] === 4) { // Ship obstacles
+            if(checkRect(player.x, player.y, player.w, player.h, tx, floor - 250, 40, 40)) die();
+            if(checkRect(player.x, player.y, player.w, player.h, tx, floor - 450, 40, 40)) die();
+        }
+    }
+}
+
+function checkRect(x1,y1,w1,h1,x2,y2,w2,h2) {
+    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+}
+
+function die() {
+    mode = 'DEAD';
+    gameMusic.pause();
+    death.style.display = 'block';
+    menuMusic.play();
+}
+
+function draw() {
+    ctx.fillStyle = player.isShip ? '#100' : '#001';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid
+    ctx.strokeStyle = '#fff1';
+    for(let i=0; i<canvas.width; i+=TILE) {
+        ctx.beginPath(); ctx.moveTo(i - (camX%TILE), 0); ctx.lineTo(i - (camX%TILE), canvas.height); ctx.stroke();
+    }
+
+    let floor = canvas.height - 100;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, floor, canvas.width, 100);
+    ctx.strokeStyle = '#0ff';
+    ctx.strokeRect(-10, floor, canvas.width+20, 100);
+
+    // Level
+    for(let i=0; i<level.length; i++) {
+        let tx = i * TILE - camX + 200;
+        if(tx < -TILE || tx > canvas.width) continue;
         
-        // Win condition
-        // Handled in collision with type 9
-    }
-
-    function checkCollisions() {
-        // We check tiles based on camera position
-        let startCol = Math.floor((player.worldX - 200) / TILE_SIZE);
-        let endCol = startCol + 4; // Check a few tiles ahead
-
-        // Player Hitbox (slightly smaller than visual size for forgiveness)
-        let px = player.x + 10;
-        let py = player.y + 10;
-        let pw = player.w - 20;
-        let ph = player.h - 15;
-
-        for (let i = startCol - 2; i < endCol; i++) {
-            if (i < 0 || i >= level.length) continue;
-            let type = level[i];
-            if (type === 0 || type === 4 || type === 5) continue; // Empty or Text
-
-            let tx = (i * TILE_SIZE) - cameraX + 200;
-            let ty = floorY - TILE_SIZE;
-            
-            // Adjust Y for different types
-            if (type === 3) ty = floorY - (TILE_SIZE * 3); // Floating high
-            if (type === 2) { 
-                // Spikes are smaller
-                tx += 10; 
-                ty += 10; 
-            }
-            if (type === 9) ty = -1000; // Wall covers everything
-
-            let tw = TILE_SIZE;
-            let th = TILE_SIZE;
-            if (type === 9) th = 2000;
-            if (type === 2) { tw -= 20; th -= 10; }
-
-            // AABB Collision
-            if (px < tx + tw && px + pw > tx && py < ty + th && py + ph > ty) {
-                
-                if (type === 9) {
-                    gameWin();
-                    return;
-                }
-                
-                if (type === 2) {
-                    gameOver(); // Spikes kill instantly
-                    return;
-                }
-
-                // Block Logic (1 and 3)
-                // Determine if we hit the top or the side
-                // We compare the previous Y position (approx) to the block top
-                let prevY = player.y - player.vy;
-                if (prevY + player.h <= ty + 10 && player.vy >= 0) {
-                    // Landed on top
-                    player.y = ty - player.h;
-                    player.vy = 0;
-                    player.onGround = true;
-                } else {
-                    // Hit the side or bottom
-                    gameOver();
-                }
-            }
+        if(level[i] === 1) { // Block
+            ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff';
+            ctx.fillRect(tx, floor - TILE, TILE, TILE);
+            ctx.strokeRect(tx, floor - TILE, TILE, TILE);
+        }
+        if(level[i] === 2) { // Spike
+            ctx.fillStyle = '#f00';
+            ctx.beginPath(); ctx.moveTo(tx, floor); ctx.lineTo(tx+TILE/2, floor-TILE); ctx.lineTo(tx+TILE, floor); ctx.fill();
+        }
+        if(level[i] === 3) { // Portal
+            ctx.fillStyle = '#f0f'; ctx.fillRect(tx, 0, 20, canvas.height);
+        }
+        if(level[i] === 4) { // Ship Spikes
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(tx, floor - 250, 40, 40);
+            ctx.fillRect(tx, floor - 450, 40, 40);
         }
     }
 
-    function gameOver() {
-        gameState = 'DEAD';
-        bgMusic.pause();
-        gameOverScreen.style.display = 'block';
-        
-        // Add death particles
-        for(let i=0; i<20; i++) {
-            particles.push({
-                x: player.x + player.w/2, 
-                y: player.y + player.h/2, 
-                vx: (Math.random()-0.5)*15, 
-                vy: (Math.random()-0.5)*15, 
-                life: 60,
-                color: '#00ff00'
-            });
-        }
-        draw(); // Draw one last frame
+    // Player
+    ctx.save();
+    ctx.translate(player.x + player.w/2, player.y + player.h/2);
+    ctx.rotate(player.angle);
+    ctx.drawImage(img, -player.w/2, -player.h/2, player.w, player.h);
+    if(player.isShip) {
+        ctx.strokeStyle = '#f0f'; ctx.lineWidth = 3;
+        ctx.strokeRect(-player.w/2 - 5, -player.h/2 - 5, player.w + 10, player.h + 10);
     }
+    ctx.restore();
+}
 
-    function gameWin() {
-        gameState = 'WIN';
-        winScreen.style.display = 'block';
-    }
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
 
-    // --- RENDER ---
-    function draw() {
-        // Clear
-        ctx.fillStyle = '#110011'; // Dark Purple BG
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Initial Menu Audio trigger
+window.addEventListener('click', () => {
+    if(menuMusic.paused && mode === 'MENU') menuMusic.play();
+}, {once: true});
 
-        // Draw Grid (Parallax)
-        ctx.strokeStyle = 'rgba(50, 205, 50, 0.15)'; // Matrix green lines
-        ctx.lineWidth = 2;
-        let gridOffset = -(cameraX * 0.5) % 100;
-        for (let x = gridOffset; x < canvas.width; x += 100) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for (let y = 0; y < canvas.height; y += 100) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-        }
-
-        // Draw Math decorations in background
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-        ctx.font = '30px Courier New';
-        if (Math.random() > 0.9) ctx.fillText("x² + y² = r²", Math.random()*canvas.width, Math.random()*canvas.height);
-        if (Math.random() > 0.9) ctx.fillText("π", Math.random()*canvas.width, Math.random()*canvas.height);
-
-        // Draw Floor
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, floorY, canvas.width, 100);
-        ctx.strokeStyle = '#00ff00';
-        ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(canvas.width, floorY); ctx.stroke();
-
-        // Draw Level
-        let startCol = Math.floor(cameraX / TILE_SIZE) - 2;
-        let endCol = startCol + Math.ceil(canvas.width / TILE_SIZE) + 4;
-
-        for (let i = startCol; i < endCol; i++) {
-            if (i < 0 || i >= level.length) continue;
-            let type = level[i];
-            if (type === 0) continue;
-
-            let x = (i * TILE_SIZE) - cameraX + 200;
-            let y = floorY - TILE_SIZE;
-
-            if (type === 1) { // Block
-                ctx.fillStyle = '#000';
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 3;
-                ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-                ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
-                // "Math" detail
-                ctx.fillStyle = '#00ff00';
-                ctx.font = '20px Arial';
-                ctx.fillText("∑", x+20, y+40);
-            }
-            else if (type === 2) { // Spike
-                ctx.fillStyle = '#ff0055'; // Pink/Red spikes
-                ctx.beginPath();
-                ctx.moveTo(x, floorY);
-                ctx.lineTo(x + TILE_SIZE/2, floorY - TILE_SIZE);
-                ctx.lineTo(x + TILE_SIZE, floorY);
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.stroke();
-            }
-            else if (type === 3) { // Floating
-                y = floorY - (TILE_SIZE * 3);
-                ctx.fillStyle = '#000';
-                ctx.strokeStyle = '#00ffff';
-                ctx.lineWidth = 3;
-                ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-                ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
-            }
-            else if (type === 4 || type === 5) { // Text
-                ctx.save();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                ctx.font = 'bold 40px Arial';
-                let txt = type === 4 ? "WHO IS TINY?" : "BUY THE PLUSHY!";
-                ctx.fillText(txt, x, 200);
-                ctx.restore();
-            }
-            else if (type === 9) { // End Wall
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(x, 0, 50, canvas.height);
-            }
-        }
-
-        // Draw Player (Tiny)
-        ctx.save();
-        ctx.translate(player.x + player.w/2, player.y + player.h/2);
-        ctx.rotate(player.angle);
-        
-        if (imageLoaded) {
-            ctx.drawImage(tinySprite, -player.w/2, -player.h/2, player.w, player.h);
-        } else {
-            // Fallback Green Square
-            ctx.fillStyle = '#00ff00';
-            ctx.fillRect(-player.w/2, -player.h/2, player.w, player.h);
-        }
-        
-        // Hitbox debug (optional, disabled)
-        // ctx.strokeStyle = 'red'; ctx.strokeRect(-player.w/2, -player.h/2, player.w, player.h);
-        
-        ctx.restore();
-
-        // Draw Particles
-        particles.forEach(p => {
-            ctx.fillStyle = p.color;
-            ctx.fillRect(p.x, p.y, 5, 5);
-        });
-    }
-
-    // --- LOOP ---
-    function loop() {
-        if (gameState === 'PLAYING') {
-            update();
-            draw();
-            requestAnimationFrame(loop);
-        }
-    }
-
-    // Initial Draw
-    setTimeout(() => {
-        resize();
-        draw();
-    }, 100);
-
+loop();
 </script>
 </body>
 </html>
