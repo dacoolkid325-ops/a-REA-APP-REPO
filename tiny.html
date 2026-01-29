@@ -3,54 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tiny Dash: Mobile</title>
+    <title>Tiny Dash: Math Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700&display=swap');
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Lexend Exa', sans-serif; color: white; user-select: none; touch-action: none; }
         canvas { display: block; }
-        
-        /* UI Layers */
-        #ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        .panel { background: rgba(0,0,0,0.9); padding: 30px; border-radius: 20px; border: 4px solid #0f0; text-align: center; pointer-events: auto; box-shadow: 0 0 20px #0f0; width: 80%; max-width: 400px; }
-        
-        h1 { font-size: 32px; margin: 0 0 15px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
-        .btn { background: #0f0; color: #000; padding: 15px 30px; font-size: 20px; border-radius: 10px; cursor: pointer; display: inline-block; }
-        
-        /* Loading Screen */
-        #loading { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; color: #0f0; }
-        #load-bar { width: 200px; height: 10px; border: 2px solid #0f0; margin-top: 20px; position: relative; }
-        #load-progress { width: 0%; height: 100%; background: #0f0; transition: width 0.3s; }
-        #force-start { margin-top: 20px; color: #666; font-size: 12px; text-decoration: underline; cursor: pointer; display: none; }
 
-        /* Mobile Controls */
-        #mobile-controls { position: absolute; bottom: 20px; right: 20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border: 3px solid rgba(0,255,0,0.5); border-radius: 50%; pointer-events: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f0; -webkit-tap-highlight-color: transparent; }
-        #mobile-controls:active { background: rgba(0,255,0,0.3); transform: scale(0.9); }
-        #stats { position: absolute; top: 10px; left: 10px; font-size: 14px; opacity: 0.8; }
+        /* UI Styling */
+        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+        .panel { background: rgba(0,0,0,0.95); padding: 30px; border-radius: 20px; border: 4px solid #0f0; text-align: center; pointer-events: auto; box-shadow: 0 0 25px #0f0; width: 85%; max-width: 400px; }
+        h1 { font-size: 30px; margin: 0 0 15px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
+        .btn { background: #0f0; color: #000; padding: 15px 30px; font-size: 20px; border-radius: 12px; cursor: pointer; display: inline-block; font-weight: bold; }
+        
+        /* Mobile Specific Button */
+        #jump-control { position: absolute; bottom: 30px; right: 30px; width: 100px; height: 100px; background: rgba(0, 255, 0, 0.2); border: 4px solid #0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f0; font-weight: bold; pointer-events: auto; z-index: 50; visibility: hidden; }
+        #jump-control:active { background: rgba(0, 255, 0, 0.5); transform: scale(0.9); }
+
+        /* Loading */
+        #loader { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; color: #0f0; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #111; border-top: 5px solid #0f0; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        #stats { position: absolute; top: 15px; left: 15px; font-size: 14px; text-shadow: 2px 2px #000; }
     </style>
 </head>
 <body>
 
-    <div id="loading">
-        <h1>LOADING MATH...</h1>
-        <div id="load-bar"><div id="load-progress"></div></div>
-        <div id="force-start" onclick="finishLoading()">Connection slow? Click to force start</div>
+    <div id="loader">
+        <div class="spinner"></div>
+        <div id="load-text">CONNECTING TO DROPBOX...</div>
+        <div id="skip-load" onclick="showMenu()" style="margin-top:20px; font-size: 12px; opacity: 0.5; text-decoration: underline; cursor: pointer;">SKIP LOADING</div>
     </div>
 
     <div id="stats">Attempt: 1</div>
 
-    <div id="ui">
+    <div id="ui-layer">
         <div id="menu" class="panel">
             <h1>TINY DASH</h1>
-            <div class="btn" onclick="startGame()">PLAY LEVEL</div>
-            <p style="font-size: 12px; margin-top: 15px;">MUSIC: TINY.M4A</p>
+            <div class="btn" onclick="startPlay()">PLAY</div>
+            <p style="font-size: 11px; margin-top: 20px; opacity: 0.7;">TAP THE JUMP CIRCLE OR SPACEBAR</p>
         </div>
-        <div id="death" class="panel" style="display:none; border-color: #f00;">
-            <h1 style="color:#f00;">FAILED</h1>
-            <div class="btn" style="background: #f00; color: #fff;" onclick="startGame()">RETRY</div>
+        <div id="death-screen" class="panel" style="display:none; border-color: #f00; box-shadow: 0 0 25px #f00;">
+            <h1 style="color:#f00;">INCORRECT</h1>
+            <div class="btn" style="background: #f00; color: #fff;" onclick="startPlay()">RETRY</div>
         </div>
     </div>
 
-    <div id="mobile-controls">JUMP</div>
+    <div id="jump-control">JUMP</div>
 
     <canvas id="cvs"></canvas>
 
@@ -58,208 +57,262 @@
 const canvas = document.getElementById('cvs');
 const ctx = canvas.getContext('2d');
 const menu = document.getElementById('menu');
-const death = document.getElementById('death');
-const loading = document.getElementById('loading');
-const progressBar = document.getElementById('load-progress');
+const deathScreen = document.getElementById('death-screen');
+const loader = document.getElementById('loader');
+const jumpBtn = document.getElementById('jump-control');
 
-// --- Asset Logic ---
-const assets = {
-    img: "https://www.dropbox.com/scl/fi/achgz4b20pbp4t5kfzuts/IMG_0963.png?rlkey=zc14q2o3gw3epn8fibxgsutpj&st=tm9833na&raw=1",
-    menuMusic: "https://gdcolon.com/assets/audio/menuLoop.mp3",
-    gameMusic: "https://uce2e02b3d17bc677c487dae66e2.dl.dropboxusercontent.com/cd/0/inline/C51w5BdUrUlDgP1gYjJGHxW8BV6nzJy4qvmE198rfxvtKO-t2XIJINGHGwwkDlcFrUzu6ISJ3toiDduxk1mZlC0Dgyi0b-ueON4JXDNWCgH3pWjDUtU4yazKm4vo04E5yxS6ogaKoKZslItAeYWaaf6U/file#"
-};
+// --- Assets ---
+const img = new Image();
+img.src = "https://www.dropbox.com/scl/fi/1u1gm1mwkh1mb2rchd33s/IMG_0963.webp?rlkey=rj3qf9ou8sf9dxynvehmy9628&st=4yldxbrf&raw=1";
 
-const tinyImg = new Image();
-const mMusic = new Audio(assets.menuMusic);
-const gMusic = new Audio(assets.gameMusic);
+const menuMusic = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
+menuMusic.loop = true;
 
-mMusic.loop = true;
-let assetsLoaded = 0;
-const totalAssets = 3;
+const gameMusic = new Audio("https://www.dropbox.com/scl/fi/61itpersex7cmrfj8yqig/Tiny.m4a?rlkey=ph9a226cowhhfs7eq54y4twzj&st=d9zecvr7&raw=1");
 
-function itemLoaded() {
-    assetsLoaded++;
-    progressBar.style.width = (assetsLoaded / totalAssets * 100) + "%";
-    if(assetsLoaded >= totalAssets) finishLoading();
-}
+// Loading Logic
+let assetsReady = 0;
+img.onload = () => { assetsReady++; checkReady(); };
+// Force show menu if image takes too long, but usually webp is fast
+function checkReady() { if(assetsReady >= 1) showMenu(); }
+function showMenu() { loader.style.display = 'none'; }
 
-// Show force start after 4 seconds if music link is hanging
-setTimeout(() => { document.getElementById('force-start').style.display = 'block'; }, 4000);
-
-tinyImg.onload = itemLoaded;
-tinyImg.onerror = itemLoaded; // Carry on even if image fails
-mMusic.oncanplaythrough = itemLoaded;
-gMusic.oncanplaythrough = itemLoaded;
-
-function finishLoading() {
-    loading.style.display = 'none';
-    if(mMusic.paused) mMusic.play().catch(()=>{});
-}
-
-// --- Game Constants ---
+// --- Game Settings ---
 const TILE = 60;
-const SPEED = 8;
-const GRAVITY = 0.75;
-const JUMP = -12;
-const SHIP_THRUST = -0.7;
+const SPEED = 8.5;
+const GRAVITY = 0.8;
+const JUMP_POWER = -12;
+const SHIP_LIFT = -0.75;
 
 // --- State ---
-let mode = 'MENU';
+let gameState = 'MENU';
 let attempts = 1;
 let camX = 0;
-let player = { x: 150, y: 0, vy: 0, angle: 0, isShip: false, w: 50, h: 50 };
+let player = { x: 160, y: 0, vy: 0, angle: 0, isShip: false, w: 52, h: 52 };
 let level = [];
 let mathBg = [];
 
-function initLevel() {
-    const m = [];
-    for(let i=0; i<15; i++) m.push(0);
+function createLevel() {
+    const l = [];
+    for(let i=0; i<15; i++) l.push(0); 
     // Cube Intro
-    m.push(1,0,0,2,0,0,1,1,0,2,2,0,1,0,0,2,0,1,1,1,0,0);
-    m.push(5,0,0,0); // "Who is Tiny" Text
-    m.push(3,0,0,0); // Ship Portal
-    for(let i=0; i<30; i++) {
+    l.push(1,0,0,2,0,0,1,1,0,2,2,0,1,0,0,2,0,1,1,1,0,0,5);
+    // Ship Portal
+    l.push(0,0,3,0,0,0); 
+    // Ship Flight Path
+    for(let i=0; i<35; i++) {
         let r = Math.random();
-        m.push(r > 0.8 ? 4 : (r > 0.6 ? 6 : 0));
+        l.push(r > 0.85 ? 4 : (r > 0.7 ? 6 : 0));
     }
-    m.push(3,0,0,1,0,2,0,2,2,0,9);
+    // Final Stretch
+    l.push(0,3,0,0,1,1,0,2,0,2,2,0,1,0,9);
     
     mathBg = [];
-    for(let i=0; i<40; i++) mathBg.push({ x: Math.random()*5000, y: Math.random()*600, t: ["π","x²","√","∑"][Math.floor(Math.random()*4)] });
-    return m;
+    for(let i=0; i<45; i++) mathBg.push({ x: Math.random()*6000, y: Math.random()*canvas.height, t: ["π","x²","√y","∑n","∞","∫","sinθ","Δ"][Math.floor(Math.random()*8)], s: 12 + Math.random()*20 });
+    return l;
 }
 
-// --- Controls ---
-let isInput = false;
-const jumpAction = (e) => {
-    if(mode === 'MENU' || mode === 'DEAD') return; // Handled by buttons
-    isInput = true;
+// --- Inputs ---
+let isHolding = false;
+
+const triggerJump = (e) => {
+    if(gameState === 'PLAYING') isHolding = true;
     if(e) e.preventDefault();
 };
-const releaseAction = () => isInput = false;
+const stopJump = () => isHolding = false;
 
-const jumpBtn = document.getElementById('mobile-controls');
-jumpBtn.addEventListener('pointerdown', jumpAction);
-window.addEventListener('pointerup', releaseAction);
-window.addEventListener('keydown', (e) => { if(e.code === 'Space') isInput = true; });
-window.addEventListener('keyup', (e) => { if(e.code === 'Space') isInput = false; });
+jumpBtn.addEventListener('touchstart', triggerJump);
+jumpBtn.addEventListener('touchend', stopJump);
+jumpBtn.addEventListener('mousedown', triggerJump);
+window.addEventListener('mouseup', stopJump);
 
-function startGame() {
-    mode = 'PLAYING';
+window.addEventListener('keydown', (e) => { if(e.code === 'Space' || e.code === 'ArrowUp') isHolding = true; });
+window.addEventListener('keyup', (e) => { if(e.code === 'Space' || e.code === 'ArrowUp') isHolding = false; });
+
+function startPlay() {
+    gameState = 'PLAYING';
     menu.style.display = 'none';
-    death.style.display = 'none';
+    deathScreen.style.display = 'none';
+    jumpBtn.style.visibility = 'visible';
+    
     player.y = canvas.height - 200;
     player.vy = 0;
     player.isShip = false;
     camX = 0;
-    level = initLevel();
-    mMusic.pause();
-    gMusic.currentTime = 0;
-    gMusic.play().catch(() => {});
+    level = createLevel();
+    
+    menuMusic.pause();
+    gameMusic.currentTime = 0;
+    gameMusic.play().catch(e => console.log("Audio play blocked"));
 }
 
 function die() {
-    mode = 'DEAD';
+    gameState = 'DEAD';
     attempts++;
     document.getElementById('stats').innerText = "Attempt: " + attempts;
-    gMusic.pause();
-    death.style.display = 'block';
-    mMusic.play().catch(() => {});
+    gameMusic.pause();
+    deathScreen.style.display = 'block';
+    jumpBtn.style.visibility = 'hidden';
+    menuMusic.play().catch(() => {});
 }
 
 function update() {
-    if(mode !== 'PLAYING') return;
+    if(gameState !== 'PLAYING') return;
+
     camX += SPEED;
-    let floor = canvas.height - 100;
+    let groundY = canvas.height - 100;
 
     if(!player.isShip) {
         player.vy += GRAVITY;
         player.y += player.vy;
-        if(isInput && player.y >= floor - player.h) player.vy = JUMP;
-        if(player.y < floor - player.h) player.angle += 0.15;
-        else {
-            player.y = floor - player.h;
+        
+        // Cube Ground Interaction
+        if(player.y > groundY - player.h) {
+            player.y = groundY - player.h;
             player.vy = 0;
-            player.angle = Math.round(player.angle/(Math.PI/2))*(Math.PI/2);
+            if(isHolding) player.vy = JUMP_POWER;
+            player.angle = Math.round(player.angle / (Math.PI/2)) * (Math.PI/2);
+        } else {
+            player.angle += 0.16;
         }
     } else {
-        player.vy += isInput ? SHIP_THRUST : GRAVITY * 0.6;
+        // Ship Physics
+        player.vy += isHolding ? SHIP_LIFT : (GRAVITY * 0.55);
         player.y += player.vy;
-        player.angle = player.vy * 0.05;
-        if(player.y < 20 || player.y > floor - player.h) die();
+        player.angle = player.vy * 0.06;
+        if(player.y < 10 || player.y > groundY - player.h) die();
     }
 
-    // Collision
-    let idx = Math.floor(camX / TILE);
-    for(let i=idx; i<idx+10; i++) {
+    // Collision Detection
+    let colIndex = Math.floor(camX / TILE);
+    for(let i = colIndex; i < colIndex + 10; i++) {
         if(!level[i]) continue;
-        let tx = i*TILE - camX + 150;
-        let ty = floor - TILE;
-        
+        let tx = i * TILE - camX + 160;
+        let ty = groundY - TILE;
+
+        // Block & Floating Block
         if(level[i] === 1 || level[i] === 6) {
-            let by = (level[i] === 6) ? floor - 250 : ty;
-            if(player.x < tx+TILE && player.x+player.w > tx && player.y < by+TILE && player.y+player.h > by) {
-                if(player.vy > 0 && player.y + player.h < by + 20) { player.y = by - player.h; player.vy = 0; }
-                else die();
+            let by = (level[i] === 6) ? groundY - 260 : ty;
+            if(player.x < tx + TILE && player.x + player.w > tx && player.y < by + TILE && player.y + player.h > by) {
+                // Land on top check
+                if(player.vy > 0 && player.y + player.h < by + 25) {
+                    player.y = by - player.h;
+                    player.vy = 0;
+                    if(isHolding && !player.isShip) player.vy = JUMP_POWER;
+                } else {
+                    die();
+                }
             }
         }
-        if(level[i] === 2 && player.x < tx+TILE-20 && player.x+player.w > tx+20 && player.y < ty+TILE && player.y+player.h > ty+20) die();
-        if(level[i] === 3 && player.x < tx+20 && player.x+player.w > tx) { player.isShip = !player.isShip; level[i] = 0; player.vy = 0; }
-        if(level[i] === 4 && player.x < tx+40 && player.x+player.w > tx && (player.y < floor-350 || player.y > floor-100)) die();
-        if(level[i] === 9 && tx < player.x) { mode = 'MENU'; menu.style.display = 'block'; gMusic.pause(); mMusic.play(); }
+        // Spike
+        if(level[i] === 2) {
+            let sx = tx + 15, sw = TILE - 30, sy = ty + 20, sh = TILE - 20;
+            if(player.x < sx + sw && player.x + player.w > sx && player.y < sy + sh && player.y + player.h > sy) die();
+        }
+        // Portals (Type 3)
+        if(level[i] === 3 && player.x + player.w > tx && player.x < tx + 20) {
+            player.isShip = !player.isShip;
+            level[i] = 0; // Only trigger once
+        }
+        // Pillars (Ship Mode)
+        if(level[i] === 4) {
+            if(player.x < tx + 40 && player.x + player.w > tx && (player.y < groundY - 380 || player.y > groundY - 140)) die();
+        }
+        // Win (Type 9)
+        if(level[i] === 9 && tx < player.x) {
+            gameState = 'MENU';
+            menu.style.display = 'block';
+            jumpBtn.style.visibility = 'hidden';
+            gameMusic.pause();
+            menuMusic.play();
+        }
     }
 }
 
 function draw() {
-    ctx.fillStyle = player.isShip ? '#1a002a' : '#000a00';
+    // Background + Math Matrix
+    ctx.fillStyle = player.isShip ? '#150025' : '#000800';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Math Background
     ctx.fillStyle = '#0f02';
-    ctx.font = '20px Courier';
+    ctx.font = 'bold 18px Courier New';
     mathBg.forEach(m => {
-        let x = (m.x - camX*0.2) % (canvas.width + 100);
+        let x = (m.x - camX * 0.25) % (canvas.width + 100);
+        if(x < -50) x += canvas.width + 150;
         ctx.fillText(m.t, x, m.y);
     });
 
-    // Grid
+    // Green Grid
     ctx.strokeStyle = '#0f01';
-    for(let x = -(camX%100); x < canvas.width; x+=100) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
-
-    let floor = canvas.height - 100;
-    ctx.fillStyle = '#000'; ctx.fillRect(0, floor, canvas.width, 100);
-    ctx.strokeStyle = player.isShip ? '#f0f' : '#0f0';
-    ctx.lineWidth = 4; ctx.strokeRect(-2, floor, canvas.width+4, 102);
-
-    for(let i=0; i<level.length; i++) {
-        let tx = i*TILE - camX + 150;
-        if(tx < -TILE || tx > canvas.width) continue;
-        if(level[i] === 1 || level[i] === 6) {
-            let by = (level[i] === 6) ? floor - 250 : floor - TILE;
-            ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff';
-            ctx.fillRect(tx, by, TILE, TILE); ctx.strokeRect(tx, by, TILE, TILE);
-        }
-        if(level[i] === 2) {
-            ctx.fillStyle = '#f22'; ctx.beginPath(); ctx.moveTo(tx, floor); ctx.lineTo(tx+TILE/2, floor-TILE); ctx.lineTo(tx+TILE, floor); ctx.fill();
-        }
-        if(level[i] === 3) { ctx.fillStyle = '#f0f'; ctx.fillRect(tx, 0, 20, floor); }
-        if(level[i] === 4) { ctx.fillStyle = '#fff'; ctx.fillRect(tx, floor-400, 40, 50); ctx.fillRect(tx, floor-150, 40, 50); }
-        if(level[i] === 5) { ctx.fillStyle = '#0f06'; ctx.font = '20px Lexend Exa'; ctx.fillText("WHO IS TINY?", tx, 200); }
+    ctx.lineWidth = 1;
+    for(let x = -(camX%100); x < canvas.width; x+=100) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
     }
 
+    let groundY = canvas.height - 100;
+
+    // Drawing Level
+    for(let i=0; i < level.length; i++) {
+        let tx = i * TILE - camX + 160;
+        if(tx < -TILE || tx > canvas.width) continue;
+
+        if(level[i] === 1 || level[i] === 6) {
+            let by = (level[i] === 6) ? groundY - 260 : groundY - TILE;
+            ctx.fillStyle = '#000'; ctx.strokeStyle = '#0f0';
+            ctx.fillRect(tx, by, TILE, TILE); ctx.strokeRect(tx, by, TILE, TILE);
+            ctx.fillStyle = '#0f02'; ctx.fillRect(tx+10, by+10, TILE-20, TILE-20);
+        }
+        if(level[i] === 2) {
+            ctx.fillStyle = '#f33'; ctx.beginPath();
+            ctx.moveTo(tx, groundY); ctx.lineTo(tx + TILE/2, groundY - TILE); ctx.lineTo(tx + TILE, groundY);
+            ctx.fill(); ctx.strokeStyle = '#fff'; ctx.stroke();
+        }
+        if(level[i] === 3) { // Portal
+            ctx.fillStyle = '#f0f'; ctx.shadowBlur = 15; ctx.shadowColor = '#f0f';
+            ctx.fillRect(tx, 0, 15, groundY); ctx.shadowBlur = 0;
+        }
+        if(level[i] === 4) { // Ship Pillars
+            ctx.fillStyle = '#fff'; ctx.fillRect(tx, groundY-450, 40, 60); ctx.fillRect(tx, groundY-150, 40, 60);
+        }
+        if(level[i] === 5) { // Text
+            ctx.fillStyle = '#0f08'; ctx.font = '20px Lexend Exa';
+            ctx.fillText("WHO IS TINY?", tx, 250);
+        }
+    }
+
+    // Ground line
+    ctx.fillStyle = '#000'; ctx.fillRect(0, groundY, canvas.width, 100);
+    ctx.strokeStyle = player.isShip ? '#f0f' : '#0f0'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(canvas.width, groundY); ctx.stroke();
+
+    // Player
     ctx.save();
-    ctx.translate(player.x+player.w/2, player.y+player.h/2);
+    ctx.translate(player.x + player.w/2, player.y + player.h/2);
     ctx.rotate(player.angle);
-    ctx.shadowBlur = 10; ctx.shadowColor = player.isShip ? '#f0f' : '#0f0';
-    ctx.drawImage(tinyImg, -player.w/2, -player.h/2, player.w, player.h);
+    ctx.shadowBlur = 12; ctx.shadowColor = player.isShip ? '#f0f' : '#0f0';
+    ctx.drawImage(img, -player.w/2, -player.h/2, player.w, player.h);
     ctx.restore();
 }
 
-function loop() { update(); draw(); requestAnimationFrame(loop); }
-function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 window.onresize = resize;
 resize();
 loop();
+
+// First interaction to start menu music
+document.body.addEventListener('click', () => {
+    if(menuMusic.paused && gameState === 'MENU') menuMusic.play().catch(()=>{});
+}, {once: true});
+
 </script>
 </body>
 </html>
