@@ -5,380 +5,323 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>a-REA</title>
 
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon_512.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon-iphone-60x60.png">
-<link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-ipad-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-iphone-retina-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-ipad-retina-152x152.png">
-
 <style>
-/* --- 1. CORE VARIABLES --- */
 :root {
-  /* Dark Liquid Theme */
-  --bg-color: #000;
-  --bg-gradient: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-  --glass-panel: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  
-  /* The "Liquid" Active State Variables */
-  --active-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
-  --active-glass-border: rgba(255, 255, 255, 0.4);
-  --active-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  
-  --text-main: #fff;
-  --text-mute: #888;
-  --accent: #0a84ff; /* iOS Blue */
+  --bg-dark: #000000;
+  --text-main: #ffffff;
+  --text-mute: rgba(255, 255, 255, 0.5);
+  --accent: #007AFF;
+  /* Glass Specs */
+  --liquid-glass-bg: rgba(255, 255, 255, 0.12);
+  --liquid-glass-border: rgba(255, 255, 255, 0.2);
+  --liquid-glass-shine: rgba(255, 255, 255, 0.4);
 }
 
 body.light {
-  --bg-color: #f2f2f7;
-  --bg-gradient: linear-gradient(180deg, #ffffff 0%, #f2f2f7 100%);
-  --glass-panel: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(0, 0, 0, 0.05);
-  
-  --active-glass-bg: linear-gradient(135deg, #ffffff, #e6e6e6);
-  --active-glass-border: rgba(255, 255, 255, 0.9);
-  --active-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  
-  --text-main: #000;
-  --text-mute: #666;
+  --bg-dark: #f2f2f7;
+  --text-main: #000000;
+  --text-mute: rgba(0, 0, 0, 0.5);
+  --liquid-glass-bg: rgba(0, 0, 0, 0.05);
+  --liquid-glass-border: rgba(0, 0, 0, 0.1);
+  --liquid-glass-shine: rgba(255, 255, 255, 0.8);
 }
 
-/* --- 2. GLOBAL STYLES --- */
+body.no-bg #glassCanvas { display: none !important; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  background: var(--bg-color);
-  background-image: var(--bg-gradient);
-  background-attachment: fixed;
+  background-color: var(--bg-dark);
   color: var(--text-main);
-  /* Padding for bottom nav */
-  padding-bottom: 110px; 
-  -webkit-font-smoothing: antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-h1 {
-  font-weight: 700;
-  margin: 20px 0 10px 0;
-  letter-spacing: -0.5px;
-}
-
-/* --- 3. GLASS CONTAINERS --- */
-section {
-  display: none;
-  padding: 20px;
-  max-width: 600px; /* Mobile focused */
-  margin: 0 auto;
-  animation: fadeUp 0.3s ease;
-}
-
-section.active { display: block; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.glass-box {
-  background: var(--glass-panel);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 24px -1px rgba(0,0,0,0.1);
-}
-
-/* --- 4. MEDIA ELEMENTS --- */
-iframe, video {
-  width: 100%;
-  border-radius: 12px;
-  border: none;
-  background: #000;
-  display: block;
-}
-
-/* Audio Player Styling */
-.song-row {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--glass-border);
-  padding-bottom: 16px;
-}
-.song-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-.song-title { font-weight: 600; margin-bottom: 8px; font-size: 15px; }
-audio { width: 100%; height: 36px; opacity: 0.8; }
-
-/* iOS Button */
-.ios-btn {
-  display: block;
-  text-align: center;
-  background: #007AFF;
-  color: white !important;
-  text-decoration: none;
-  font-weight: 600;
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-}
-
-/* --- 5. LIQUID NAV BAR --- */
-nav {
+/* --- LIQUID GLASS BACKGROUND CANVAS --- */
+#glassCanvas {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 450px;
-  height: 70px;
-  
-  background: rgba(20, 20, 20, 0.7);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border-radius: 35px; /* Pill shape */
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  z-index: 999;
-}
-
-body.light nav {
-  background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(0,0,0,0.1);
-}
-
-nav button {
-  background: transparent;
-  border: none;
-  color: var(--text-mute);
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 20px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-}
-
-nav svg {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-  margin-bottom: 2px;
-  transition: transform 0.2s;
-}
-
-nav span {
-  font-size: 9px;
-  font-weight: 500;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(60px) contrast(1.2);
   opacity: 0.8;
 }
 
-/* THE LIQUID GLASS SELECTION EFFECT */
-nav button.active {
-  color: var(--text-main);
-  
-  /* The "Liquid" Look */
-  background: var(--active-glass-bg);
-  border: 1px solid var(--active-glass-border);
-  box-shadow: var(--active-shadow);
-  backdrop-filter: blur(10px);
-  
-  transform: translateY(-10px); /* Pops up slightly */
+/* --- CONTENT SECTIONS --- */
+section {
+  display: none;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 120px;
+  animation: pageEnter 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+}
+section.active { display: block; }
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: scale(0.98) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-nav button.active svg {
-  fill: var(--accent);
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 8px var(--accent));
+.glass-card {
+  background: var(--liquid-glass-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--liquid-glass-border);
+  border-top: 1px solid var(--liquid-glass-shine);
+  border-radius: 28px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-/* Settings Toggle */
-.toggle-row {
-  display: flex; 
-  justify-content: space-between; 
+/* --- APPLE STYLE NAV PILL --- */
+.nav-container {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  display: flex;
   align-items: center;
   padding: 8px;
+  z-index: 1000;
 }
-input[type="checkbox"] {
-  width: 50px; height: 30px;
-  appearance: none;
-  background: #333;
-  border-radius: 30px;
-  position: relative;
-  outline: none;
-  transition: .3s;
-}
-input[type="checkbox"]::after {
-  content: '';
-  position: absolute;
-  top: 2px; left: 2px;
-  width: 26px; height: 26px;
-  background: #fff;
-  border-radius: 50%;
-  transition: .3s;
-}
-input[type="checkbox"]:checked { background: var(--accent); }
-input[type="checkbox"]:checked::after { left: 22px; }
 
+.nav-item {
+  position: relative;
+  background: none;
+  border: none;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.3s;
+  color: var(--text-mute);
+  z-index: 2;
+}
+
+/* THE LIQUID PILL SELECTION */
+.nav-selection-pill {
+  position: absolute;
+  height: 56px;
+  width: 56px;
+  background: var(--liquid-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--liquid-glass-border);
+  border-top: 1px solid var(--liquid-glass-shine);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  z-index: 1;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
+}
+
+.nav-item.active { color: var(--text-main); }
+
+svg { width: 28px; height: 28px; fill: currentColor; }
+
+/* --- UI ELEMENTS --- */
+.song-title { font-weight: 600; margin-bottom: 8px; font-size: 15px; display: block;}
+audio { width: 100%; height: 38px; border-radius: 20px; margin-bottom: 16px; opacity: 0.9; }
+iframe, video { width: 100%; border-radius: 20px; border: none; }
+.btn-ios {
+  display: block; width: 100%; padding: 18px; background: var(--accent);
+  color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
+  font-weight: 600; font-size: 17px; margin-bottom: 20px;
+}
+
+.toggle-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--liquid-glass-border);
+}
+.toggle-row:last-child { border-bottom: none; }
 </style>
 </head>
 <body>
 
+<canvas id="glassCanvas"></canvas>
+
+<!-- HOME -->
 <section id="home" class="active">
-  <div class="glass-box" style="border-left: 4px solid var(--accent);">
+  <div class="glass-card" style="border-left: 4px solid var(--accent);">
     <strong style="color:var(--accent)">Alexandru News</strong><br>
     <span style="font-size: 14px; opacity: 0.8;">Find out about Alexandru and why I'm committing to his legacy!</span>
   </div>
 
-  <div class="glass-box" style="height: 75vh; padding: 0; overflow: hidden;">
+  <div class="glass-card" style="height: 70vh; padding: 0; overflow: hidden;">
     <iframe src="https://aqeelchy02.wixsite.com/a-rea" style="height:100%;"></iframe>
   </div>
 </section>
 
+<!-- SONGS -->
 <section id="songs">
   <h1>Musical Story</h1>
-  
-  <div class="glass-box">
-    <div class="song-row">
-      <div class="song-title">01 – a-REA (Original)</div>
-      <audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
-    </div>
-    <div class="song-row">
-      <div class="song-title">02 – L-INE GRAPHS!</div>
-      <audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
-    </div>
-    <div class="song-row">
-      <div class="song-title">03 – T-ABLES!!</div>
-      <audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
-    </div>
-    <div class="song-row">
-      <div class="song-title">04 – T-IMETABLES!!!</div>
-      <audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
-    </div>
-    <div class="song-row">
-      <div class="song-title">05 – A-NGLES!!!!</div>
-      <audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
-    </div>
-  </div>
+  <div class="glass-card">
+    <span class="song-title">01 – a-REA (Original)</span>
+    <audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
+    
+    <span class="song-title">02 – L-INE GRAPHS!</span>
+    <audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
+    
+    <span class="song-title">03 – T-ABLES!!</span>
+    <audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
+    
+    <span class="song-title">04 – T-IMETABLES!!!</span>
+    <audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
+    
+    <span class="song-title">05 – A-NGLES!!!!</span>
+    <audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
 
-  <div class="glass-box" style="border-color: var(--accent);">
-    <div class="song-row">
-      <div class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</div>
+    <div style="margin-top:20px; padding-top:20px; border-top: 1px solid var(--liquid-glass-border);">
+      <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
       <audio controls src="audio/aREAREVAMP.m4a"></audio>
-    </div>
-  </div>
-
-  <div class="glass-box">
-    <div class="song-row">
-      <div class="song-title">NEW – MASTER</div>
+      
+      <span class="song-title">NEW – MASTER</span>
       <audio controls src="Music/MASTER.m4a"></audio>
-    </div>
-  </div>
-  
-  <div class="glass-box">
-    <div class="song-row">
-      <div class="song-title">FAN FAVOURITE – TINY</div>
+
+      <span class="song-title">FAN FAVOURITE – TINY</span>
       <audio controls src="audio/Tiny.m4a"></audio>
     </div>
   </div>
 </section>
 
+<!-- VIDEOS -->
 <section id="videos">
   <h1>Videos</h1>
-  <div class="glass-box">
-    <div class="song-title">aq.co direct</div>
+  <div class="glass-card">
+    <span class="song-title">aq.co direct</span>
     <video controls src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&e=1&st=d0gbjsf8&raw=1"></video>
   </div>
 </section>
 
+<!-- GAMES -->
 <section id="games">
   <h1>Games</h1>
-  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="ios-btn">
-    Launch a-REA Hangout
-  </a>
-
-  <div class="glass-box" style="padding:0; overflow:hidden;">
+  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios">Launch a-REA Hangout</a>
+  
+  <div class="glass-card" style="padding:0; overflow:hidden; height: 400px;">
     <div style="padding:10px; background:rgba(255,255,255,0.05); font-weight:bold;">MASTER</div>
-    <iframe src="file.html" style="height:350px;"></iframe>
+    <iframe src="file.html" style="height:calc(100% - 40px);"></iframe>
   </div>
 
-  <div class="glass-box" style="padding:0; overflow:hidden;">
+  <div class="glass-card" style="padding:0; overflow:hidden; height: 400px;">
     <div style="padding:10px; background:rgba(255,255,255,0.05); font-weight:bold;">TINY THE GAME</div>
-    <iframe src="tiny.html" style="height:350px;"></iframe>
+    <iframe src="tiny.html" style="height:calc(100% - 40px);"></iframe>
   </div>
 </section>
 
+<!-- SETTINGS -->
 <section id="settings">
   <h1>Settings</h1>
-  <div class="glass-box">
+  <div class="glass-card">
     <div class="toggle-row">
-      <span>Light Mode</span>
-      <input type="checkbox" onchange="toggleTheme(this)">
+      <span style="font-size: 17px; font-weight:500;">Light Mode</span>
+      <input type="checkbox" style="width:20px; height:20px;" onchange="document.body.classList.toggle('light')">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Glass Only (Remove BG)</span>
+      <input type="checkbox" style="width:20px; height:20px;" onchange="document.body.classList.toggle('no-bg')">
     </div>
   </div>
 </section>
 
-<nav>
-  <button class="active" onclick="showTab('home', this)">
-    <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
-    <span>Home</span>
-  </button>
+<!-- NAV BAR -->
+<div class="nav-container">
+  <div id="selectionPill" class="nav-selection-pill"></div>
   
-  <button onclick="showTab('songs', this)">
+  <button class="nav-item active" onclick="showTab('home', this, 0)">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </button>
+  <button class="nav-item" onclick="showTab('songs', this, 1)">
     <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-    <span>Songs</span>
   </button>
-  
-  <button onclick="showTab('videos', this)">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    <span>Videos</span>
+  <button class="nav-item" onclick="showTab('videos', this, 2)">
+    <svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
   </button>
-  
-  <button onclick="showTab('games', this)">
+  <button class="nav-item" onclick="showTab('games', this, 3)">
     <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S19.67 9 20.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-    <span>Games</span>
   </button>
-  
-  <button onclick="showTab('settings', this)">
-    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-    <span>Settings</span>
+  <button class="nav-item" onclick="showTab('settings', this, 4)">
+    <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
   </button>
-</nav>
+</div>
 
 <script>
-function showTab(id, btn) {
-  // Hide sections
+// --- CANVAS LIQUID GLASS ENGINE ---
+const canvas = document.getElementById('glassCanvas');
+const ctx = canvas.getContext('2d');
+let points = [];
+
+function init() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  points = [];
+  const colors = ['#007AFF', '#5856D6', '#AF52DE', '#FF2D55'];
+  for(let i=0; i<6; i++) {
+    points.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5,
+      r: Math.random() * 300 + 200,
+      color: colors[i % colors.length]
+    });
+  }
+}
+
+function loop() {
+  if (!document.body.classList.contains('no-bg')) {
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    points.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
+      if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
+      
+      let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      g.addColorStop(0, p.color);
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+  }
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener('resize', init);
+init();
+loop();
+
+// --- NAVIGATION LOGIC ---
+function showTab(id, btn, index) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-  // Deactivate nav buttons
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  
-  // Activate selected
   document.getElementById(id).classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   
-  // Smooth scroll
+  const pill = document.getElementById('selectionPill');
+  const offset = index * 64 + 12;
+  pill.style.transform = `translateX(${offset}px)`;
+  
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-function toggleTheme(box) {
-  document.body.classList.toggle('light', box.checked);
-}
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
+window.onload = () => {
+  const pill = document.getElementById('selectionPill');
+  pill.style.transform = `translateX(12px)`;
+};
 </script>
 
 </body>
 </html>
+
