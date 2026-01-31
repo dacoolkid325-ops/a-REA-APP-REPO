@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>a-REA</title>
+
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon_512.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-iphone-60x60.png">
@@ -13,385 +13,362 @@
 <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-ipad-retina-152x152.png">
 
 <style>
-/* --- VARIABLES & RESET --- */
+/* --- 1. CORE VARIABLES --- */
 :root {
-  --bg-gradient: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-  --bg-color: #0f0f13;
-  --glass-bg: rgba(255, 255, 255, 0.08);
+  /* Dark Liquid Theme */
+  --bg-color: #000;
+  --bg-gradient: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  --glass-panel: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shine: rgba(255, 255, 255, 0.2);
-  --nav-bg: rgba(20, 20, 25, 0.6);
-  --text-main: #ffffff;
-  --text-mute: #aaaaaa;
-  --accent: #4da3ff;
-  --accent-glow: rgba(77, 163, 255, 0.4);
+  
+  /* The "Liquid" Active State Variables */
+  --active-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+  --active-glass-border: rgba(255, 255, 255, 0.4);
+  --active-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  
+  --text-main: #fff;
+  --text-mute: #888;
+  --accent: #0a84ff; /* iOS Blue */
 }
 
 body.light {
-  --bg-gradient: radial-gradient(at 0% 0%, hsla(190, 80%, 80%, 1) 0, transparent 50%), radial-gradient(at 100% 100%, hsla(280, 70%, 90%, 1) 0, transparent 50%);
-  --bg-color: #f0f2f5;
-  --glass-bg: rgba(255, 255, 255, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shine: rgba(255, 255, 255, 0.8);
-  --nav-bg: rgba(255, 255, 255, 0.7);
-  --text-main: #222222;
-  --text-mute: #555555;
-  --accent: #0066cc;
+  --bg-color: #f2f2f7;
+  --bg-gradient: linear-gradient(180deg, #ffffff 0%, #f2f2f7 100%);
+  --glass-panel: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  
+  --active-glass-bg: linear-gradient(135deg, #ffffff, #e6e6e6);
+  --active-glass-border: rgba(255, 255, 255, 0.9);
+  --active-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  
+  --text-main: #000;
+  --text-mute: #666;
 }
 
-* { box-sizing: border-box; }
-
+/* --- 2. GLOBAL STYLES --- */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-color);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-color);
   background-image: var(--bg-gradient);
   background-attachment: fixed;
-  background-size: cover;
   color: var(--text-main);
-  min-height: 100vh;
-  padding-bottom: 120px; /* Space for floating nav */
-}
-
-/* --- LIQUID BACKGROUND ANIMATION --- */
-/* Creating floating orbs for the liquid effect */
-.liquid-blob {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-}
-.blob {
-  position: absolute;
-  filter: blur(80px);
-  opacity: 0.6;
-  animation: float 10s infinite ease-in-out;
-}
-.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #6200ff; animation-delay: 0s; border-radius: 40% 60% 70% 30%; }
-.blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #0099ff; animation-delay: -2s; border-radius: 60% 40% 30% 70%; }
-.blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: #ff0055; animation-delay: -4s; border-radius: 30% 70% 70% 30%; opacity: 0.3;}
-
-@keyframes float {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(30px, 40px) rotate(10deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
-}
-
-/* --- GLASS UTILITIES --- */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-top: 1px solid var(--glass-shine); /* Top shine */
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 24px;
-  overflow: hidden;
-  transition: transform 0.2s ease;
+  /* Padding for bottom nav */
+  padding-bottom: 110px; 
+  -webkit-font-smoothing: antialiased;
 }
 
 h1 {
-  font-weight: 800;
-  letter-spacing: -1px;
-  margin-bottom: 24px;
-  background: linear-gradient(135deg, var(--text-main) 0%, var(--text-mute) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  font-weight: 700;
+  margin: 20px 0 10px 0;
+  letter-spacing: -0.5px;
 }
 
+/* --- 3. GLASS CONTAINERS --- */
 section {
   display: none;
-  padding: 24px;
-  max-width: 800px;
+  padding: 20px;
+  max-width: 600px; /* Mobile focused */
   margin: 0 auto;
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeUp 0.3s ease;
 }
+
 section.active { display: block; }
 
-@keyframes fadeIn {
+@keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- COMPONENTS --- */
-
-/* News Banner */
-.news-card {
-  padding: 20px;
-  margin-bottom: 24px;
-  background: rgba(255, 50, 50, 0.15);
-  border: 1px solid rgba(255, 50, 50, 0.3);
-  color: var(--text-main);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
-}
-
-/* Iframes */
-iframe, video {
-  width: 100%;
-  border-radius: 16px;
-  border: none;
-  background: #000;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-/* Audio Player Cards */
-.track-card {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 16px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-}
-.track-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--text-main);
-}
-audio {
-  width: 100%;
-  height: 32px;
-  opacity: 0.9;
-}
-
-/* iOS Button Styled */
-.ios-launch-link {
-  display: block;
-  text-align: center;
-  padding: 16px;
-  background: linear-gradient(135deg, #007AFF, #0055b3);
-  color: #fff !important;
-  text-decoration: none !important;
-  font-weight: 600;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4);
-  transition: transform 0.1s;
-  margin-bottom: 24px;
-}
-.ios-launch-link:active { transform: scale(0.98); }
-
-/* Settings Switch */
-.settings-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px;
-  font-size: 18px;
-}
-input[type=checkbox] {
-  transform: scale(1.5);
-  accent-color: var(--accent);
-}
-
-/* --- NAVIGATION --- */
-nav {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 500px;
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 6px;
-  
-  /* Glass Effect */
-  background: var(--nav-bg);
+.glass-box {
+  background: var(--glass-panel);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-top: 1px solid var(--glass-shine);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-  border-radius: 50px; /* Pill shape */
-  z-index: 1000;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px -1px rgba(0,0,0,0.1);
+}
+
+/* --- 4. MEDIA ELEMENTS --- */
+iframe, video {
+  width: 100%;
+  border-radius: 12px;
+  border: none;
+  background: #000;
+  display: block;
+}
+
+/* Audio Player Styling */
+.song-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 16px;
+}
+.song-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.song-title { font-weight: 600; margin-bottom: 8px; font-size: 15px; }
+audio { width: 100%; height: 36px; opacity: 0.8; }
+
+/* iOS Button */
+.ios-btn {
+  display: block;
+  text-align: center;
+  background: #007AFF;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+/* --- 5. LIQUID NAV BAR --- */
+nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 450px;
+  height: 70px;
+  
+  background: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 35px; /* Pill shape */
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 999;
+}
+
+body.light nav {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.1);
 }
 
 nav button {
-  background: none;
+  background: transparent;
   border: none;
   color: var(--text-mute);
-  font-size: 11px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  cursor: pointer;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
 }
 
-nav button span {
-  font-size: 22px;
-  display: block;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+nav svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  margin-bottom: 2px;
+  transition: transform 0.2s;
 }
 
+nav span {
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* THE LIQUID GLASS SELECTION EFFECT */
 nav button.active {
-  color: var(--accent);
-  background: rgba(255,255,255,0.1);
+  color: var(--text-main);
+  
+  /* The "Liquid" Look */
+  background: var(--active-glass-bg);
+  border: 1px solid var(--active-glass-border);
+  box-shadow: var(--active-shadow);
+  backdrop-filter: blur(10px);
+  
+  transform: translateY(-10px); /* Pops up slightly */
 }
 
-nav button.active span {
-  transform: translateY(-4px);
-  text-shadow: 0 0 15px var(--accent-glow);
+nav button.active svg {
+  fill: var(--accent);
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px var(--accent));
 }
 
-/* Hide scrollbar for clean look */
-::-webkit-scrollbar { width: 0px; background: transparent; }
+/* Settings Toggle */
+.toggle-row {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 8px;
+}
+input[type="checkbox"] {
+  width: 50px; height: 30px;
+  appearance: none;
+  background: #333;
+  border-radius: 30px;
+  position: relative;
+  outline: none;
+  transition: .3s;
+}
+input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 26px; height: 26px;
+  background: #fff;
+  border-radius: 50%;
+  transition: .3s;
+}
+input[type="checkbox"]:checked { background: var(--accent); }
+input[type="checkbox"]:checked::after { left: 22px; }
+
 </style>
 </head>
-
 <body>
 
-<div class="liquid-blob">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
-
 <section id="home" class="active">
-  <div class="news-card">
-    <strong style="display:block; margin-bottom:4px; color:var(--accent);">Alexandru News</strong>
-    Find out about Alexandru and why I'm committing to his legacy!
+  <div class="glass-box" style="border-left: 4px solid var(--accent);">
+    <strong style="color:var(--accent)">Alexandru News</strong><br>
+    <span style="font-size: 14px; opacity: 0.8;">Find out about Alexandru and why I'm committing to his legacy!</span>
   </div>
 
-  <div class="glass-panel" style="height: 80vh;">
-    <iframe
-      src="https://aqeelchy02.wixsite.com/a-rea"
-      style="height:100%; border-radius: 24px;">
-    </iframe>
+  <div class="glass-box" style="height: 75vh; padding: 0; overflow: hidden;">
+    <iframe src="https://aqeelchy02.wixsite.com/a-rea" style="height:100%;"></iframe>
   </div>
 </section>
 
 <section id="songs">
   <h1>Musical Story</h1>
-
-  <div class="glass-panel" style="padding: 20px;">
-    
-    <div class="track-card">
-      <div class="track-title">01 – a-REA (Original)</div>
+  
+  <div class="glass-box">
+    <div class="song-row">
+      <div class="song-title">01 – a-REA (Original)</div>
       <audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
     </div>
-
-    <div class="track-card">
-      <div class="track-title">02 – L-INE GRAPHS!</div>
+    <div class="song-row">
+      <div class="song-title">02 – L-INE GRAPHS!</div>
       <audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
     </div>
-
-    <div class="track-card">
-      <div class="track-title">03 – T-ABLES!!</div>
+    <div class="song-row">
+      <div class="song-title">03 – T-ABLES!!</div>
       <audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
     </div>
-
-    <div class="track-card">
-      <div class="track-title">04 – T-IMETABLES!!!</div>
+    <div class="song-row">
+      <div class="song-title">04 – T-IMETABLES!!!</div>
       <audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
     </div>
-
-    <div class="track-card">
-      <div class="track-title">05 – A-NGLES!!!!</div>
+    <div class="song-row">
+      <div class="song-title">05 – A-NGLES!!!!</div>
       <audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
     </div>
+  </div>
 
-    <div class="track-card" style="border-color: var(--accent);">
-      <div class="track-title" style="color:var(--accent)">Bonus – a-REA Revamp</div>
+  <div class="glass-box" style="border-color: var(--accent);">
+    <div class="song-row">
+      <div class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</div>
       <audio controls src="audio/aREAREVAMP.m4a"></audio>
     </div>
+  </div>
 
-    <div class="track-card" style="border-color: #ff0055;">
-      <div class="track-title" style="color:#ff0055">NEW – MASTER</div>
+  <div class="glass-box">
+    <div class="song-row">
+      <div class="song-title">NEW – MASTER</div>
       <audio controls src="Music/MASTER.m4a"></audio>
     </div>
-    
-    <div class="track-card">
-      <div class="track-title">FAN FAVOURITE- TINY</div>
-      <audio controls src="audio/Tiny.m4a"> </audio>
+  </div>
+  
+  <div class="glass-box">
+    <div class="song-row">
+      <div class="song-title">FAN FAVOURITE – TINY</div>
+      <audio controls src="audio/Tiny.m4a"></audio>
     </div>
-
   </div>
 </section>
 
 <section id="videos">
   <h1>Videos</h1>
-
-  <div class="glass-panel" style="padding: 20px;">
-    <p style="margin-top:0; font-weight:600; color:var(--text-mute);">aq.co direct</p>
-    <video controls
-      poster="icons/icon_512.png" 
-      src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&e=1&st=d0gbjsf8&raw=1">
-    </video>
+  <div class="glass-box">
+    <div class="song-title">aq.co direct</div>
+    <video controls src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&e=1&st=d0gbjsf8&raw=1"></video>
   </div>
 </section>
 
 <section id="games">
   <h1>Games</h1>
-
-  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="ios-launch-link">
-    🚀 Launch a-REA Hangout
+  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="ios-btn">
+    Launch a-REA Hangout
   </a>
 
-  <div class="glass-panel" style="margin-bottom: 24px;">
-    <div style="padding: 12px; border-bottom: 1px solid var(--glass-border); font-weight:bold;">MASTER</div>
-    <iframe src="file.html" style="height:400px; border-radius: 0 0 24px 24px;"></iframe>
+  <div class="glass-box" style="padding:0; overflow:hidden;">
+    <div style="padding:10px; background:rgba(255,255,255,0.05); font-weight:bold;">MASTER</div>
+    <iframe src="file.html" style="height:350px;"></iframe>
   </div>
-  
-  <div class="glass-panel">
-    <div style="padding: 12px; border-bottom: 1px solid var(--glass-border); font-weight:bold;">TINY THE GAME</div>
-    <iframe src="tiny.html" style="height:400px; border-radius: 0 0 24px 24px;"></iframe>
+
+  <div class="glass-box" style="padding:0; overflow:hidden;">
+    <div style="padding:10px; background:rgba(255,255,255,0.05); font-weight:bold;">TINY THE GAME</div>
+    <iframe src="tiny.html" style="height:350px;"></iframe>
   </div>
 </section>
 
 <section id="settings">
   <h1>Settings</h1>
-
-  <div class="glass-panel">
-    <label class="settings-item">
+  <div class="glass-box">
+    <div class="toggle-row">
       <span>Light Mode</span>
       <input type="checkbox" onchange="toggleTheme(this)">
-    </label>
+    </div>
   </div>
 </section>
 
 <nav>
   <button class="active" onclick="showTab('home', this)">
-    <span>🏠</span>Home
+    <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
+    <span>Home</span>
   </button>
+  
   <button onclick="showTab('songs', this)">
-    <span>🎵</span>Songs
+    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    <span>Songs</span>
   </button>
+  
   <button onclick="showTab('videos', this)">
-    <span>🎬</span>Videos
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <span>Videos</span>
   </button>
+  
   <button onclick="showTab('games', this)">
-    <span>🎮</span>Games
+    <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S19.67 9 20.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+    <span>Games</span>
   </button>
+  
   <button onclick="showTab('settings', this)">
-    <span>⚙️</span>Settings
+    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    <span>Settings</span>
   </button>
 </nav>
 
 <script>
 function showTab(id, btn) {
-  // Hide all sections
+  // Hide sections
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-  // Remove active state from nav
+  // Deactivate nav buttons
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   
-  // Activate target
+  // Activate selected
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
   
-  // Smooth scroll top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Smooth scroll
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function toggleTheme(box) {
