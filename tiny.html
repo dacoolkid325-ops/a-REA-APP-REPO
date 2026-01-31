@@ -3,229 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tiny Dash: Infinite</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Tiny Dash</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700&display=swap');
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Lexend Exa', sans-serif; color: white; user-select: none; touch-action: none; }
         canvas { display: block; }
 
-        /* iPhone/Iframe Fix Overlay */
-        #interaction-handler { position: absolute; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        /* The "Wake Up" screen for iOS */
+        #starter { position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border: 5px solid #0f0; }
         
-        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        .panel { background: rgba(0,0,0,0.9); padding: 30px; border-radius: 20px; border: 4px solid #0f0; text-align: center; pointer-events: auto; width: 80%; max-width: 350px; display: none; }
+        #ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+        .panel { background: rgba(0,0,0,0.9); padding: 30px; border-radius: 20px; border: 4px solid #0f0; text-align: center; pointer-events: auto; width: 260px; display: none; }
         
-        h1 { font-size: 28px; margin: 0 0 15px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
-        .btn { background: #0f0; color: #000; padding: 15px 30px; font-size: 20px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        h1 { font-size: 28px; margin: 0 0 10px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
+        .btn { background: #0f0; color: #000; padding: 12px 25px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
         
-        #jump-btn { position: absolute; bottom: 30px; right: 30px; width: 90px; height: 90px; background: rgba(0, 255, 0, 0.2); border: 3px solid #0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f0; font-size: 14px; pointer-events: auto; z-index: 50; }
-        #stats { position: absolute; top: 15px; left: 15px; font-size: 14px; color: #0f0; }
+        #jump-zone { position: absolute; bottom: 20px; right: 20px; width: 85px; height: 85px; background: rgba(0, 255, 0, 0.1); border: 2px solid #0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f0; font-size: 12px; z-index: 50; visibility: hidden; }
+        #score-board { position: absolute; top: 10px; left: 10px; font-size: 14px; color: #0f0; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="interaction-handler">
-        <h1>TINY DASH</h1>
-        <p>Tap to Start</p>
+    <div id="starter">
+        <h1 style="font-size: 40px;">TINY DASH</h1>
+        <p style="color: #0f0;">TAP TO START</p>
     </div>
 
-    <div id="stats">Score: 0</div>
+    <div id="score-board">PTS: 0</div>
 
-    <div id="ui-layer">
-        <div id="death-screen" class="panel">
-            <h1 style="color:#f00;">CRASHED</h1>
-            <div class="btn" onclick="resetGame()" style="background:#f00; color:#fff">RETRY</div>
+    <div id="ui">
+        <div id="death-panel" class="panel">
+            <h1 style="color:#f00;">FAILED</h1>
+            <div class="btn" onclick="retry()" style="background:#f00; color:#fff">RETRY</div>
         </div>
     </div>
 
-    <div id="jump-btn">JUMP</div>
+    <div id="jump-zone">JUMP</div>
 
     <canvas id="cvs"></canvas>
 
 <script>
 const canvas = document.getElementById('cvs');
 const ctx = canvas.getContext('2d');
-const stats = document.getElementById('stats');
-const deathScreen = document.getElementById('death-screen');
-const handler = document.getElementById('interaction-handler');
+const scoreText = document.getElementById('score-board');
+const deathPanel = document.getElementById('death-panel');
+const starter = document.getElementById('starter');
+const jumpZone = document.getElementById('jump-zone');
 
-// --- Assets ---
-const img = new Image();
-img.src = "https://www.dropbox.com/scl/fi/1u1gm1mwkh1mb2rchd33s/IMG_0963.webp?rlkey=rj3qf9ou8sf9dxynvehmy9628&st=4yldxbrf&raw=1";
+// --- Asset Setup ---
+const tinySprite = new Image();
+tinySprite.src = "https://www.dropbox.com/scl/fi/1u1gm1mwkh1mb2rchd33s/IMG_0963.webp?rlkey=rj3qf9ou8sf9dxynvehmy9628&st=4yldxbrf&raw=1";
 
-const menuMusic = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
-menuMusic.loop = true;
-const gameMusic = new Audio("https://www.dropbox.com/scl/fi/61itpersex7cmrfj8yqig/Tiny.m4a?rlkey=ph9a226cowhhfs7eq54y4twzj&st=d9zecvr7&raw=1");
-gameMusic.loop = true;
+const audioMenu = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
+audioMenu.loop = true;
+const audioGame = new Audio("https://www.dropbox.com/scl/fi/61itpersex7cmrfj8yqig/Tiny.m4a?rlkey=ph9a226cowhhfs7eq54y4twzj&st=d9zecvr7&raw=1");
+audioGame.loop = true;
 
-// --- Settings ---
-const TILE = 60;
-const SPEED = 7; // Easy Speed
-const GRAVITY = 0.7;
-const JUMP = -11;
+// Fix for overlapping: This function ensures only one plays
+function playMusic(track) {
+    audioMenu.pause();
+    audioGame.pause();
+    track.currentTime = 0;
+    track.play().catch(()=>{});
+}
+
+// --- Gameplay Constants ---
+const SPEED = 6.8; 
+const GRAVITY = 0.72;
+const JUMP_FORCE = -11.5;
+const SIZE = 55;
 
 // --- State ---
-let active = false;
-let dead = false;
-let score = 0;
-let camX = 0;
-let player = { x: 150, y: 0, vy: 0, angle: 0, w: 50, h: 50 };
-let obstacles = []; // {x, type} 1=Block, 2=Spike
+let isPlaying = false;
+let isDead = false;
+let points = 0;
+let worldX = 0;
+let player = { x: 140, y: 0, vy: 0, rot: 0 };
+let obstacles = [];
 let mathBg = [];
 
-// --- Infinite Generator ---
-function spawnObstacles() {
-    let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 600;
-    while (obstacles.length < 20) {
-        lastX += (TILE * (3 + Math.floor(Math.random() * 5))); // Spread out for Easy difficulty
-        let type = Math.random() > 0.5 ? 1 : 2; 
-        obstacles.push({ x: lastX, type: type });
+function createObstacles() {
+    let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 800;
+    while (obstacles.length < 15) {
+        lastX += 280 + Math.random() * 300; // Easy spacing
+        obstacles.push({ x: lastX, type: Math.random() > 0.6 ? 'block' : 'spike' });
     }
 }
 
 function init() {
-    score = 0;
-    camX = 0;
-    player.y = canvas.height - 150;
+    points = 0;
+    worldX = 0;
+    player.y = canvas.height - 155;
     player.vy = 0;
-    player.angle = 0;
+    player.rot = 0;
     obstacles = [];
-    spawnObstacles();
+    createObstacles();
     
     mathBg = [];
-    for(let i=0; i<30; i++) mathBg.push({ x: Math.random()*2000, y: Math.random()*canvas.height, t: ["π","x","√","∑"][Math.floor(Math.random()*4)] });
+    for(let i=0; i<25; i++) mathBg.push({ x: Math.random()*2000, y: Math.random()*canvas.height, txt: ["π","∑","√","x²"][Math.floor(Math.random()*4)] });
 }
 
-// --- Interaction (iPhone Fix) ---
-handler.addEventListener('click', () => {
-    handler.style.display = 'none';
-    active = true;
-    menuMusic.play().catch(()=>{});
+// --- Interaction (The iOS Trigger) ---
+starter.addEventListener('pointerdown', () => {
+    starter.style.display = 'none';
+    jumpZone.style.visibility = 'visible';
+    isPlaying = true;
     init();
-    gameMusic.play().catch(()=>{});
+    playMusic(audioGame); // Start game music directly after tap
     loop();
 });
 
-function resetGame() {
-    dead = false;
-    deathScreen.style.display = 'none';
+function retry() {
+    isDead = false;
+    deathPanel.style.display = 'none';
     init();
-    gameMusic.currentTime = 0;
-    gameMusic.play();
+    playMusic(audioGame);
 }
 
-let isJumping = false;
-const jumpAction = (e) => { if(!dead) isJumping = true; if(e) e.preventDefault(); };
-const jumpEnd = () => isJumping = false;
+let inputActive = false;
+const onIn = (e) => { if(!isDead) inputActive = true; if(e) e.preventDefault(); };
+const onOut = () => inputActive = false;
 
-document.getElementById('jump-btn').addEventListener('touchstart', jumpAction);
-document.getElementById('jump-btn').addEventListener('touchend', jumpEnd);
-document.getElementById('jump-btn').addEventListener('mousedown', jumpAction);
-window.addEventListener('mouseup', jumpEnd);
-window.addEventListener('keydown', (e) => { if(e.code === 'Space') isJumping = true; });
-window.addEventListener('keyup', (e) => { if(e.code === 'Space') isJumping = false; });
+jumpZone.addEventListener('pointerdown', onIn);
+window.addEventListener('pointerup', onOut);
+window.addEventListener('keydown', (e) => { if(e.code === 'Space') inputActive = true; });
+window.addEventListener('keyup', (e) => { if(e.code === 'Space') inputActive = false; });
 
 function update() {
-    if(!active || dead) return;
+    if(!isPlaying || isDead) return;
 
-    camX += SPEED;
-    score = Math.floor(camX / 10);
-    stats.innerText = "Score: " + score;
+    worldX += SPEED;
+    points = Math.floor(worldX / 12);
+    scoreText.innerText = "PTS: " + points;
 
-    let floor = canvas.height - 100;
+    let ground = canvas.height - 100;
     player.vy += GRAVITY;
     player.y += player.vy;
 
-    if(player.y > floor - player.h) {
-        player.y = floor - player.h;
+    if(player.y > ground - SIZE) {
+        player.y = ground - SIZE;
         player.vy = 0;
-        if(isJumping) player.vy = JUMP;
-        player.angle = Math.round(player.angle / (Math.PI/2)) * (Math.PI/2);
+        if(inputActive) player.vy = JUMP_FORCE;
+        player.rot = Math.round(player.rot / (Math.PI/2)) * (Math.PI/2);
     } else {
-        player.angle += 0.15;
+        player.rot += 0.16;
     }
 
-    // Collision & Cleanup
-    spawnObstacles();
+    createObstacles();
     for(let i = obstacles.length - 1; i >= 0; i--) {
         let o = obstacles[i];
-        let tx = o.x - camX + 150;
-        let ty = floor - TILE;
+        let screenX = o.x - worldX + 140;
+        let oY = ground - SIZE;
 
-        // Check Collision
-        if(player.x < tx + TILE - 10 && player.x + player.w > tx + 10 && player.y < ty + TILE && player.y + player.h > ty) {
-            if(o.type === 1 && player.vy > 0 && player.y + player.h < ty + 25) {
-                player.y = ty - player.h;
+        // Collision Logic
+        if(player.x < screenX + SIZE - 12 && player.x + SIZE > screenX + 12 && player.y < oY + SIZE && player.y + SIZE > oY) {
+            if(o.type === 'block' && player.vy > 0 && player.y + SIZE < oY + 25) {
+                player.y = oY - SIZE;
                 player.vy = 0;
-                if(isJumping) player.vy = JUMP;
+                if(inputActive) player.vy = JUMP_FORCE;
             } else {
-                endGame();
+                gameOver();
             }
         }
-
-        // Remove off-screen
-        if(tx < -100) obstacles.splice(i, 1);
+        if(screenX < -150) obstacles.splice(i, 1);
     }
 }
 
-function endGame() {
-    dead = true;
-    gameMusic.pause();
-    deathScreen.style.display = 'block';
+function gameOver() {
+    isDead = true;
+    playMusic(audioMenu); // Switch back to menu music on death
+    deathPanel.style.display = 'block';
 }
 
 function draw() {
     ctx.fillStyle = '#000800';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Math BG
+    // Math Background Decorations
     ctx.fillStyle = '#0f02';
-    ctx.font = '20px Courier';
+    ctx.font = '22px Courier';
     mathBg.forEach(m => {
-        let x = (m.x - camX * 0.2) % (canvas.width + 100);
-        ctx.fillText(m.t, x, m.y);
+        let x = (m.x - worldX * 0.2) % (canvas.width + 100);
+        ctx.fillText(m.txt, x, m.y);
     });
 
-    let floor = canvas.height - 100;
+    let ground = canvas.height - 100;
 
-    // Grid
+    // Drawing Grid lines
     ctx.strokeStyle = '#0f01';
-    for(let x = -(camX%100); x < canvas.width; x+=100) {
+    for(let x = -(worldX%100); x < canvas.width; x+=100) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
     }
 
     // Ground
-    ctx.fillStyle = '#000'; ctx.fillRect(0, floor, canvas.width, 100);
+    ctx.fillStyle = '#000'; ctx.fillRect(0, ground, canvas.width, 100);
     ctx.strokeStyle = '#0f0'; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(0, floor); ctx.lineTo(canvas.width, floor); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, ground); ctx.lineTo(canvas.width, ground); ctx.stroke();
 
     // Obstacles
     obstacles.forEach(o => {
-        let tx = o.x - camX + 150;
-        if(o.type === 1) {
+        let sx = o.x - worldX + 140;
+        if(o.type === 'block') {
             ctx.fillStyle = '#000'; ctx.strokeStyle = '#0f0';
-            ctx.fillRect(tx, floor - TILE, TILE, TILE);
-            ctx.strokeRect(tx, floor - TILE, TILE, TILE);
+            ctx.fillRect(sx, ground - SIZE, SIZE, SIZE);
+            ctx.strokeRect(sx, ground - SIZE, SIZE, SIZE);
         } else {
-            ctx.fillStyle = '#f00'; ctx.beginPath();
-            ctx.moveTo(tx, floor); ctx.lineTo(tx + TILE/2, floor - TILE); ctx.lineTo(tx + TILE, floor);
+            ctx.fillStyle = '#f22'; ctx.beginPath();
+            ctx.moveTo(sx, ground); ctx.lineTo(sx + SIZE/2, ground - SIZE); ctx.lineTo(sx + SIZE, ground);
             ctx.fill();
         }
     });
 
     // Player
     ctx.save();
-    ctx.translate(player.x + player.w/2, player.y + player.h/2);
-    ctx.rotate(player.angle);
+    ctx.translate(player.x + SIZE/2, player.y + SIZE/2);
+    ctx.rotate(player.rot);
     ctx.shadowBlur = 15; ctx.shadowColor = '#0f0';
-    ctx.drawImage(img, -player.w/2, -player.h/2, player.w, player.h);
+    ctx.drawImage(tinySprite, -SIZE/2, -SIZE/2, SIZE, SIZE);
     ctx.restore();
 }
 
 function loop() {
     update();
     draw();
-    if(active) requestAnimationFrame(loop);
+    if(isPlaying) requestAnimationFrame(loop);
 }
 
 function resize() {
