@@ -72,7 +72,7 @@ function playMusic(track) {
 // --- Gameplay Constants ---
 const SPEED = 6.8; 
 const GRAVITY = 0.72;
-const JUMP_FORCE = -11.5;
+const JUMP_FORCE = 12.5;
 const SIZE = 55;
 
 // --- State ---
@@ -136,7 +136,7 @@ function update() {
 
     worldX += SPEED;
     points = Math.floor(worldX / 12);
-    scoreText.innerText = "PTS: " + points;
+    scoreText.innerText = "MATH POINTS: " + points;
 
     let ground = canvas.height - 100;
     player.vy += GRAVITY;
