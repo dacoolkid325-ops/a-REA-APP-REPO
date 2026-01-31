@@ -2,41 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Tiny Dash</title>
+    <title>Tiny Dash: Infinite</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700&display=swap');
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Lexend Exa', sans-serif; color: white; user-select: none; touch-action: none; }
-        canvas { display: block; }
+        
+        body { 
+            margin: 0; 
+            background: #000; 
+            overflow: hidden; 
+            font-family: 'Lexend Exa', sans-serif; 
+            color: white; 
+            user-select: none; 
+            touch-action: none;
+            -webkit-touch-callout: none;
+        }
 
-        /* The "Wake Up" screen for iOS */
-        #starter { position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border: 5px solid #0f0; }
-        
-        #ui { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-        .panel { background: rgba(0,0,0,0.9); padding: 30px; border-radius: 20px; border: 4px solid #0f0; text-align: center; pointer-events: auto; width: 260px; display: none; }
-        
-        h1 { font-size: 28px; margin: 0 0 10px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
-        .btn { background: #0f0; color: #000; padding: 12px 25px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        
-        #jump-zone { position: absolute; bottom: 20px; right: 20px; width: 85px; height: 85px; background: rgba(0, 255, 0, 0.1); border: 2px solid #0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f0; font-size: 12px; z-index: 50; visibility: hidden; }
-        #score-board { position: absolute; top: 10px; left: 10px; font-size: 14px; color: #0f0; font-weight: bold; }
+        /* Prevent Black Screen Flicker on iOS */
+        canvas { 
+            display: block; 
+            transform: translateZ(0); 
+            -webkit-transform: translateZ(0);
+        }
+
+        /* The Wake-Up Overlay (Critical for iOS Audio/Iframe) */
+        #starter { 
+            position: absolute; 
+            inset: 0; 
+            background: #000; 
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+            border: 2px solid #0f0;
+        }
+
+        #ui-layer { 
+            position: absolute; 
+            inset: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            pointer-events: none; 
+            z-index: 500;
+        }
+
+        .panel { 
+            background: rgba(0,0,0,0.9); 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 4px solid #f00; 
+            text-align: center; 
+            pointer-events: auto; 
+            width: 220px; 
+            display: none; 
+        }
+
+        h1 { font-size: 24px; margin: 0 0 10px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
+        .btn { background: #f00; color: #fff; padding: 12px 24px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+
+        /* The Robust Jump Button */
+        #jump-zone { 
+            position: absolute; 
+            bottom: 30px; 
+            right: 30px; 
+            width: 90px; 
+            height: 90px; 
+            background: rgba(0, 255, 0, 0.15); 
+            border: 3px solid #0f0; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #0f0; 
+            font-size: 14px; 
+            font-weight: bold;
+            z-index: 999; 
+            pointer-events: auto;
+            visibility: hidden;
+            touch-action: none; /* Prevents iOS from scrolling the page instead of jumping */
+        }
+
+        #score-display { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            font-size: 16px; 
+            color: #0f0; 
+            z-index: 800;
+        }
     </style>
 </head>
 <body>
 
     <div id="starter">
-        <h1 style="font-size: 40px;">TINY DASH</h1>
-        <p style="color: #0f0;">TAP TO START</p>
+        <h1>TINY DASH</h1>
+        <p style="color:#0f0">TAP TO PLAY</p>
     </div>
 
-    <div id="score-board">PTS: 0</div>
+    <div id="score-display">0000</div>
 
-    <div id="ui">
+    <div id="ui-layer">
         <div id="death-panel" class="panel">
-            <h1 style="color:#f00;">FAILED</h1>
-            <div class="btn" onclick="retry()" style="background:#f00; color:#fff">RETRY</div>
+            <h1 style="color:#f00">CRASHED</h1>
+            <div class="btn" onclick="retry()">RETRY</div>
         </div>
     </div>
 
@@ -47,188 +121,195 @@
 <script>
 const canvas = document.getElementById('cvs');
 const ctx = canvas.getContext('2d');
-const scoreText = document.getElementById('score-board');
+const scoreDisplay = document.getElementById('score-display');
 const deathPanel = document.getElementById('death-panel');
 const starter = document.getElementById('starter');
 const jumpZone = document.getElementById('jump-zone');
 
-// --- Asset Setup ---
-const tinySprite = new Image();
-tinySprite.src = "https://www.dropbox.com/scl/fi/1u1gm1mwkh1mb2rchd33s/IMG_0963.webp?rlkey=rj3qf9ou8sf9dxynvehmy9628&st=4yldxbrf&raw=1";
+// --- Assets ---
+const img = new Image();
+img.src = "https://www.dropbox.com/scl/fi/1u1gm1mwkh1mb2rchd33s/IMG_0963.webp?rlkey=rj3qf9ou8sf9dxynvehmy9628&st=4yldxbrf&raw=1";
 
 const audioMenu = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
 audioMenu.loop = true;
 const audioGame = new Audio("https://www.dropbox.com/scl/fi/61itpersex7cmrfj8yqig/Tiny.m4a?rlkey=ph9a226cowhhfs7eq54y4twzj&st=d9zecvr7&raw=1");
 audioGame.loop = true;
 
-// Fix for overlapping: This function ensures only one plays
-function playMusic(track) {
+function switchMusic(toGame) {
     audioMenu.pause();
     audioGame.pause();
-    track.currentTime = 0;
-    track.play().catch(()=>{});
+    if(toGame) {
+        audioGame.currentTime = 0;
+        audioGame.play().catch(()=>{});
+    } else {
+        audioMenu.currentTime = 0;
+        audioMenu.play().catch(()=>{});
+    }
 }
 
-// --- Gameplay Constants ---
-const SPEED = 6.8; 
-const GRAVITY = 0.72;
-const JUMP_FORCE = 12.5;
-const SIZE = 55;
+// --- Logic ---
+const TILE = 60;
+const SPEED = 7.0; // Easy Difficulty
+const GRAVITY = 0.75;
+const JUMP = -11.5;
 
-// --- State ---
-let isPlaying = false;
-let isDead = false;
-let points = 0;
-let worldX = 0;
-let player = { x: 140, y: 0, vy: 0, rot: 0 };
+let active = false;
+let dead = false;
+let camX = 0;
+let score = 0;
+let player = { x: 150, y: 0, vy: 0, rot: 0, w: 55, h: 55 };
 let obstacles = [];
 let mathBg = [];
 
-function createObstacles() {
+function generate() {
     let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 800;
-    while (obstacles.length < 15) {
-        lastX += 280 + Math.random() * 300; // Easy spacing
+    while(obstacles.length < 10) {
+        lastX += 300 + Math.random() * 300; // Large gaps for easy mode
         obstacles.push({ x: lastX, type: Math.random() > 0.6 ? 'block' : 'spike' });
     }
 }
 
 function init() {
-    points = 0;
-    worldX = 0;
+    score = 0;
+    camX = 0;
     player.y = canvas.height - 155;
     player.vy = 0;
     player.rot = 0;
     obstacles = [];
-    createObstacles();
+    generate();
     
     mathBg = [];
-    for(let i=0; i<25; i++) mathBg.push({ x: Math.random()*2000, y: Math.random()*canvas.height, txt: ["π","∑","√","x²"][Math.floor(Math.random()*4)] });
+    for(let i=0; i<20; i++) mathBg.push({ x: Math.random()*2000, y: Math.random()*canvas.height, t: ["π","∑","√","x²"][Math.floor(Math.random()*4)] });
 }
 
-// --- Interaction (The iOS Trigger) ---
-starter.addEventListener('pointerdown', () => {
+// --- iPhone Iframe Interaction Fix ---
+starter.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
     starter.style.display = 'none';
     jumpZone.style.visibility = 'visible';
-    isPlaying = true;
+    active = true;
     init();
-    playMusic(audioGame); // Start game music directly after tap
+    switchMusic(true);
     loop();
 });
 
 function retry() {
-    isDead = false;
+    dead = false;
     deathPanel.style.display = 'none';
     init();
-    playMusic(audioGame);
+    switchMusic(true);
 }
 
-let inputActive = false;
-const onIn = (e) => { if(!isDead) inputActive = true; if(e) e.preventDefault(); };
-const onOut = () => inputActive = false;
+// --- Controls ---
+let pressing = false;
+const jumpStart = (e) => { 
+    if(!dead) pressing = true; 
+    if(e.cancelable) e.preventDefault(); 
+};
+const jumpEnd = () => pressing = false;
 
-jumpZone.addEventListener('pointerdown', onIn);
-window.addEventListener('pointerup', onOut);
-window.addEventListener('keydown', (e) => { if(e.code === 'Space') inputActive = true; });
-window.addEventListener('keyup', (e) => { if(e.code === 'Space') inputActive = false; });
+// We use pointerdown as it is the most modern and works across mouse/touch/iframes
+jumpZone.addEventListener('pointerdown', jumpStart);
+window.addEventListener('pointerup', jumpEnd);
+window.addEventListener('keydown', (e) => { if(e.code === 'Space') pressing = true; });
+window.addEventListener('keyup', (e) => { if(e.code === 'Space') pressing = false; });
 
 function update() {
-    if(!isPlaying || isDead) return;
+    if(!active || dead) return;
 
-    worldX += SPEED;
-    points = Math.floor(worldX / 12);
-    scoreText.innerText = "MATH POINTS: " + points;
+    camX += SPEED;
+    score = Math.floor(camX / 10);
+    scoreDisplay.innerText = score.toString().padStart(4, '0');
 
-    let ground = canvas.height - 100;
+    let floorY = canvas.height - 100;
     player.vy += GRAVITY;
     player.y += player.vy;
 
-    if(player.y > ground - SIZE) {
-        player.y = ground - SIZE;
+    if(player.y > floorY - player.w) {
+        player.y = floorY - player.w;
         player.vy = 0;
-        if(inputActive) player.vy = JUMP_FORCE;
+        if(pressing) player.vy = JUMP;
         player.rot = Math.round(player.rot / (Math.PI/2)) * (Math.PI/2);
     } else {
         player.rot += 0.16;
     }
 
-    createObstacles();
+    generate();
     for(let i = obstacles.length - 1; i >= 0; i--) {
         let o = obstacles[i];
-        let screenX = o.x - worldX + 140;
-        let oY = ground - SIZE;
+        let tx = o.x - camX + 150;
+        let ty = floorY - TILE;
 
-        // Collision Logic
-        if(player.x < screenX + SIZE - 12 && player.x + SIZE > screenX + 12 && player.y < oY + SIZE && player.y + SIZE > oY) {
-            if(o.type === 'block' && player.vy > 0 && player.y + SIZE < oY + 25) {
-                player.y = oY - SIZE;
+        // Collision Check (Simplified for performance)
+        if(player.x < tx + TILE - 10 && player.x + player.w > tx + 10 && player.y < ty + TILE && player.y + player.h > ty) {
+            // Check if landing on top of block
+            if(o.type === 'block' && player.vy > 0 && player.y + player.h < ty + 25) {
+                player.y = ty - player.h;
                 player.vy = 0;
-                if(inputActive) player.vy = JUMP_FORCE;
+                if(pressing) player.vy = JUMP;
             } else {
                 gameOver();
             }
         }
-        if(screenX < -150) obstacles.splice(i, 1);
+        if(tx < -200) obstacles.splice(i, 1);
     }
 }
 
 function gameOver() {
-    isDead = true;
-    playMusic(audioMenu); // Switch back to menu music on death
+    dead = true;
+    switchMusic(false);
     deathPanel.style.display = 'block';
 }
 
 function draw() {
-    ctx.fillStyle = '#000800';
+    ctx.fillStyle = '#000800'; // Dark Math Green
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Math Background Decorations
+    // Background Math
     ctx.fillStyle = '#0f02';
-    ctx.font = '22px Courier';
+    ctx.font = '20px Courier';
     mathBg.forEach(m => {
-        let x = (m.x - worldX * 0.2) % (canvas.width + 100);
-        ctx.fillText(m.txt, x, m.y);
+        let x = (m.x - camX * 0.2) % (canvas.width + 100);
+        ctx.fillText(m.t, x, m.y);
     });
 
-    let ground = canvas.height - 100;
+    let floorY = canvas.height - 100;
 
-    // Drawing Grid lines
-    ctx.strokeStyle = '#0f01';
-    for(let x = -(worldX%100); x < canvas.width; x+=100) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-    }
-
-    // Ground
-    ctx.fillStyle = '#000'; ctx.fillRect(0, ground, canvas.width, 100);
-    ctx.strokeStyle = '#0f0'; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(0, ground); ctx.lineTo(canvas.width, ground); ctx.stroke();
+    // Floor Line
+    ctx.strokeStyle = '#0f0';
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(canvas.width, floorY); ctx.stroke();
 
     // Obstacles
     obstacles.forEach(o => {
-        let sx = o.x - worldX + 140;
+        let tx = o.x - camX + 150;
         if(o.type === 'block') {
             ctx.fillStyle = '#000'; ctx.strokeStyle = '#0f0';
-            ctx.fillRect(sx, ground - SIZE, SIZE, SIZE);
-            ctx.strokeRect(sx, ground - SIZE, SIZE, SIZE);
+            ctx.fillRect(tx, floorY - TILE, TILE, TILE);
+            ctx.strokeRect(tx, floorY - TILE, TILE, TILE);
         } else {
-            ctx.fillStyle = '#f22'; ctx.beginPath();
-            ctx.moveTo(sx, ground); ctx.lineTo(sx + SIZE/2, ground - SIZE); ctx.lineTo(sx + SIZE, ground);
+            ctx.fillStyle = '#f33'; // Red Spikes
+            ctx.beginPath();
+            ctx.moveTo(tx, floorY);
+            ctx.lineTo(tx + TILE/2, floorY - TILE);
+            ctx.lineTo(tx + TILE, floorY);
             ctx.fill();
         }
     });
 
-    // Player
+    // Player (Tiny)
     ctx.save();
-    ctx.translate(player.x + SIZE/2, player.y + SIZE/2);
+    ctx.translate(player.x + player.w/2, player.y + player.h/2);
     ctx.rotate(player.rot);
     ctx.shadowBlur = 15; ctx.shadowColor = '#0f0';
-    ctx.drawImage(tinySprite, -SIZE/2, -SIZE/2, SIZE, SIZE);
+    ctx.drawImage(img, -player.w/2, -player.h/2, player.w, player.h);
     ctx.restore();
 }
 
 function loop() {
     update();
     draw();
-    if(isPlaying) requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
 }
 
 function resize() {
