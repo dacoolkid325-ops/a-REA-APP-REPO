@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>a-REA</title>
 
 <style>
@@ -15,25 +15,12 @@
   --liquid-glass-bg: rgba(255, 255, 255, 0.12);
   --liquid-glass-border: rgba(255, 255, 255, 0.2);
   --liquid-glass-shine: rgba(255, 255, 255, 0.4);
+  --ui-zoom: 0.95;
+  /* Pill Colors */
+  --nav-bg: rgba(20, 20, 20, 0.6);
+  --pill-bg: rgba(255, 255, 255, 0.15);
+  --pill-border: rgba(255, 255, 255, 0.2);
 }
-
-body.light {
-  --bg-dark: #f2f2f7;
-  --text-main: #000000;
-  --text-mute: rgba(0, 0, 0, 0.5);
-  --liquid-glass-bg: rgba(0, 0, 0, 0.05);
-  --liquid-glass-border: rgba(0, 0, 0, 0.1);
-  --liquid-glass-shine: rgba(255, 255, 255, 0.8);
-}
-
-body.no-bg #glassCanvas { display: none !important; }
-
-/* iPad / Wide Mode logic */
-body.ipad-mode section {
-  max-width: 95% !important;
-}
-
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
   margin: 0;
@@ -42,9 +29,32 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
+  transform: scale(var(--ui-zoom));
+  transform-origin: top center;
+  width: calc(100% / var(--ui-zoom));
 }
 
-/* --- LIQUID GLASS BACKGROUND CANVAS --- */
+body.light {
+  --bg-dark: #f2f2f7;
+  --text-main: #000000;
+  --text-mute: rgba(0, 0, 0, 0.5);
+  --liquid-glass-bg: rgba(255, 255, 255, 0.7);
+  --liquid-glass-border: rgba(0, 0, 0, 0.05);
+  --liquid-glass-shine: rgba(255, 255, 255, 1);
+  --nav-bg: rgba(240, 240, 245, 0.8);
+  --pill-bg: #ffffff;
+  --pill-border: rgba(0, 0, 0, 0.1);
+}
+
+body.no-bg #glassCanvas { display: none !important; }
+
+/* iPad/PC Mode Layout */
+body.ipad-mode section {
+  max-width: 98% !important;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
 #glassCanvas {
   position: fixed;
   top: 0;
@@ -56,14 +66,13 @@ body {
   opacity: 0.8;
 }
 
-/* --- CONTENT SECTIONS --- */
 section {
   display: none;
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
   padding-bottom: 140px;
-  animation: pageEnter 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+  animation: pageEnter 0.4s cubic-bezier(0.2, 1, 0.3, 1);
 }
 section.active { display: block; }
 
@@ -83,14 +92,34 @@ section.active { display: block; }
   margin-bottom: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   cursor: default;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, max-width 0.3s ease;
 }
 
-.glass-card.clickable:active {
-  transform: scale(0.98);
+.glass-card.clickable:active { transform: scale(0.98); }
+
+/* --- WIX SCALE CONTAINER --- */
+.iframe-wrapper {
+  height: 80vh; 
+  padding: 0; 
+  overflow: hidden; 
+  border-radius: 24px;
+  position: relative;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-/* --- CLASSIC PILL NAV --- */
+.wix-iframe {
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), width 0.3s ease;
+}
+
+/* --- NAV BAR --- */
 .nav-container {
   position: fixed;
   bottom: 30px;
@@ -101,7 +130,7 @@ section.active { display: block; }
   align-items: center;
   padding: 8px;
   z-index: 1000;
-  background: var(--liquid-glass-bg);
+  background: var(--nav-bg);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border-radius: 35px;
@@ -128,11 +157,10 @@ section.active { display: block; }
   position: absolute;
   height: 56px;
   width: 56px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--pill-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-top: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid var(--pill-border);
   border-radius: 28px;
   z-index: 1;
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
@@ -142,39 +170,11 @@ section.active { display: block; }
 .nav-item.active { color: var(--text-main); }
 svg { width: 28px; height: 28px; fill: currentColor; }
 
-/* --- MODAL POPUP --- */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  z-index: 2000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.modal-overlay.active { display: flex; opacity: 1; }
-
-.modal-content {
-  background: var(--liquid-glass-bg);
-  border: 1px solid var(--liquid-glass-border);
-  backdrop-filter: blur(40px);
-  padding: 30px;
-  border-radius: 30px;
-  text-align: center;
-  max-width: 300px;
-  width: 80%;
-}
-
 /* --- UI ELEMENTS --- */
 .song-title { font-weight: 600; margin-bottom: 8px; font-size: 15px; display: block;}
-audio { width: 100%; height: 38px; border-radius: 20px; margin-bottom: 16px; opacity: 0.9; }
-iframe, video { width: 100%; border-radius: 20px; border: none; }
+audio { width: 100%; height: 38px; border-radius: 20px; margin-bottom: 16px; }
+video { width: 100%; border-radius: 20px; border: none; background: #000;}
+
 .btn-ios {
   display: block; width: 100%; padding: 18px; background: var(--accent);
   color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
@@ -186,21 +186,26 @@ iframe, video { width: 100%; border-radius: 20px; border: none; }
   padding: 16px 0; border-bottom: 1px solid var(--liquid-glass-border);
 }
 .toggle-row:last-child { border-bottom: none; }
+
+input[type="range"] {
+  width: 140px;
+  accent-color: var(--accent);
+}
 </style>
 </head>
-<body>
+<body class="light">
 
 <canvas id="glassCanvas"></canvas>
 
 <!-- HOME -->
 <section id="home" class="active">
-  <div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="showPopup()">
+  <div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="openAlexModal()">
     <strong style="color:var(--accent)">Alexandru News</strong><br>
     <span style="font-size: 14px; opacity: 0.8;">Find out about Alexandru and why I'm committing to his legacy!</span>
   </div>
 
-  <div class="glass-card" style="height: 70vh; padding: 0; overflow: hidden;">
-    <iframe src="https://aqeelchy02.wixsite.com/a-rea" style="height:100%;"></iframe>
+  <div class="glass-card iframe-wrapper" id="wixWrapper">
+    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea"></iframe>
   </div>
 </section>
 
@@ -210,26 +215,19 @@ iframe, video { width: 100%; border-radius: 20px; border: none; }
   <div class="glass-card">
     <span class="song-title">01 – a-REA (Original)</span>
     <audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
-    
     <span class="song-title">02 – L-INE GRAPHS!</span>
     <audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
-    
     <span class="song-title">03 – T-ABLES!!</span>
     <audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
-    
-    <span class="song-title">04 – T-IMETABLES!!!</span>
-    <audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
-    
+    <span class="song-title">04 – T-IMETABLES!!</span>
+    <audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!.mp3"></audio>
     <span class="song-title">05 – A-NGLES!!!!</span>
     <audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
-
     <div style="margin-top:20px; padding-top:20px; border-top: 1px solid var(--liquid-glass-border);">
       <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
       <audio controls src="audio/aREAREVAMP.m4a"></audio>
-      
       <span class="song-title">NEW – MASTER</span>
       <audio controls src="Music/MASTER.m4a"></audio>
-
       <span class="song-title">FAN FAVOURITE – TINY</span>
       <audio controls src="audio/Tiny.m4a"></audio>
     </div>
@@ -240,24 +238,24 @@ iframe, video { width: 100%; border-radius: 20px; border: none; }
 <section id="videos">
   <h1>Videos</h1>
   <div class="glass-card">
-    <span class="song-title">aq.co direct</span>
-    <video controls src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&e=1&st=d0gbjsf8&raw=1"></video>
+    <span class="song-title">aq.co direct - a-REA 2.0</span>
+    <video controls src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&raw=1"></video>
   </div>
 </section>
 
 <!-- GAMES -->
 <section id="games">
   <h1>Games</h1>
-  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios">Launch a-REA Hangout</a>
+  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios">LAUNCH a-REA HANGOUT</a>
   
   <div class="glass-card" style="padding:0; overflow:hidden; height: 400px;">
     <div style="padding:10px; background:rgba(255,255,255,0.05); font-weight:bold;">MASTER</div>
-    <iframe src="file.html" style="height:calc(100% - 40px);"></iframe>
+    <iframe src="file.html" style="height:calc(100% - 40px); width:100%; border:none;"></iframe>
   </div>
 
   <div class="glass-card" style="padding:0; overflow:hidden; height: 400px;">
     <div style="padding:10px; background:rgba(255,255,255,0.05); font-weight:bold;">TINY THE GAME</div>
-    <iframe src="tiny.html" style="height:calc(100% - 40px);"></iframe>
+    <iframe src="tiny.html" style="height:calc(100% - 40px); width:100%; border:none;"></iframe>
   </div>
 </section>
 
@@ -267,15 +265,26 @@ iframe, video { width: 100%; border-radius: 20px; border: none; }
   <div class="glass-card">
     <div class="toggle-row">
       <span style="font-size: 17px; font-weight:500;">Light Mode</span>
-      <input type="checkbox" onchange="document.body.classList.toggle('light')">
+      <input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode', this.checked)">
     </div>
     <div class="toggle-row">
-      <span style="font-size: 17px; font-weight:500;">iPad Mode (Wide Sections)</span>
-      <input type="checkbox" onchange="document.body.classList.toggle('ipad-mode')">
+      <span style="font-size: 17px; font-weight:500;">iPad/PC Mode (Wide)</span>
+      <input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode', this.checked)">
     </div>
     <div class="toggle-row">
-      <span style="font-size: 17px; font-weight:500;">Glass Only (Remove BG)</span>
-      <input type="checkbox" onchange="document.body.classList.toggle('no-bg')">
+      <span style="font-size: 17px; font-weight:500;">Remove Background</span>
+      <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
+    </div>
+    <div class="toggle-row">
+      <div style="display:flex; flex-direction:column;">
+        <span style="font-size: 17px; font-weight:500;">Wix Site Width</span>
+        <small style="opacity:0.6" id="widthLabel">Context View</small>
+      </div>
+      <input type="range" id="wixWidthSlider" min="320" max="2560" step="20" value="375" oninput="updateSetting('wixWidth', this.value)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Page Zoom</span>
+      <input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale', this.value)">
     </div>
   </div>
 </section>
@@ -283,40 +292,37 @@ iframe, video { width: 100%; border-radius: 20px; border: none; }
 <!-- NAV BAR -->
 <div class="nav-container">
   <div id="selectionPill" class="nav-selection-pill"></div>
-  
-  <button class="nav-item active" onclick="showTab('home', this, 0)">
-    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-  </button>
-  <button class="nav-item" onclick="showTab('songs', this, 1)">
-    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-  </button>
-  <button class="nav-item" onclick="showTab('videos', this, 2)">
-    <svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-  </button>
-  <button class="nav-item" onclick="showTab('games', this, 3)">
-    <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S19.67 9 20.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-  </button>
-  <button class="nav-item" onclick="showTab('settings', this, 4)">
-    <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-  </button>
+  <button class="nav-item active" onclick="showTab('home', this, 0)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
+  <button class="nav-item" onclick="showTab('songs', this, 1)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></button>
+  <button class="nav-item" onclick="showTab('videos', this, 2)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></button>
+  <button class="nav-item" onclick="showTab('games', this, 3)"><svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S19.67 9 20.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></button>
+  <button class="nav-item" onclick="showTab('settings', this, 4)"><svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></button>
 </div>
 
-<!-- POPUP -->
-<div id="comingSoonModal" class="modal-overlay" onclick="hidePopup()">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <h2 style="margin-top:0;">Coming Soon</h2>
-    <p style="opacity:0.8;">Stay tuned for more updates on Alexandru News.</p>
-    <button class="btn-ios" style="margin-bottom:0; padding:12px;" onclick="hidePopup()">OK</button>
+<!-- ALERT DIALOG -->
+<div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; z-index:9999;">
+  <div class="glass-card" style="max-width:300px; text-align:center;">
+    <h2 id="alertTitle" style="color:var(--accent); margin-top:0;"></h2>
+    <p id="alertMsg"></p>
+    <button class="btn-ios" style="margin-bottom:0; padding:12px;" onclick="closeAlert()">Close</button>
   </div>
 </div>
 
 <script>
-// --- CANVAS LIQUID GLASS ENGINE ---
 const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
 
-function init() {
+// App State (Will be synced with LocalStorage)
+let appSettings = {
+  lightMode: true,
+  ipadMode: false,
+  noBg: false,
+  wixWidth: 375,
+  uiScale: 0.95
+};
+
+function initCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   points = [];
@@ -334,13 +340,12 @@ function init() {
 }
 
 function loop() {
-  if (!document.body.classList.contains('no-bg')) {
+  if (!appSettings.noBg) {
     ctx.clearRect(0,0,canvas.width, canvas.height);
     points.forEach(p => {
       p.x += p.vx; p.y += p.vy;
       if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
       if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
-      
       let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
       g.addColorStop(0, p.color);
       g.addColorStop(1, 'transparent');
@@ -353,42 +358,102 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-window.addEventListener('resize', init);
-init();
-loop();
+// Logic to Save and Apply Settings
+function updateSetting(key, val) {
+  appSettings[key] = val;
+  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+  applySettings();
+}
 
-// --- NAVIGATION LOGIC ---
+function applySettings() {
+  // 1. Theme
+  document.body.classList.toggle('light', appSettings.lightMode);
+  document.getElementById('lightToggle').checked = appSettings.lightMode;
+
+  // 2. Wide Mode
+  document.body.classList.toggle('ipad-mode', appSettings.ipadMode);
+  document.getElementById('ipadToggle').checked = appSettings.ipadMode;
+
+  // 3. Background
+  document.body.classList.toggle('no-bg', appSettings.noBg);
+  document.getElementById('noBgToggle').checked = appSettings.noBg;
+
+  // 4. UI Zoom
+  document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
+  document.getElementById('uiScaleSlider').value = appSettings.uiScale;
+
+  // 5. Wix Scaling Logic
+  const frame = document.getElementById('wixFrame');
+  const wrapper = document.getElementById('wixWrapper');
+  const label = document.getElementById('widthLabel');
+  
+  if (frame && wrapper) {
+    const containerWidth = wrapper.offsetWidth;
+    const targetWidth = parseInt(appSettings.wixWidth);
+    
+    // Scale factor to fit chosen width into actual container
+    const scaleFactor = containerWidth / targetWidth;
+    
+    frame.style.width = targetWidth + "px";
+    // We adjust the height based on scale factor to prevent vertical squishing
+    frame.style.height = (100 / scaleFactor) + "%"; 
+    frame.style.transform = `scale(${scaleFactor})`;
+    
+    label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
+  }
+  
+  document.getElementById('wixWidthSlider').value = appSettings.wixWidth;
+}
+
+// Navigation
 function showTab(id, btn, index) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  
   const pill = document.getElementById('selectionPill');
-  const offset = index * 64 + 8; // Adjusted for padding
-  pill.style.transform = `translateX(${offset}px)`;
-  
+  pill.style.transform = `translateX(${index * 64 + 8}px)`;
   window.scrollTo({top: 0, behavior: 'smooth'});
+  if (id === 'home') setTimeout(applySettings, 50);
 }
 
-// --- POPUP LOGIC ---
-function showPopup() {
-  const modal = document.getElementById('comingSoonModal');
-  modal.style.display = 'flex';
-  setTimeout(() => modal.classList.add('active'), 10);
-}
+// Initialization
+window.addEventListener('resize', () => {
+  initCanvas();
+  applySettings();
+});
 
-function hidePopup() {
-  const modal = document.getElementById('comingSoonModal');
-  modal.classList.remove('active');
-  setTimeout(() => modal.style.display = 'none', 300);
+function loadStoredSettings() {
+  const saved = localStorage.getItem('aREASettings');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      appSettings = { ...appSettings, ...parsed };
+    } catch(e) { console.error("Error loading settings", e); }
+  }
 }
 
 window.onload = () => {
+  loadStoredSettings();
+  initCanvas();
+  loop();
+  applySettings();
+  
+  // Align pill initially
+  const activeBtn = document.querySelector('.nav-item.active');
   const pill = document.getElementById('selectionPill');
   pill.style.transform = `translateX(8px)`;
 };
+
+function openAlexModal() {
+  document.getElementById('alertTitle').innerText = "Coming Soon";
+  document.getElementById('alertMsg').innerText = "Alexandru News is currently in development. Check back later for updates on his legacy!";
+  document.getElementById('customAlert').style.display = 'flex';
+}
+
+function closeAlert() {
+  document.getElementById('customAlert').style.display = 'none';
+}
 </script>
 
 </body>
