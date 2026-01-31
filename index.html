@@ -270,11 +270,12 @@ input[type="range"] {
 </section>
 
 <style>
-/* Optimized Responsive Grid for Games */
+/* --- Fixes the "Pill" collapse and small iframe issue --- */
 .games-grid {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 body.ipad-mode .games-grid {
@@ -286,9 +287,10 @@ body.ipad-mode .games-grid {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 500px; /* Adjusted for mobile playability */
-  flex: 1;
-  position: relative;
+  /* Crucial: Ensure height is set so it doesn't collapse */
+  height: 500px; 
+  width: 100%;
+  flex: 1 0 auto; 
 }
 
 .game-header {
@@ -296,39 +298,70 @@ body.ipad-mode .games-grid {
   background: rgba(255, 255, 255, 0.05);
   font-weight: bold;
   font-size: 13px;
-  z-index: 10;
   border-bottom: 1px solid var(--liquid-glass-border);
+  flex-shrink: 0;
 }
 
 .iframe-touch-wrapper {
   flex: 1;
   width: 100%;
-  height: 100%;
   position: relative;
-  overflow: hidden; /* Vital to clip the oversized iframe */
+  overflow: hidden;
+  background: #000;
 }
 
 .game-iframe {
   border: none;
-  /* We make the iframe 2x larger than the container... */
-  width: 200%; 
-  height: 200%;
   position: absolute;
   top: 0;
   left: 0;
-  /* ...then scale it down by 0.5 to fit, effectively "zooming out" */
-  transform: scale(0.5);
+  /* We set a base virtual width of 800px; JS will scale this to fit */
+  width: 800px;
+  height: 1000px;
   transform-origin: top left;
+  display: block;
 }
-
-/* On Desktop/iPad mode, we can reduce the scaling for a native feel */
-body.ipad-mode .game-iframe {
-  width: 100%;
-  height: 100%;
-  transform: scale(1);
-}
-
 </style>
+
+<script>
+/**
+ * Automatically scales game iframes to fit their containers perfectly
+ * regardless of mobile screen width.
+ */
+function scaleGameIframes() {
+  const containers = document.querySelectorAll('.iframe-touch-wrapper');
+  containers.forEach(wrapper => {
+    const iframe = wrapper.querySelector('.game-iframe');
+    if (iframe) {
+      const containerWidth = wrapper.offsetWidth;
+      const containerHeight = wrapper.offsetHeight;
+      
+      // Virtual width we want the game to "see"
+      const virtualWidth = 800; 
+      const scaleFactor = containerWidth / virtualWidth;
+      
+      iframe.style.width = virtualWidth + "px";
+      iframe.style.height = (containerHeight / scaleFactor) + "px";
+      iframe.style.transform = `scale(${scaleFactor})`;
+    }
+  });
+}
+
+// Add this to your existing window.onload or applySettings
+// To ensure it runs when the tab is switched:
+const originalShowTab = showTab;
+showTab = function(id, btn, index) {
+  originalShowTab(id, btn, index);
+  if (id === 'games') {
+    // Small timeout to allow the browser to render the tab before measuring width
+    setTimeout(scaleGameIframes, 50);
+  }
+};
+
+// Also scale on resize
+window.addEventListener('resize', scaleGameIframes);
+</script>
+
 
 
 
