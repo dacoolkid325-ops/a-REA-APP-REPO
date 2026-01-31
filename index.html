@@ -270,17 +270,15 @@ input[type="range"] {
 </section>
 
 <style>
-/* New Responsive Grid for Games */
+/* Optimized Responsive Grid for Games */
 .games-grid {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Switches to Side-by-Side on PC/iPad Mode */
 body.ipad-mode .games-grid {
   flex-direction: row;
-  align-items: stretch;
 }
 
 .game-container {
@@ -288,8 +286,9 @@ body.ipad-mode .games-grid {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 450px; /* Increased height for better playability */
+  height: 500px; /* Adjusted for mobile playability */
   flex: 1;
+  position: relative;
 }
 
 .game-header {
@@ -297,25 +296,38 @@ body.ipad-mode .games-grid {
   background: rgba(255, 255, 255, 0.05);
   font-weight: bold;
   font-size: 13px;
-  letter-spacing: 1px;
+  z-index: 10;
   border-bottom: 1px solid var(--liquid-glass-border);
 }
 
-/* The Secret Sauce for Touch: This wrapper ensures touch events pass through or scroll correctly */
 .iframe-touch-wrapper {
   flex: 1;
   width: 100%;
+  height: 100%;
   position: relative;
-  -webkit-overflow-scrolling: touch;
-  touch-action: auto;
+  overflow: hidden; /* Vital to clip the oversized iframe */
 }
 
 .game-iframe {
+  border: none;
+  /* We make the iframe 2x larger than the container... */
+  width: 200%; 
+  height: 200%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* ...then scale it down by 0.5 to fit, effectively "zooming out" */
+  transform: scale(0.5);
+  transform-origin: top left;
+}
+
+/* On Desktop/iPad mode, we can reduce the scaling for a native feel */
+body.ipad-mode .game-iframe {
   width: 100%;
   height: 100%;
-  border: none;
-  display: block;
+  transform: scale(1);
 }
+
 </style>
 
 
