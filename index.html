@@ -246,80 +246,141 @@ input[type="range"] {
   </div>
 </section>
 
-<!-- GAMES SECTION -->
-<section id="games">
-<h1>Games</h1>
-<a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios">LAUNCH a-REA HANGOUT</a>
-<div class="games-grid">
-<!-- Game 1: MASTER -->
-<div class="glass-card game-card">
-<div class="game-header">
-<span>MASTER</span>
-<button class="fullscreen-btn" onclick="toggleFullscreen(this)" title="Toggle Fullscreen">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-</svg>
-</button>
-</div>
-<div class="game-body">
-<iframe src="file.html" class="game-iframe" data-virtual-width="800"></iframe>
-</div>
-</div>
-<!-- Game 2: TINY THE GAME -->
-<div class="glass-card game-card">
-  <div class="game-header">
-    <span>TINY THE GAME</span>
-    <button class="fullscreen-btn" onclick="toggleFullscreen(this)" title="Toggle Fullscreen">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-      </svg>
-    </button>
-  </div>
-  <div class="game-body">
-    <iframe src="tiny.html" class="game-iframe" data-virtual-width="800"></iframe>
-  </div>
-</div>
-</div>
-</section>
+<!-- COMPLETE GAMES SECTION WITH BUILT-IN LOGIC -->
+<section id="games" class="ultra-wide-section">
+  <h1 class="section-title">Games</h1>
+  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
+  
+  <div class="ultra-grid">
+    <!-- MASTER -->
+    <div class="glass-card game-container-giant">
+      <div class="game-ui-header">
+        <div class="status-dot"></div>
+        <span class="game-label">MASTER</span>
+        <button class="expand-trigger" onclick="handleFullscreen(this)">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+      </div>
+      <div class="game-viewport">
+        <iframe src="file.html" class="game-iframe" data-virtual-width="1200"></iframe>
+      </div>
+    </div>
 
- * Automatically scales game iframes to fit their containers perfectly
- * regardless of mobile screen width.
- */
-function scaleGameIframes() {
-  const containers = document.querySelectorAll('.iframe-touch-wrapper');
-  containers.forEach(wrapper => {
-    const iframe = wrapper.querySelector('.game-iframe');
-    if (iframe) {
-      const containerWidth = wrapper.offsetWidth;
-      const containerHeight = wrapper.offsetHeight;
-      
-      // Virtual width we want the game to "see"
-      const virtualWidth = 800; 
-      const scaleFactor = containerWidth / virtualWidth;
-      
-      iframe.style.width = virtualWidth + "px";
-      iframe.style.height = (containerHeight / scaleFactor) + "px";
-      iframe.style.transform = `scale(${scaleFactor})`;
+    <!-- TINY -->
+    <div class="glass-card game-container-giant">
+      <div class="game-ui-header">
+        <div class="status-dot"></div>
+        <span class="game-label">TINY THE GAME</span>
+        <button class="expand-trigger" onclick="handleFullscreen(this)">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+      </div>
+      <div class="game-viewport">
+        <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Section Layout Overrides */
+    .ultra-wide-section {
+      max-width: 98% !important;
+      width: 98% !important;
+      padding: 10px !important;
+      margin: 0 auto;
     }
-  });
-}
 
-// Add this to your existing window.onload or applySettings
-// To ensure it runs when the tab is switched:
-const originalShowTab = showTab;
-showTab = function(id, btn, index) {
-  originalShowTab(id, btn, index);
-  if (id === 'games') {
-    // Small timeout to allow the browser to render the tab before measuring width
-    setTimeout(scaleGameIframes, 50);
-  }
-};
+    .section-title { font-size: 42px; font-weight: 800; margin-bottom: 20px; text-align: center; color: var(--text-main); }
 
-// Also scale on resize
-window.addEventListener('resize', scaleGameIframes);
-</script>
+    .btn-ios-large {
+      display: block; width: 100%; max-width: 600px; margin: 0 auto 40px auto;
+      padding: 24px; background: #007AFF; color: white; text-align: center;
+      text-decoration: none; border-radius: 24px; font-weight: 700; font-size: 20px;
+    }
 
+    .ultra-grid { display: flex; flex-direction: column; gap: 40px; width: 100%; }
 
+    .game-container-giant {
+      height: 750px !important;
+      padding: 0 !important;
+      border-radius: 32px !important;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--liquid-glass-bg);
+      border: 1px solid var(--liquid-glass-border);
+      transition: all 0.3s ease;
+    }
+
+    body.ipad-mode .game-container-giant { height: 850px !important; }
+
+    .game-ui-header {
+      padding: 15px 25px;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .status-dot { width: 10px; height: 10px; background: #34C759; border-radius: 50%; box-shadow: 0 0 8px #34C759; }
+    .game-label { font-weight: 800; letter-spacing: 1px; flex-grow: 1; color: #fff; }
+
+    .expand-trigger {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white; padding: 10px; border-radius: 12px; cursor: pointer;
+    }
+
+    .game-viewport { flex-grow: 1; background: #000; position: relative; overflow: hidden; }
+
+    .game-iframe {
+      border: none; position: absolute; top: 0; left: 0;
+      transform-origin: top left; width: 100%; height: 100%;
+    }
+
+    /* FULLSCREEN CLASS */
+    .game-container-giant.is-active-fs {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 999999 !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+    }
+
+    body.ipad-mode .ultra-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  </style>
+
+  <script>
+    function handleFullscreen(btn) {
+      const card = btn.closest('.game-container-giant');
+      const isNowFull = card.classList.toggle('is-active-fs');
+      
+      // Toggle body scroll
+      if (isNowFull) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+
+      // Re-trigger the scaling logic immediately
+      if (typeof scaleGameIframes === 'function') {
+        setTimeout(scaleGameIframes, 10);
+        setTimeout(scaleGameIframes, 300); // Once animation finishes
+      }
+    }
+    
+    // Auto-scale on load for this specific section
+    setTimeout(() => {
+      if (typeof scaleGameIframes === 'function') scaleGameIframes();
+    }, 500);
+  </script>
+</section>
 
 
 
