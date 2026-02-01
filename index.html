@@ -246,30 +246,42 @@ input[type="range"] {
   </div>
 </section>
 
-<!-- GAMES -->
-
+<!-- GAMES SECTION -->
 <section id="games">
-  <h1>Games</h1>
-  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios">LAUNCH a-REA HANGOUT</a>
-  
-  <div class="games-grid">
-    <div class="glass-card game-container">
-      <div class="game-header">MASTER</div>
-      <div class="iframe-touch-wrapper">
-        <iframe src="file.html" class="game-iframe"></iframe>
-      </div>
-    </div>
-
-    <div class="glass-card game-container">
-      <div class="game-header">TINY THE GAME</div>
-      <div class="iframe-touch-wrapper">
-        <iframe src="tiny.html" class="game-iframe"></iframe>
-      </div>
-    </div>
+<h1>Games</h1>
+<a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios">LAUNCH a-REA HANGOUT</a>
+<div class="games-grid">
+<!-- Game 1: MASTER -->
+<div class="glass-card game-card">
+<div class="game-header">
+<span>MASTER</span>
+<button class="fullscreen-btn" onclick="toggleFullscreen(this)" title="Toggle Fullscreen">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+</svg>
+</button>
+</div>
+<div class="game-body">
+<iframe src="file.html" class="game-iframe" data-virtual-width="800"></iframe>
+</div>
+</div>
+<!-- Game 2: TINY THE GAME -->
+<div class="glass-card game-card">
+  <div class="game-header">
+    <span>TINY THE GAME</span>
+    <button class="fullscreen-btn" onclick="toggleFullscreen(this)" title="Toggle Fullscreen">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+      </svg>
+    </button>
   </div>
+  <div class="game-body">
+    <iframe src="tiny.html" class="game-iframe" data-virtual-width="800"></iframe>
+  </div>
+</div>
+</div>
 </section>
 
-<style>
 /* --- Fixes the "Pill" collapse and small iframe issue --- */
 .games-grid {
   display: flex;
