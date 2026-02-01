@@ -282,61 +282,6 @@ input[type="range"] {
 </div>
 </section>
 
-/* --- Fixes the "Pill" collapse and small iframe issue --- */
-.games-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-}
-
-body.ipad-mode .games-grid {
-  flex-direction: row;
-}
-
-.game-container {
-  padding: 0 !important;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  /* Crucial: Ensure height is set so it doesn't collapse */
-  height: 500px; 
-  width: 100%;
-  flex: 1 0 auto; 
-}
-
-.game-header {
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  font-weight: bold;
-  font-size: 13px;
-  border-bottom: 1px solid var(--liquid-glass-border);
-  flex-shrink: 0;
-}
-
-.iframe-touch-wrapper {
-  flex: 1;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background: #000;
-}
-
-.game-iframe {
-  border: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  /* We set a base virtual width of 800px; JS will scale this to fit */
-  width: 800px;
-  height: 1000px;
-  transform-origin: top left;
-  display: block;
-}
-</style>
-
-<script>
-/**
  * Automatically scales game iframes to fit their containers perfectly
  * regardless of mobile screen width.
  */
