@@ -437,7 +437,6 @@ const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
 
-// App State (Will be synced with LocalStorage)
 let appSettings = {
   lightMode: true,
   ipadMode: false,
@@ -482,7 +481,6 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-// Logic to Save and Apply Settings
 function updateSetting(key, val) {
   appSettings[key] = val;
   localStorage.setItem('aREASettings', JSON.stringify(appSettings));
@@ -490,23 +488,16 @@ function updateSetting(key, val) {
 }
 
 function applySettings() {
-  // 1. Theme
+  if (!appSettings) return;
   document.body.classList.toggle('light', appSettings.lightMode);
   document.getElementById('lightToggle').checked = appSettings.lightMode;
-
-  // 2. Wide Mode
   document.body.classList.toggle('ipad-mode', appSettings.ipadMode);
   document.getElementById('ipadToggle').checked = appSettings.ipadMode;
-
-  // 3. Background
   document.body.classList.toggle('no-bg', appSettings.noBg);
   document.getElementById('noBgToggle').checked = appSettings.noBg;
-
-  // 4. UI Zoom
   document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
   document.getElementById('uiScaleSlider').value = appSettings.uiScale;
 
-  // 5. Wix Scaling Logic
   const frame = document.getElementById('wixFrame');
   const wrapper = document.getElementById('wixWrapper');
   const label = document.getElementById('widthLabel');
@@ -514,34 +505,28 @@ function applySettings() {
   if (frame && wrapper) {
     const containerWidth = wrapper.offsetWidth;
     const targetWidth = parseInt(appSettings.wixWidth);
-    
-    // Scale factor to fit chosen width into actual container
     const scaleFactor = containerWidth / targetWidth;
-    
     frame.style.width = targetWidth + "px";
-    // We adjust the height based on scale factor to prevent vertical squishing
     frame.style.height = (100 / scaleFactor) + "%"; 
     frame.style.transform = `scale(${scaleFactor})`;
-    
     label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
   }
-  
   document.getElementById('wixWidthSlider').value = appSettings.wixWidth;
 }
 
-// Navigation
 function showTab(id, btn, index) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
+  
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  
   const pill = document.getElementById('selectionPill');
   pill.style.transform = `translateX(${index * 64 + 8}px)`;
   window.scrollTo({top: 0, behavior: 'smooth'});
-  if (id === 'home') setTimeout(applySettings, 50);
 }
 
-// Initialization
 window.addEventListener('resize', () => {
   initCanvas();
   applySettings();
@@ -551,42 +536,20 @@ function loadStoredSettings() {
   const saved = localStorage.getItem('aREASettings');
   if (saved) {
     try {
-      const parsed = JSON.parse(saved);
-      appSettings = { ...appSettings, ...parsed };
+      appSettings = JSON.parse(saved);
     } catch(e) { console.error("Error loading settings", e); }
   }
 }
 
 window.onload = () => {
-  loadStoredSettings(); // This loads your saved settings
+  loadStoredSettings();
   initCanvas();
   loop();
-  
-  // 1. Apply settings first so Wix/Zoom/Mode are correct
   applySettings();
   
-  // 2. Set the Wix iframe to visible (it was transform: scale(0))
-  const frame = document.getElementById('wixFrame');
-  if(frame) frame.style.transform = "scale(1)";
-
-    // 3. Ensure the pill is exactly at Home (8px)
+  // Align pill to Home
   const pill = document.getElementById('selectionPill');
   if(pill) pill.style.transform = `translateX(8px)`;
-  
-  // 4. FIX WIX LOAD: Force the scale to 1 so it appears
-  const frame = document.getElementById('wixFrame');
-  if(frame) {
-      setTimeout(() => {
-         function applySettings() {
-           if (!appSettings) return; // Safety check
-         applySettings(); // Refresh scaling logic
-          frame.style.transform = frame.style.transform.replace('scale(0)', 'scale'); 
-          // If the above is tricky, this is safer:
-          const containerWidth = document.getElementById('wixWrapper').offsetWidth;
-          const scaleFactor = containerWidth / appSettings.wixWidth;
-          frame.style.transform = `scale(${scaleFactor})`;
-      }, 100);
-  }
 };
 
 function openAlexModal() {
@@ -599,8 +562,6 @@ function closeAlert() {
   document.getElementById('customAlert').style.display = 'none';
 }
 </script>
-
-
 
 
 <div style="display: none;"></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration><div class="__chii-hide__" style="display: none; position: absolute; pointer-events: none;"><div style="position: absolute; box-sizing: border-box; z-index: 100000;"></div><div style="position: absolute; box-sizing: border-box; z-index: 100000;"></div><div style="position: absolute; box-sizing: border-box; z-index: 100000;"></div><div style="position: absolute; box-sizing: border-box; z-index: 100000;"></div><div style="position: absolute; box-sizing: border-box; z-index: 100000; height: 25px; line-height: 25px; background: rgb(255, 255, 255); color: rgb(34, 34, 34); font-size: 12px; padding: 0px 5px; white-space: nowrap; overflow-x: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 2px 0px, rgba(0, 0, 0, 0.08) 0px 1px 4px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px;"></div></div><div style="all: initial;"></div></html>
