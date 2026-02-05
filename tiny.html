@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Tiny Dash: Infinite</title>
+    <title>Tiny Dash: Leaderboard Ed.</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700&display=swap');
         
@@ -20,81 +20,125 @@
             -webkit-touch-callout: none;
         }
 
-        /* Prevent Black Screen Flicker on iOS */
         canvas { 
             display: block; 
             transform: translateZ(0); 
-            -webkit-transform: translateZ(0);
         }
 
-        /* The Wake-Up Overlay (Critical for iOS Audio/Iframe) */
-        #starter { 
+        /* --- UI OVERLAYS --- */
+        #ui-layer, #starter { 
             position: absolute; 
             inset: 0; 
-            background: #000; 
-            z-index: 1000; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
+            z-index: 500;
+        }
+
+        #starter { 
+            background: #000; 
+            z-index: 1000; 
             cursor: pointer;
             border: 2px solid #0f0;
         }
 
-        #ui-layer { 
-            position: absolute; 
-            inset: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            pointer-events: none; 
-            z-index: 500;
-        }
+        #ui-layer { pointer-events: none; }
 
         .panel { 
-            background: rgba(0,0,0,0.9); 
-            padding: 25px; 
+            background: rgba(0,0,0,0.95); 
+            padding: 20px; 
             border-radius: 20px; 
             border: 4px solid #f00; 
             text-align: center; 
             pointer-events: auto; 
-            width: 220px; 
+            width: 280px; 
             display: none; 
+            box-shadow: 0 0 20px #f00;
         }
 
-        h1 { font-size: 24px; margin: 0 0 10px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
-        .btn { background: #f00; color: #fff; padding: 12px 24px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        h1 { font-size: 28px; margin: 0 0 10px 0; color: #0f0; text-shadow: 0 0 10px #0f0; }
+        p { margin: 5px 0; }
 
-        /* The Robust Jump Button */
+        .btn { 
+            background: #f00; 
+            color: #fff; 
+            padding: 12px 24px; 
+            font-size: 18px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 15px;
+            display: inline-block;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        /* --- LEADERBOARD --- */
+        .leaderboard {
+            text-align: left;
+            width: 100%;
+            margin: 10px 0;
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+            padding: 10px 0;
+        }
+        .lb-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .lb-row.gold { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
+        .lb-row.me { color: #fff; font-weight: bold; border-top: 1px dashed #555; margin-top: 5px; padding-top: 5px;}
+
+        /* --- ULTRA MODE TOGGLE --- */
+        .mode-toggle {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #fff;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            z-index: 1001; /* Above starter click area */
+        }
+        input[type="checkbox"] {
+            transform: scale(1.5);
+            accent-color: #f0f;
+        }
+
+        /* --- GAME HUD --- */
+        #score-display { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            font-size: 20px; 
+            color: #0f0; 
+            z-index: 800;
+            text-shadow: 2px 2px 0 #000;
+        }
+
         #jump-zone { 
             position: absolute; 
             bottom: 30px; 
             right: 30px; 
             width: 90px; 
             height: 90px; 
-            background: rgba(0, 255, 0, 0.15); 
+            background: rgba(0, 255, 0, 0.1); 
             border: 3px solid #0f0; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             color: #0f0; 
-            font-size: 14px; 
             font-weight: bold;
             z-index: 999; 
             pointer-events: auto;
             visibility: hidden;
-            touch-action: none; /* Prevents iOS from scrolling the page instead of jumping */
-        }
-
-        #score-display { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
-            font-size: 16px; 
-            color: #0f0; 
-            z-index: 800;
+            touch-action: none; 
         }
     </style>
 </head>
@@ -102,20 +146,33 @@
 
     <div id="starter">
         <h1>TINY DASH</h1>
-        <p style="color:#0f0">TAP TO PLAY</p>
+        <p style="color:#0f0">TAP SCREEN TO PLAY</p>
+        
+        <div class="mode-toggle" id="ultra-toggle-container">
+            <input type="checkbox" id="ultra-mode">
+            <label for="ultra-mode">⚡ ULTRA FAST MODE (2x)</label>
+        </div>
     </div>
 
-    <div id="score-display">0000</div>
+    <div id="score-display">SCORE: 0000</div>
 
     <div id="ui-layer">
         <div id="death-panel" class="panel">
             <h1 style="color:#f00">CRASHED</h1>
+            
+            <div class="leaderboard">
+                <div class="lb-row gold"><span>1. Hamid</span> <span>9999</span></div>
+                <div class="lb-row"><span>2. Harry V</span> <span>8540</span></div>
+                <div class="lb-row"><span>3. Aqeel</span> <span>7200</span></div>
+                <div class="lb-row"><span>4. Tudor</span> <span>6150</span></div>
+                <div class="lb-row me"><span>5. YOU</span> <span id="final-score">0000</span></div>
+            </div>
+
             <div class="btn" onclick="retry()">RETRY</div>
         </div>
     </div>
 
     <div id="jump-zone">JUMP</div>
-
     <canvas id="cvs"></canvas>
 
 <script>
@@ -125,51 +182,73 @@ const scoreDisplay = document.getElementById('score-display');
 const deathPanel = document.getElementById('death-panel');
 const starter = document.getElementById('starter');
 const jumpZone = document.getElementById('jump-zone');
+const finalScoreEl = document.getElementById('final-score');
+const ultraCheck = document.getElementById('ultra-mode');
+const ultraContainer = document.getElementById('ultra-toggle-container');
 
 // --- Assets ---
 const img = new Image();
 img.src = "https://www.dropbox.com/scl/fi/1u1gm1mwkh1mb2rchd33s/IMG_0963.webp?rlkey=rj3qf9ou8sf9dxynvehmy9628&st=4yldxbrf&raw=1";
 
+// Music Logic: Menu Loop also plays on Death
 const audioMenu = new Audio("https://gdcolon.com/assets/audio/menuLoop.mp3");
 audioMenu.loop = true;
 const audioGame = new Audio("https://www.dropbox.com/scl/fi/61itpersex7cmrfj8yqig/Tiny.m4a?rlkey=ph9a226cowhhfs7eq54y4twzj&st=d9zecvr7&raw=1");
 audioGame.loop = true;
 
-function switchMusic(toGame) {
-    audioMenu.pause();
-    audioGame.pause();
-    if(toGame) {
+function switchMusic(state) {
+    // state: 'menu', 'game', 'death'
+    if(state === 'game') {
+        audioMenu.pause();
         audioGame.currentTime = 0;
         audioGame.play().catch(()=>{});
     } else {
-        audioMenu.currentTime = 0;
-        audioMenu.play().catch(()=>{});
+        // Menu or Death -> Play Menu Music
+        audioGame.pause();
+        if(audioMenu.paused) {
+            audioMenu.currentTime = 0;
+            audioMenu.play().catch(()=>{});
+        }
     }
 }
 
 // --- Logic ---
 const TILE = 60;
-const SPEED = 7.0; // Easy Difficulty
-const GRAVITY = 0.75;
-const JUMP = -15.5;
+let BASE_SPEED = 7.0;
+let GRAVITY = 0.75;
+const JUMP_FORCE = -15.5;
 
 let active = false;
 let dead = false;
+let ultraMode = false;
+let speed = 0;
+
 let camX = 0;
 let score = 0;
 let player = { x: 150, y: 0, vy: 0, rot: 0, w: 55, h: 55 };
 let obstacles = [];
 let mathBg = [];
 
+// Stop toggle click from starting game immediately
+ultraContainer.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+});
+
 function generate() {
     let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 800;
     while(obstacles.length < 10) {
-        lastX += 300 + Math.random() * 300; // Large gaps for easy mode
+        // If Ultra Mode, gaps are slightly wider to account for speed
+        let gap = ultraMode ? 400 + Math.random() * 400 : 300 + Math.random() * 300;
+        lastX += gap; 
         obstacles.push({ x: lastX, type: Math.random() > 0.6 ? 'block' : 'spike' });
     }
 }
 
 function init() {
+    // Ultra Mode Logic
+    ultraMode = ultraCheck.checked;
+    speed = ultraMode ? 14.0 : 7.0; // Double speed
+    
     score = 0;
     camX = 0;
     player.y = canvas.height - 155;
@@ -182,14 +261,13 @@ function init() {
     for(let i=0; i<20; i++) mathBg.push({ x: Math.random()*2000, y: Math.random()*canvas.height, t: ["π","∑","√","x²"][Math.floor(Math.random()*4)] });
 }
 
-// --- iPhone Iframe Interaction Fix ---
+// --- Start Game ---
 starter.addEventListener('pointerdown', (e) => {
-    e.stopPropagation();
     starter.style.display = 'none';
     jumpZone.style.visibility = 'visible';
     active = true;
     init();
-    switchMusic(true);
+    switchMusic('game');
     loop();
 });
 
@@ -197,7 +275,7 @@ function retry() {
     dead = false;
     deathPanel.style.display = 'none';
     init();
-    switchMusic(true);
+    switchMusic('game');
 }
 
 // --- Controls ---
@@ -208,7 +286,6 @@ const jumpStart = (e) => {
 };
 const jumpEnd = () => pressing = false;
 
-// We use pointerdown as it is the most modern and works across mouse/touch/iframes
 jumpZone.addEventListener('pointerdown', jumpStart);
 window.addEventListener('pointerup', jumpEnd);
 window.addEventListener('keydown', (e) => { if(e.code === 'Space') pressing = true; });
@@ -217,9 +294,12 @@ window.addEventListener('keyup', (e) => { if(e.code === 'Space') pressing = fals
 function update() {
     if(!active || dead) return;
 
-    camX += SPEED;
-    score = Math.floor(camX / 10);
-    scoreDisplay.innerText = score.toString().padStart(4, '0');
+    camX += speed;
+    
+    // Score Calculation (Double points for ultra)
+    let rawScore = Math.floor(camX / 10);
+    score = ultraMode ? rawScore * 2 : rawScore;
+    scoreDisplay.innerText = "SCORE: " + score.toString().padStart(4, '0');
 
     let floorY = canvas.height - 100;
     player.vy += GRAVITY;
@@ -228,10 +308,11 @@ function update() {
     if(player.y > floorY - player.w) {
         player.y = floorY - player.w;
         player.vy = 0;
-        if(pressing) player.vy = JUMP;
+        if(pressing) player.vy = JUMP_FORCE;
         player.rot = Math.round(player.rot / (Math.PI/2)) * (Math.PI/2);
     } else {
-        player.rot += 0.16;
+        // Rotate faster in ultra mode
+        player.rot += ultraMode ? 0.25 : 0.16;
     }
 
     generate();
@@ -240,13 +321,36 @@ function update() {
         let tx = o.x - camX + 150;
         let ty = floorY - TILE;
 
-        // Collision Check (Simplified for performance)
-        if(player.x < tx + TILE - 10 && player.x + player.w > tx + 10 && player.y < ty + TILE && player.y + player.h > ty) {
-            // Check if landing on top of block
-            if(o.type === 'block' && player.vy > 0 && player.y + player.h < ty + 25) {
+        // --- NEW HITBOX LOGIC (Much Better) ---
+        // We define a 'hitbox' that is smaller than the player sprite.
+        // This prevents dying when you just barely graze a spike.
+        
+        let hitboxPadding = 12; // 12px buffer on all sides
+        let pLeft = player.x + hitboxPadding;
+        let pRight = player.x + player.w - hitboxPadding;
+        let pTop = player.y + hitboxPadding;
+        let pBottom = player.y + player.h - hitboxPadding;
+
+        let oLeft = tx;
+        let oRight = tx + TILE;
+        let oTop = ty;
+        let oBottom = ty + TILE;
+
+        // If Spike, lower the hitbox top slightly so you don't die on the very tip pixel
+        if(o.type === 'spike') {
+            oTop += 10;
+            oLeft += 10;
+            oRight -= 10;
+        }
+
+        // Standard AABB Collision with adjusted hitboxes
+        if (pLeft < oRight && pRight > oLeft && pTop < oBottom && pBottom > oTop) {
+            
+            // Allow landing on blocks
+            if(o.type === 'block' && player.vy > 0 && pBottom < oTop + 20) {
                 player.y = ty - player.h;
                 player.vy = 0;
-                if(pressing) player.vy = JUMP;
+                if(pressing) player.vy = JUMP_FORCE;
             } else {
                 gameOver();
             }
@@ -257,16 +361,21 @@ function update() {
 
 function gameOver() {
     dead = true;
-    switchMusic(false);
+    switchMusic('death'); // Plays menu music
+    
+    // Update Score on Leaderboard
+    finalScoreEl.innerText = score.toString();
+    
     deathPanel.style.display = 'block';
 }
 
 function draw() {
-    ctx.fillStyle = '#000800'; // Dark Math Green
+    // Dark Green bg for normal, Dark Red/Purple for Ultra
+    ctx.fillStyle = ultraMode ? '#100' : '#000800'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Background Math
-    ctx.fillStyle = '#0f02';
+    ctx.fillStyle = ultraMode ? '#f002' : '#0f02';
     ctx.font = '20px Courier';
     mathBg.forEach(m => {
         let x = (m.x - camX * 0.2) % (canvas.width + 100);
@@ -276,7 +385,7 @@ function draw() {
     let floorY = canvas.height - 100;
 
     // Floor Line
-    ctx.strokeStyle = '#0f0';
+    ctx.strokeStyle = ultraMode ? '#f00' : '#0f0';
     ctx.lineWidth = 4;
     ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(canvas.width, floorY); ctx.stroke();
 
@@ -284,11 +393,12 @@ function draw() {
     obstacles.forEach(o => {
         let tx = o.x - camX + 150;
         if(o.type === 'block') {
-            ctx.fillStyle = '#000'; ctx.strokeStyle = '#0f0';
+            ctx.fillStyle = '#000'; 
+            ctx.strokeStyle = ultraMode ? '#f00' : '#0f0';
             ctx.fillRect(tx, floorY - TILE, TILE, TILE);
             ctx.strokeRect(tx, floorY - TILE, TILE, TILE);
         } else {
-            ctx.fillStyle = '#f33'; // Red Spikes
+            ctx.fillStyle = ultraMode ? '#f0f' : '#f33'; // Spikes change color in Ultra
             ctx.beginPath();
             ctx.moveTo(tx, floorY);
             ctx.lineTo(tx + TILE/2, floorY - TILE);
@@ -297,12 +407,17 @@ function draw() {
         }
     });
 
-    // Player (Tiny)
+    // Player
     ctx.save();
     ctx.translate(player.x + player.w/2, player.y + player.h/2);
     ctx.rotate(player.rot);
-    ctx.shadowBlur = 15; ctx.shadowColor = '#0f0';
+    ctx.shadowBlur = 15; 
+    ctx.shadowColor = ultraMode ? '#f00' : '#0f0';
     ctx.drawImage(img, -player.w/2, -player.h/2, player.w, player.h);
+    
+    // Debug: Uncomment to see the new Hitbox (red box inside player)
+    // ctx.strokeStyle = 'red'; ctx.strokeRect(-player.w/2 + 12, -player.h/2 + 12, player.w - 24, player.h - 24);
+    
     ctx.restore();
 }
 
