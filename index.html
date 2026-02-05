@@ -569,11 +569,24 @@ window.onload = () => {
   const frame = document.getElementById('wixFrame');
   if(frame) frame.style.transform = "scale(1)";
 
-  // 3. Ensure the pill is exactly at Home (8px)
+    // 3. Ensure the pill is exactly at Home (8px)
   const pill = document.getElementById('selectionPill');
   if(pill) pill.style.transform = `translateX(8px)`;
-};
-
+  
+  // 4. FIX WIX LOAD: Force the scale to 1 so it appears
+  const frame = document.getElementById('wixFrame');
+  if(frame) {
+      setTimeout(() => {
+         function applySettings() {
+           if (!appSettings) return; // Safety check
+         applySettings(); // Refresh scaling logic
+          frame.style.transform = frame.style.transform.replace('scale(0)', 'scale'); 
+          // If the above is tricky, this is safer:
+          const containerWidth = document.getElementById('wixWrapper').offsetWidth;
+          const scaleFactor = containerWidth / appSettings.wixWidth;
+          frame.style.transform = `scale(${scaleFactor})`;
+      }, 100);
+  }
 };
 
 function openAlexModal() {
