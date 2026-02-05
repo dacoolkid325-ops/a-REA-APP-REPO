@@ -558,15 +558,22 @@ function loadStoredSettings() {
 }
 
 window.onload = () => {
-  loadStoredSettings();
+  loadStoredSettings(); // This loads your saved settings
   initCanvas();
   loop();
+  
+  // 1. Apply settings first so Wix/Zoom/Mode are correct
   applySettings();
   
-  // Make sure the first tab (Home) is selected and the pill is at 8px
-  const homeBtn = document.querySelectorAll('.nav-item')[0];
-  showTab('home', homeBtn, 0);
+  // 2. Set the Wix iframe to visible (it was transform: scale(0))
+  const frame = document.getElementById('wixFrame');
+  if(frame) frame.style.transform = "scale(1)";
+
+  // 3. Ensure the pill is exactly at Home (8px)
+  const pill = document.getElementById('selectionPill');
+  if(pill) pill.style.transform = `translateX(8px)`;
 };
+
 };
 
 function openAlexModal() {
