@@ -200,8 +200,7 @@ input[type="range"] {
 
 <canvas id="glassCanvas" width="1440" height="865"></canvas>
 
-<!-- HOME -->
-<section id="home" class="">
+<section id="home" class="active">
   <div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="openAlexModal()">
     <strong style="color:var(--accent)">Alexandru News</strong><br>
     <span style="font-size: 14px; opacity: 0.8;">Find out about Alexandru and why I'm committing to his legacy!</span>
@@ -416,7 +415,7 @@ input[type="range"] {
 
 <!-- NAV BAR -->
 <div class="nav-container">
-  <div id="selectionPill" class="nav-selection-pill" style="transform: translateX(200px);"></div>
+ <div id="selectionPill" class="nav-selection-pill" style="transform: translateX(8px);"></div>
   <button class="nav-item active" onclick="showTab('home', this, 0)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
   <button class="nav-item" onclick="showTab('songs', this, 1)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path></svg></button>
   <button class="nav-item" onclick="showTab('videos', this, 2)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg></button>
@@ -564,10 +563,10 @@ window.onload = () => {
   loop();
   applySettings();
   
-  // Align pill initially
-  const activeBtn = document.querySelector('.nav-item.active');
-  const pill = document.getElementById('selectionPill');
-  pill.style.transform = `translateX(8px)`;
+  // Make sure the first tab (Home) is selected and the pill is at 8px
+  const homeBtn = document.querySelectorAll('.nav-item')[0];
+  showTab('home', homeBtn, 0);
+};
 };
 
 function openAlexModal() {
