@@ -165,7 +165,10 @@
                 <div class="lb-row"><span>2. Harry V</span> </div>
                 <div class="lb-row"><span>3. Aqeel</span> </div>
                 <div class="lb-row"><span>4. Tudor</span> </div>
-                <div class="lb-row me"><span>idk. YOU</span> <span id="final-score">0000</span></div>
+                <div class="lb-row"><span>5. Harry S</span> </div>
+                <div class="lb-row"><span>6. Raheem</span> </div>
+                <div class="lb-row"><span>7. Mirabelle</span> </div>
+                <div class="lb-row me"><span>?. YOU</span> <span id="final-score">0000</span></div>
             </div>
 
             <div class="btn" onclick="retry()">RETRY</div>
@@ -290,6 +293,9 @@ jumpZone.addEventListener('pointerdown', jumpStart);
 window.addEventListener('pointerup', jumpEnd);
 window.addEventListener('keydown', (e) => { if(e.code === 'Space') pressing = true; });
 window.addEventListener('keyup', (e) => { if(e.code === 'Space') pressing = false; });
+window.addEventListener('keydown', (e) => { if(e.code === 'ArrowUp') pressing = true; });
+window.addEventListener('keyup', (e) => { if(e.code === 'ArrowUp') pressing = false; });
+
 
 function update() {
     if(!active || dead) return;
