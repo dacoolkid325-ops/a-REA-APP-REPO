@@ -107,43 +107,63 @@ section.active { display: block; }
 
 .glass-card.clickable:active { transform: scale(0.98); }
 
-/* --- FIXED SEARCH BAR --- */
+/* --- FIXED LIQUID GLASS SEARCH --- */
 .search-wrapper {
-  margin-bottom: 20px;
-  position: sticky; /* Keeps it visible while scrolling songs */
-  top: 10px;
-  z-index: 10;
-}
-/* Update the Icon position */
-.search-icon-inside {
-  position: absolute;
-  left: 14px; /* Moved slightly more to the left */
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-mute);
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-  opacity: 0.7; /* Makes it look more "glassy" and less like a sticker */
+  margin-bottom: 25px;
+  position: sticky; /* Keeps it from disappearing when scrolling */
+  top: 0;
+  z-index: 1100;
+  padding: 5px 0;
 }
 
-/* Update the Input padding */
 .search-input {
   width: 100%;
-  padding: 14px 20px 14px 42px; /* Changed 48px to 42px to tighten the gap */
-  /* ... rest of your code ... */
+  padding: 14px 20px 14px 48px;
+  border-radius: 20px;
+  
+  /* The "Liquid" Effect */
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  
+  /* Glass Borders */
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.6) !important;
+  
+  font-size: 17px; /* Prevents iOS auto-zoom jump */
+  color: var(--text-main);
+  outline: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
+
+.search-input::placeholder { color: rgba(0,0,0,0.4); }
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: var(--accent) !important;
+}
+
 
 }
 /* --- VISUALIZER --- */
 .visualizer {
   display: flex;
   align-items: flex-end;
-  height: 12px;
-  gap: 2px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  height: 18px; /* Force a small height */
+  gap: 3px;
+  margin-left: 10px;
+  flex-shrink: 0; /* Prevents it from being squeezed */
 }
+
+.bar {
+  width: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  min-height: 4px; /* Ensure they don't disappear entirely */
+  flex-shrink: 0;
+}
+
 .visualizer.active { opacity: 1; }
 .bar {
   width: 3px;
@@ -811,27 +831,28 @@ function togglePlay() {
 
 function filterSongs(val) {
     const term = val.toLowerCase();
-    const items = document.querySelectorAll('.song-item');
+    const songItems = document.querySelectorAll('.song-item');
     
-    items.forEach(item => {
+    songItems.forEach(item => {
         const title = item.querySelector('.song-title').innerText.toLowerCase();
-        const shouldShow = title.includes(term);
-        item.style.display = shouldShow ? 'block' : 'none';
+        const isMatch = title.includes(term);
         
-        // Also hide the "Bonus" divider if no songs in that sub-group match
-        const parent = item.parentElement;
-        if (parent.style.marginTop === "20px") {
-             const siblings = parent.querySelectorAll('.song-item');
-             const anyVisible = Array.from(siblings).some(s => s.style.display !== 'none');
-             parent.style.display = anyVisible ? 'block' : 'none';
-        }
+        // Use 'block' or 'flex' depending on your layout preference
+        item.style.display = isMatch ? 'flex' : 'none';
+    });
+
+    // Clean up empty section headers (Bonus, New, etc.)
+    document.querySelectorAll('.glass-card > div[style*="margin-top:20px"]').forEach(section => {
+        const visibleSongs = section.querySelectorAll('.song-item[style*="display: flex"]');
+        section.style.display = (visibleSongs.length > 0 || term === "") ? 'block' : 'none';
     });
 }
 
 
+
 function openAlexModal() {
-  document.getElementById('alertTitle').innerText = "Coming Soon";
-  document.getElementById('alertMsg').innerText = "Alexandru News is currently in development. Check back later for updates on his legacy!";
+  document.getElementById('alertTitle').innerText = "Alexandru News";
+  document.getElementById('alertMsg').innerText = "Alexandru News in near finished. Stay Tuned for it (and the master movie).";
   document.getElementById('customAlert').style.display = 'flex';
 }
 function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
