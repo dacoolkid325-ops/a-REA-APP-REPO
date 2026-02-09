@@ -395,13 +395,6 @@ body.ipad-mode .game-container-giant { height: 850px !important; }
   z-index: 999999 !important; border-radius: 0 !important; margin: 0 !important;
 }
 body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
-.spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255,255,255,0.1);
-  border-top: 3px solid var(--accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite
 </style>
 </head>
 <body class="light ipad-mode">
@@ -422,35 +415,15 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 </div>
 
 <section id="home" class="active">
-  <div class="glass-card clickable" style="border-left: 4px solid var(--accent); position: relative;" onclick="openAlexModal()">
+  <div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="openAlexModal()">
     <strong style="color:var(--accent)">Alexandru News</strong><br>
-    <span style="font-size: 14px; opacity: 0.8;">Click to find out about Alexandru and why I'm commiting to his legacy!.</span>
-    <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.5;">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
-    </div>
+    <span style="font-size: 14px; opacity: 0.8;">Click here to find out about Alexandru and why I'm committing to his legacy!</span>
   </div>
 
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 10px;">
-    <button onclick="reloadWixFrame()" style="background: var(--pill-bg); border: 1px solid var(--pill-border); color: var(--text-main); padding: 6px 12px; border-radius: 12px; font-size: 12px; cursor: pointer; backdrop-filter: blur(10px);">
-      Reload Site
-    </button>
-  </div>
-
-  <div class="glass-card iframe-wrapper" id="wixWrapper" style="padding: 0; background: #000; overflow: hidden; height: 70vh;">
-    <div id="wixLoader" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5; display: none;">
-       <div class="spinner"></div>
-    </div>
-    
-    <iframe 
-      id="wixFrame" 
-      class="wix-iframe" 
-      src="https://aqeelchy02.wixsite.com/a-rea" 
-      onload="hideWixLoader()"
-      style="width: 375px; border: none; transform-origin: top left;">
-    </iframe>
+  <div class="glass-card iframe-wrapper" id="wixWrapper">
+    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);"></iframe>
   </div>
 </section>
-
 
 <section id="songs">
   <h1>Musical Story</h1>
@@ -581,25 +554,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
       }
     }
     setTimeout(() => { if (typeof scaleGameIframes === 'function') scaleGameIframes(); }, 500);
-    function reloadWixFrame() {
-    const frame = document.getElementById('wixFrame');
-    const loader = document.getElementById('wixLoader');
-    if (frame) {
-        if(loader) loader.style.display = 'block'; // Show spinner
-        const currentSrc = frame.src;
-        frame.src = ''; 
-        setTimeout(() => {
-            frame.src = currentSrc;
-            applySettings(); // Re-apply the sizing scale immediately
-        }, 50);
-    }
-}
-
-function hideWixLoader() {
-    const loader = document.getElementById('wixLoader');
-    if(loader) loader.style.display = 'none';
-}
-
   </script>
 </section>
 
@@ -983,11 +937,6 @@ document.querySelectorAll('audio').forEach(audio => {
   audio.addEventListener('play', () => initAudioVisualizer(audio));
 });
 
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-
 </script>
 </body>
 </html>
-
-
