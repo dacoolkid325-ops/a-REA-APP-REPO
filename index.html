@@ -417,7 +417,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 <section id="home" class="active">
   <div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="openAlexModal()">
     <strong style="color:var(--accent)">Alexandru News</strong><br>
-    <span style="font-size: 14px; opacity: 0.8;">Find out about Alexandru and why I'm committing to his legacy!</span>
+    <span style="font-size: 14px; opacity: 0.8;">Click here to out about Alexandru and why I'm committing to his legacy!</span>
   </div>
 
   <div class="glass-card iframe-wrapper" id="wixWrapper">
@@ -532,7 +532,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     <div class="glass-card game-container-giant">
       <div class="game-ui-header">
         <div class="status-dot"></div>
-        <span class="game-label">TINY THE GAME</span>
+        <span class="game-label">TINY DASH</span>
         <button class="expand-trigger" onclick="handleFullscreen(this)">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
         </button>
@@ -857,7 +857,7 @@ function filterSongs(val) {
 
 function openAlexModal() {
   document.getElementById('alertTitle').innerText = "Alexandru News";
-  document.getElementById('alertMsg').innerText = "Alexandru News in near finished. Stay Tuned for it (and the master movie).";
+  document.getElementById('alertMsg').innerText = "Alexandru was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru..";
   document.getElementById('customAlert').style.display = 'flex';
 }
 function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
