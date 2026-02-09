@@ -107,62 +107,70 @@ section.active { display: block; }
 
 .glass-card.clickable:active { transform: scale(0.98); }
 
-/* --- FIXED LIQUID GLASS SEARCH --- */
 .search-wrapper {
+  position: relative;
   margin-bottom: 25px;
-  position: sticky; /* Keeps it from disappearing when scrolling */
-  top: 0;
-  z-index: 1100;
-  padding: 5px 0;
+  width: 100%;
 }
 
 .search-input {
   width: 100%;
-  padding: 14px 20px 14px 48px;
+  padding: 16px 20px 16px 45px;
   border-radius: 20px;
-  
-  /* The "Liquid" Effect */
-  background: rgba(255, 255, 255, 0.4) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  
-  /* Glass Borders */
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.6) !important;
-  
-  font-size: 17px; /* Prevents iOS auto-zoom jump */
+  font-size: 17px;
   color: var(--text-main);
   outline: none;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
+  
+  /* TRUE LIQUID GLASS */
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
-.search-input::placeholder { color: rgba(0,0,0,0.4); }
-
-.search-input:focus {
-  background: rgba(255, 255, 255, 0.6) !important;
-  border-color: var(--accent) !important;
+.search-icon-inside {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--text-main);
+  opacity: 0.6; /* Blends it into the glass */
+  z-index: 2;
+  pointer-events: none;
 }
 
-
+/* STOPS SQUISHING AND BLUE LINES */
+/* STABLE LAYOUT - PREVENTS SQUISHING */
+.song-item {
+  display: flex; /* Changed from block to flex for stability */
+  flex-direction: column;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--liquid-glass-border);
+  min-height: 110px; /* Ensures space is reserved */
 }
-/* --- VISUALIZER --- */
+
 .visualizer {
   display: flex;
   align-items: flex-end;
-  height: 18px; /* Force a small height */
+  height: 20px; /* Fixed height for the bars to live in */
   gap: 3px;
-  margin-left: 10px;
-  flex-shrink: 0; /* Prevents it from being squeezed */
+  width: 30px;
 }
 
 .bar {
   width: 4px;
+  height: 4px; /* Initial height */
   background: var(--accent);
   border-radius: 2px;
-  min-height: 4px; /* Ensure they don't disappear entirely */
+  transition: height 0.1s ease; /* Smooth movement */
   flex-shrink: 0;
 }
+
+
 
 .visualizer.active { opacity: 1; }
 .bar {
@@ -830,24 +838,21 @@ function togglePlay() {
 }
 
 function filterSongs(val) {
-    const term = val.toLowerCase();
-    const songItems = document.querySelectorAll('.song-item');
-    
-    songItems.forEach(item => {
-        const title = item.querySelector('.song-title').innerText.toLowerCase();
-        const isMatch = title.includes(term);
-        
-        // Use 'block' or 'flex' depending on your layout preference
-        item.style.display = isMatch ? 'flex' : 'none';
-    });
+  const term = val.toLowerCase().trim();
+  const items = document.querySelectorAll('.song-item');
+  
+  items.forEach(item => {
+    const title = item.querySelector('.song-title').innerText.toLowerCase();
+    // Use 'flex' instead of 'block' to maintain the internal layout
+    item.style.display = title.includes(term) ? 'flex' : 'none';
+  });
 
-    // Clean up empty section headers (Bonus, New, etc.)
-    document.querySelectorAll('.glass-card > div[style*="margin-top:20px"]').forEach(section => {
-        const visibleSongs = section.querySelectorAll('.song-item[style*="display: flex"]');
-        section.style.display = (visibleSongs.length > 0 || term === "") ? 'block' : 'none';
-    });
+  // Handle section headers (Bonus/New)
+  document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section => {
+    const hasVisible = Array.from(section.querySelectorAll('.song-item')).some(s => s.style.display === 'flex');
+    section.style.display = (hasVisible || term === "") ? 'block' : 'none';
+  });
 }
-
 
 
 function openAlexModal() {
@@ -883,6 +888,55 @@ window.onload = () => {
     showTab(startPage, document.querySelectorAll('.nav-item')[startIndex], startIndex);
   }
 };
+let audioCtx;
+let analyser;
+let dataArray;
+let sourceNodes = new Map();
+
+function initAudioVisualizer(audioElement) {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 32; // Small size for 4-5 bars
+    const bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+  }
+
+  // Connect the audio element if not already connected
+  if (!sourceNodes.has(audioElement)) {
+    const source = audioCtx.createMediaElementSource(audioElement);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    sourceNodes.set(audioElement, source);
+  }
+
+  function updateBars() {
+    if (audioElement.paused) return;
+    analyser.getByteFrequencyData(dataArray);
+    
+    // Find the visualizer bars for THIS specific song
+    const container = audioElement.closest('.song-item');
+    const bars = container.querySelectorAll('.bar');
+    
+    bars.forEach((bar, i) => {
+      // Map audio frequency to height (min 4px, max 20px)
+      const val = dataArray[i] / 255;
+      const height = 4 + (val * 16);
+      bar.style.height = height + 'px';
+    });
+    
+    requestAnimationFrame(updateBars);
+  }
+  
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  updateBars();
+}
+
+// Attach the visualizer to all play events
+document.querySelectorAll('audio').forEach(audio => {
+  audio.addEventListener('play', () => initAudioVisualizer(audio));
+});
+
 </script>
 </body>
 </html>
