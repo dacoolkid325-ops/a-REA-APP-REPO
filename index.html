@@ -3,7 +3,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>a-REA</title>
-<!-- Apple Touch Icons Preserved -->
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-iphone-60x60.png">
 <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-ipad-76x76.png">
 <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-iphone-retina-120x120.png"> 
@@ -401,7 +400,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 
 <canvas id="glassCanvas" width="1440" height="865"></canvas>
 
-<!-- MINI PLAYER -->
 <div id="miniPlayer">
   <div class="mp-info">
     <span class="mp-title" id="mpTitle">Not Playing</span>
@@ -428,7 +426,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 <section id="songs">
   <h1>Musical Story</h1>
 
-  <!-- SEARCH BAR WITH WORKING FILLED ICON -->
   <div class="search-wrapper">
     <svg class="search-icon-inside" viewBox="0 0 24 24">
       <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -603,7 +600,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     </div>
     <div class="toggle-row">
       <span style="font-size: 17px; font-weight:500;">iPad/PC Mode (Wide)</span>
-      <input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode', this.checked); reloadWixFrame();">
+      <input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode', this.checked);">
     </div>
     <div class="toggle-row">
       <span style="font-size: 17px; font-weight:500;">Remove Background</span>
@@ -614,8 +611,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
         <span style="font-size: 17px; font-weight:500;">Wix Site Width</span>
         <small style="opacity:0.6" id="widthLabel">375px (Desktop)</small>
       </div>
-      <!-- ADDED onchange="reloadWixFrame()" to allow refresh after drag -->
-      <input type="range" id="wixWidthSlider" min="320" max="2560" step="20" value="375" oninput="updateSetting('wixWidth', this.value)" onchange="reloadWixFrame()">
+      <input type="range" id="wixWidthSlider" min="320" max="2560" step="20" value="375" oninput="updateSetting('wixWidth', this.value)">
     </div>
     <div class="toggle-row">
       <span style="font-size: 17px; font-weight:500;">Page Zoom</span>
@@ -624,7 +620,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
   </div>
 </section>
 
-<!-- NAV BAR with CLEAN ICONS -->
 <div class="nav-container">
  <div id="selectionPill" class="nav-selection-pill" style="transform: translateX(8px);"></div>
   <button class="nav-item active" onclick="showTab('home', this, 0)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
@@ -637,7 +632,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
   </button>
   <button class="nav-item" onclick="showTab('books', this, 4)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
   <button class="nav-item" onclick="showTab('settings', this, 5)">
-    <!-- FIXED SETTINGS ICON -->
     <svg viewBox="0 0 24 24">
       <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
     </svg>
@@ -727,17 +721,11 @@ function updateSetting(key, val) {
   }
 }
 
-// Function to force Wix iframe reload for layout changes
+// Function modified to prevent black screen / flashing
 function reloadWixFrame() {
-    const frame = document.getElementById('wixFrame');
-    if (frame) {
-        const currentSrc = frame.src;
-        // Temporarily clear src to force a refresh on re-assignment
-        frame.src = '';
-        setTimeout(() => {
-            frame.src = currentSrc;
-        }, 50);
-    }
+    // We simply re-apply settings to ensure dimensions are correct
+    // We do NOT clear the src anymore, preventing the black screen
+    applySettings();
 }
 
 function applySettings() {
