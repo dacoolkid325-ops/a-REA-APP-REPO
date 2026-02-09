@@ -107,40 +107,26 @@ section.active { display: block; }
 
 .glass-card.clickable:active { transform: scale(0.98); }
 
-/* --- SEARCH BAR --- */
+/* --- FIXED SEARCH BAR --- */
 .search-wrapper {
   margin-bottom: 20px;
-  position: relative;
+  position: sticky; /* Keeps it visible while scrolling songs */
+  top: 10px;
+  z-index: 10;
 }
 .search-input {
   width: 100%;
-  padding: 14px 20px;
-  padding-left: 48px; /* Space for icon */
-  border-radius: 18px;
+  padding: 16px 20px 16px 48px;
+  border-radius: 20px;
   border: 1px solid var(--liquid-glass-border);
   background: var(--pill-bg);
   backdrop-filter: blur(20px);
-  font-size: 16px;
+  -webkit-backdrop-filter: blur(20px);
+  font-size: 17px; /* Prevents iOS from auto-zooming on focus */
   color: var(--text-main);
   outline: none;
-  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-.search-input::placeholder { color: var(--text-mute); }
-.search-input:focus {
-  background: var(--liquid-glass-bg);
-  border-color: var(--accent);
-}
-.search-icon-inside {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-mute);
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-}
-
 /* --- VISUALIZER --- */
 .visualizer {
   display: flex;
@@ -736,8 +722,10 @@ function applySettings() {
   document.body.classList.toggle('no-bg', appSettings.noBg);
   document.getElementById('noBgToggle').checked = appSettings.noBg;
   
-  document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
-  document.getElementById('uiScaleSlider').value = appSettings.uiScale;
+  // Only apply zoom if we aren't currently typing in the search bar
+if (document.activeElement.tagName !== 'INPUT') {
+    document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
+}
   
   if(appSettings.startPage) {
     const sel = document.getElementById('startPageSelect');
@@ -815,11 +803,23 @@ function togglePlay() {
 
 function filterSongs(val) {
     const term = val.toLowerCase();
-    document.querySelectorAll('.song-item').forEach(item => {
+    const items = document.querySelectorAll('.song-item');
+    
+    items.forEach(item => {
         const title = item.querySelector('.song-title').innerText.toLowerCase();
-        item.style.display = title.includes(term) ? 'flex' : 'none';
+        const shouldShow = title.includes(term);
+        item.style.display = shouldShow ? 'block' : 'none';
+        
+        // Also hide the "Bonus" divider if no songs in that sub-group match
+        const parent = item.parentElement;
+        if (parent.style.marginTop === "20px") {
+             const siblings = parent.querySelectorAll('.song-item');
+             const anyVisible = Array.from(siblings).some(s => s.style.display !== 'none');
+             parent.style.display = anyVisible ? 'block' : 'none';
+        }
     });
 }
+
 
 function openAlexModal() {
   document.getElementById('alertTitle').innerText = "Coming Soon";
