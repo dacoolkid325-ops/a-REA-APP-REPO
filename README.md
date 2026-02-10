@@ -39,7 +39,7 @@ The design philosophy combines simplicity with vibrancy. Here’s the color pale
 ## 🚀 Future Plans
 
 Some ideas for improving and expanding the app include:
-- Adding song previews and a library for easy browsing.
+- ai-REA.
 - Integrating theme customization for a personalized experience.
 - Implementing a built-in music player with enhanced playback features.
 - Creating community interaction spaces for fans to engage.
