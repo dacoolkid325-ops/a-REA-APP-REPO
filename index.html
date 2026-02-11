@@ -278,7 +278,7 @@ video { width: 100%; border-radius: 20px; border: none; background: #000;}
 .btn-ios {
   display: block; width: 100%; padding: 18px; background: var(--accent);
   color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
-  font-weight: 600; font-size: 17px; margin-bottom: 20px;
+  font-weight: 600; font-size: 17px; margin-bottom: 20px; border: none; cursor: pointer;
 }
 
 .toggle-row {
@@ -422,13 +422,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);"></iframe>
   </div>
 </section>
-
-<!-- 
-  NOTE: You cannot change the font INSIDE the iframe (the Hugging Face Space) 
-  unless you modify the code on Hugging Face itself. 
-  
-  This code updates the wrapper and adds a labeled header with a custom font.
--->
 
 <section id="ai-rea" style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
     <div style="max-width: 850px; margin: 0 auto 10px auto; padding: 0 10px;">
@@ -634,6 +627,25 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 
 </section>
 
+<section id="community">
+    <h1>a-REA Community</h1>
+    <div class="glass-card">
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-mute); font-size:14px;">Username</label>
+            <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left: 20px; background: rgba(0,0,0,0.2) !important;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-mute); font-size:14px;">Message</label>
+            <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="padding-left: 20px; height: auto; resize: none; background: rgba(0,0,0,0.2) !important;"></textarea>
+        </div>
+        <button id="postBtn" class="btn-ios">Post Comment</button>
+    </div>
+
+    <div id="commentsContainer" style="display: flex; flex-direction: column; gap: 15px;">
+        <div style="text-align: center; padding: 40px; color: var(--text-mute); font-weight: 500;">Loading comments...</div>
+    </div>
+</section>
+
 <section id="settings">
   <h1>Settings</h1>
   <div class="glass-card">
@@ -656,6 +668,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
             <option value="videos">Videos</option>
             <option value="games">Games</option>
             <option value="books">Books</option>
+            <option value="community">Community</option>
             <option value="settings">Settings</option>
         </select>
     </div>
@@ -701,7 +714,12 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     </svg>
   </button>
   <button class="nav-item" onclick="showTab('books', this, 5)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
-  <button class="nav-item" onclick="showTab('settings', this, 6)">
+  
+  <button class="nav-item" onclick="showTab('community', this, 6)">
+    <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+  </button>
+
+  <button class="nav-item" onclick="showTab('settings', this, 7)">
     <svg viewBox="0 0 24 24">
       <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
     </svg>
@@ -817,7 +835,7 @@ function applySettings() {
   document.getElementById('noBgToggle').checked = appSettings.noBg;
   
   // Only apply zoom if we aren't currently typing in the search bar
-if (document.activeElement.tagName !== 'INPUT') {
+if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
     document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
 }
   
@@ -940,7 +958,7 @@ window.onload = () => {
   applySettings();
   
   // UPDATED PAGE LIST
-  const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'settings'];
+  const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'settings'];
   const startPage = appSettings.startPage || 'home';
   const startIndex = pages.indexOf(startPage);
   if(startIndex > -1) {
@@ -996,6 +1014,115 @@ document.querySelectorAll('audio').forEach(audio => {
   audio.addEventListener('play', () => initAudioVisualizer(audio));
 });
 
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'a-rea-web-comments';
+    const firebaseConfig = JSON.parse(__firebase_config);
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const commentsContainer = document.getElementById('commentsContainer');
+    const usernameInput = document.getElementById('username');
+    const messageInput = document.getElementById('message');
+    const postBtn = document.getElementById('postBtn');
+
+    let currentUser = null;
+
+    const initAuth = async () => {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (error) {
+            console.error("Auth failed:", error);
+        }
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (user) {
+            loadComments();
+        }
+    });
+
+    function loadComments() {
+        const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+        
+        onSnapshot(commentsRef, (snapshot) => {
+            const comments = [];
+            snapshot.forEach(doc => {
+                comments.push({ id: doc.id, ...doc.data() });
+            });
+            comments.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+            renderComments(comments);
+        }, (err) => {
+            console.error("Listen failed:", err);
+            commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b; font-weight: 500;">Failed to load comments.</div>`;
+        });
+    }
+
+    function renderComments(comments) {
+        if (comments.length === 0) {
+            commentsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-mute); font-style: italic;">No comments yet. Be the first!</div>`;
+            return;
+        }
+
+        // Adapted to use Main App styles instead of Tailwind
+        commentsContainer.innerHTML = comments.map(c => `
+            <div class="glass-card" style="padding: 15px; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <span style="font-weight: 700; color: var(--accent);">@${escapeHtml(c.username || 'Anonymous')}</span>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--text-mute); text-transform: uppercase;">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString() : 'Just now'}</span>
+                </div>
+                <p style="color: var(--text-main); word-break: break-word; line-height: 1.5; margin: 0;">${escapeHtml(c.message || '')}</p>
+            </div>
+        `).join('');
+    }
+
+    postBtn.addEventListener('click', async () => {
+        const username = usernameInput.value.trim();
+        const message = messageInput.value.trim();
+
+        if (!username || !message) return;
+        if (!currentUser) return;
+
+        postBtn.disabled = true;
+        const originalText = postBtn.innerText;
+        postBtn.innerText = "Posting...";
+
+        try {
+            const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+            await addDoc(commentsRef, {
+                username: username,
+                message: message,
+                timestamp: serverTimestamp(),
+                userId: currentUser.uid
+            });
+            messageInput.value = '';
+        } catch (error) {
+            console.error("Post failed:", error);
+        } finally {
+            postBtn.disabled = false;
+            postBtn.innerText = originalText;
+        }
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    initAuth();
 </script>
 </body>
 </html>
