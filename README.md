@@ -14,13 +14,13 @@ The **a-REA App** is a straightforward music app for fans and listeners alike. I
 
 The app is built using:
 - **HTML**: To structure and design the app layout.
-- **JavaScript**: To make the app interactive and dynamic.
+- **JavaScript**: To make the app interactive and dynamic and make buttons and games work.
 
 ---
 
 ## 🎨 Design and Color Theme
 
-The design philosophy combines simplicity with vibrancy. Here’s the color palette for the app:
+The design philosophy combines simplicity with vibrancy.There are many moods/themes. Here’s the color palette for the app:
 - **Deep Royal Blue (#4169E1):** Adds a professional and creative vibe.
 - **Bright Coral (#FF7F50):** Brings a spark of energy to the UI.
 - **Light Ivory (#FFFFF0):** Keeps the design clean and easy on the eyes.
@@ -39,10 +39,8 @@ The design philosophy combines simplicity with vibrancy. Here’s the color pale
 ## 🚀 Future Plans
 
 Some ideas for improving and expanding the app include:
-- ai-REA.
-- Integrating theme customization for a personalized experience.
-- Implementing a built-in music player with enhanced playback features.
-- Creating community interaction spaces for fans to engage.
+- Making more Games
+- idk
 
 ---
 
