@@ -1018,15 +1018,25 @@ document.querySelectorAll('audio').forEach(audio => {
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'a-rea-web-comments';
-    const firebaseConfig = JSON.parse(__firebase_config);
+    // Your actual configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8",
+      authDomain: "a-rea-220da.firebaseapp.com",
+      projectId: "a-rea-220da",
+      storageBucket: "a-rea-220da.firebasestorage.app",
+      messagingSenderId: "1046969467026",
+      appId: "1:1046969467026:web:f67fffc6312c2996cb664b",
+      measurementId: "G-LE90K55Y65"
+    };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const appId = 'a-rea-web-comments';
 
     const commentsContainer = document.getElementById('commentsContainer');
     const usernameInput = document.getElementById('username');
@@ -1035,15 +1045,13 @@ document.querySelectorAll('audio').forEach(audio => {
 
     let currentUser = null;
 
+    // Login automatically
     const initAuth = async () => {
         try {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
+            await signInAnonymously(auth);
         } catch (error) {
             console.error("Auth failed:", error);
+            commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b;">Auth Error: Check if Anonymous Login is enabled in Firebase.</div>`;
         }
     };
 
@@ -1053,9 +1061,7 @@ document.querySelectorAll('audio').forEach(audio => {
             loadComments();
         }
     });
-
-    function loadComments() {
-        const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+         const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
         
         onSnapshot(commentsRef, (snapshot) => {
             const comments = [];
