@@ -712,6 +712,10 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
       <span style="font-size: 17px; font-weight:500;">Page Zoom</span>
       <input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale', this.value)">
     </div>
+    <div class="toggle-row">
+  <span style="font-size: 17px; font-weight:500;">Battery Saver (Half BG FPS)</span>
+  <input type="checkbox" id="batteryToggle" onchange="updateSetting('batterySaver', this.checked)">
+</div>
   </div>
 </section>
 
@@ -752,6 +756,9 @@ const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
 let animFrameId = null; // Used to fully pause the canvas loop to save CPU
+let isTabActive = true;
+let bgFrameCount = 0;
+document.addEventListener("visibilitychange", () => { isTabActive = !document.hidden; });
 
 // THEME PALETTES
 const themes = {
@@ -767,6 +774,7 @@ let appSettings = {
   ipadMode: false,
   noBg: false,
   solidGlass: false,
+  batterySaver: false,
   wixWidth: 375,
   uiScale: 0.95,
   startPage: 'home',
@@ -796,25 +804,33 @@ function initCanvas() {
 function loop() {
   if (appSettings.noBg) {
     animFrameId = null;
-    return; // Completely stop background calculations when turned off
+    return;
   }
   
-  ctx.clearRect(0,0,canvas.width, canvas.height);
-  points.forEach(p => {
-    p.x += p.vx; p.y += p.vy;
-    if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
-    if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
-    let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-    g.addColorStop(0, p.color);
-    g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fill();
-  });
+  bgFrameCount++;
+
+  // This is the logic that actually saves the battery:
+  const shouldThrottle = appSettings.batterySaver || !isTabActive;
+  
+  if (!shouldThrottle || bgFrameCount % 2 === 0) {
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    points.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
+      if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
+      let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      g.addColorStop(0, p.color);
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+  }
   
   animFrameId = requestAnimationFrame(loop);
 }
+
 
 function updateSetting(key, val) {
   appSettings[key] = val;
@@ -850,6 +866,10 @@ function applySettings() {
   
   document.body.classList.toggle('no-bg', appSettings.noBg);
   document.getElementById('noBgToggle').checked = appSettings.noBg;
+
+  const batteryToggle = document.getElementById('batteryToggle');
+  if(batteryToggle) batteryToggle.checked = appSettings.batterySaver;
+
 
   // Solid Glass Toggle
   document.body.classList.toggle('solid-glass', appSettings.solidGlass);
