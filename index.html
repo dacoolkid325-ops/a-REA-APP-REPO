@@ -13,15 +13,13 @@
   --bg-dark: #000000;
   --text-main: #ffffff;
   --text-mute: rgba(255, 255, 255, 0.5);
-  --accent: #007AFF; /* Default Accent */
+  --accent: #007AFF; 
   
-  /* Glass Specs */
   --liquid-glass-bg: rgba(255, 255, 255, 0.12);
   --liquid-glass-border: rgba(255, 255, 255, 0.2);
   --liquid-glass-shine: rgba(255, 255, 255, 0.4);
   --ui-zoom: 0.95;
   
-  /* Pill & Nav Colors */
   --nav-bg: rgba(20, 20, 20, 0.6);
   --pill-bg: rgba(255, 255, 255, 0.15);
   --pill-border: rgba(255, 255, 255, 0.2);
@@ -38,7 +36,7 @@ body {
   transform: scale(var(--ui-zoom));
   transform-origin: top center;
   width: calc(100% / var(--ui-zoom));
-  padding-bottom: 160px; /* Padding for nav + player */
+  padding-bottom: 160px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -55,9 +53,23 @@ body.light {
   --player-bg: rgba(255, 255, 255, 0.85);
 }
 
+/* SOLID GLASS MODE - MASSIVE PERFORMANCE BOOST */
+body.solid-glass .glass-card,
+body.solid-glass .nav-container,
+body.solid-glass #miniPlayer,
+body.solid-glass .nav-selection-pill {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--player-bg) !important;
+}
+body.solid-glass .search-input {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--nav-bg) !important;
+}
+
 body.no-bg #glassCanvas { display: none !important; }
 
-/* iPad/PC Mode Layout */
 body.ipad-mode section {
   max-width: 98% !important;
 }
@@ -120,8 +132,6 @@ section.active { display: block; }
   color: var(--text-main);
   outline: none;
   transition: all 0.3s ease;
-  
-  /* TRUE LIQUID GLASS */
   background: rgba(255, 255, 255, 0.2) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
@@ -137,39 +147,35 @@ section.active { display: block; }
   width: 20px;
   height: 20px;
   color: var(--text-main);
-  opacity: 0.6; /* Blends it into the glass */
+  opacity: 0.6;
   z-index: 2;
   pointer-events: none;
 }
 
-/* STOPS SQUISHING AND BLUE LINES */
-/* STABLE LAYOUT - PREVENTS SQUISHING */
 .song-item {
-  display: flex; /* Changed from block to flex for stability */
+  display: flex; 
   flex-direction: column;
   padding: 12px 0;
   border-bottom: 1px solid var(--liquid-glass-border);
-  min-height: 110px; /* Ensures space is reserved */
+  min-height: 110px; 
 }
 
 .visualizer {
   display: flex;
   align-items: flex-end;
-  height: 20px; /* Fixed height for the bars to live in */
+  height: 20px; 
   gap: 3px;
   width: 30px;
 }
 
 .bar {
   width: 4px;
-  height: 4px; /* Initial height */
+  height: 4px; 
   background: var(--accent);
   border-radius: 2px;
-  transition: height 0.1s ease; /* Smooth movement */
+  transition: height 0.1s ease; 
   flex-shrink: 0;
 }
-
-
 
 .visualizer.active { opacity: 1; }
 .bar {
@@ -189,7 +195,6 @@ section.active { display: block; }
   to { height: 12px; }
 }
 
-/* --- WIX SCALE CONTAINER --- */
 .iframe-wrapper {
   height: 80vh; 
   padding: 0; 
@@ -211,7 +216,6 @@ section.active { display: block; }
   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), width 0.3s ease;
 }
 
-/* --- NAV BAR --- */
 .nav-container {
   position: fixed;
   bottom: 30px;
@@ -262,7 +266,6 @@ section.active { display: block; }
 .nav-item.active { color: var(--text-main); }
 svg { width: 28px; height: 28px; fill: currentColor; }
 
-/* --- UI ELEMENTS --- */
 .song-header {
   display: flex;
   justify-content: space-between;
@@ -308,7 +311,6 @@ input[type="range"] {
   color: var(--text-main);
 }
 
-/* --- MINI PLAYER --- */
 #miniPlayer {
   position: fixed;
   bottom: 120px;
@@ -352,7 +354,6 @@ input[type="range"] {
   color: var(--text-main); display: flex; align-items: center; justify-content: center;
 }
 
-/* GAMES OVERRIDES */
 .ultra-wide-section {
   max-width: 98% !important;
   width: 98% !important;
@@ -419,7 +420,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
   </div>
 
   <div class="glass-card iframe-wrapper" id="wixWrapper">
-    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);"></iframe>
+    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);" loading="lazy"></iframe>
   </div>
 </section>
 
@@ -440,6 +441,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
         <div style="width: 100%; margin-bottom: 24px; overflow: hidden; border-radius: 18px;">
   <img src="icons/IMG_1193.jpeg" 
        alt="Section Banner" 
+       loading="lazy"
        style="width: 100%; height: auto; display: block; object-fit: cover; pointer-events: none;">
 </div>
 
@@ -449,11 +451,10 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
             width="100%"
             height="1500"
             style="display: block; background: transparent;"
-            title="ai-REA">
+            title="ai-REA"
+            loading="lazy">
         </iframe> </div>
 </section>
-
-
 
 <section id="songs">
   <h1>Musical Story</h1>
@@ -536,7 +537,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
   <h1>Videos</h1>
   <div class="glass-card">
     <span class="song-title">aq.co direct - a-REA 2.0</span>
-    <video controls="" src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&amp;raw=1"></video>
+    <video controls="" src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&amp;raw=1" preload="none"></video>
   </div>
 </section>
 
@@ -554,7 +555,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
         </button>
       </div>
       <div class="game-viewport">
-        <iframe src="file.html" class="game-iframe" data-virtual-width="1200"></iframe>
+        <iframe src="file.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
       </div>
     </div>
 
@@ -567,7 +568,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
         </button>
       </div>
       <div class="game-viewport">
-        <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200"></iframe>
+        <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
       </div>
     </div>
   </div>
@@ -584,61 +585,59 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     }
     setTimeout(() => { if (typeof scaleGameIframes === 'function') scaleGameIframes(); }, 500);
   </script>
-  
 </section>
 
 <section id="books">
   <h1 style="text-align: left; margin-bottom: 24px;">Library</h1>
   
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Trash
     </a>
   </div>
 
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/jbxyot1tvss95wmy8oqsp/Skellig.pdf?rlkey=zw8p0z9eatsacec76omwdkoko&st=wi7kelpx&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Skellig
     </a>
   </div>
 
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/nanpzpw19wlnfniq5r1bj/Who-Let-The-Gods-Out.pdf?rlkey=o7bjbg8wn4utz13la6hf1vc8q&st=8nypr58y&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Who Let The Gods Out
     </a>
   </div>
 
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/j5ueqmsrzjckzbhgayjen/Simply-The-Quest.pdf?rlkey=vxwebvosureyb5czjj4hbp234&st=y37hii41&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Simply The Quest
     </a>
   </div>
 
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/su16gjex59vbkxou4uamc/Beyond-The-Odyssey.pdf?rlkey=4grk0yo86jt3nevrpdnhnr5pl&st=quahh8l8&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Beyond The Odyssey
     </a>
   </div>
 
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/3e4guvjpensetwua192hc/Against-All-Gods.pdf?rlkey=8nuhm2kodofft3z1stjvzkywr&st=o2f7wrud&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Against All Gods
     </a>
   </div>
 
   <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);"></iframe>
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
     <a href="https://www.dropbox.com/scl/fi/gm1mn4d0rmjjrmcp5xblo/My-Name-Is-Mina.pdf?rlkey=amdwrin5ice6g4emxbhi95kqz&st=4xuzwdj9&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download My Name Is Mina
     </a>
   </div>
-  
 </section>
 
 <section id="community">
@@ -699,6 +698,10 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
       <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
     </div>
     <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Solid Glass (Performance)</span>
+      <input type="checkbox" id="solidGlassToggle" onchange="updateSetting('solidGlass', this.checked)">
+    </div>
+    <div class="toggle-row">
       <div style="display:flex; flex-direction:column;">
         <span style="font-size: 17px; font-weight:500;">Wix Site Width</span>
         <small style="opacity:0.6" id="widthLabel">375px (Desktop)</small>
@@ -715,11 +718,9 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 <div class="nav-container">
  <div id="selectionPill" class="nav-selection-pill" style="transform: translateX(8px);"></div>
   <button class="nav-item active" onclick="showTab('home', this, 0)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
-  
   <button class="nav-item" onclick="showTab('ai-rea', this, 1)">
     <img src="icons/IMG_1194-removebg-preview.png" alt="ai-REA" style="width: 60px; height: 60px; object-fit: contain;">
   </button>
-  
   <button class="nav-item" onclick="showTab('songs', this, 2)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path></svg></button>
   <button class="nav-item" onclick="showTab('videos', this, 3)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg></button>
   <button class="nav-item" onclick="showTab('games', this, 4)">
@@ -728,11 +729,9 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     </svg>
   </button>
   <button class="nav-item" onclick="showTab('books', this, 5)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
-  
   <button class="nav-item" onclick="showTab('community', this, 6)">
     <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
   </button>
-
   <button class="nav-item" onclick="showTab('settings', this, 7)">
     <svg viewBox="0 0 24 24">
       <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
@@ -752,6 +751,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
+let animFrameId = null; // Used to fully pause the canvas loop to save CPU
 
 // THEME PALETTES
 const themes = {
@@ -766,6 +766,7 @@ let appSettings = {
   lightMode: true,
   ipadMode: false,
   noBg: false,
+  solidGlass: false,
   wixWidth: 375,
   uiScale: 0.95,
   startPage: 'home',
@@ -777,7 +778,6 @@ function initCanvas() {
   canvas.height = window.innerHeight;
   points = [];
   
-  // Use current theme colors
   const themeKey = appSettings.theme || 'default';
   const palette = themes[themeKey] ? themes[themeKey].colors : themes.default.colors;
   
@@ -794,22 +794,26 @@ function initCanvas() {
 }
 
 function loop() {
-  if (!appSettings.noBg) {
-    ctx.clearRect(0,0,canvas.width, canvas.height);
-    points.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
-      if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
-      let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-      g.addColorStop(0, p.color);
-      g.addColorStop(1, 'transparent');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fill();
-    });
+  if (appSettings.noBg) {
+    animFrameId = null;
+    return; // Completely stop background calculations when turned off
   }
-  requestAnimationFrame(loop);
+  
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+  points.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
+    if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
+    let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+    g.addColorStop(0, p.color);
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+  });
+  
+  animFrameId = requestAnimationFrame(loop);
 }
 
 function updateSetting(key, val) {
@@ -817,23 +821,22 @@ function updateSetting(key, val) {
   localStorage.setItem('aREASettings', JSON.stringify(appSettings));
   applySettings();
   
-  // Re-init canvas if theme changes
   if(key === 'theme') {
     initCanvas();
   }
 }
 
-// Function modified to prevent black screen / flashing
 function reloadWixFrame() {
-    // We simply re-apply settings to ensure dimensions are correct
-    // We do NOT clear the src anymore, preventing the black screen
     applySettings();
 }
+
+let lastWixWidth = null;
+let lastIpadMode = null;
+let lastContainerWidth = null;
 
 function applySettings() {
   if (!appSettings) return;
   
-  // Theme Application
   const themeKey = appSettings.theme || 'default';
   const themeObj = themes[themeKey] || themes.default;
   document.documentElement.style.setProperty('--accent', themeObj.accent);
@@ -847,11 +850,20 @@ function applySettings() {
   
   document.body.classList.toggle('no-bg', appSettings.noBg);
   document.getElementById('noBgToggle').checked = appSettings.noBg;
+
+  // Solid Glass Toggle
+  document.body.classList.toggle('solid-glass', appSettings.solidGlass);
+  const solidToggle = document.getElementById('solidGlassToggle');
+  if(solidToggle) solidToggle.checked = appSettings.solidGlass;
   
-  // Only apply zoom if we aren't currently typing in the search bar
-if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+  // Restart canvas if noBg is toggled off and loop was paused
+  if (!appSettings.noBg && !animFrameId) {
+    loop();
+  }
+  
+  if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
     document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
-}
+  }
   
   if(appSettings.startPage) {
     const sel = document.getElementById('startPageSelect');
@@ -862,14 +874,25 @@ if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName
   const wrapper = document.getElementById('wixWrapper');
   const label = document.getElementById('widthLabel');
   
+  // Wix Optimization: Only recalculate and repaint IF things actually changed or page became visible
   if (frame && wrapper) {
     const containerWidth = wrapper.offsetWidth;
-    const targetWidth = parseInt(appSettings.wixWidth);
-    const scaleFactor = containerWidth / targetWidth;
-    frame.style.width = targetWidth + "px";
-    frame.style.height = (100 / scaleFactor) + "%"; 
-    frame.style.transform = `scale(${scaleFactor})`;
-    label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
+    // Don't calculate scale if the container is hidden (width=0)
+    if (containerWidth > 0) {
+        const targetWidth = parseInt(appSettings.wixWidth);
+        
+        if (lastWixWidth !== targetWidth || lastIpadMode !== appSettings.ipadMode || lastContainerWidth !== containerWidth) {
+            const scaleFactor = containerWidth / targetWidth;
+            frame.style.width = targetWidth + "px";
+            frame.style.height = (100 / scaleFactor) + "%"; 
+            frame.style.transform = `scale(${scaleFactor})`;
+            label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
+            
+            lastWixWidth = targetWidth;
+            lastIpadMode = appSettings.ipadMode;
+            lastContainerWidth = containerWidth;
+        }
+    }
   }
   document.getElementById('wixWidthSlider').value = appSettings.wixWidth;
 }
@@ -885,9 +908,11 @@ function showTab(id, btn, index) {
   const pill = document.getElementById('selectionPill');
   pill.style.transform = `translateX(${index * 64 + 8}px)`;
   window.scrollTo({top: 0, behavior: 'smooth'});
+
+  // In case the Wix frame was hiding during a setting change, reapply settings when home is visible
+  if(id === 'home') applySettings();
 }
 
-/* MEDIA LOGIC */
 let currentAudio = null;
 const miniPlayer = document.getElementById('miniPlayer');
 const mpTitle = document.getElementById('mpTitle');
@@ -904,7 +929,6 @@ document.addEventListener('play', function(e){
     miniPlayer.classList.add('show');
     mpPlayIcon.querySelector('path').setAttribute('d', pausePath);
     
-    // Update visuals
     const item = e.target.closest('.song-item');
     document.querySelectorAll('.visualizer').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.song-title').forEach(t => t.classList.remove('playing'));
@@ -933,17 +957,14 @@ function filterSongs(val) {
   
   items.forEach(item => {
     const title = item.querySelector('.song-title').innerText.toLowerCase();
-    // Use 'flex' instead of 'block' to maintain the internal layout
     item.style.display = title.includes(term) ? 'flex' : 'none';
   });
 
-  // Handle section headers (Bonus/New)
   document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section => {
     const hasVisible = Array.from(section.querySelectorAll('.song-item')).some(s => s.style.display === 'flex');
     section.style.display = (hasVisible || term === "") ? 'block' : 'none';
   });
 }
-
 
 function openAlexModal() {
   document.getElementById('alertTitle').innerText = "Alexandru News";
@@ -956,9 +977,9 @@ function loadStoredSettings() {
   const saved = localStorage.getItem('aREASettings');
   if (saved) {
     try {
-      appSettings = JSON.parse(saved);
-      if(!appSettings.startPage) appSettings.startPage = 'home';
-      if(!appSettings.theme) appSettings.theme = 'default';
+      // FIX: Merges old settings with the newest defaults so bugs don't wipe everything out
+      const parsed = JSON.parse(saved);
+      appSettings = { ...appSettings, ...parsed };
     } catch(e) { console.error("Error loading settings", e); }
   }
 }
@@ -971,7 +992,6 @@ window.onload = () => {
   loop();
   applySettings();
   
-  // UPDATED PAGE LIST
   const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'settings'];
   const startPage = appSettings.startPage || 'home';
   const startIndex = pages.indexOf(startPage);
@@ -988,12 +1008,11 @@ function initAudioVisualizer(audioElement) {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 32; // Small size for 4-5 bars
+    analyser.fftSize = 32;
     const bufferLength = analyser.frequencyBinCount;
     dataArray = new Uint8Array(bufferLength);
   }
 
-  // Connect the audio element if not already connected
   if (!sourceNodes.has(audioElement)) {
     const source = audioCtx.createMediaElementSource(audioElement);
     source.connect(analyser);
@@ -1005,12 +1024,10 @@ function initAudioVisualizer(audioElement) {
     if (audioElement.paused) return;
     analyser.getByteFrequencyData(dataArray);
     
-    // Find the visualizer bars for THIS specific song
     const container = audioElement.closest('.song-item');
     const bars = container.querySelectorAll('.bar');
     
     bars.forEach((bar, i) => {
-      // Map audio frequency to height (min 4px, max 20px)
       const val = dataArray[i] / 255;
       const height = 4 + (val * 16);
       bar.style.height = height + 'px';
@@ -1023,11 +1040,9 @@ function initAudioVisualizer(audioElement) {
   updateBars();
 }
 
-// Attach the visualizer to all play events
 document.querySelectorAll('audio').forEach(audio => {
   audio.addEventListener('play', () => initAudioVisualizer(audio));
 });
-
 </script>
 
 <script type="module">
@@ -1069,7 +1084,7 @@ document.querySelectorAll('audio').forEach(audio => {
     onAuthStateChanged(auth, (user) => {
         currentUser = user;
         if (user) {
-            loadComments(); // Now this function actually exists below
+            loadComments();
         }
     });
 
