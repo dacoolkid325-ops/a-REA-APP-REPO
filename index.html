@@ -3,161 +3,187 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>a-REA</title>
+<link rel="preload" as="image" href="icons/IMG_1194-removebg-preview.png">
+<link rel="preload" as="image" href="icons/IMG_1193.jpeg">
+
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-iphone-60x60.png">
 <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-ipad-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-iphone-retina-120x120.png">
+<link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-iphone-retina-120x120.png"> 
 <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-ipad-retina-152x152.png">
+
 <style>
 :root {
---bg-dark: #000000;
---text-main: #ffffff;
---text-mute: rgba(255, 255, 255, 0.5);
---accent: #007AFF;
---liquid-glass-bg: rgba(255, 255, 255, 0.12);
---liquid-glass-border: rgba(255, 255, 255, 0.2);
---liquid-glass-shine: rgba(255, 255, 255, 0.4);
---ui-zoom: 0.95;
---nav-bg: rgba(20, 20, 20, 0.6);
---pill-bg: rgba(255, 255, 255, 0.15);
---pill-border: rgba(255, 255, 255, 0.2);
---player-bg: rgba(20, 20, 20, 0.85);
+  --bg-dark: #000000;
+  --text-main: #ffffff;
+  --text-mute: rgba(255, 255, 255, 0.5);
+  --accent: #007AFF; 
+  
+  --liquid-glass-bg: rgba(255, 255, 255, 0.12);
+  --liquid-glass-border: rgba(255, 255, 255, 0.2);
+  --liquid-glass-shine: rgba(255, 255, 255, 0.4);
+  --ui-zoom: 0.95;
+  
+  --nav-bg: rgba(20, 20, 20, 0.6);
+  --pill-bg: rgba(255, 255, 255, 0.15);
+  --pill-border: rgba(255, 255, 255, 0.2);
+  --player-bg: rgba(20, 20, 20, 0.85);
 }
+
 body {
-margin: 0;
-background-color: var(--bg-dark);
-color: var(--text-main);
-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-overflow-x: hidden;
-min-height: 100vh;
-transform: scale(var(--ui-zoom));
-transform-origin: top center;
-width: calc(100% / var(--ui-zoom));
-padding-bottom: 160px;
-transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  transform: scale(var(--ui-zoom));
+  transform-origin: top center;
+  width: calc(100% / var(--ui-zoom));
+  padding-bottom: 160px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 body.light {
---bg-dark: #f2f2f7;
---text-main: #000000;
---text-mute: rgba(0, 0, 0, 0.5);
---liquid-glass-bg: rgba(255, 255, 255, 0.7);
---liquid-glass-border: rgba(0, 0, 0, 0.05);
---liquid-glass-shine: rgba(255, 255, 255, 1);
---nav-bg: rgba(240, 240, 245, 0.8);
---pill-bg: #ffffff;
---pill-border: rgba(0, 0, 0, 0.1);
---player-bg: rgba(255, 255, 255, 0.85);
+  --bg-dark: #f2f2f7;
+  --text-main: #000000;
+  --text-mute: rgba(0, 0, 0, 0.5);
+  --liquid-glass-bg: rgba(255, 255, 255, 0.7);
+  --liquid-glass-border: rgba(0, 0, 0, 0.05);
+  --liquid-glass-shine: rgba(255, 255, 255, 1);
+  --nav-bg: rgba(240, 240, 245, 0.8);
+  --pill-bg: #ffffff;
+  --pill-border: rgba(0, 0, 0, 0.1);
+  --player-bg: rgba(255, 255, 255, 0.85);
 }
+
 /* PERFORMANCE OPTIMIZATIONS */
 section {
-display: none;
-padding: 20px;
-max-width: 600px;
-margin: 0 auto;
-animation: pageEnter 0.4s cubic-bezier(0.2, 1, 0.3, 1);
-content-visibility: auto;
+  display: none;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: pageEnter 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  content-visibility: auto; 
 }
 section.active { display: block; }
+
 .wix-iframe {
-will-change: transform, width;
+  will-change: transform, width;
 }
+
 /* SOLID GLASS MODE - FIXES HEAVY BLUR EVERYWHERE */
 body.solid-glass * {
-backdrop-filter: none !important;
--webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 body.solid-glass .glass-card,
 body.solid-glass .nav-container,
 body.solid-glass #miniPlayer,
 body.solid-glass .nav-selection-pill {
-background: var(--player-bg) !important;
+    background: var(--player-bg) !important;
 }
 body.solid-glass .search-input {
-background: var(--nav-bg) !important;
+    background: var(--nav-bg) !important;
 }
 
+/* ULTRA SAVER MODE - STRICT NO ANIMATION & LOW QUALITY */
 body.ultra-saver .glass-card,
 body.ultra-saver .nav-container,
 body.ultra-saver #miniPlayer {
-box-shadow: none !important;
+    box-shadow: none !important;
 }
 body.ultra-saver img {
-filter: grayscale(0.15) contrast(0.85);
-image-rendering: pixelated; / Lowers render quality /
+    filter: grayscale(0.15) contrast(0.85);
+    image-rendering: pixelated; 
 }
 body.ultra-saver svg {
-shape-rendering: crispEdges; / Lowers SVG render quality /
+    shape-rendering: crispEdges; 
 }
 body.ultra-saver .visualizer,
 body.ultra-saver #miniPlayer {
-display: none !important; / Songs aren't the main point /
+    display: none !important; 
 }
 body.ultra-saver .game-container-giant:not(.max-power) .game-iframe {
-opacity: 0.3;
-filter: blur(2px) grayscale(1);
-pointer-events: none; / Only clicked games get max power /
+    opacity: 0.3;
+    filter: blur(2px) grayscale(1);
+    pointer-events: none; 
 }
-/ FIXED: Ultra Saver now kills ALL sliding/fading animations for instant response */
-body.ultra-saver * {
-transition: none !important;
-animation: none !important;
+/* STRICT NO SLIDING/ANIMATION RULE FOR ULTRA SAVER */
+body.ultra-saver *, 
+body.ultra-saver *:before, 
+body.ultra-saver *:after {
+    transition: none !important;
+    animation: none !important;
 }
+
 body.no-bg #glassCanvas { display: none !important; }
+
 body.ipad-mode section {
-max-width: 98% !important;
+  max-width: 98% !important;
 }
-• { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
 #glassCanvas {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: -1;
-filter: blur(60px) contrast(1.2);
-opacity: 0.8;
-transition: opacity 0.5s;
-will-change: opacity;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(60px) contrast(1.2);
+  opacity: 0.8;
+  transition: opacity 0.5s;
+  will-change: opacity;
 }
+
 @keyframes pageEnter {
-from { opacity: 0; transform: scale(0.98) translateY(10px); }
-to { opacity: 1; transform: scale(1) translateY(0); }
+  from { opacity: 0; transform: scale(0.98) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
+
 .glass-card {
-background: var(--liquid-glass-bg);
-backdrop-filter: blur(30px);
--webkit-backdrop-filter: blur(30px);
-border: 1px solid var(--liquid-glass-border);
-border-top: 1px solid var(--liquid-glass-shine);
-border-radius: 28px;
-padding: 24px;
-margin-bottom: 20px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-cursor: default;
-transition: transform 0.2s ease, max-width 0.3s ease;
+  background: var(--liquid-glass-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--liquid-glass-border);
+  border-top: 1px solid var(--liquid-glass-shine);
+  border-radius: 28px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  cursor: default;
+  transition: transform 0.2s ease, max-width 0.3s ease;
 }
+
 .glass-card.clickable:active { transform: scale(0.98); }
+
 .search-wrapper { position: relative; margin-bottom: 25px; width: 100%; }
+
 .search-input {
-width: 100%;
-padding: 16px 20px 16px 45px;
-border-radius: 20px;
-font-size: 17px;
-color: var(--text-main);
-outline: none;
-transition: all 0.3s ease;
-background: rgba(255, 255, 255, 0.2) !important;
-backdrop-filter: blur(20px) saturate(180%) !important;
--webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-border: 1px solid rgba(255, 255, 255, 0.2) !important;
-border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
+  width: 100%;
+  padding: 16px 20px 16px 45px;
+  border-radius: 20px;
+  font-size: 17px;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
+
 .search-icon-inside {
-position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
-width: 20px; height: 20px; color: var(--text-main); opacity: 0.6; z-index: 2; pointer-events: none;
+  position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; color: var(--text-main); opacity: 0.6; z-index: 2; pointer-events: none;
 }
+
 .song-item {
-display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid var(--liquid-glass-border); min-height: 110px;
+  display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid var(--liquid-glass-border); min-height: 110px; 
 }
+
 .visualizer { display: flex; align-items: flex-end; height: 20px; gap: 3px; width: 30px; }
 .bar { width: 4px; height: 4px; background: var(--accent); border-radius: 2px; transition: height 0.1s ease; flex-shrink: 0; }
 .visualizer.active { opacity: 1; }
@@ -167,564 +193,589 @@ display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid
 .bar:nth-child(2) { height: 10px; animation-delay: 0.3s; }
 .bar:nth-child(3) { height: 8px; animation-delay: 0.0s; }
 .bar:nth-child(4) { height: 5px; animation-delay: 0.2s; }
+
 @keyframes bounce { from { height: 4px; } to { height: 12px; } }
+
 .iframe-wrapper {
-height: 80vh; padding: 0; overflow: hidden; border-radius: 24px; position: relative;
-background: #000; display: flex; justify-content: center; align-items: flex-start;
+  height: 80vh; padding: 0; overflow: hidden; border-radius: 24px; position: relative;
+  background: #000; display: flex; justify-content: center; align-items: flex-start;
 }
+
 .wix-iframe {
-border: none; position: absolute; top: 0; left: 0; transform-origin: top left;
-transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), width 0.3s ease;
+  border: none; position: absolute; top: 0; left: 0; transform-origin: top left;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), width 0.3s ease;
 }
+
 .nav-container {
-position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-width: 95vw; max-width: 550px; /* Scales properly on mobile */
-display: flex; align-items: center; justify-content: space-around;
-padding: 8px 12px; z-index: 1000; background: var(--nav-bg);
-backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-border-radius: 35px; border: 1px solid var(--liquid-glass-border);
-box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 95vw; max-width: 550px; /* Scales properly on mobile */
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 8px 12px; z-index: 1000; background: var(--nav-bg);
+  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+  border-radius: 35px; border: 1px solid var(--liquid-glass-border);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
+
 .nav-item {
-position: relative; background: none; border: none;
-width: clamp(40px, 12vw, 64px); height: clamp(40px, 12vw, 64px); /* Auto scales */
-display: flex; align-items: center; justify-content: center;
-cursor: pointer; transition: color 0.3s; color: var(--text-mute); z-index: 2;
-flex-shrink: 1;
+  position: relative; background: none; border: none;
+  width: clamp(40px, 12vw, 64px); height: clamp(40px, 12vw, 64px); /* Auto scales */
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: color 0.3s; color: var(--text-mute); z-index: 2;
+  flex-shrink: 1;
 }
+
 .nav-selection-pill {
-position: absolute; left: 0; top: 0;
-background: var(--pill-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-border: 1px solid var(--pill-border); border-radius: 28px; z-index: 1;
-transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); pointer-events: none;
-will-change: transform, width, height;
+  position: absolute; left: 0; top: 0;
+  background: var(--pill-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--pill-border); border-radius: 28px; z-index: 1;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); pointer-events: none;
+  will-change: transform, width, height;
 }
+
 .nav-item.active { color: var(--text-main); }
 svg { width: 28px; height: 28px; fill: currentColor; }
+
 .song-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .song-title { font-weight: 600; font-size: 15px; display: block; transition: color 0.3s;}
 .song-title.playing { color: var(--accent); }
+
 audio { width: 100%; height: 38px; border-radius: 20px; margin-bottom: 16px; }
 video { width: 100%; border-radius: 20px; border: none; background: #000;}
+
 .btn-ios {
-display: block; width: 100%; padding: 18px; background: var(--accent);
-color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
-font-weight: 600; font-size: 17px; margin-bottom: 20px; border: none; cursor: pointer;
+  display: block; width: 100%; padding: 18px; background: var(--accent);
+  color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
+  font-weight: 600; font-size: 17px; margin-bottom: 20px; border: none; cursor: pointer;
 }
+
 .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--liquid-glass-border); }
 .toggle-row:last-child { border-bottom: none; }
 input[type="range"] { width: 140px; accent-color: var(--accent); }
+
 .setting-select {
-background: var(--pill-bg); color: var(--text-main); border: 1px solid var(--liquid-glass-border);
-border-radius: 12px; padding: 8px 12px; font-size: 15px; outline: none; backdrop-filter: blur(10px); -webkit-appearance: none;
+  background: var(--pill-bg); color: var(--text-main); border: 1px solid var(--liquid-glass-border);
+  border-radius: 12px; padding: 8px 12px; font-size: 15px; outline: none; backdrop-filter: blur(10px); -webkit-appearance: none;
 }
 .setting-select option { background: var(--bg-dark); color: var(--text-main); }
+
 #miniPlayer {
-position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) scale(0.9);
-width: 90%; max-width: 400px; background: var(--player-bg);
-backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-border: 1px solid var(--liquid-glass-border); border-radius: 22px; padding: 12px 20px;
-display: flex; align-items: center; justify-content: space-between;
-box-shadow: 0 15px 35px rgba(0,0,0,0.3); z-index: 900; opacity: 0; pointer-events: none;
-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) scale(0.9);
+  width: 90%; max-width: 400px; background: var(--player-bg);
+  backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--liquid-glass-border); border-radius: 22px; padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3); z-index: 900; opacity: 0; pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #miniPlayer.show { bottom: 110px; opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); }
+
 .mp-info { display: flex; flex-direction: column; overflow: hidden; }
 .mp-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
 .mp-status { font-size: 11px; color: var(--accent); font-weight: 500; margin-top: 2px; }
 .mp-controls { display: flex; gap: 15px; align-items: center; }
 .mp-btn { background: none; border: none; padding: 0; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; }
+
 .ultra-wide-section { max-width: 98% !important; width: 98% !important; padding: 10px !important; margin: 0 auto; }
 .section-title { font-size: 42px; font-weight: 800; margin-bottom: 20px; text-align: center; color: var(--text-main); }
 .btn-ios-large { display: block; width: 100%; max-width: 600px; margin: 0 auto 40px auto; padding: 24px; background: #007AFF; color: white; text-align: center; text-decoration: none; border-radius: 24px; font-weight: 700; font-size: 20px; }
 .ultra-grid { display: flex; flex-direction: column; gap: 40px; width: 100%; }
+
 .game-container-giant {
-height: 750px !important; padding: 0 !important; border-radius: 32px !important; display: flex; flex-direction: column; overflow: hidden;
-background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); transition: all 0.3s ease;
+  height: 750px !important; padding: 0 !important; border-radius: 32px !important; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); transition: all 0.3s ease;
 }
 body.ipad-mode .game-container-giant { height: 850px !important; }
+
 .game-ui-header { padding: 15px 25px; background: rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; }
 .status-dot { width: 10px; height: 10px; background: #34C759; border-radius: 50%; box-shadow: 0 0 8px #34C759; }
 .game-label { font-weight: 800; letter-spacing: 1px; flex-grow: 1; color: #fff; }
 .expand-trigger { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 12px; cursor: pointer; }
+
 .game-viewport { flex-grow: 1; background: #000; position: relative; overflow: hidden; }
 .game-iframe { border: none; position: absolute; top: 0; left: 0; transform-origin: top left; width: 100%; height: 100%; transition: opacity 0.3s, filter 0.3s; }
 .game-container-giant.is-active-fs { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 999999 !important; border-radius: 0 !important; margin: 0 !important; }
+
 body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 </style>
 </head>
 <body class="light ipad-mode">
-<canvas id="glassCanvas" width="1440" height="865"></canvas>
-<div id="miniPlayer">
-<div class="mp-info">
-<span class="mp-title" id="mpTitle">Not Playing</span>
-<span class="mp-status">Now Playing</span>
-</div>
-<div class="mp-controls">
-<button class="mp-btn" onclick="togglePlay()">
-<svg id="mpPlayIcon" viewBox="0 0 24 24" width="28" height="28"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-</button>
-</div>
-</div>
-<section id="home" class="active">
-<div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="openAlexModal()">
-<strong style="color:var(--accent)">Alexandru News</strong>
 
-<span style="font-size: 14px; opacity: 0.8;">Click here to find out about Alexandru and why I'm committing to his legacy!</span>
+<canvas id="glassCanvas" width="1440" height="865"></canvas>
+
+<div id="miniPlayer">
+  <div class="mp-info">
+    <span class="mp-title" id="mpTitle">Not Playing</span>
+    <span class="mp-status">Now Playing</span>
+  </div>
+  <div class="mp-controls">
+    <button class="mp-btn" onclick="togglePlay()">
+      <svg id="mpPlayIcon" viewBox="0 0 24 24" width="28" height="28"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+  </div>
 </div>
-<div class="glass-card iframe-wrapper" id="wixWrapper">
-<iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);" loading="lazy" fetchpriority="high"></iframe>
-</div>
+
+<section id="home" class="active">
+  <div class="glass-card clickable" style="border-left: 4px solid var(--accent);" onclick="openAlexModal()">
+    <strong style="color:var(--accent)">Alexandru News</strong><br>
+    <span style="font-size: 14px; opacity: 0.8;">Click here to find out about Alexandru and why I'm committing to his legacy!</span>
+  </div>
+
+  <div class="glass-card iframe-wrapper" id="wixWrapper">
+    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);" loading="lazy" fetchpriority="high"></iframe>
+  </div>
 </section>
+
 <section id="ai-rea" style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
-<div style="max-width: 850px; margin: 0 auto 10px auto; padding: 0 10px;">
-<h2 style="color: #fff; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em;"></h2>
-</div>
-<div style="
-    border-radius: 24px; 
-    overflow: hidden; 
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 20px rgba(125, 60, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 850px;
-    margin: 20px auto;
-    background: #000;">
-    
-    <div style="width: 100%; margin-bottom: 12px; overflow: hidden; border-radius: 12px 12px 4px 4px;">
-        <img src="icons/IMG_1193.jpeg" 
-            alt="Section Banner" 
-            loading="lazy"
-            style="width: 100%; height: auto; display: block; object-fit: cover; pointer-events: none;">
+    <div style="max-width: 850px; margin: 0 auto 10px auto; padding: 0 10px;">
+        <h2 style="color: #fff; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em;"></h2>
     </div>
 
-    <iframe
-        src="[https://ai-rea-ai-rea.hf.space](https://ai-rea-ai-rea.hf.space)"
-        frameborder="0"
-        width="100%"
-        height="1500"
-        style="display: block; background: transparent;"
-        title="ai-REA"
-        loading="lazy">
-    </iframe> 
-</div>
+    <div style="
+        border-radius: 24px; 
+        overflow: hidden; 
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 20px rgba(125, 60, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 850px;
+        margin: 20px auto;
+        background: #000;">
+        
+        <div style="width: 100%; margin-bottom: 12px; overflow: hidden; border-radius: 12px 12px 4px 4px;">
+            <img src="icons/IMG_1193.jpeg" 
+                alt="Section Banner" 
+                style="width: 100%; height: auto; display: block; object-fit: cover; pointer-events: none;">
+        </div>
+
+        <iframe
+            src="https://ai-rea-ai-rea.hf.space"
+            frameborder="0"
+            width="100%"
+            height="1500"
+            style="display: block; background: transparent;"
+            title="ai-REA"
+            loading="lazy">
+        </iframe> 
+    </div>
 </section>
 
 <section id="songs">
-<h1>Musical Story</h1>
+  <h1>Musical Story</h1>
 
-<div class="search-wrapper">
-<svg class="search-icon-inside" viewBox="0 0 24 24">
-<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-</svg>
-<input type="text" class="search-input" placeholder="Search Songs..." oninput="filterSongs(this.value)">
-</div>
-
-<div class="glass-card">
-<div class="song-item">
-<div class="song-header">
-<span class="song-title">01 – a-REA (Original)</span>
-<div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-</div>
-<audio controls="" src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
-</div>
-
-<div class="song-item">
-  <div class="song-header">
-    <span class="song-title">02 – L-INE GRAPHS!</span>
-    <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+  <div class="search-wrapper">
+    <svg class="search-icon-inside" viewBox="0 0 24 24">
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </svg>
+    <input type="text" class="search-input" placeholder="Search Songs..." oninput="filterSongs(this.value)">
   </div>
-  <audio controls="" src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
-</div>
 
-<div class="song-item">
-  <div class="song-header">
-    <span class="song-title">03 – T-ABLES!!</span>
-    <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-  </div>
-  <audio controls="" src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
-</div>
-
-<div class="song-item">
-  <div class="song-header">
-    <span class="song-title">04 – T-IMETABLES!!</span>
-    <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-  </div>
-  <audio controls="" src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
-</div>
-
-<div class="song-item">
-  <div class="song-header">
-    <span class="song-title">05 – A-NGLES!!!!</span>
-    <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-  </div>
-  <audio controls="" src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
-</div>
-
-<div style="margin-top:20px; padding-top:20px; border-top: 1px solid var(--liquid-glass-border);">
-  <div class="song-item">
-    <div class="song-header">
-      <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
-      <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+  <div class="glass-card">
+    <div class="song-item">
+      <div class="song-header">
+        <span class="song-title">01 – a-REA (Original)</span>
+        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      </div>
+      <audio controls="" src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
     </div>
-    <audio controls="" src="audio/aREAREVAMP.m4a"></audio>
-  </div>
-  <div class="song-item">
-    <div class="song-header">
-      <span class="song-title">NEW – MASTER</span>
-      <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+
+    <div class="song-item">
+      <div class="song-header">
+        <span class="song-title">02 – L-INE GRAPHS!</span>
+        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      </div>
+      <audio controls="" src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
     </div>
-    <audio controls="" src="Music/MASTER.m4a"></audio>
-  </div>
-  <div class="song-item">
-    <div class="song-header">
-      <span class="song-title">FAN FAVOURITE – TINY</span>
-      <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+
+    <div class="song-item">
+      <div class="song-header">
+        <span class="song-title">03 – T-ABLES!!</span>
+        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      </div>
+      <audio controls="" src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
     </div>
-    <audio controls="" src="audio/Tiny.m4a"></audio>
+
+    <div class="song-item">
+      <div class="song-header">
+        <span class="song-title">04 – T-IMETABLES!!</span>
+        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      </div>
+      <audio controls="" src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
+    </div>
+
+    <div class="song-item">
+      <div class="song-header">
+        <span class="song-title">05 – A-NGLES!!!!</span>
+        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      </div>
+      <audio controls="" src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
+    </div>
+
+    <div style="margin-top:20px; padding-top:20px; border-top: 1px solid var(--liquid-glass-border);">
+      <div class="song-item">
+        <div class="song-header">
+          <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
+          <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </div>
+        <audio controls="" src="audio/aREAREVAMP.m4a"></audio>
+      </div>
+      <div class="song-item">
+        <div class="song-header">
+          <span class="song-title">NEW – MASTER</span>
+          <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </div>
+        <audio controls="" src="Music/MASTER.m4a"></audio>
+      </div>
+      <div class="song-item">
+        <div class="song-header">
+          <span class="song-title">FAN FAVOURITE – TINY</span>
+          <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </div>
+        <audio controls="" src="audio/Tiny.m4a"></audio>
+      </div>
+    </div>
   </div>
-</div>
-</div>
 </section>
 
 <section id="videos">
-<h1>Videos</h1>
-<div class="glass-card">
-<span class="song-title">aq.co direct - a-REA 2.0</span>
-<video controls="" src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&amp;raw=1" preload="none"></video>
-</div>
+  <h1>Videos</h1>
+  <div class="glass-card">
+    <span class="song-title">aq.co direct - a-REA 2.0</span>
+    <video controls="" src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&amp;raw=1" preload="none"></video>
+  </div>
 </section>
 
 <section id="games" class="ultra-wide-section">
-<h1 class="section-title">Games</h1>
-<a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
-
-<div class="ultra-grid">
-<div class="glass-card game-container-giant max-power">
-<div class="game-ui-header" onclick="setMaxPower(this)">
-<div class="status-dot"></div>
-<span class="game-label">MASTER</span>
-<button class="expand-trigger" onclick="handleFullscreen(this); event.stopPropagation();">
-<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-</button>
-</div>
-<div class="game-viewport">
-<iframe src="file.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
-</div>
-</div>
-
-<div class="glass-card game-container-giant">
-  <div class="game-ui-header" onclick="setMaxPower(this)">
-    <div class="status-dot"></div>
-    <span class="game-label">TINY DASH</span>
-    <button class="expand-trigger" onclick="handleFullscreen(this); event.stopPropagation();">
-      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-    </button>
-  </div>
-  <div class="game-viewport">
-    <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
-  </div>
-</div>
-</div>
-<script>
-function setMaxPower(headerElement) {
-document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('max-power'));
-headerElement.closest('.game-container-giant').classList.add('max-power');
-}
-
-function handleFullscreen(btn) {
-  const card = btn.closest('.game-container-giant');
-  setMaxPower(card.querySelector('.game-ui-header'));
+  <h1 class="section-title">Games</h1>
+  <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
   
-  const isNowFull = card.classList.toggle('is-active-fs');
-  if (isNowFull) { document.body.style.overflow = 'hidden'; }
-  else { document.body.style.overflow = ''; }
-  if (typeof scaleGameIframes === 'function') {
-    setTimeout(scaleGameIframes, 10);
-    setTimeout(scaleGameIframes, 300);
-  }
-}
-setTimeout(() => { if (typeof scaleGameIframes === 'function') scaleGameIframes(); }, 500);
-</script>
+  <div class="ultra-grid">
+    <div class="glass-card game-container-giant max-power">
+      <div class="game-ui-header" onclick="setMaxPower(this)">
+        <div class="status-dot"></div>
+        <span class="game-label">MASTER</span>
+        <button class="expand-trigger" onclick="handleFullscreen(this); event.stopPropagation();">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+      </div>
+      <div class="game-viewport">
+        <iframe src="file.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="glass-card game-container-giant">
+      <div class="game-ui-header" onclick="setMaxPower(this)">
+        <div class="status-dot"></div>
+        <span class="game-label">TINY DASH</span>
+        <button class="expand-trigger" onclick="handleFullscreen(this); event.stopPropagation();">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+      </div>
+      <div class="game-viewport">
+        <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+  <script>
+    function setMaxPower(headerElement) {
+      document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('max-power'));
+      headerElement.closest('.game-container-giant').classList.add('max-power');
+    }
+
+    function handleFullscreen(btn) {
+      const card = btn.closest('.game-container-giant');
+      setMaxPower(card.querySelector('.game-ui-header'));
+      
+      const isNowFull = card.classList.toggle('is-active-fs');
+      if (isNowFull) { document.body.style.overflow = 'hidden'; }
+      else { document.body.style.overflow = ''; }
+      if (typeof scaleGameIframes === 'function') {
+        setTimeout(scaleGameIframes, 10);
+        setTimeout(scaleGameIframes, 300);
+      }
+    }
+    setTimeout(() => { if (typeof scaleGameIframes === 'function') scaleGameIframes(); }, 500);
+  </script>
 </section>
 
 <section id="books">
-<h1 style="text-align: left; margin-bottom: 24px;">Library</h1>
+  <h1 style="text-align: left; margin-bottom: 24px;">Library</h1>
+  
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Trash
+    </a>
+  </div>
 
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Trash
-</a>
-</div>
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/jbxyot1tvss95wmy8oqsp/Skellig.pdf?rlkey=zw8p0z9eatsacec76omwdkoko&st=wi7kelpx&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Skellig
+    </a>
+  </div>
 
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/jbxyot1tvss95wmy8oqsp/Skellig.pdf?rlkey=zw8p0z9eatsacec76omwdkoko&st=wi7kelpx&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Skellig
-</a>
-</div>
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/nanpzpw19wlnfniq5r1bj/Who-Let-The-Gods-Out.pdf?rlkey=o7bjbg8wn4utz13la6hf1vc8q&st=8nypr58y&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Who Let The Gods Out
+    </a>
+  </div>
 
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/nanpzpw19wlnfniq5r1bj/Who-Let-The-Gods-Out.pdf?rlkey=o7bjbg8wn4utz13la6hf1vc8q&st=8nypr58y&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Who Let The Gods Out
-</a>
-</div>
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/j5ueqmsrzjckzbhgayjen/Simply-The-Quest.pdf?rlkey=vxwebvosureyb5czjj4hbp234&st=y37hii41&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Simply The Quest
+    </a>
+  </div>
 
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/j5ueqmsrzjckzbhgayjen/Simply-The-Quest.pdf?rlkey=vxwebvosureyb5czjj4hbp234&st=y37hii41&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Simply The Quest
-</a>
-</div>
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/su16gjex59vbkxou4uamc/Beyond-The-Odyssey.pdf?rlkey=4grk0yo86jt3nevrpdnhnr5pl&st=quahh8l8&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Beyond The Odyssey
+    </a>
+  </div>
 
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/su16gjex59vbkxou4uamc/Beyond-The-Odyssey.pdf?rlkey=4grk0yo86jt3nevrpdnhnr5pl&st=quahh8l8&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Beyond The Odyssey
-</a>
-</div>
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/3e4guvjpensetwua192hc/Against-All-Gods.pdf?rlkey=8nuhm2kodofft3z1stjvzkywr&st=o2f7wrud&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Against All Gods
+    </a>
+  </div>
 
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/3e4guvjpensetwua192hc/Against-All-Gods.pdf?rlkey=8nuhm2kodofft3z1stjvzkywr&st=o2f7wrud&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download Against All Gods
-</a>
-</div>
-
-<div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-<iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
-<a href="https://www.dropbox.com/scl/fi/gm1mn4d0rmjjrmcp5xblo/My-Name-Is-Mina.pdf?rlkey=amdwrin5ice6g4emxbhi95kqz&st=4xuzwdj9&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
-<svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download My Name Is Mina
-</a>
-</div>
+  <div class="glass-card" style="padding: 10px; height: 600px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+    <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: rgba(0,0,0,0.1);" loading="lazy"></iframe>
+    <a href="https://www.dropbox.com/scl/fi/gm1mn4d0rmjjrmcp5xblo/My-Name-Is-Mina.pdf?rlkey=amdwrin5ice6g4emxbhi95kqz&st=4xuzwdj9&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Download My Name Is Mina
+    </a>
+  </div>
 </section>
 
 <section id="community">
-<h1>a-REA Community</h1>
-<div class="glass-card">
-<div style="margin-bottom: 15px;">
-<label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-mute); font-size:14px;">Username</label>
-<input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left: 20px; background: rgba(0,0,0,0.2) !important;">
-</div>
-<div style="margin-bottom: 15px;">
-<label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-mute); font-size:14px;">Message</label>
-<textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="padding-left: 20px; height: auto; resize: none; background: rgba(0,0,0,0.2) !important;"></textarea>
-</div>
-<button id="postBtn" class="btn-ios">Post Comment</button>
-</div>
+    <h1>a-REA Community</h1>
+    <div class="glass-card">
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-mute); font-size:14px;">Username</label>
+            <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left: 20px; background: rgba(0,0,0,0.2) !important;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-mute); font-size:14px;">Message</label>
+            <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="padding-left: 20px; height: auto; resize: none; background: rgba(0,0,0,0.2) !important;"></textarea>
+        </div>
+        <button id="postBtn" class="btn-ios">Post Comment</button>
+    </div>
 
-<div id="commentsContainer" style="display: flex; flex-direction: column; gap: 15px;">
-    <div style="text-align: center; padding: 40px; color: var(--text-mute); font-weight: 500;">Loading comments...</div>
-</div>
+    <div id="commentsContainer" style="display: flex; flex-direction: column; gap: 15px;">
+        <div style="text-align: center; padding: 40px; color: var(--text-mute); font-weight: 500;">Loading comments...</div>
+    </div>
 </section>
 
 <section id="settings">
-<h1>Settings</h1>
-<div class="glass-card">
-<div class="toggle-row">
-<span style="font-size: 17px; font-weight:500;">Theme / Mood</span>
-<select id="themeSelect" class="setting-select" onchange="updateSetting('theme', this.value)">
-<option value="default">Default (Blue)</option>
-<option value="sunset">Sunset (Orange)</option>
-<option value="forest">Forest (Green)</option>
-<option value="ocean">Ocean (Deep Blue)</option>
-<option value="midnight">Midnight (Purple)</option>
-</select>
-</div>
-<div class="toggle-row">
-<span style="font-size: 17px; font-weight:500;">Default Page</span>
-<select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage', this.value)">
-<option value="home">Home</option>
-<option value="ai-rea">ai-REA</option>
-<option value="songs">Songs</option>
-<option value="videos">Videos</option>
-<option value="games">Games</option>
-<option value="books">Books</option>
-<option value="community">Community</option>
-<option value="settings">Settings</option>
-</select>
-</div>
-<div class="toggle-row">
-<span style="font-size: 17px; font-weight:500;">Light Mode</span>
-<input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode', this.checked)">
-</div>
-<div class="toggle-row">
-<span style="font-size: 17px; font-weight:500;">iPad/PC Mode (Wide)</span>
-<input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode', this.checked);">
-</div>
-<div class="toggle-row">
-<div style="display:flex; flex-direction:column;">
-<span style="font-size: 17px; font-weight:500;">Wix Site Width</span>
-<small style="opacity:0.6" id="widthLabel">375px (Desktop)</small>
-</div>
-<input type="range" id="wixWidthSlider" min="320" max="2560" step="20" value="375" oninput="updateSetting('wixWidth', this.value)">
-</div>
-<div class="toggle-row">
-<span style="font-size: 17px; font-weight:500;">Page Zoom</span>
-<input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale', this.value)">
-</div>
+  <h1>Settings</h1>
+  <div class="glass-card">
+    <div class="toggle-row">
+        <span style="font-size: 17px; font-weight:500;">Theme / Mood</span>
+        <select id="themeSelect" class="setting-select" onchange="updateSetting('theme', this.value)">
+            <option value="default">Default (Blue)</option>
+            <option value="sunset">Sunset (Orange)</option>
+            <option value="forest">Forest (Green)</option>
+            <option value="ocean">Ocean (Deep Blue)</option>
+            <option value="midnight">Midnight (Purple)</option>
+        </select>
+    </div>
+    <div class="toggle-row">
+        <span style="font-size: 17px; font-weight:500;">Default Page</span>
+        <select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage', this.value)">
+            <option value="home">Home</option>
+            <option value="ai-rea">ai-REA</option>
+            <option value="songs">Songs</option>
+            <option value="videos">Videos</option>
+            <option value="games">Games</option>
+            <option value="books">Books</option>
+            <option value="community">Community</option>
+            <option value="settings">Settings</option>
+        </select>
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Light Mode</span>
+      <input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode', this.checked)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">iPad/PC Mode (Wide)</span>
+      <input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode', this.checked);">
+    </div>
+    <div class="toggle-row">
+      <div style="display:flex; flex-direction:column;">
+        <span style="font-size: 17px; font-weight:500;">Wix Site Width</span>
+        <small style="opacity:0.6" id="widthLabel">375px (Desktop)</small>
+      </div>
+      <input type="range" id="wixWidthSlider" min="320" max="2560" step="20" value="375" oninput="updateSetting('wixWidth', this.value)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Page Zoom</span>
+      <input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale', this.value)">
+    </div>
+    
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Remove ai-REA Tab</span>
+      <input type="checkbox" id="removeAireaToggle" onchange="updateSetting('removeAirea', this.checked)">
+    </div>
 
-<div class="toggle-row">
-  <span style="font-size: 17px; font-weight:500;">Remove ai-REA Tab</span>
-  <input type="checkbox" id="removeAireaToggle" onchange="updateSetting('removeAirea', this.checked)">
-</div>
+    <div style="height: 1px; background: var(--liquid-glass-border); margin: 24px 0 16px 0;"></div>
+    <div style="margin-bottom: 12px; color: var(--accent); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Battery & Performance</div>
 
-<div style="height: 1px; background: var(--liquid-glass-border); margin: 24px 0 16px 0;"></div>
-<div style="margin-bottom: 12px; color: var(--accent); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Battery & Performance</div>
+    <div class="toggle-row" style="background: rgba(255,45,85,0.1); padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid rgba(255,45,85,0.3);">
+      <div style="display:flex; flex-direction:column; gap: 4px;">
+        <span style="font-size: 17px; font-weight:700; color: #FF2D55;">Ultra Battery Saver</span>
+        <small style="opacity:0.9; color: #FF2D55; font-size: 12px;">Enables all performance modes, disables box-shadows & extra animations</small>
+      </div>
+      <input type="checkbox" id="ultraSaverToggle" onchange="toggleUltraSaver(this.checked)" style="accent-color: #FF2D55; width: 22px; height: 22px;">
+    </div>
 
-<div class="toggle-row" style="background: rgba(255,45,85,0.1); padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid rgba(255,45,85,0.3);">
-  <div style="display:flex; flex-direction:column; gap: 4px;">
-    <span style="font-size: 17px; font-weight:700; color: #FF2D55;">Ultra Battery Saver</span>
-    <small style="opacity:0.9; color: #FF2D55; font-size: 12px;">Enables all performance modes, disables box-shadows & extra animations</small>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Remove Background</span>
+      <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Solid Glass (Performance)</span>
+      <input type="checkbox" id="solidGlassToggle" onchange="updateSetting('solidGlass', this.checked)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Half App FPS (Background)</span>
+      <input type="checkbox" id="batteryToggle" onchange="updateSetting('batterySaver', this.checked)">
+    </div>
   </div>
-  <input type="checkbox" id="ultraSaverToggle" onchange="toggleUltraSaver(this.checked)" style="accent-color: #FF2D55; width: 22px; height: 22px;">
-</div>
-
-<div class="toggle-row">
-  <span style="font-size: 17px; font-weight:500;">Remove Background</span>
-  <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
-</div>
-<div class="toggle-row">
-  <span style="font-size: 17px; font-weight:500;">Solid Glass (Performance)</span>
-  <input type="checkbox" id="solidGlassToggle" onchange="updateSetting('solidGlass', this.checked)">
-</div>
-<div class="toggle-row">
-  <span style="font-size: 17px; font-weight:500;">Half App FPS (Background)</span>
-  <input type="checkbox" id="batteryToggle" onchange="updateSetting('batterySaver', this.checked)">
-</div>
-</div>
 </section>
 
 <div class="nav-container" id="mainNav">
-<div id="selectionPill" class="nav-selection-pill"></div>
-<button class="nav-item active" onclick="showTab('home', this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
-<button class="nav-item airea-nav-btn" onclick="showTab('ai-rea', this)">
-<img src="icons/IMG_1194-removebg-preview.png" alt="ai-REA" style="width: 100%; height: 100%; object-fit: contain;">
-</button>
-<button class="nav-item" onclick="showTab('songs', this)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path></svg></button>
-<button class="nav-item" onclick="showTab('videos', this)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg></button>
-<button class="nav-item" onclick="showTab('games', this)">
-<svg viewBox="0 0 24 24">
-<path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm7 2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path>
-</svg>
-</button>
-<button class="nav-item" onclick="showTab('books', this)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
-<button class="nav-item" onclick="showTab('community', this)">
-<svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
-</button>
-<button class="nav-item" onclick="showTab('settings', this)">
-<svg viewBox="0 0 24 24">
-<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
-</svg>
-</button>
+ <div id="selectionPill" class="nav-selection-pill"></div>
+  <button class="nav-item active" onclick="showTab('home', this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
+  <button class="nav-item airea-nav-btn" onclick="showTab('ai-rea', this)">
+    <img src="icons/IMG_1194-removebg-preview.png" alt="ai-REA" style="width: 100%; height: 100%; object-fit: contain;">
+  </button>
+  <button class="nav-item" onclick="showTab('songs', this)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path></svg></button>
+  <button class="nav-item" onclick="showTab('videos', this)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg></button>
+  <button class="nav-item" onclick="showTab('games', this)">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm7 2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path>
+    </svg>
+  </button>
+  <button class="nav-item" onclick="showTab('books', this)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
+  <button class="nav-item" onclick="showTab('community', this)">
+    <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+  </button>
+  <button class="nav-item" onclick="showTab('settings', this)">
+    <svg viewBox="0 0 24 24">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+  </button>
 </div>
 
 <div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:9999; transition: opacity 0.2s;">
-<div class="glass-card" style="max-width:300px; text-align:center;">
-<h2 id="alertTitle" style="color:var(--accent); margin-top:0;"></h2>
-<p id="alertMsg"></p>
-<button class="btn-ios" style="margin-bottom:0; padding:12px;" onclick="closeAlert()">Close</button>
-</div>
+  <div class="glass-card" style="max-width:300px; text-align:center;">
+    <h2 id="alertTitle" style="color:var(--accent); margin-top:0;"></h2>
+    <p id="alertMsg"></p>
+    <button class="btn-ios" style="margin-bottom:0; padding:12px;" onclick="closeAlert()">Close</button>
+  </div>
 </div>
 
 <script>
 const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
-let animFrameId = null;
+let animFrameId = null; 
 let isTabActive = true;
 let bgFrameCount = 0;
 document.addEventListener("visibilitychange", () => { isTabActive = !document.hidden; });
 
 const themes = {
-default: { accent: '#007AFF', colors: ['#007AFF', '#5856D6', '#AF52DE', '#FF2D55'] },
-sunset:  { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE'] },
-forest:  { accent: '#34C759', colors: ['#34C759', '#30B0C7', '#007AFF', '#32D74B'] },
-ocean:   { accent: '#5856D6', colors: ['#5856D6', '#007AFF', '#30B0C7', '#5AC8FA'] },
-midnight:{ accent: '#AF52DE', colors: ['#AF52DE', '#5856D6', '#FF2D55', '#007AFF'] }
+  default: { accent: '#007AFF', colors: ['#007AFF', '#5856D6', '#AF52DE', '#FF2D55'] },
+  sunset:  { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE'] },
+  forest:  { accent: '#34C759', colors: ['#34C759', '#30B0C7', '#007AFF', '#32D74B'] },
+  ocean:   { accent: '#5856D6', colors: ['#5856D6', '#007AFF', '#30B0C7', '#5AC8FA'] },
+  midnight:{ accent: '#AF52DE', colors: ['#AF52DE', '#5856D6', '#FF2D55', '#007AFF'] }
 };
 
 let appSettings = {
-lightMode: true,
-ipadMode: false,
-noBg: false,
-solidGlass: false,
-batterySaver: false,
-ultraSaver: false,
-removeAirea: false, // New Option
-wixWidth: 375,
-uiScale: 0.95,
-startPage: 'home',
-theme: 'default'
+  lightMode: true,
+  ipadMode: false,
+  noBg: false,
+  solidGlass: false,
+  batterySaver: false,
+  ultraSaver: false,
+  removeAirea: false, // New Option
+  wixWidth: 375,
+  uiScale: 0.95,
+  startPage: 'home',
+  theme: 'default'
 };
 
 function initCanvas() {
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-points = [];
-
-const themeKey = appSettings.theme || 'default';
-const palette = themes[themeKey] ? themes[themeKey].colors : themes.default.colors;
-
-for(let i=0; i<6; i++) {
-points.push({
-x: Math.random() * canvas.width,
-y: Math.random() * canvas.height,
-vx: (Math.random() - 0.5) * 1.5,
-vy: (Math.random() - 0.5) * 1.5,
-r: Math.random() * 300 + 200,
-color: palette[i % palette.length]
-});
-}
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  points = [];
+  
+  const themeKey = appSettings.theme || 'default';
+  const palette = themes[themeKey] ? themes[themeKey].colors : themes.default.colors;
+  
+  for(let i=0; i<6; i++) {
+    points.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5,
+      r: Math.random() * 300 + 200,
+      color: palette[i % palette.length]
+    });
+  }
 }
 
 function loop() {
-if (appSettings.noBg || appSettings.ultraSaver) {
-animFrameId = null;
-return;
-}
+  if (appSettings.noBg || appSettings.ultraSaver) {
+    animFrameId = null;
+    return;
+  }
+  
+  bgFrameCount++;
 
-bgFrameCount++;
-
-const shouldThrottle = appSettings.batterySaver || !isTabActive;
-
-if (!shouldThrottle || bgFrameCount % 2 === 0) {
-ctx.clearRect(0,0,canvas.width, canvas.height);
-points.forEach(p => {
-p.x += p.vx; p.y += p.vy;
-if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
-if(p.y < -p.r || p.y > canvas.height + p.r) p.vy = -1;
-let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-g.addColorStop(0, p.color);
-g.addColorStop(1, 'transparent');
-ctx.fillStyle = g;
-ctx.beginPath();
-ctx.arc(p.x, p.y, p.r, 0, Math.PI2);
-ctx.fill();
-});
-}
-
-animFrameId = requestAnimationFrame(loop);
+  // HALF FPS LOGIC: Skips the frame entirely to save CPU
+  if (appSettings.batterySaver && bgFrameCount % 2 !== 0) {
+      animFrameId = requestAnimationFrame(loop);
+      return;
+  }
+  
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+  points.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
+    if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
+    let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+    g.addColorStop(0, p.color);
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+  });
+  
+  animFrameId = requestAnimationFrame(loop);
 }
 
 function updateSetting(key, val) {
-appSettings[key] = val;
-localStorage.setItem('aREASettings', JSON.stringify(appSettings));
-applySettings();
-
-if(key === 'theme') {
-initCanvas();
-}
+  appSettings[key] = val;
+  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+  applySettings();
+  
+  if(key === 'theme') {
+    initCanvas();
+  }
 }
 
 function toggleUltraSaver(isOn) {
-updateSetting('ultraSaver', isOn);
-if (isOn) {
-updateSetting('noBg', true);
-updateSetting('solidGlass', true);
-updateSetting('batterySaver', true);
-// Purposefully NOT turning off ai-REA by default here.
-}
+  updateSetting('ultraSaver', isOn);
+  if (isOn) {
+    updateSetting('noBg', true);
+    updateSetting('solidGlass', true);
+    updateSetting('batterySaver', true); 
+    // Purposefully NOT turning off ai-REA by default here.
+  }
 }
 
 let lastWixWidth = null;
@@ -732,108 +783,108 @@ let lastIpadMode = null;
 let lastContainerWidth = null;
 
 function applySettings() {
-if (!appSettings) return;
+  if (!appSettings) return;
+  
+  const themeKey = appSettings.theme || 'default';
+  const themeObj = themes[themeKey] || themes.default;
+  document.documentElement.style.setProperty('--accent', themeObj.accent);
+  document.getElementById('themeSelect').value = themeKey;
 
-const themeKey = appSettings.theme || 'default';
-const themeObj = themes[themeKey] || themes.default;
-document.documentElement.style.setProperty('--accent', themeObj.accent);
-document.getElementById('themeSelect').value = themeKey;
+  document.body.classList.toggle('light', appSettings.lightMode);
+  document.getElementById('lightToggle').checked = appSettings.lightMode;
+  
+  document.body.classList.toggle('ipad-mode', appSettings.ipadMode);
+  document.getElementById('ipadToggle').checked = appSettings.ipadMode;
+  
+  document.body.classList.toggle('no-bg', appSettings.noBg);
+  document.getElementById('noBgToggle').checked = appSettings.noBg;
 
-document.body.classList.toggle('light', appSettings.lightMode);
-document.getElementById('lightToggle').checked = appSettings.lightMode;
+  document.body.classList.toggle('solid-glass', appSettings.solidGlass);
+  document.getElementById('solidGlassToggle').checked = appSettings.solidGlass;
 
-document.body.classList.toggle('ipad-mode', appSettings.ipadMode);
-document.getElementById('ipadToggle').checked = appSettings.ipadMode;
+  document.getElementById('batteryToggle').checked = appSettings.batterySaver;
 
-document.body.classList.toggle('no-bg', appSettings.noBg);
-document.getElementById('noBgToggle').checked = appSettings.noBg;
+  document.body.classList.toggle('ultra-saver', appSettings.ultraSaver);
+  document.getElementById('ultraSaverToggle').checked = appSettings.ultraSaver;
+  
+  document.getElementById('removeAireaToggle').checked = appSettings.removeAirea;
+  
+  const aireaNavBtn = document.querySelector('.airea-nav-btn');
+  if (appSettings.removeAirea) {
+      if (aireaNavBtn) aireaNavBtn.style.display = 'none';
+      if(document.getElementById('ai-rea').classList.contains('active')) showTab('home', document.querySelectorAll('.nav-item')[0]);
+  } else {
+      if (aireaNavBtn) aireaNavBtn.style.display = 'flex';
+  }
+  
+  if (!appSettings.noBg && !appSettings.ultraSaver && !animFrameId) {
+    loop();
+  }
+  
+  if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
+  }
+  
+  if(appSettings.startPage) {
+    const sel = document.getElementById('startPageSelect');
+    if(sel) sel.value = appSettings.startPage;
+  }
 
-document.body.classList.toggle('solid-glass', appSettings.solidGlass);
-document.getElementById('solidGlassToggle').checked = appSettings.solidGlass;
-
-document.body.classList.toggle('battery-saver', appSettings.batterySaver);
-document.getElementById('batteryToggle').checked = appSettings.batterySaver;
-
-document.body.classList.toggle('ultra-saver', appSettings.ultraSaver);
-document.getElementById('ultraSaverToggle').checked = appSettings.ultraSaver;
-
-document.getElementById('removeAireaToggle').checked = appSettings.removeAirea;
-
-const aireaNavBtn = document.querySelector('.airea-nav-btn');
-if (appSettings.removeAirea) {
-if (aireaNavBtn) aireaNavBtn.style.display = 'none';
-if(document.getElementById('ai-rea').classList.contains('active')) showTab('home', document.querySelectorAll('.nav-item')[0]);
-} else {
-if (aireaNavBtn) aireaNavBtn.style.display = 'flex';
-}
-
-if (!appSettings.noBg && !appSettings.ultraSaver && !animFrameId) {
-loop();
-}
-
-if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale);
-}
-
-if(appSettings.startPage) {
-const sel = document.getElementById('startPageSelect');
-if(sel) sel.value = appSettings.startPage;
-}
-
-const frame = document.getElementById('wixFrame');
-const wrapper = document.getElementById('wixWrapper');
-const label = document.getElementById('widthLabel');
-
-if (frame && wrapper) {
-const containerWidth = wrapper.offsetWidth;
-if (containerWidth > 0) {
-const targetWidth = parseInt(appSettings.wixWidth);
-
-    if (lastWixWidth !== targetWidth || lastIpadMode !== appSettings.ipadMode || lastContainerWidth !== containerWidth) {
-        const scaleFactor = containerWidth / targetWidth;
-        frame.style.width = targetWidth + &quot;px&quot;;
-        frame.style.height = (100 / scaleFactor) + &quot;%&quot;; 
-        frame.style.transform = `scale(${scaleFactor})`;
-        label.innerText = `${targetWidth}px ${appSettings.ipadMode ? &#39;(Desktop)&#39; : &#39;(Mobile)&#39;}`;
+  const frame = document.getElementById('wixFrame');
+  const wrapper = document.getElementById('wixWrapper');
+  const label = document.getElementById('widthLabel');
+  
+  if (frame && wrapper) {
+    const containerWidth = wrapper.offsetWidth;
+    if (containerWidth > 0) {
+        const targetWidth = parseInt(appSettings.wixWidth);
         
-        lastWixWidth = targetWidth;
-        lastIpadMode = appSettings.ipadMode;
-        lastContainerWidth = containerWidth;
+        if (lastWixWidth !== targetWidth || lastIpadMode !== appSettings.ipadMode || lastContainerWidth !== containerWidth) {
+            const scaleFactor = containerWidth / targetWidth;
+            frame.style.width = targetWidth + "px";
+            frame.style.height = (100 / scaleFactor) + "%"; 
+            frame.style.transform = `scale(${scaleFactor})`;
+            label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
+            
+            lastWixWidth = targetWidth;
+            lastIpadMode = appSettings.ipadMode;
+            lastContainerWidth = containerWidth;
+        }
     }
-}
-}
-document.getElementById('wixWidthSlider').value = appSettings.wixWidth;
+  }
+  document.getElementById('wixWidthSlider').value = appSettings.wixWidth;
 
-// Refresh selection pill position incase widths changed
-updatePillPosition();
+  // Refresh selection pill position incase widths changed
+  updatePillPosition();
 }
 
 function showTab(id, btn) {
-document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-const target = document.getElementById(id);
-if(target) target.classList.add('active');
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  updatePillPosition(btn);
+  window.scrollTo({top: 0, behavior: 'smooth'});
 
-document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-btn.classList.add('active');
-
-updatePillPosition(btn);
-window.scrollTo({top: 0, behavior: 'smooth'});
-
-if(id === 'home') applySettings();
+  if(id === 'home') applySettings();
 }
 
-// Function dynamic responsive pill positioning
+// Function dynamic responsive pill positioning - FIXED FOR AUTO SCALING
 function updatePillPosition(btn = document.querySelector('.nav-item.active')) {
-if (!btn) return;
-const pill = document.getElementById('selectionPill');
-
-// FIXED: Using offsetLeft/Top is safer than getBoundingClientRect when parent scaling is involved
-// This calculates position relative to the positioned parent (nav-container) regardless of UI zoom
-pill.style.transform = translate(${btn.offsetLeft}px, ${btn.offsetTop}px);
-pill.style.width = ${btn.offsetWidth}px;
-pill.style.height = ${btn.offsetHeight}px;
+  if (!btn) return;
+  const pill = document.getElementById('selectionPill');
+  
+  // Uses offsetLeft/Width which ignores the zoom scaling of the body, fixing the "broken" position
+  pill.style.transform = `translateX(${btn.offsetLeft}px)`;
+  pill.style.width = `${btn.offsetWidth}px`;
+  pill.style.height = `${btn.offsetHeight}px`;
+  pill.style.top = `${btn.offsetTop}px`;
 }
 window.addEventListener('resize', () => updatePillPosition());
+
 
 let currentAudio = null;
 const miniPlayer = document.getElementById('miniPlayer');
@@ -843,91 +894,91 @@ const playPath = "M8 5v14l11-7z";
 const pausePath = "M6 19h4V5H6v14zm8-14v14h4V5h-4z";
 
 document.addEventListener('play', function(e){
-if(e.target.tagName !== 'AUDIO') return;
-document.querySelectorAll('audio').forEach(audio => {
-if(audio !== e.target) { audio.pause(); audio.currentTime = 0; }
-});
-currentAudio = e.target;
-miniPlayer.classList.add('show');
-mpPlayIcon.querySelector('path').setAttribute('d', pausePath);
-
-const item = e.target.closest(&#39;.song-item&#39;);
-document.querySelectorAll(&#39;.visualizer&#39;).forEach(v =&gt; v.classList.remove(&#39;active&#39;));
-document.querySelectorAll(&#39;.song-title&#39;).forEach(t =&gt; t.classList.remove(&#39;playing&#39;));
-if(item) {
-    mpTitle.innerText = item.querySelector(&#39;.song-title&#39;).innerText;
-    item.querySelector(&#39;.visualizer&#39;).classList.add(&#39;active&#39;);
-    item.querySelector(&#39;.song-title&#39;).classList.add(&#39;playing&#39;);
-}
+    if(e.target.tagName !== 'AUDIO') return;
+    document.querySelectorAll('audio').forEach(audio => {
+        if(audio !== e.target) { audio.pause(); audio.currentTime = 0; }
+    });
+    currentAudio = e.target;
+    miniPlayer.classList.add('show');
+    mpPlayIcon.querySelector('path').setAttribute('d', pausePath);
+    
+    const item = e.target.closest('.song-item');
+    document.querySelectorAll('.visualizer').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.song-title').forEach(t => t.classList.remove('playing'));
+    if(item) {
+        mpTitle.innerText = item.querySelector('.song-title').innerText;
+        item.querySelector('.visualizer').classList.add('active');
+        item.querySelector('.song-title').classList.add('playing');
+    }
 }, true);
 
 document.addEventListener('pause', function(e){
-if(e.target === currentAudio) {
-mpPlayIcon.querySelector('path').setAttribute('d', playPath);
-document.querySelectorAll('.visualizer').forEach(v => v.classList.remove('active'));
-}
+    if(e.target === currentAudio) {
+        mpPlayIcon.querySelector('path').setAttribute('d', playPath);
+        document.querySelectorAll('.visualizer').forEach(v => v.classList.remove('active'));
+    }
 }, true);
 
 function togglePlay() {
-if(!currentAudio) return;
-currentAudio.paused ? currentAudio.play() : currentAudio.pause();
+    if(!currentAudio) return;
+    currentAudio.paused ? currentAudio.play() : currentAudio.pause();
 }
 
 let searchTimeout;
 function filterSongs(val) {
-clearTimeout(searchTimeout);
-searchTimeout = setTimeout(() => {
-const term = val.toLowerCase().trim();
-const items = document.querySelectorAll('.song-item');
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const term = val.toLowerCase().trim();
+    const items = document.querySelectorAll('.song-item');
+    
+    items.forEach(item => {
+      const title = item.querySelector('.song-title').innerText.toLowerCase();
+      item.style.display = title.includes(term) ? 'flex' : 'none';
+    });
 
-items.forEach(item =&gt; {
-  const title = item.querySelector(&#39;.song-title&#39;).innerText.toLowerCase();
-  item.style.display = title.includes(term) ? &#39;flex&#39; : &#39;none&#39;;
-});
-
-document.querySelectorAll(&#39;.glass-card &gt; div[style*=&quot;margin-top&quot;]&#39;).forEach(section =&gt; {
-  const hasVisible = Array.from(section.querySelectorAll(&#39;.song-item&#39;)).some(s =&gt; s.style.display === &#39;flex&#39;);
-  section.style.display = (hasVisible || term === &quot;&quot;) ? &#39;block&#39; : &#39;none&#39;;
-});
-}, 150);
+    document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section => {
+      const hasVisible = Array.from(section.querySelectorAll('.song-item')).some(s => s.style.display === 'flex');
+      section.style.display = (hasVisible || term === "") ? 'block' : 'none';
+    });
+  }, 150);
 }
 
 function openAlexModal() {
-document.getElementById('alertTitle').innerText = "Alexandru News";
-document.getElementById('alertMsg').innerText = "Alexandru Bojescu was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) He had some really cool friends like Abu (who sadly had appendicitis), Hamid, Aadil and Me. Though, lately, he moved to a more quiet neighbourhood. Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru..";
-document.getElementById('customAlert').style.display = 'flex';
+  document.getElementById('alertTitle').innerText = "Alexandru News";
+  document.getElementById('alertMsg').innerText = "Alexandru Bojescu was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) He had some really cool friends like Abu (who sadly had appendicitis), Hamid, Aadil and Me. Though, lately, he moved to a more quiet neighbourhood. Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru..";
+  document.getElementById('customAlert').style.display = 'flex';
 }
 function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
 
 function loadStoredSettings() {
-const saved = localStorage.getItem('aREASettings');
-if (saved) {
-try {
-const parsed = JSON.parse(saved);
-appSettings = { ...appSettings, ...parsed };
-} catch(e) { console.error("Error loading settings", e); }
-}
+  const saved = localStorage.getItem('aREASettings');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      appSettings = { ...appSettings, ...parsed };
+    } catch(e) { console.error("Error loading settings", e); }
+  }
 }
 
 window.addEventListener('resize', () => { initCanvas(); applySettings(); });
 
 window.onload = () => {
-loadStoredSettings();
-initCanvas();
-loop();
-applySettings();
-
-const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'settings'];
-const startPage = appSettings.startPage || 'home';
-const startIndex = pages.indexOf(startPage);
-if(startIndex > -1) {
-// Check if ai-rea tab was removed but requested
-if(startPage === 'ai-rea' && appSettings.removeAirea) {
-showTab('home', document.querySelectorAll('.nav-item')[0]);
-} else {
-showTab(startPage, document.querySelectorAll('.nav-item')[startIndex]);
-}
-}
+  loadStoredSettings();
+  initCanvas();
+  loop();
+  applySettings();
+  
+  const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'settings'];
+  const startPage = appSettings.startPage || 'home';
+  const startIndex = pages.indexOf(startPage);
+  if(startIndex > -1) {
+    // Check if ai-rea tab was removed but requested
+    if(startPage === 'ai-rea' && appSettings.removeAirea) {
+      showTab('home', document.querySelectorAll('.nav-item')[0]);
+    } else {
+      showTab(startPage, document.querySelectorAll('.nav-item')[startIndex]);
+    }
+  }
 };
 
 let audioCtx;
@@ -936,169 +987,168 @@ let dataArray;
 let sourceNodes = new Map();
 
 function initAudioVisualizer(audioElement) {
-if (!audioCtx) {
-audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-analyser = audioCtx.createAnalyser();
-analyser.fftSize = 32;
-const bufferLength = analyser.frequencyBinCount;
-dataArray = new Uint8Array(bufferLength);
-}
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 32;
+    const bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+  }
 
-if (!sourceNodes.has(audioElement)) {
-const source = audioCtx.createMediaElementSource(audioElement);
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
-sourceNodes.set(audioElement, source);
-}
+  if (!sourceNodes.has(audioElement)) {
+    const source = audioCtx.createMediaElementSource(audioElement);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    sourceNodes.set(audioElement, source);
+  }
 
-let localFrames = 0;
-function updateBars() {
-if (audioElement.paused || appSettings.ultraSaver) return;
+  let localFrames = 0;
+  function updateBars() {
+    if (audioElement.paused || appSettings.ultraSaver) return; 
+    
+    // Limits processing to half app FPS if Battery Saver is ON
+    localFrames++;
+    if (appSettings.batterySaver && localFrames % 2 !== 0) {
+        requestAnimationFrame(updateBars);
+        return;
+    }
 
-// Limits processing to half app FPS if Battery Saver is ON
-localFrames++;
-if (appSettings.batterySaver &amp;&amp; localFrames % 2 !== 0) {
+    analyser.getByteFrequencyData(dataArray);
+    
+    const container = audioElement.closest('.song-item');
+    const bars = container.querySelectorAll('.bar');
+    
+    bars.forEach((bar, i) => {
+      const val = dataArray[i] / 255;
+      const height = 4 + (val * 16);
+      bar.style.height = height + 'px';
+    });
+    
     requestAnimationFrame(updateBars);
-    return;
-}
-
-analyser.getByteFrequencyData(dataArray);
-
-const container = audioElement.closest(&#39;.song-item&#39;);
-const bars = container.querySelectorAll(&#39;.bar&#39;);
-
-bars.forEach((bar, i) =&gt; {
-  const val = dataArray[i] / 255;
-  const height = 4 + (val * 16);
-  bar.style.height = height + &#39;px&#39;;
-});
-
-requestAnimationFrame(updateBars);
-}
-
-if (audioCtx.state === 'suspended') audioCtx.resume();
-updateBars();
+  }
+  
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  updateBars();
 }
 
 document.querySelectorAll('audio').forEach(audio => {
-audio.addEventListener('play', () => initAudioVisualizer(audio));
+  audio.addEventListener('play', () => initAudioVisualizer(audio));
 });
 </script>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: &quot;AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8&quot;,
-  authDomain: &quot;a-rea-220da.firebaseapp.com&quot;,
-  projectId: &quot;a-rea-220da&quot;,
-  storageBucket: &quot;a-rea-220da.firebasestorage.app&quot;,
-  messagingSenderId: &quot;1046969467026&quot;,
-  appId: &quot;1:1046969467026:web:f67fffc6312c2996cb664b&quot;,
-  measurementId: &quot;G-LE90K55Y65&quot;
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8",
+      authDomain: "a-rea-220da.firebaseapp.com",
+      projectId: "a-rea-220da",
+      storageBucket: "a-rea-220da.firebasestorage.app",
+      messagingSenderId: "1046969467026",
+      appId: "1:1046969467026:web:f67fffc6312c2996cb664b",
+      measurementId: "G-LE90K55Y65"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = &#39;a-rea-web-comments&#39;;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = 'a-rea-web-comments';
 
-const commentsContainer = document.getElementById(&#39;commentsContainer&#39;);
-const usernameInput = document.getElementById(&#39;username&#39;);
-const messageInput = document.getElementById(&#39;message&#39;);
-const postBtn = document.getElementById(&#39;postBtn&#39;);
+    const commentsContainer = document.getElementById('commentsContainer');
+    const usernameInput = document.getElementById('username');
+    const messageInput = document.getElementById('message');
+    const postBtn = document.getElementById('postBtn');
 
-let currentUser = null;
+    let currentUser = null;
 
-const initAuth = async () =&gt; {
-    try {
-        await signInAnonymously(auth);
-    } catch (error) {
-        console.error(&quot;Auth failed:&quot;, error);
-        commentsContainer.innerHTML = `&lt;div style=&quot;text-align: center; color: #ff6b6b;&quot;&gt;Auth Error: Enable Anonymous Login in Firebase Console.&lt;/div&gt;`;
-    }
-};
+    const initAuth = async () => {
+        try {
+            await signInAnonymously(auth);
+        } catch (error) {
+            console.error("Auth failed:", error);
+            commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b;">Auth Error: Enable Anonymous Login in Firebase Console.</div>`;
+        }
+    };
 
-onAuthStateChanged(auth, (user) =&gt; {
-    currentUser = user;
-    if (user) {
-        loadComments();
-    }
-});
-
-function loadComments() {
-    const commentsRef = collection(db, &#39;artifacts&#39;, appId, &#39;public&#39;, &#39;data&#39;, &#39;comments&#39;);
-    
-    onSnapshot(commentsRef, (snapshot) =&gt; {
-        const comments = [];
-        snapshot.forEach(doc =&gt; {
-            comments.push({ id: doc.id, ...doc.data() });
-        });
-        comments.sort((a, b) =&gt; (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
-        renderComments(comments);
-    }, (err) =&gt; {
-        console.error(&quot;Listen failed:&quot;, err);
-        commentsContainer.innerHTML = `&lt;div style=&quot;text-align: center; color: #ff6b6b;&quot;&gt;Failed to load. Check Database Rules.&lt;/div&gt;`;
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (user) {
+            loadComments();
+        }
     });
-}
 
-function renderComments(comments) {
-    if (comments.length === 0) {
-        commentsContainer.innerHTML = `&lt;div style=&quot;text-align: center; padding: 40px; color: var(--text-mute); font-style: italic;&quot;&gt;No comments yet. Be the first!&lt;/div&gt;`;
-        return;
-    }
-
-    commentsContainer.innerHTML = comments.map(c =&gt; `
-        &lt;div class=&quot;glass-card&quot; style=&quot;padding: 15px; margin-bottom: 0;&quot;&gt;
-            &lt;div style=&quot;display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;&quot;&gt;
-                &lt;span style=&quot;font-weight: 700; color: var(--accent);&quot;&gt;@${escapeHtml(c.username || &#39;Anonymous&#39;)}&lt;/span&gt;
-                &lt;span style=&quot;font-size: 11px; font-weight: 600; color: var(--text-mute); text-transform: uppercase;&quot;&gt;
-                    ${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString() : &#39;Just now&#39;}
-                &lt;/span&gt;
-            &lt;/div&gt;
-            &lt;p style=&quot;color: var(--text-main); word-break: break-word; line-height: 1.5; margin: 0;&quot;&gt;${escapeHtml(c.message || &#39;&#39;)}&lt;/p&gt;
-        &lt;/div&gt;
-    `).join(&#39;&#39;);
-}
-
-postBtn.addEventListener(&#39;click&#39;, async () =&gt; {
-    const username = usernameInput.value.trim();
-    const message = messageInput.value.trim();
-
-    if (!username || !message || !currentUser) return;
-
-    postBtn.disabled = true;
-    const originalText = postBtn.innerText;
-    postBtn.innerText = &quot;Posting...&quot;;
-
-    try {
-        const commentsRef = collection(db, &#39;artifacts&#39;, appId, &#39;public&#39;, &#39;data&#39;, &#39;comments&#39;);
-        await addDoc(commentsRef, {
-            username: username,
-            message: message,
-            timestamp: serverTimestamp(),
-            userId: currentUser.uid
+    function loadComments() {
+        const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+        
+        onSnapshot(commentsRef, (snapshot) => {
+            const comments = [];
+            snapshot.forEach(doc => {
+                comments.push({ id: doc.id, ...doc.data() });
+            });
+            comments.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+            renderComments(comments);
+        }, (err) => {
+            console.error("Listen failed:", err);
+            commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b;">Failed to load. Check Database Rules.</div>`;
         });
-        messageInput.value = &#39;&#39;;
-    } catch (error) {
-        console.error(&quot;Post failed:&quot;, error);
-        alert(&quot;Could not post. Check if Database Rules allow writes.&quot;);
-    } finally {
-        postBtn.disabled = false;
-        postBtn.innerText = originalText;
     }
-});
 
-function escapeHtml(text) {
-    const div = document.createElement(&#39;div&#39;);
-    div.textContent = text;
-    return div.innerHTML;
-}
+    function renderComments(comments) {
+        if (comments.length === 0) {
+            commentsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-mute); font-style: italic;">No comments yet. Be the first!</div>`;
+            return;
+        }
 
-initAuth();
+        commentsContainer.innerHTML = comments.map(c => `
+            <div class="glass-card" style="padding: 15px; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <span style="font-weight: 700; color: var(--accent);">@${escapeHtml(c.username || 'Anonymous')}</span>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--text-mute); text-transform: uppercase;">
+                        ${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString() : 'Just now'}
+                    </span>
+                </div>
+                <p style="color: var(--text-main); word-break: break-word; line-height: 1.5; margin: 0;">${escapeHtml(c.message || '')}</p>
+            </div>
+        `).join('');
+    }
+
+    postBtn.addEventListener('click', async () => {
+        const username = usernameInput.value.trim();
+        const message = messageInput.value.trim();
+
+        if (!username || !message || !currentUser) return;
+
+        postBtn.disabled = true;
+        const originalText = postBtn.innerText;
+        postBtn.innerText = "Posting...";
+
+        try {
+            const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
+            await addDoc(commentsRef, {
+                username: username,
+                message: message,
+                timestamp: serverTimestamp(),
+                userId: currentUser.uid
+            });
+            messageInput.value = '';
+        } catch (error) {
+            console.error("Post failed:", error);
+            alert("Could not post. Check if Database Rules allow writes.");
+        } finally {
+            postBtn.disabled = false;
+            postBtn.innerText = originalText;
+        }
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    initAuth();
 </script>
-
 </body>
 </html>
