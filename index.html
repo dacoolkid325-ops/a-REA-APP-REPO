@@ -946,15 +946,16 @@ function filterSongs(val) {
 function openAlexModal() {
   document.getElementById('alertTitle').innerText = "Alexandru News";
   
-  // Use innerHTML so the video tag actually renders
-  // Use backticks (`) to wrap the text so the " inside don't break the code
-  document.getElementById('alertMsg').innerHTML = `Alexandru Bojescu was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) He had some really cool friends like Abu (who sadly had appendicitis), Hamid, Aadil and Me. Though, lately, he moved to a more quiet neighbourhood. Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru.. I still have his contact at least...
-  <br><br>
-  <video width="100%" controls>
-    <source src="https://www.dropbox.com/scl/fi/wb2pifryo0xfq2ohht6m7/IMG_2399.mov?rlkey=klp54pc6lbpmdy3qtymqvkg8g&st=3oaxf87p&raw=1" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>`;
-  
+  // We use backticks (`) to wrap the whole HTML block
+  document.getElementById('alertMsg').innerHTML = `
+    Alexandru Bojescu was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) He had some really cool friends like Abu (who sadly had appendicitis), Hamid, Aadil and Me. Though, lately, he moved to a more quiet neighbourhood. Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru.. I still have his contact at least...
+    <br><br>
+    <video width="100%" controls playsinline preload="metadata">
+      <source src="https://www.dropbox.com/scl/fi/wb2pifryo0xfq2ohht6m7/IMG_2399.mov?rlkey=klp54pc6lbpmdy3qtymqvkg8g&st=3oaxf87p&raw=1" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  `; // This backtick closes the string
+
   document.getElementById('customAlert').style.display = 'flex';
 }
 
