@@ -53,19 +53,57 @@ body.light {
   --player-bg: rgba(255, 255, 255, 0.85);
 }
 
-/* SOLID GLASS MODE - MASSIVE PERFORMANCE BOOST */
+/* PERFORMANCE OPTIMIZATIONS */
+section {
+  display: none;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: pageEnter 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  content-visibility: auto; 
+}
+section.active { display: block; }
+
+.wix-iframe {
+  will-change: transform, width;
+}
+
+/* SOLID GLASS MODE - FIXES HEAVY BLUR EVERYWHERE */
+body.solid-glass * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
 body.solid-glass .glass-card,
 body.solid-glass .nav-container,
 body.solid-glass #miniPlayer,
 body.solid-glass .nav-selection-pill {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
     background: var(--player-bg) !important;
 }
 body.solid-glass .search-input {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
     background: var(--nav-bg) !important;
+}
+
+/* ULTRA SAVER MODE - DISABLES EXPENSIVE EFFECTS, LOWERS RENDER QUALITY */
+body.ultra-saver .glass-card,
+body.ultra-saver .nav-container,
+body.ultra-saver #miniPlayer {
+    box-shadow: none !important;
+}
+body.ultra-saver img {
+    filter: grayscale(0.15) contrast(0.85);
+    image-rendering: pixelated; /* Lowers render quality */
+}
+body.ultra-saver svg {
+    shape-rendering: crispEdges; /* Lowers SVG render quality */
+}
+body.ultra-saver .visualizer,
+body.ultra-saver #miniPlayer {
+    display: none !important; /* Songs aren't the main point */
+}
+body.ultra-saver .game-container-giant:not(.max-power) .game-iframe {
+    opacity: 0.3;
+    filter: blur(2px) grayscale(1);
+    pointer-events: none; /* Only clicked games get max power */
 }
 
 body.no-bg #glassCanvas { display: none !important; }
@@ -86,16 +124,8 @@ body.ipad-mode section {
   filter: blur(60px) contrast(1.2);
   opacity: 0.8;
   transition: opacity 0.5s;
+  will-change: opacity;
 }
-
-section {
-  display: none;
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  animation: pageEnter 0.4s cubic-bezier(0.2, 1, 0.3, 1);
-}
-section.active { display: block; }
 
 @keyframes pageEnter {
   from { opacity: 0; transform: scale(0.98) translateY(10px); }
@@ -118,11 +148,7 @@ section.active { display: block; }
 
 .glass-card.clickable:active { transform: scale(0.98); }
 
-.search-wrapper {
-  position: relative;
-  margin-bottom: 25px;
-  width: 100%;
-}
+.search-wrapper { position: relative; margin-bottom: 25px; width: 100%; }
 
 .search-input {
   width: 100%;
@@ -140,138 +166,66 @@ section.active { display: block; }
 }
 
 .search-icon-inside {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  color: var(--text-main);
-  opacity: 0.6;
-  z-index: 2;
-  pointer-events: none;
+  position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; color: var(--text-main); opacity: 0.6; z-index: 2; pointer-events: none;
 }
 
 .song-item {
-  display: flex; 
-  flex-direction: column;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--liquid-glass-border);
-  min-height: 110px; 
+  display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid var(--liquid-glass-border); min-height: 110px; 
 }
 
-.visualizer {
-  display: flex;
-  align-items: flex-end;
-  height: 20px; 
-  gap: 3px;
-  width: 30px;
-}
-
-.bar {
-  width: 4px;
-  height: 4px; 
-  background: var(--accent);
-  border-radius: 2px;
-  transition: height 0.1s ease; 
-  flex-shrink: 0;
-}
-
+.visualizer { display: flex; align-items: flex-end; height: 20px; gap: 3px; width: 30px; }
+.bar { width: 4px; height: 4px; background: var(--accent); border-radius: 2px; transition: height 0.1s ease; flex-shrink: 0; }
 .visualizer.active { opacity: 1; }
-.bar {
-  width: 3px;
-  background: var(--accent);
-  border-radius: 1px;
-  animation: bounce 0s infinite alternate;
-}
+.bar { width: 3px; background: var(--accent); border-radius: 1px; animation: bounce 0s infinite alternate; }
 .visualizer.active .bar { animation-duration: 0.4s; }
 .bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
 .bar:nth-child(2) { height: 10px; animation-delay: 0.3s; }
 .bar:nth-child(3) { height: 8px; animation-delay: 0.0s; }
 .bar:nth-child(4) { height: 5px; animation-delay: 0.2s; }
 
-@keyframes bounce {
-  from { height: 4px; }
-  to { height: 12px; }
-}
+@keyframes bounce { from { height: 4px; } to { height: 12px; } }
 
 .iframe-wrapper {
-  height: 80vh; 
-  padding: 0; 
-  overflow: hidden; 
-  border-radius: 24px;
-  position: relative;
-  background: #000;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  height: 80vh; padding: 0; overflow: hidden; border-radius: 24px; position: relative;
+  background: #000; display: flex; justify-content: center; align-items: flex-start;
 }
 
 .wix-iframe {
-  border: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: top left;
+  border: none; position: absolute; top: 0; left: 0; transform-origin: top left;
   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), width 0.3s ease;
 }
 
 .nav-container {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  z-index: 1000;
-  background: var(--nav-bg);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border-radius: 35px;
-  border: 1px solid var(--liquid-glass-border);
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 95vw; max-width: 550px; /* Scales properly on mobile */
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 8px 12px; z-index: 1000; background: var(--nav-bg);
+  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+  border-radius: 35px; border: 1px solid var(--liquid-glass-border);
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
 
 .nav-item {
-  position: relative;
-  background: none;
-  border: none;
-  width: 64px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: color 0.3s;
-  color: var(--text-mute);
-  z-index: 2;
+  position: relative; background: none; border: none;
+  width: clamp(40px, 12vw, 64px); height: clamp(40px, 12vw, 64px); /* Auto scales */
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: color 0.3s; color: var(--text-mute); z-index: 2;
+  flex-shrink: 1;
 }
 
 .nav-selection-pill {
-  position: absolute;
-  height: 56px;
-  width: 56px;
-  background: var(--pill-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--pill-border);
-  border-radius: 28px;
-  z-index: 1;
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  pointer-events: none;
+  position: absolute; left: 0; top: 0;
+  background: var(--pill-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--pill-border); border-radius: 28px; z-index: 1;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); pointer-events: none;
+  will-change: transform, width, height;
 }
 
 .nav-item.active { color: var(--text-main); }
 svg { width: 28px; height: 28px; fill: currentColor; }
 
-.song-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
+.song-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .song-title { font-weight: 600; font-size: 15px; display: block; transition: color 0.3s;}
 .song-title.playing { color: var(--accent); }
 
@@ -284,116 +238,53 @@ video { width: 100%; border-radius: 20px; border: none; background: #000;}
   font-weight: 600; font-size: 17px; margin-bottom: 20px; border: none; cursor: pointer;
 }
 
-.toggle-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 0; border-bottom: 1px solid var(--liquid-glass-border);
-}
+.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--liquid-glass-border); }
 .toggle-row:last-child { border-bottom: none; }
-
-input[type="range"] {
-  width: 140px;
-  accent-color: var(--accent);
-}
+input[type="range"] { width: 140px; accent-color: var(--accent); }
 
 .setting-select {
-  background: var(--pill-bg);
-  color: var(--text-main);
-  border: 1px solid var(--liquid-glass-border);
-  border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 15px;
-  outline: none;
-  backdrop-filter: blur(10px);
-  -webkit-appearance: none;
+  background: var(--pill-bg); color: var(--text-main); border: 1px solid var(--liquid-glass-border);
+  border-radius: 12px; padding: 8px 12px; font-size: 15px; outline: none; backdrop-filter: blur(10px); -webkit-appearance: none;
 }
-.setting-select option {
-  background: var(--bg-dark);
-  color: var(--text-main);
-}
+.setting-select option { background: var(--bg-dark); color: var(--text-main); }
 
 #miniPlayer {
-  position: fixed;
-  bottom: 120px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.9);
-  width: 90%;
-  max-width: 400px;
-  background: var(--player-bg);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--liquid-glass-border);
-  border-radius: 22px;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-  z-index: 900;
-  opacity: 0;
-  pointer-events: none;
+  position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%) scale(0.9);
+  width: 90%; max-width: 400px; background: var(--player-bg);
+  backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--liquid-glass-border); border-radius: 22px; padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3); z-index: 900; opacity: 0; pointer-events: none;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
-#miniPlayer.show {
-  bottom: 110px;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) scale(1);
-}
+#miniPlayer.show { bottom: 110px; opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); }
 
 .mp-info { display: flex; flex-direction: column; overflow: hidden; }
-.mp-title {
-  font-weight: 600; font-size: 14px; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; color: var(--text-main);
-}
+.mp-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
 .mp-status { font-size: 11px; color: var(--accent); font-weight: 500; margin-top: 2px; }
-
 .mp-controls { display: flex; gap: 15px; align-items: center; }
-.mp-btn {
-  background: none; border: none; padding: 0; cursor: pointer;
-  color: var(--text-main); display: flex; align-items: center; justify-content: center;
-}
+.mp-btn { background: none; border: none; padding: 0; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; }
 
-.ultra-wide-section {
-  max-width: 98% !important;
-  width: 98% !important;
-  padding: 10px !important;
-  margin: 0 auto;
-}
+.ultra-wide-section { max-width: 98% !important; width: 98% !important; padding: 10px !important; margin: 0 auto; }
 .section-title { font-size: 42px; font-weight: 800; margin-bottom: 20px; text-align: center; color: var(--text-main); }
-.btn-ios-large {
-  display: block; width: 100%; max-width: 600px; margin: 0 auto 40px auto;
-  padding: 24px; background: #007AFF; color: white; text-align: center;
-  text-decoration: none; border-radius: 24px; font-weight: 700; font-size: 20px;
-}
+.btn-ios-large { display: block; width: 100%; max-width: 600px; margin: 0 auto 40px auto; padding: 24px; background: #007AFF; color: white; text-align: center; text-decoration: none; border-radius: 24px; font-weight: 700; font-size: 20px; }
 .ultra-grid { display: flex; flex-direction: column; gap: 40px; width: 100%; }
+
 .game-container-giant {
-  height: 750px !important; padding: 0 !important; border-radius: 32px !important;
-  display: flex; flex-direction: column; overflow: hidden;
-  background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border);
-  transition: all 0.3s ease;
+  height: 750px !important; padding: 0 !important; border-radius: 32px !important; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); transition: all 0.3s ease;
 }
 body.ipad-mode .game-container-giant { height: 850px !important; }
-.game-ui-header {
-  padding: 15px 25px; background: rgba(0,0,0,0.3); display: flex;
-  align-items: center; gap: 15px;
-}
+
+.game-ui-header { padding: 15px 25px; background: rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; }
 .status-dot { width: 10px; height: 10px; background: #34C759; border-radius: 50%; box-shadow: 0 0 8px #34C759; }
 .game-label { font-weight: 800; letter-spacing: 1px; flex-grow: 1; color: #fff; }
-.expand-trigger {
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-  color: white; padding: 10px; border-radius: 12px; cursor: pointer;
-}
+.expand-trigger { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 12px; cursor: pointer; }
+
 .game-viewport { flex-grow: 1; background: #000; position: relative; overflow: hidden; }
-.game-iframe {
-  border: none; position: absolute; top: 0; left: 0;
-  transform-origin: top left; width: 100%; height: 100%;
-}
-.game-container-giant.is-active-fs {
-  position: fixed !important; top: 0 !important; left: 0 !important;
-  width: 100vw !important; height: 100vh !important;
-  z-index: 999999 !important; border-radius: 0 !important; margin: 0 !important;
-}
+.game-iframe { border: none; position: absolute; top: 0; left: 0; transform-origin: top left; width: 100%; height: 100%; transition: opacity 0.3s, filter 0.3s; }
+.game-container-giant.is-active-fs { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 999999 !important; border-radius: 0 !important; margin: 0 !important; }
+
 body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 </style>
 </head>
@@ -420,7 +311,7 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
   </div>
 
   <div class="glass-card iframe-wrapper" id="wixWrapper">
-    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);" loading="lazy"></iframe>
+    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width: 375px; height: 25.951557%; transform: scale(0);" loading="lazy" fetchpriority="high"></iframe>
   </div>
 </section>
 
@@ -438,12 +329,12 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
         margin: 20px auto;
         background: #000;">
         
-        <div style="width: 100%; margin-bottom: 24px; overflow: hidden; border-radius: 18px;">
-  <img src="icons/IMG_1193.jpeg" 
-       alt="Section Banner" 
-       loading="lazy"
-       style="width: 100%; height: auto; display: block; object-fit: cover; pointer-events: none;">
-</div>
+        <div style="width: 100%; margin-bottom: 12px; overflow: hidden; border-radius: 12px 12px 4px 4px;">
+            <img src="icons/IMG_1193.jpeg" 
+                alt="Section Banner" 
+                loading="lazy"
+                style="width: 100%; height: auto; display: block; object-fit: cover; pointer-events: none;">
+        </div>
 
         <iframe
             src="https://ai-rea-ai-rea.hf.space"
@@ -453,7 +344,8 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
             style="display: block; background: transparent;"
             title="ai-REA"
             loading="lazy">
-        </iframe> </div>
+        </iframe> 
+    </div>
 </section>
 
 <section id="songs">
@@ -546,11 +438,11 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
   <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
   
   <div class="ultra-grid">
-    <div class="glass-card game-container-giant">
-      <div class="game-ui-header">
+    <div class="glass-card game-container-giant max-power">
+      <div class="game-ui-header" onclick="setMaxPower(this)">
         <div class="status-dot"></div>
         <span class="game-label">MASTER</span>
-        <button class="expand-trigger" onclick="handleFullscreen(this)">
+        <button class="expand-trigger" onclick="handleFullscreen(this); event.stopPropagation();">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
         </button>
       </div>
@@ -560,10 +452,10 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     </div>
 
     <div class="glass-card game-container-giant">
-      <div class="game-ui-header">
+      <div class="game-ui-header" onclick="setMaxPower(this)">
         <div class="status-dot"></div>
         <span class="game-label">TINY DASH</span>
-        <button class="expand-trigger" onclick="handleFullscreen(this)">
+        <button class="expand-trigger" onclick="handleFullscreen(this); event.stopPropagation();">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
         </button>
       </div>
@@ -573,8 +465,15 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
     </div>
   </div>
   <script>
+    function setMaxPower(headerElement) {
+      document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('max-power'));
+      headerElement.closest('.game-container-giant').classList.add('max-power');
+    }
+
     function handleFullscreen(btn) {
       const card = btn.closest('.game-container-giant');
+      setMaxPower(card.querySelector('.game-ui-header'));
+      
       const isNowFull = card.classList.toggle('is-active-fs');
       if (isNowFull) { document.body.style.overflow = 'hidden'; }
       else { document.body.style.overflow = ''; }
@@ -694,14 +593,6 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
       <input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode', this.checked);">
     </div>
     <div class="toggle-row">
-      <span style="font-size: 17px; font-weight:500;">Remove Background</span>
-      <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
-    </div>
-    <div class="toggle-row">
-      <span style="font-size: 17px; font-weight:500;">Solid Glass (Performance)</span>
-      <input type="checkbox" id="solidGlassToggle" onchange="updateSetting('solidGlass', this.checked)">
-    </div>
-    <div class="toggle-row">
       <div style="display:flex; flex-direction:column;">
         <span style="font-size: 17px; font-weight:500;">Wix Site Width</span>
         <small style="opacity:0.6" id="widthLabel">375px (Desktop)</small>
@@ -712,38 +603,63 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
       <span style="font-size: 17px; font-weight:500;">Page Zoom</span>
       <input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale', this.value)">
     </div>
+    
     <div class="toggle-row">
-  <span style="font-size: 17px; font-weight:500;">Battery Saver (Half BG FPS)</span>
-  <input type="checkbox" id="batteryToggle" onchange="updateSetting('batterySaver', this.checked)">
-</div>
+      <span style="font-size: 17px; font-weight:500;">Remove ai-REA Tab</span>
+      <input type="checkbox" id="removeAireaToggle" onchange="updateSetting('removeAirea', this.checked)">
+    </div>
+
+    <div style="height: 1px; background: var(--liquid-glass-border); margin: 24px 0 16px 0;"></div>
+    <div style="margin-bottom: 12px; color: var(--accent); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Battery & Performance</div>
+
+    <div class="toggle-row" style="background: rgba(255,45,85,0.1); padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid rgba(255,45,85,0.3);">
+      <div style="display:flex; flex-direction:column; gap: 4px;">
+        <span style="font-size: 17px; font-weight:700; color: #FF2D55;">Ultra Battery Saver</span>
+        <small style="opacity:0.9; color: #FF2D55; font-size: 12px;">Enables all performance modes, disables box-shadows & extra animations</small>
+      </div>
+      <input type="checkbox" id="ultraSaverToggle" onchange="toggleUltraSaver(this.checked)" style="accent-color: #FF2D55; width: 22px; height: 22px;">
+    </div>
+
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Remove Background</span>
+      <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Solid Glass (Performance)</span>
+      <input type="checkbox" id="solidGlassToggle" onchange="updateSetting('solidGlass', this.checked)">
+    </div>
+    <div class="toggle-row">
+      <span style="font-size: 17px; font-weight:500;">Half App FPS (Background)</span>
+      <input type="checkbox" id="batteryToggle" onchange="updateSetting('batterySaver', this.checked)">
+    </div>
   </div>
 </section>
 
-<div class="nav-container">
- <div id="selectionPill" class="nav-selection-pill" style="transform: translateX(8px);"></div>
-  <button class="nav-item active" onclick="showTab('home', this, 0)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
-  <button class="nav-item" onclick="showTab('ai-rea', this, 1)">
-    <img src="icons/IMG_1194-removebg-preview.png" alt="ai-REA" style="width: 60px; height: 60px; object-fit: contain;">
+<div class="nav-container" id="mainNav">
+ <div id="selectionPill" class="nav-selection-pill"></div>
+  <button class="nav-item active" onclick="showTab('home', this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg></button>
+  <button class="nav-item airea-nav-btn" onclick="showTab('ai-rea', this)">
+    <img src="icons/IMG_1194-removebg-preview.png" alt="ai-REA" style="width: 100%; height: 100%; object-fit: contain;">
   </button>
-  <button class="nav-item" onclick="showTab('songs', this, 2)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path></svg></button>
-  <button class="nav-item" onclick="showTab('videos', this, 3)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg></button>
-  <button class="nav-item" onclick="showTab('games', this, 4)">
+  <button class="nav-item" onclick="showTab('songs', this)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"></path></svg></button>
+  <button class="nav-item" onclick="showTab('videos', this)"><svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg></button>
+  <button class="nav-item" onclick="showTab('games', this)">
     <svg viewBox="0 0 24 24">
       <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm7 2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path>
     </svg>
   </button>
-  <button class="nav-item" onclick="showTab('books', this, 5)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
-  <button class="nav-item" onclick="showTab('community', this, 6)">
+  <button class="nav-item" onclick="showTab('books', this)"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path></svg></button>
+  <button class="nav-item" onclick="showTab('community', this)">
     <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
   </button>
-  <button class="nav-item" onclick="showTab('settings', this, 7)">
+  <button class="nav-item" onclick="showTab('settings', this)">
     <svg viewBox="0 0 24 24">
       <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
     </svg>
   </button>
 </div>
 
-<div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; z-index:9999;">
+<div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:9999; transition: opacity 0.2s;">
   <div class="glass-card" style="max-width:300px; text-align:center;">
     <h2 id="alertTitle" style="color:var(--accent); margin-top:0;"></h2>
     <p id="alertMsg"></p>
@@ -755,12 +671,11 @@ body.ipad-mode .ultra-grid { display: grid; grid-template-columns: 1fr 1fr; }
 const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
-let animFrameId = null; // Used to fully pause the canvas loop to save CPU
+let animFrameId = null; 
 let isTabActive = true;
 let bgFrameCount = 0;
 document.addEventListener("visibilitychange", () => { isTabActive = !document.hidden; });
 
-// THEME PALETTES
 const themes = {
   default: { accent: '#007AFF', colors: ['#007AFF', '#5856D6', '#AF52DE', '#FF2D55'] },
   sunset:  { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE'] },
@@ -775,6 +690,8 @@ let appSettings = {
   noBg: false,
   solidGlass: false,
   batterySaver: false,
+  ultraSaver: false,
+  removeAirea: false, // New Option
   wixWidth: 375,
   uiScale: 0.95,
   startPage: 'home',
@@ -802,14 +719,13 @@ function initCanvas() {
 }
 
 function loop() {
-  if (appSettings.noBg) {
+  if (appSettings.noBg || appSettings.ultraSaver) {
     animFrameId = null;
     return;
   }
   
   bgFrameCount++;
 
-  // This is the logic that actually saves the battery:
   const shouldThrottle = appSettings.batterySaver || !isTabActive;
   
   if (!shouldThrottle || bgFrameCount % 2 === 0) {
@@ -831,7 +747,6 @@ function loop() {
   animFrameId = requestAnimationFrame(loop);
 }
 
-
 function updateSetting(key, val) {
   appSettings[key] = val;
   localStorage.setItem('aREASettings', JSON.stringify(appSettings));
@@ -842,8 +757,14 @@ function updateSetting(key, val) {
   }
 }
 
-function reloadWixFrame() {
-    applySettings();
+function toggleUltraSaver(isOn) {
+  updateSetting('ultraSaver', isOn);
+  if (isOn) {
+    updateSetting('noBg', true);
+    updateSetting('solidGlass', true);
+    updateSetting('batterySaver', true); 
+    // Purposefully NOT turning off ai-REA by default here.
+  }
 }
 
 let lastWixWidth = null;
@@ -867,17 +788,25 @@ function applySettings() {
   document.body.classList.toggle('no-bg', appSettings.noBg);
   document.getElementById('noBgToggle').checked = appSettings.noBg;
 
-  const batteryToggle = document.getElementById('batteryToggle');
-  if(batteryToggle) batteryToggle.checked = appSettings.batterySaver;
-
-
-  // Solid Glass Toggle
   document.body.classList.toggle('solid-glass', appSettings.solidGlass);
-  const solidToggle = document.getElementById('solidGlassToggle');
-  if(solidToggle) solidToggle.checked = appSettings.solidGlass;
+  document.getElementById('solidGlassToggle').checked = appSettings.solidGlass;
+
+  document.getElementById('batteryToggle').checked = appSettings.batterySaver;
+
+  document.body.classList.toggle('ultra-saver', appSettings.ultraSaver);
+  document.getElementById('ultraSaverToggle').checked = appSettings.ultraSaver;
   
-  // Restart canvas if noBg is toggled off and loop was paused
-  if (!appSettings.noBg && !animFrameId) {
+  document.getElementById('removeAireaToggle').checked = appSettings.removeAirea;
+  
+  const aireaNavBtn = document.querySelector('.airea-nav-btn');
+  if (appSettings.removeAirea) {
+      if (aireaNavBtn) aireaNavBtn.style.display = 'none';
+      if(document.getElementById('ai-rea').classList.contains('active')) showTab('home', document.querySelectorAll('.nav-item')[0]);
+  } else {
+      if (aireaNavBtn) aireaNavBtn.style.display = 'flex';
+  }
+  
+  if (!appSettings.noBg && !appSettings.ultraSaver && !animFrameId) {
     loop();
   }
   
@@ -894,10 +823,8 @@ function applySettings() {
   const wrapper = document.getElementById('wixWrapper');
   const label = document.getElementById('widthLabel');
   
-  // Wix Optimization: Only recalculate and repaint IF things actually changed or page became visible
   if (frame && wrapper) {
     const containerWidth = wrapper.offsetWidth;
-    // Don't calculate scale if the container is hidden (width=0)
     if (containerWidth > 0) {
         const targetWidth = parseInt(appSettings.wixWidth);
         
@@ -915,9 +842,12 @@ function applySettings() {
     }
   }
   document.getElementById('wixWidthSlider').value = appSettings.wixWidth;
+
+  // Refresh selection pill position incase widths changed
+  updatePillPosition();
 }
 
-function showTab(id, btn, index) {
+function showTab(id, btn) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(id);
   if(target) target.classList.add('active');
@@ -925,13 +855,27 @@ function showTab(id, btn, index) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   
-  const pill = document.getElementById('selectionPill');
-  pill.style.transform = `translateX(${index * 64 + 8}px)`;
+  updatePillPosition(btn);
   window.scrollTo({top: 0, behavior: 'smooth'});
 
-  // In case the Wix frame was hiding during a setting change, reapply settings when home is visible
   if(id === 'home') applySettings();
 }
+
+// Function dynamic responsive pill positioning
+function updatePillPosition(btn = document.querySelector('.nav-item.active')) {
+  if (!btn) return;
+  const container = document.getElementById('mainNav');
+  const pill = document.getElementById('selectionPill');
+  const containerRect = container.getBoundingClientRect();
+  const btnRect = btn.getBoundingClientRect();
+  
+  pill.style.transform = `translateX(${btnRect.left - containerRect.left}px)`;
+  pill.style.width = `${btnRect.width}px`;
+  pill.style.height = `${btnRect.height}px`;
+  pill.style.top = `${btnRect.top - containerRect.top}px`;
+}
+window.addEventListener('resize', () => updatePillPosition());
+
 
 let currentAudio = null;
 const miniPlayer = document.getElementById('miniPlayer');
@@ -971,19 +915,23 @@ function togglePlay() {
     currentAudio.paused ? currentAudio.play() : currentAudio.pause();
 }
 
+let searchTimeout;
 function filterSongs(val) {
-  const term = val.toLowerCase().trim();
-  const items = document.querySelectorAll('.song-item');
-  
-  items.forEach(item => {
-    const title = item.querySelector('.song-title').innerText.toLowerCase();
-    item.style.display = title.includes(term) ? 'flex' : 'none';
-  });
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const term = val.toLowerCase().trim();
+    const items = document.querySelectorAll('.song-item');
+    
+    items.forEach(item => {
+      const title = item.querySelector('.song-title').innerText.toLowerCase();
+      item.style.display = title.includes(term) ? 'flex' : 'none';
+    });
 
-  document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section => {
-    const hasVisible = Array.from(section.querySelectorAll('.song-item')).some(s => s.style.display === 'flex');
-    section.style.display = (hasVisible || term === "") ? 'block' : 'none';
-  });
+    document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section => {
+      const hasVisible = Array.from(section.querySelectorAll('.song-item')).some(s => s.style.display === 'flex');
+      section.style.display = (hasVisible || term === "") ? 'block' : 'none';
+    });
+  }, 150);
 }
 
 function openAlexModal() {
@@ -997,7 +945,6 @@ function loadStoredSettings() {
   const saved = localStorage.getItem('aREASettings');
   if (saved) {
     try {
-      // FIX: Merges old settings with the newest defaults so bugs don't wipe everything out
       const parsed = JSON.parse(saved);
       appSettings = { ...appSettings, ...parsed };
     } catch(e) { console.error("Error loading settings", e); }
@@ -1016,9 +963,15 @@ window.onload = () => {
   const startPage = appSettings.startPage || 'home';
   const startIndex = pages.indexOf(startPage);
   if(startIndex > -1) {
-    showTab(startPage, document.querySelectorAll('.nav-item')[startIndex], startIndex);
+    // Check if ai-rea tab was removed but requested
+    if(startPage === 'ai-rea' && appSettings.removeAirea) {
+      showTab('home', document.querySelectorAll('.nav-item')[0]);
+    } else {
+      showTab(startPage, document.querySelectorAll('.nav-item')[startIndex]);
+    }
   }
 };
+
 let audioCtx;
 let analyser;
 let dataArray;
@@ -1040,8 +993,17 @@ function initAudioVisualizer(audioElement) {
     sourceNodes.set(audioElement, source);
   }
 
+  let localFrames = 0;
   function updateBars() {
-    if (audioElement.paused) return;
+    if (audioElement.paused || appSettings.ultraSaver) return; 
+    
+    // Limits processing to half app FPS if Battery Saver is ON
+    localFrames++;
+    if (appSettings.batterySaver && localFrames % 2 !== 0) {
+        requestAnimationFrame(updateBars);
+        return;
+    }
+
     analyser.getByteFrequencyData(dataArray);
     
     const container = audioElement.closest('.song-item');
