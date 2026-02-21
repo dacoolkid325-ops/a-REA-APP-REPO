@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="preload" as="image" href="icons/IMG_1194-removebg-preview.png">
 <link rel="preload" as="image" href="icons/IMG_1193.jpeg">
@@ -29,12 +29,17 @@
   --liquid-glass-bg: rgba(255, 255, 255, 0.08);
   --liquid-glass-border: rgba(255, 255, 255, 0.15);
   --liquid-glass-shine: rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
   --ui-zoom: 0.95;
   
   --nav-bg: rgba(15, 15, 18, 0.65);
   --pill-bg: var(--accent);
   --pill-border: rgba(255, 255, 255, 0.3);
   --player-bg: rgba(15, 15, 18, 0.85);
+  
+  /* Apple Spring Physics */
+  --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --spring-smooth: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 body.light {
@@ -47,6 +52,7 @@ body.light {
   --liquid-glass-bg: rgba(255, 255, 255, 0.65);
   --liquid-glass-border: rgba(0, 0, 0, 0.08);
   --liquid-glass-shine: rgba(255, 255, 255, 1);
+  --glass-shadow: 0 15px 35px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,1);
   --nav-bg: rgba(250, 250, 252, 0.85);
   --pill-bg: var(--accent);
   --pill-border: rgba(0, 0, 0, 0.1);
@@ -57,52 +63,71 @@ body {
   margin: 0;
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Immersive Typography update */
+  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
-  transition: background-color 0.4s ease, color 0.4s ease;
-  /* Removed transform from body to fix position: fixed bugs! */
+  transition: background-color 0.5s var(--spring-smooth), color 0.5s var(--spring-smooth);
 }
 
-/* APP WRAPPER: Handles the zooming logic without breaking fixed elements 
-  like the nav bar and mini player.
-*/
+/* APP WRAPPER */
 #app-wrapper {
   transform: scale(var(--ui-zoom));
   transform-origin: top center;
   width: calc(100% / var(--ui-zoom));
   min-height: 100vh;
   padding-bottom: 160px;
-  transition: padding-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: padding-left 0.5s var(--spring-smooth), filter 0.5s ease;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* THEATER MODE DIMMING */
+body.theater-mode #app-wrapper {
+    background: rgba(0,0,0,0.85);
+}
+body.theater-mode .glass-card:not(.theater-focus) {
+    opacity: 0.1;
+    pointer-events: none;
+    filter: blur(5px);
+}
+.theater-focus {
+    z-index: 100;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8) !important;
+}
+
 /* DYNAMIC TYPOGRAPHY */
 h1 {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-size: 3rem; /* Massive bold headers */
+  font-weight: 900;
+  letter-spacing: -0.04em;
   margin-bottom: 30px;
   text-align: left;
   background: linear-gradient(135deg, var(--text-main), var(--text-mute));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: textFadeIn 0.8s var(--spring-smooth) forwards;
 }
 
-/* PERFORMANCE OPTIMIZATIONS */
+@keyframes textFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* PERFORMANCE OPTIMIZATIONS & SPRING ANIMATIONS */
 section {
   display: none;
   padding: 40px 5%;
   max-width: 1000px;
   margin: 0 auto;
-  animation: pageEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pageEnter 0.6s var(--spring-bounce);
   content-visibility: auto; 
 }
 section.active { display: block; }
 
 @keyframes pageEnter {
-  from { opacity: 0; transform: scale(0.97) translateY(15px); }
+  from { opacity: 0; transform: scale(0.92) translateY(30px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
@@ -113,7 +138,7 @@ section.active { display: block; }
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   z-index: -1;
-  filter: blur(80px) saturate(150%);
+  filter: blur(80px) saturate(160%);
   opacity: 0.85;
   transition: opacity 0.5s;
   will-change: opacity;
@@ -128,23 +153,37 @@ section.active { display: block; }
   border-radius: 28px;
   padding: 28px;
   margin-bottom: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: var(--glass-shadow);
   cursor: default;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.4s var(--spring-bounce), box-shadow 0.4s ease, border-color 0.4s ease, opacity 0.4s;
+  position: relative;
+  overflow: hidden;
 }
 
 .glass-card:hover {
   border-color: color-mix(in srgb, var(--accent) 40%, var(--liquid-glass-border));
-  box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 30px var(--accent-glow);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 40px var(--accent-glow);
 }
 
-.glass-card.clickable:active { transform: scale(0.97); }
+/* Pull-to-peek / Squish interaction */
+.glass-card.clickable:active, .btn-ios:active, .song-item:active { 
+    transform: scale(0.95); 
+}
 
-/* GRID LAYOUTS FOR WIDER SCREENS */
+/* GRID LAYOUTS FOR WIDER SCREENS (Side by Side feeling) */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
+}
+/* Side-by-side specific */
+@media (min-width: 900px) {
+    .side-by-side-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        align-items: start;
+    }
 }
 
 /* SEARCH BAR VIBE */
@@ -159,7 +198,7 @@ section.active { display: block; }
   font-size: 17px;
   color: var(--text-main);
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.4s var(--spring-smooth);
   background: var(--liquid-glass-bg) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
@@ -170,7 +209,8 @@ section.active { display: block; }
 
 .search-input:focus {
   border-color: var(--accent) !important;
-  box-shadow: 0 0 20px var(--accent-glow), 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 0 25px var(--accent-glow), 0 10px 30px rgba(0,0,0,0.1);
+  transform: scale(1.02);
 }
 
 .search-icon-inside {
@@ -180,7 +220,13 @@ section.active { display: block; }
 
 /* AUDIO & SONGS */
 .song-item {
-  display: flex; flex-direction: column; padding: 16px 0; border-bottom: 1px solid var(--liquid-glass-border); min-height: 110px; 
+  display: flex; flex-direction: column; padding: 16px 10px; border-bottom: 1px solid var(--liquid-glass-border); min-height: 110px; 
+  transition: background 0.3s, transform 0.3s var(--spring-bounce), border-radius 0.3s;
+}
+.song-item:hover {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    border-bottom-color: transparent;
 }
 .song-item:last-child { border-bottom: none; }
 
@@ -194,7 +240,7 @@ section.active { display: block; }
 
 @keyframes bounce { from { height: 4px; } to { height: 16px; } }
 
-.song-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.song-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; pointer-events: none;}
 .song-title { font-weight: 700; font-size: 16px; display: block; transition: color 0.3s; letter-spacing: -0.01em;}
 .song-title.playing { color: var(--accent); }
 
@@ -211,10 +257,10 @@ video { width: 100%; border-radius: 20px; border: 1px solid var(--liquid-glass-b
   color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
   font-weight: 700; font-size: 17px; margin-bottom: 20px; border: none; cursor: pointer;
   box-shadow: 0 10px 20px var(--accent-glow);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.3s var(--spring-bounce), box-shadow 0.3s;
   font-family: inherit;
 }
-.btn-ios:active { transform: scale(0.96); box-shadow: 0 5px 10px var(--accent-glow); }
+.btn-ios:active { transform: scale(0.93); box-shadow: 0 5px 10px var(--accent-glow); }
 
 /* SETTINGS & TOGGLES */
 .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--liquid-glass-border); }
@@ -222,7 +268,8 @@ video { width: 100%; border-radius: 20px; border: 1px solid var(--liquid-glass-b
 .toggle-label { font-size: 17px; font-weight: 600; }
 
 input[type="range"] { width: 150px; accent-color: var(--accent); }
-input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--accent); border-radius: 6px; cursor: pointer;}
+input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--accent); border-radius: 8px; cursor: pointer; transition: transform 0.2s var(--spring-bounce);}
+input[type="checkbox"]:active { transform: scale(0.8); }
 
 .setting-select {
   background: var(--liquid-glass-bg); color: var(--text-main); border: 1px solid var(--liquid-glass-border);
@@ -238,12 +285,10 @@ input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--accent);
 }
 .wix-iframe {
   border: none; position: absolute; top: 0; left: 0; transform-origin: top left;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s ease;
+  transition: transform 0.5s var(--spring-smooth), width 0.5s ease;
 }
 
-/* REVOLUTIONIZED NAVIGATION BAR
-  Bottom Pill on Mobile -> Side Expandable Panel on Desktop 
-*/
+/* REVOLUTIONIZED NAVIGATION BAR */
 .nav-container {
   position: fixed; 
   bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -253,32 +298,32 @@ input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--accent);
   backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
   border-radius: 40px; border: 1px solid var(--liquid-glass-border);
   box-shadow: 0 20px 50px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s var(--spring-smooth);
 }
 
 .nav-item {
   position: relative; background: none; border: none;
   width: clamp(44px, 12vw, 56px); height: clamp(44px, 12vw, 56px);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: color 0.3s; color: var(--text-mute); z-index: 2;
+  cursor: pointer; transition: color 0.3s, transform 0.3s var(--spring-bounce); color: var(--text-mute); z-index: 2;
   flex-shrink: 0; border-radius: 50%;
 }
+.nav-item:active { transform: scale(0.85); }
 
-/* The active state is now the pill color and the icon turns white */
 .nav-item.active { color: #ffffff; }
-svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s; }
-.nav-item:hover svg { transform: scale(1.1); }
+svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s var(--spring-bounce); }
+.nav-item:hover svg { transform: scale(1.15); }
 
 .nav-selection-pill {
   position: absolute; left: 0; top: 0;
   background: var(--pill-bg); 
   box-shadow: 0 5px 15px var(--accent-glow);
   border: 1px solid var(--pill-border); border-radius: 30px; z-index: 1;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+  transition: all 0.5s var(--spring-bounce); pointer-events: none;
   will-change: transform, width, height;
 }
 
-/* DESKTOP/IPAD SIDE NAV */
+/* DESKTOP/IPAD SIDE NAV - BUG FIXED HERE */
 @media (min-width: 850px) {
   #app-wrapper { padding-left: 100px; padding-bottom: 50px; }
   
@@ -286,31 +331,36 @@ svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s;
     bottom: auto; top: 50%; left: 30px; transform: translateY(-50%);
     width: 76px; height: auto; flex-direction: column; gap: 12px;
     padding: 20px 10px; border-radius: 38px;
-    align-items: flex-start; overflow: hidden;
+    align-items: center; overflow: hidden; /* Changed to center to balance pill */
   }
   
   .nav-container:hover {
     width: 220px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    align-items: flex-start; /* Expand left aligned text */
+  }
+  
+  /* HIDE ICONS ON IPAD/PC */
+  .nav-item svg, .nav-item img {
+      display: none !important;
   }
   
   .nav-item {
-    width: 56px; height: 56px; justify-content: flex-start; padding-left: 15px; gap: 20px;
+    width: 100%; height: 56px; justify-content: center; padding: 0; gap: 0; border-radius: 20px;
+  }
+  .nav-container:hover .nav-item {
+     justify-content: flex-start; padding-left: 20px;
   }
   
   .nav-item::after {
     content: attr(data-label);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700; font-size: 16px;
-    opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
-    white-space: nowrap; transform: translateX(-10px);
+    opacity: 1; transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap; 
+    /* Center text when collapsed, then move right when hovered */
   }
   
-  .nav-container:hover .nav-item::after {
-    opacity: 1; transform: translateX(0);
-  }
-  
-  /* Scale Sections closer to iPad vibe */
   section { max-width: 1200px; }
 }
 
@@ -322,7 +372,7 @@ svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s;
   border: 1px solid var(--liquid-glass-border); border-radius: 24px; padding: 14px 24px;
   display: flex; align-items: center; justify-content: space-between;
   box-shadow: 0 20px 40px rgba(0,0,0,0.3); z-index: 900; opacity: 0; pointer-events: none;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.6s var(--spring-bounce);
 }
 #miniPlayer.show { bottom: 110px; opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); }
 
@@ -335,8 +385,8 @@ svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s;
 .mp-title { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
 .mp-status { font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px; }
 .mp-controls { display: flex; gap: 15px; align-items: center; }
-.mp-btn { background: none; border: none; padding: 0; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; transition: transform 0.2s;}
-.mp-btn:active { transform: scale(0.9); }
+.mp-btn { background: none; border: none; padding: 0; cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center; transition: transform 0.2s var(--spring-bounce);}
+.mp-btn:active { transform: scale(0.8); }
 
 /* GAMES & BOOKS */
 .ultra-wide-section { max-width: 98% !important; padding: 20px !important; margin: 0 auto; }
@@ -346,27 +396,38 @@ svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.3s;
 
 .game-container-giant {
   height: 700px; padding: 0 !important; border-radius: 32px !important; display: flex; flex-direction: column; overflow: hidden;
-  background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border); transition: all 0.5s var(--spring-smooth);
 }
 body.ipad-mode .game-container-giant { height: 800px; }
 
 .game-ui-header { padding: 18px 25px; background: rgba(0,0,0,0.4); display: flex; align-items: center; gap: 15px; cursor: pointer; backdrop-filter: blur(20px);}
 .status-dot { width: 12px; height: 12px; background: #34C759; border-radius: 50%; box-shadow: 0 0 12px #34C759; }
 .game-label { font-weight: 800; letter-spacing: 1px; flex-grow: 1; color: #fff; font-size: 15px;}
-.expand-trigger { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 14px; cursor: pointer; transition: background 0.2s;}
-.expand-trigger:hover { background: rgba(255,255,255,0.25); }
+.expand-trigger { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 14px; cursor: pointer; transition: background 0.2s, transform 0.2s var(--spring-bounce);}
+.expand-trigger:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
 
 .game-viewport { flex-grow: 1; background: #000; position: relative; overflow: hidden; }
 .game-iframe { border: none; position: absolute; top: 0; left: 0; transform-origin: top left; width: 100%; height: 100%; transition: opacity 0.3s; }
 .game-container-giant.is-active-fs { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 999999 !important; border-radius: 0 !important; margin: 0 !important; }
 
-/* MODES */
+/* MODES - UPDATED SOLID GLASS FOR BRIGHT SOLID CARDS */
 body.solid-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-body.solid-glass .glass-card, body.solid-glass .nav-container, body.solid-glass #miniPlayer { background: var(--player-bg) !important; }
+body.solid-glass .glass-card, body.solid-glass .nav-container, body.solid-glass #miniPlayer { 
+    background: var(--player-bg) !important; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15); /* Solid dropshadow */
+    border: 1px solid rgba(0,0,0,0.05);
+}
 
 body.ultra-saver .glass-card, body.ultra-saver .nav-container { box-shadow: none !important; }
 body.ultra-saver *, body.ultra-saver *:before, body.ultra-saver *:after { transition: none !important; animation: none !important; }
 body.no-bg #glassCanvas { display: none !important; }
+
+.theater-btn {
+    margin-top: 15px; background: rgba(255,255,255,0.1); border: 1px solid var(--liquid-glass-border);
+    color: var(--text-main); border-radius: 14px; padding: 10px 15px; font-weight: 600; cursor: pointer;
+    transition: transform 0.2s var(--spring-bounce);
+}
+.theater-btn:active { transform: scale(0.9); }
 </style>
 </head>
 <body class="light ipad-mode">
@@ -457,69 +518,73 @@ body.no-bg #glassCanvas { display: none !important; }
     <input type="text" class="search-input" placeholder="Search Songs..." oninput="filterSongs(this.value)">
   </div>
 
-  <div class="glass-card">
-    <div class="song-item">
-      <div class="song-header">
-        <span class="song-title">01 – a-REA (Original)</span>
-        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      </div>
-      <audio controls="" src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
-    </div>
-
-    <div class="song-item">
-      <div class="song-header">
-        <span class="song-title">02 – L-INE GRAPHS!</span>
-        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      </div>
-      <audio controls="" src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
-    </div>
-
-    <div class="song-item">
-      <div class="song-header">
-        <span class="song-title">03 – T-ABLES!!</span>
-        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      </div>
-      <audio controls="" src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
-    </div>
-
-    <div class="song-item">
-      <div class="song-header">
-        <span class="song-title">04 – T-IMETABLES!!</span>
-        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      </div>
-      <audio controls="" src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
-    </div>
-
-    <div class="song-item">
-      <div class="song-header">
-        <span class="song-title">05 – A-NGLES!!!!</span>
-        <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-      </div>
-      <audio controls="" src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
-    </div>
-
-    <div style="margin-top:30px; padding-top:20px; border-top: 1px solid var(--liquid-glass-border);">
-      <div class="song-item">
-        <div class="song-header">
-          <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
-          <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+  <div class="glass-card side-by-side-container">
+    <div style="width:100%;">
+        <div class="song-item" onclick="triggerDynamicTheming('#007AFF')">
+          <div class="song-header">
+            <span class="song-title">01 – a-REA (Original)</span>
+            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+          </div>
+          <audio controls="" src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
         </div>
-        <audio controls="" src="audio/aREAREVAMP.m4a"></audio>
-      </div>
-      <div class="song-item">
-        <div class="song-header">
-          <span class="song-title">NEW – MASTER</span>
-          <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+
+        <div class="song-item" onclick="triggerDynamicTheming('#FF2D55')">
+          <div class="song-header">
+            <span class="song-title">02 – L-INE GRAPHS!</span>
+            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+          </div>
+          <audio controls="" src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
         </div>
-        <audio controls="" src="Music/MASTER.m4a"></audio>
-      </div>
-      <div class="song-item">
-        <div class="song-header">
-          <span class="song-title">FAN FAVOURITE – TINY</span>
-          <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+
+        <div class="song-item" onclick="triggerDynamicTheming('#FF9500')">
+          <div class="song-header">
+            <span class="song-title">03 – T-ABLES!!</span>
+            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+          </div>
+          <audio controls="" src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
         </div>
-        <audio controls="" src="audio/Tiny.m4a"></audio>
-      </div>
+    </div>
+    
+    <div style="width:100%;">
+        <div class="song-item" onclick="triggerDynamicTheming('#34C759')">
+          <div class="song-header">
+            <span class="song-title">04 – T-IMETABLES!!</span>
+            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+          </div>
+          <audio controls="" src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
+        </div>
+
+        <div class="song-item" onclick="triggerDynamicTheming('#AF52DE')">
+          <div class="song-header">
+            <span class="song-title">05 – A-NGLES!!!!</span>
+            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+          </div>
+          <audio controls="" src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
+        </div>
+
+        <div style="margin-top:20px; padding-top:10px; border-top: 1px solid var(--liquid-glass-border);">
+          <div class="song-item" onclick="triggerDynamicTheming('#5AC8FA')">
+            <div class="song-header">
+              <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
+              <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            </div>
+            <audio controls="" src="audio/aREAREVAMP.m4a"></audio>
+          </div>
+          <div class="song-item" onclick="triggerDynamicTheming('#FFCC00')">
+            <div class="song-header">
+              <span class="song-title">NEW – MASTER</span>
+              <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            </div>
+            <audio controls="" src="Music/MASTER.m4a"></audio>
+          </div>
+          <div class="song-item" onclick="triggerDynamicTheming('#FF3B30')">
+            <div class="song-header">
+              <span class="song-title">FAN FAVOURITE – TINY</span>
+              <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            </div>
+            <audio controls="" src="audio/Tiny.m4a"></audio>
+          </div>
+        </div>
     </div>
   </div>
 </section>
@@ -530,10 +595,12 @@ body.no-bg #glassCanvas { display: none !important; }
     <div class="glass-card" style="padding: 20px;">
       <div class="song-title" style="margin-bottom: 12px;">aq.co direct - a-REA 2.0</div>
       <video controls="" src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&amp;raw=1" preload="none"></video>
+      <button class="theater-btn" onclick="toggleTheaterMode(this)">Enter Theater Mode</button>
     </div>
     <div class="glass-card" style="padding: 20px;">
       <div class="song-title" style="margin-bottom: 12px;">a-REA APP Official Trailer</div>
       <video controls="" src="https://www.dropbox.com/scl/fi/up1gt8pr9oa5koke2fkkg/DC09AB20-3D0B-469D-824D-621EB1418B48.mov?rlkey=z71n7ce7mlzlg2nmewstv0ejn&st=ilsw0ker&raw=1" preload="none"></video>
+      <button class="theater-btn" onclick="toggleTheaterMode(this)">Enter Theater Mode</button>
     </div>
   </div>
 </section>
@@ -742,7 +809,9 @@ body.no-bg #glassCanvas { display: none !important; }
   </div>
 </section>
 
-</div> <div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:none; align-items:center; justify-content:center; z-index:99999; transition: opacity 0.3s;">
+</div> 
+
+<div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:none; align-items:center; justify-content:center; z-index:99999; transition: opacity 0.3s;">
   <div class="glass-card" style="max-width:340px; text-align:center; padding: 30px;">
     <h2 id="alertTitle" style="color:var(--accent); margin-top:0; font-weight: 800;"></h2>
     <p id="alertMsg" style="font-size: 15px; line-height: 1.6;"></p>
@@ -751,6 +820,38 @@ body.no-bg #glassCanvas { display: none !important; }
 </div>
 
 <script>
+// --- Tactile Haptic Feedback Setup ---
+function vibrate(ms = 15) {
+    if(navigator.vibrate) navigator.vibrate(ms);
+}
+// Attach to all likely interactive elements for global fluid feel
+document.addEventListener('click', (e) => {
+    if(e.target.closest('button, a, input, select, .clickable, .song-item, .game-ui-header')) {
+        vibrate(15);
+    }
+});
+
+// --- Dynamic Theming Engine ---
+function triggerDynamicTheming(colorHex) {
+    if(appSettings.theme !== 'dynamic') return; // only run if user lets it or default
+    document.documentElement.style.setProperty('--accent', colorHex);
+    let r = parseInt(colorHex.slice(1, 3), 16), g = parseInt(colorHex.slice(3, 5), 16), b = parseInt(colorHex.slice(5, 7), 16);
+    document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.35)`);
+}
+
+// --- Theater Mode Logic ---
+function toggleTheaterMode(btn) {
+    const card = btn.closest('.glass-card');
+    const isTheater = document.body.classList.toggle('theater-mode');
+    if(isTheater) {
+        card.classList.add('theater-focus');
+        btn.innerText = "Exit Theater Mode";
+    } else {
+        card.classList.remove('theater-focus');
+        btn.innerText = "Enter Theater Mode";
+    }
+}
+
 const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
@@ -760,11 +861,11 @@ let bgFrameCount = 0;
 document.addEventListener("visibilitychange", () => { isTabActive = !document.hidden; });
 
 const themes = {
-  default: { accent: '#007AFF', colors: ['#007AFF', '#5856D6', '#AF52DE', '#FF2D55'] },
-  sunset:  { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE'] },
-  forest:  { accent: '#34C759', colors: ['#34C759', '#30B0C7', '#007AFF', '#32D74B'] },
-  ocean:   { accent: '#5856D6', colors: ['#5856D6', '#007AFF', '#30B0C7', '#5AC8FA'] },
-  midnight:{ accent: '#AF52DE', colors: ['#AF52DE', '#5856D6', '#FF2D55', '#007AFF'] }
+  default: { accent: '#007AFF', colors: ['#FF2D55', '#5856D6', '#AF52DE', '#007AFF', '#5AC8FA', '#FF9500'] }, /* Added vibrant neon meshes */
+  sunset:  { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE', '#FF3B30', '#FF9500'] },
+  forest:  { accent: '#34C759', colors: ['#34C759', '#30B0C7', '#007AFF', '#32D74B', '#5AC8FA', '#34C759'] },
+  ocean:   { accent: '#5856D6', colors: ['#5856D6', '#007AFF', '#30B0C7', '#5AC8FA', '#AF52DE', '#5856D6'] },
+  midnight:{ accent: '#AF52DE', colors: ['#AF52DE', '#5856D6', '#FF2D55', '#007AFF', '#30B0C7', '#AF52DE'] }
 };
 
 let appSettings = {
@@ -795,7 +896,7 @@ function initCanvas() {
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 1.5,
       vy: (Math.random() - 0.5) * 1.5,
-      r: Math.random() * 300 + 200,
+      r: Math.random() * 400 + 200, /* Larger radiuses for mesh blend */
       color: palette[i % palette.length]
     });
   }
@@ -861,7 +962,6 @@ function applySettings() {
   const themeObj = themes[themeKey] || themes.default;
   document.documentElement.style.setProperty('--accent', themeObj.accent);
   
-  /* Update Accent Glow dynamically */
   let hex = themeObj.accent;
   let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
   document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.35)`);
@@ -948,7 +1048,6 @@ function showTab(id, btn) {
   if(id === 'home') applySettings();
 }
 
-// FIXED PILL POSITIONING FOR BOTH ROW (MOBILE) AND COLUMN (DESKTOP)
 function updatePillPosition(btn = document.querySelector('.nav-item.active')) {
   if (!btn) return;
   const pill = document.getElementById('selectionPill');
@@ -995,6 +1094,7 @@ document.addEventListener('pause', function(e){
 function togglePlay() {
     if(!currentAudio) return;
     currentAudio.paused ? currentAudio.play() : currentAudio.pause();
+    vibrate(20);
 }
 
 let searchTimeout;
