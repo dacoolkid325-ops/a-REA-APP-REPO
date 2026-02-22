@@ -58,6 +58,22 @@ body.light {
   --pill-border: rgba(0, 0, 0, 0.1);
   --player-bg: rgba(255, 255, 255, 0.9);
 }
+
+/* Font System Fix */
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  transition: background-color 0.4s var(--spring-smooth), color 0.4s var(--spring-smooth), background 0.4s ease;
+}
+
+body.font-default, body.font-default * {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", "Poppins", sans-serif !important;
+}
+
 /* Styling for the custom fullscreen button */
 .custom-fs-btn {
   position: absolute;
@@ -102,17 +118,6 @@ body.light {
 .ios-pseudo-fullscreen .fp-iframe {
   height: 100% !important;
   border-radius: 0 !important;
-}
-
-
-body {
-  margin: 0;
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow-x: hidden;
-  min-height: 100vh;
-  transition: background-color 0.4s var(--spring-smooth), color 0.4s var(--spring-smooth), background 0.4s ease;
 }
 
 #app-wrapper {
@@ -509,6 +514,9 @@ body.no-bg #glassCanvas { display: none !important; }
   <button class="nav-item" data-label="Community" onclick="showTab('community', this)">
     <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
   </button>
+  <button class="nav-item" data-label="Extras" onclick="showTab('extras', this)">
+    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  </button>
   <button class="nav-item" data-label="Settings" onclick="showTab('settings', this)">
     <svg viewBox="0 0 24 24">
       <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
@@ -536,10 +544,10 @@ body.no-bg #glassCanvas { display: none !important; }
 
     <div class="glass-card" style="padding: 0; overflow: hidden; max-width: 900px; margin: 20px auto;">
         
-        <div style="width: 100%; overflow: hidden;">
-            <img src="icons/IMG_1193.jpeg" 
-                alt="Section Banner" 
-                style="width: 100%; height: auto; display: block; object-fit: cover; pointer-events: none; border-bottom: 1px solid var(--liquid-glass-border);">
+        <div style="width: 100%; text-align: center; padding: 30px 0; border-bottom: 1px solid var(--liquid-glass-border);">
+            <img src="icons/IMG_1194-removebg-preview.png" 
+                alt="ai-REA Icon" 
+                style="width: 180px; height: 180px; display: block; object-fit: contain; margin: 0 auto; pointer-events: none;">
         </div>
 
         <iframe
@@ -709,8 +717,7 @@ body.no-bg #glassCanvas { display: none !important; }
   
   <div class="card-grid">
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
-        <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">
-          ⛶ </button>
+        <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
         <a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Trash
@@ -786,14 +793,36 @@ body.no-bg #glassCanvas { display: none !important; }
     </div>
 </section>
 
+<section id="extras">
+  <h1>Extras</h1>
+  <div class="card-grid">
+    <div class="glass-card" style="text-align: center;">
+      <h3 style="margin-top:0;">Want OHIO RIZZ?</h3>
+      <a href="https://aqeelchy02.wixsite.com/ohioclub" target="_blank" class="btn-ios">GO HERE</a>
+    </div>
+    <div class="glass-card" style="text-align: center;">
+      <h3 style="margin-top:0;">Want a fun hangout place to chat?</h3>
+      <a href="https://aqeelchy02.wixsite.com/shadow-ninjas" target="_blank" class="btn-ios">GO HERE</a>
+    </div>
+    <div class="glass-card" style="text-align: center;">
+      <h3 style="margin-top:0;">LEARN ABOUT ARCTIC FOXES</h3>
+      <a href="http://bit.ly/arcticfoxesschool" target="_blank" class="btn-ios">HERE</a>
+    </div>
+    <div class="glass-card" style="text-align: center;">
+      <h3 style="margin-top:0;">CREATE A WEBSITE</h3>
+      <a href="https://bit.ly/createaweb" target="_blank" class="btn-ios">HERE</a>
+    </div>
+  </div>
+</section>
+
 <section id="settings">
   <h1>Settings</h1>
   <div class="glass-card">
     <div class="toggle-row">
         <span class="toggle-label">App Font Family</span>
         <select id="fontSelect" class="setting-select" onchange="updateSetting('appFont', this.value)">
-            <option value="imported">Inter / Jakarta (Imported)</option>
-            <option value="default">SF Pro / Poppins (System Default)</option>
+            <option value="imported">Inter / Jakarta</option>
+            <option value="default">Default</option>
         </select>
     </div>
 
@@ -834,6 +863,7 @@ body.no-bg #glassCanvas { display: none !important; }
             <option value="games">Games</option>
             <option value="books">Books</option>
             <option value="community">Community</option>
+            <option value="extras">Extras</option>
             <option value="settings">Settings</option>
         </select>
     </div>
@@ -899,7 +929,6 @@ body.no-bg #glassCanvas { display: none !important; }
 </div>
 
 <script>
-// I MOVED THIS FUNCTION OUT OF THE MODULE SO YOUR HTML BUTTONS CAN ACCESS IT
 function toggleIframeFullscreen(buttonElement) {
   const card = buttonElement.closest('.book-container');
   card.classList.toggle('ios-pseudo-fullscreen');
@@ -955,7 +984,7 @@ const themes = {
 };
 
 let appSettings = {
-  appFont: 'imported', // NEW FONT SETTING
+  appFont: 'imported',
   lightMode: true,
   ipadMode: false,
   noBg: false,
@@ -985,13 +1014,13 @@ function initCanvas() {
   }
   
   for(let i=0; i<6; i++) {
-    points.push({
+    points.push({nmjm
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 1.5,
       vy: (Math.random() - 0.5) * 1.5,
       r: Math.random() * 400 + 200, 
-      color: palette[i % palette.length]
+      color: palett\i % palette.length]
     });
   }
 }
@@ -1003,7 +1032,7 @@ function loop() {
   }
   
   bgFrameCount++;
-
+ohi
   if (appSettings.batterySaver && bgFrameCount % 2 !== 0) {
       animFrameId = requestAnimationFrame(loop);
       return;
@@ -1071,12 +1100,8 @@ let lastContainerWidth = null;
 function applySettings() {
   if (!appSettings) return;
 
-  // APPLY FONT SETTINGS
-  if (appSettings.appFont === 'default') {
-      document.body.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Poppins', sans-serif";
-  } else {
-      document.body.style.fontFamily = "'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif";
-  }
+  // UPDATED: Font application logic utilizing the new CSS class overriding approach
+  document.body.classList.toggle('font-default', appSettings.appFont === 'default');
   document.getElementById('fontSelect').value = appSettings.appFont || 'imported';
   
   if (appSettings.theme === 'custom') {
@@ -1307,7 +1332,7 @@ window.onload = () => {
   loop();
   applySettings();
   
-  const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'settings'];
+  const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'extras', 'settings'];
   const startPage = appSettings.startPage || 'home';
   const startIndex = pages.indexOf(startPage);
   if(startIndex > -1) {
