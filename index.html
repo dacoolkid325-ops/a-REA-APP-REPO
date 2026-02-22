@@ -58,6 +58,52 @@ body.light {
   --pill-border: rgba(0, 0, 0, 0.1);
   --player-bg: rgba(255, 255, 255, 0.9);
 }
+/* Styling for the custom fullscreen button */
+.custom-fs-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+.custom-fs-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* The magic CSS that forces the card to take up the whole screen */
+.ios-pseudo-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: #000 !important; /* Creates a nice dark backdrop */
+}
+
+/* Hides the download button when in fullscreen so the book gets maximum space */
+.ios-pseudo-fullscreen .btn-ios {
+  display: none !important;
+}
+
+/* Makes sure the iframe expands fully */
+.ios-pseudo-fullscreen .fp-iframe {
+  height: 100% !important;
+  border-radius: 0 !important;
+}
+
 
 body {
   margin: 0;
@@ -1412,6 +1458,20 @@ document.querySelectorAll('audio').forEach(audio => {
         div.textContent = text;
         return div.innerHTML;
     }
+function toggleIframeFullscreen(buttonElement) {
+  // Find the parent card of the clicked button
+  const card = buttonElement.closest('.book-container');
+  
+  // Toggle the fullscreen class
+  card.classList.toggle('ios-pseudo-fullscreen');
+  
+  // Change the button icon/text so the user knows how to exit
+  if (card.classList.contains('ios-pseudo-fullscreen')) {
+    buttonElement.innerHTML = '✕'; // Close icon
+  } else {
+    buttonElement.innerHTML = '⛶'; // Expand icon
+  }
+}
 
     initAuth();
 </script>
