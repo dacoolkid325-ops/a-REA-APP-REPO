@@ -998,7 +998,6 @@ let appSettings = {
   theme: 'default',
   customTheme: { bg1: '#050507', bg2: '#1a1a24', accent: '#007AFF' }
 };
-
 function initCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -1014,13 +1013,13 @@ function initCanvas() {
   }
   
   for(let i=0; i<6; i++) {
-    points.push({nmjm
+    points.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 1.5,
       vy: (Math.random() - 0.5) * 1.5,
       r: Math.random() * 400 + 200, 
-      color: palett\i % palette.length]
+      color: palette[i % palette.length] // Fixed the typo here
     });
   }
 }
@@ -1032,7 +1031,7 @@ function loop() {
   }
   
   bgFrameCount++;
-ohi
+  // Removed the 'ohi' typo that was here
   if (appSettings.batterySaver && bgFrameCount % 2 !== 0) {
       animFrameId = requestAnimationFrame(loop);
       return;
@@ -1054,6 +1053,7 @@ ohi
   
   animFrameId = requestAnimationFrame(loop);
 }
+
 
 function updateSetting(key, val) {
   appSettings[key] = val;
@@ -1214,14 +1214,18 @@ function showTab(id, btn) {
 
   if(id === 'home') applySettings();
 }
-
 function updatePillPosition(btn = document.querySelector('.nav-item.active')) {
   if (!btn) return;
   const pill = document.getElementById('selectionPill');
-  pill.style.transform = `translate(${btn.offsetLeft}px, ${btn.offsetTop}px)`;
-  pill.style.width = `${btn.offsetWidth}px`;
-  pill.style.height = `${btn.offsetHeight}px`;
+  
+  // Adding a small delay ensures the browser has calculated the new positions
+  requestAnimationFrame(() => {
+    pill.style.transform = `translate(${btn.offsetLeft}px, ${btn.offsetTop}px)`;
+    pill.style.width = `${btn.offsetWidth}px`;
+    pill.style.height = `${btn.offsetHeight}px`;
+  });
 }
+
 
 const navResizeObserver = new ResizeObserver(() => {
     updatePillPosition();
@@ -1312,18 +1316,72 @@ function openAlexModal() {
 function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
 
 function loadStoredSettings() {
-  const saved = localStorage.getItem('aREASettings');
-  if (saved) {
-    try {
+  try {
+    const saved = localStorage.getItem('aREASettings');
+    if (saved) {
       const parsed = JSON.parse(saved);
-      appSettings = { ...appSettings, ...parsed };
-      
-      if (!appSettings.customTheme) {
-          appSettings.customTheme = { bg1: '#050507', bg2: '#1a1a24', accent: '#007AFF' };
+      // Only merge if it's a valid object
+      if (parsed && typeof parsed === 'object') {
+        appSettings = { ...appSettings, ...parsed };
       }
-    } catch(e) { console.error("Error loading settings", e); }
+    }
+  } catch(e) { 
+    console.error("Settings corrupted. Resetting...", e);
+    // If it's broken, clear it so it doesn't crash next time
+    localStorage.removeItem('aREASettings');
   }
 }
+
+function applySettings() {
+  if (!appSettings) return;
+
+  // Font Guard
+  const fontSel = document.getElementById('fontSelect');
+  document.body.classList.toggle('font-default', appSettings.appFont === 'default');
+  if (fontSel) fontSel.value = appSettings.appFont || 'imported';
+  
+  // Theme Logic
+  if (appSettings.theme === 'custom' && appSettings.customTheme) {
+      const ct = appSettings.customTheme;
+      document.documentElement.style.setProperty('--accent', ct.accent);
+      document.body.style.background = `linear-gradient(135deg, ${ct.bg1}, ${ct.bg2})`;
+      document.body.style.backgroundAttachment = 'fixed';
+      
+      // Update Pickers if they exist
+      if(document.getElementById('customBg1Picker')) {
+          document.getElementById('customBg1Picker').value = ct.bg1;
+          document.getElementById('customBg2Picker').value = ct.bg2;
+          document.getElementById('customAccentPicker').value = ct.accent;
+          document.getElementById('customThemeSettings').style.display = 'flex';
+      }
+  } else {
+      const themeKey = appSettings.theme || 'default';
+      const themeObj = themes[themeKey] || themes.default;
+      document.documentElement.style.setProperty('--accent', themeObj.accent);
+      document.body.style.background = '';
+      if(document.getElementById('customThemeSettings')) {
+          document.getElementById('customThemeSettings').style.display = 'none';
+      }
+  }
+  
+  // UI Element Guards
+  if(document.getElementById('themeSelect')) document.getElementById('themeSelect').value = appSettings.theme;
+  if(document.getElementById('lightToggle')) document.getElementById('lightToggle').checked = appSettings.lightMode;
+  if(document.getElementById('ipadToggle')) document.getElementById('ipadToggle').checked = appSettings.ipadMode;
+  if(document.getElementById('noBgToggle')) document.getElementById('noBgToggle').checked = appSettings.noBg;
+  if(document.getElementById('ultraSaverToggle')) document.getElementById('ultraSaverToggle').checked = appSettings.ultraSaver;
+
+  document.body.classList.toggle('light', appSettings.lightMode);
+  document.body.classList.toggle('ipad-mode', appSettings.ipadMode);
+  document.body.classList.toggle('no-bg', appSettings.noBg);
+  document.body.classList.toggle('ultra-saver', appSettings.ultraSaver);
+
+  // Zoom / Scale
+  document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale || 0.95);
+  
+  updatePillPosition();
+}
+
 
 window.onload = () => {
   navResizeObserver.observe(document.querySelector('.nav-container'));
@@ -1350,6 +1408,11 @@ let dataArray;
 let sourceNodes = new Map();
 
 function initAudioVisualizer(audioElement) {
+  // Browsers require a user gesture to start AudioContext
+  if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+  }
+  
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
@@ -1399,9 +1462,10 @@ document.querySelectorAll('audio').forEach(audio => {
 </script>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8",
@@ -1457,10 +1521,46 @@ document.querySelectorAll('audio').forEach(audio => {
         });
     }
 
-    function renderComments(comments) {
-        if (comments.length === 0) {
-            commentsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-mute); font-style: italic;">No comments yet. Be the first!</div>`;
-            return;
+ function renderComments(comments) {
+    if (comments.length === 0) {
+        commentsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-mute); font-style: italic;">No comments yet.</div>`;
+        return;
+    }
+
+    commentsContainer.innerHTML = comments.map(c => {
+        // Only show delete button if current user created the comment
+        const isOwner = currentUser && c.userId === currentUser.uid;
+        const deleteBtn = isOwner ? 
+            `<button onclick="window.confirmDelete('${c.id}')" style="background:none; border:none; color:#FF3B30; cursor:pointer; font-weight:bold; font-size:12px;">DELETE</button>` : '';
+
+        return `
+            <div class="glass-card" style="padding: 24px; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <span style="font-weight: 800; color: var(--accent); font-size: 15px;">@${escapeHtml(c.username || 'Anonymous')}</span>
+                        <div style="font-size: 11px; color: var(--text-mute);">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString() : 'Just now'}</div>
+                    </div>
+                    ${deleteBtn}
+                </div>
+                <p style="color: var(--text-main); word-break: break-word; line-height: 1.6; margin: 0; font-size: 16px;">${escapeHtml(c.message || '')}</p>
+            </div>
+        `;
+    }).join('');
+}
+
+// Attach delete to window so the HTML buttons can see it
+window.confirmDelete = async (commentId) => {
+    if (confirm("Are you sure you want to delete this comment?")) {
+        try {
+            const commentRef = doc(db, 'artifacts', appId, 'public', 'data', 'comments', commentId);
+            await deleteDoc(commentRef);
+        } catch (error) {
+            console.error("Delete failed:", error);
+            alert("Error: You can only delete your own comments!");
+        }
+    }
+};
+
         }
 
         commentsContainer.innerHTML = comments.map(c => `
