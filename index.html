@@ -1293,65 +1293,13 @@ window.onload = () => {
   }
 };
 
-let audioCtx;
-let analyser;
-let dataArray;
-let sourceNodes = new Map();
-
-function initAudioVisualizer(audioElement) {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 32;
-    const bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
-  }
-
-  if (!sourceNodes.has(audioElement)) {
-    const source = audioCtx.createMediaElementSource(audioElement);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    sourceNodes.set(audioElement, source);
-  }
-
-  let localFrames = 0;
-  function updateBars() {
-    if (audioElement.paused || appSettings.ultraSaver) return; 
-    
-    localFrames++;
-    if (appSettings.batterySaver && localFrames % 2 !== 0) {
-        requestAnimationFrame(updateBars);
-        return;
-    }
-
-    analyser.getByteFrequencyData(dataArray);
-    
-    const container = audioElement.closest('.song-item');
-    const bars = container.querySelectorAll('.bar');
-    
-    bars.forEach((bar, i) => {
-      const val = dataArray[i] / 255;
-      const height = 4 + (val * 16);
-      bar.style.height = height + 'px';
-    });
-    
-    requestAnimationFrame(updateBars);
-  }
-  
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  updateBars();
-}
-
-document.querySelectorAll('audio').forEach(audio => {
-  audio.addEventListener('play', () => initAudioVisualizer(audio));
-});
-</script>
-
 <script type="module">
+    // --- 1. FIREBASE IMPORTS ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // --- 2. CONFIG & STATE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8",
       authDomain: "a-rea-220da.firebaseapp.com",
@@ -1367,112 +1315,163 @@ document.querySelectorAll('audio').forEach(audio => {
     const db = getFirestore(app);
     const appId = 'a-rea-web-comments';
 
-    const commentsContainer = document.getElementById('commentsContainer');
-    const usernameInput = document.getElementById('username');
-    const messageInput = document.getElementById('message');
-    const postBtn = document.getElementById('postBtn');
+    // --- 3. THE "SAVING" LOGIC (Settings) ---
+    let appSettings = JSON.parse(localStorage.getItem('a-rea-settings')) || {
+        lightMode: true,
+        ultraSaver: false,
+        batterySaver: false,
+        uiScale: 0.95
+    };
 
-    let currentUser = null;
+    function saveSettings() {
+        localStorage.setItem('a-rea-settings', JSON.stringify(appSettings));
+        document.body.classList.toggle('light', appSettings.lightMode);
+    }
 
-    const initAuth = async () => {
-        try {
-            await signInAnonymously(auth);
-        } catch (error) {
-            console.error("Auth failed:", error);
-            commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b;">Auth Error: Enable Anonymous Login in Firebase Console.</div>`;
+    // --- 4. AUDIO VISUALIZER ENGINE ---
+    let audioCtx;
+    let analyser;
+    let dataArray;
+    let sourceNodes = new Map();
+
+    function initAudioVisualizer(audioElement) {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 32;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+
+        if (!sourceNodes.has(audioElement)) {
+            const source = audioCtx.createMediaElementSource(audioElement);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            sourceNodes.set(audioElement, source);
+        }
+
+        let localFrames = 0;
+        function updateBars() {
+            if (audioElement.paused || appSettings.ultraSaver) return; 
+            localFrames++;
+            if (appSettings.batterySaver && localFrames % 2 !== 0) {
+                requestAnimationFrame(updateBars);
+                return;
+            }
+            analyser.getByteFrequencyData(dataArray);
+            const container = audioElement.closest('.song-item');
+            if (container) {
+                const bars = container.querySelectorAll('.bar');
+                bars.forEach((bar, i) => {
+                    const val = dataArray[i] / 255;
+                    bar.style.height = (4 + (val * 16)) + 'px';
+                });
+            }
+            requestAnimationFrame(updateBars);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        updateBars();
+    }
+
+    // --- 5. UI FUNCTIONS (ATTACHED TO WINDOW SO BUTTONS WORK) ---
+    window.showTab = (id, btn) => {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const pill = document.getElementById('selectionPill');
+        if (pill) {
+            pill.style.width = btn.offsetWidth + "px";
+            pill.style.left = btn.offsetLeft + "px";
         }
     };
 
+    window.toggleIframeFullscreen = (btn) => {
+        const card = btn.closest('.book-container') || btn.closest('.glass-card');
+        const isFull = card.classList.toggle('ios-pseudo-fullscreen');
+        btn.innerHTML = isFull ? '✕' : '⛶';
+        document.body.style.overflow = isFull ? 'hidden' : '';
+    };
+
+    window.handleFullscreen = (btn) => {
+        const card = btn.closest('.game-container-giant');
+        const isFull = card.classList.toggle('ios-pseudo-fullscreen');
+        btn.innerHTML = isFull ? '✕' : '⛶';
+        window.scaleGameIframes();
+    };
+
+    window.scaleGameIframes = () => {
+        document.querySelectorAll('.game-container-giant').forEach(container => {
+            const viewport = container.querySelector('.game-viewport');
+            const iframe = container.querySelector('.game-iframe');
+            if (!viewport || !iframe) return;
+            const scale = viewport.offsetWidth / (parseInt(iframe.dataset.virtualWidth) || 1200);
+            iframe.style.width = (parseInt(iframe.dataset.virtualWidth) || 1200) + "px";
+            iframe.style.height = (viewport.offsetHeight / scale) + "px";
+            iframe.style.transform = `scale(${scale})`;
+        });
+    };
+
+    window.updateSetting = (key, val) => {
+        appSettings[key] = val;
+        saveSettings();
+    };
+
+    window.openAlexModal = () => {
+        document.getElementById('alertTitle').innerText = "Alexandru's Legacy";
+        document.getElementById('alertMsg').innerText = "Legend says the code still flows...";
+        document.getElementById('customAlert').style.display = 'flex';
+    };
+
+    window.closeAlert = () => document.getElementById('customAlert').style.display = 'none';
+
+    // --- 6. COMMENTS & AUTH ---
+    const initAuth = async () => {
+        try { await signInAnonymously(auth); } catch (e) { console.error("Auth Error", e); }
+    };
+
     onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        if (user) {
-            loadComments();
-        }
+        if (user) loadComments();
     });
 
     function loadComments() {
+        const commentsContainer = document.getElementById('commentsContainer');
+        if (!commentsContainer) return;
         const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
-        
         onSnapshot(commentsRef, (snapshot) => {
             const comments = [];
-            snapshot.forEach(doc => {
-                comments.push({ id: doc.id, ...doc.data() });
-            });
+            snapshot.forEach(doc => comments.push({ id: doc.id, ...doc.data() }));
             comments.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
-            renderComments(comments);
-        }, (err) => {
-            console.error("Listen failed:", err);
-            commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b;">Failed to load. Check Database Rules.</div>`;
+            commentsContainer.innerHTML = comments.map(c => `
+                <div class="glass-card" style="padding: 15px; margin-bottom: 10px;">
+                    <b style="color:var(--accent)">@${c.username}</b>: ${c.message}
+                </div>
+            `).join('');
         });
     }
 
-    function renderComments(comments) {
-        if (comments.length === 0) {
-            commentsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-mute); font-style: italic;">No comments yet. Be the first!</div>`;
-            return;
-        }
-
-        commentsContainer.innerHTML = comments.map(c => `
-            <div class="glass-card" style="padding: 24px; margin-bottom: 0;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <span style="font-weight: 800; color: var(--accent); font-size: 15px;">@${escapeHtml(c.username || 'Anonymous')}</span>
-                    <span style="font-size: 12px; font-weight: 700; color: var(--text-mute); text-transform: uppercase;">
-                        ${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString() : 'Just now'}
-                    </span>
-                </div>
-                <p style="color: var(--text-main); word-break: break-word; line-height: 1.6; margin: 0; font-size: 16px;">${escapeHtml(c.message || '')}</p>
-            </div>
-        `).join('');
-    }
-
-    postBtn.addEventListener('click', async () => {
-        const username = usernameInput.value.trim();
-        const message = messageInput.value.trim();
-
-        if (!username || !message || !currentUser) return;
-
-        postBtn.disabled = true;
-        const originalText = postBtn.innerText;
-        postBtn.innerText = "Posting...";
-
-        try {
-            const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
-            await addDoc(commentsRef, {
-                username: username,
-                message: message,
-                timestamp: serverTimestamp(),
-                userId: currentUser.uid
+    const postBtn = document.getElementById('postBtn');
+    if (postBtn) {
+        postBtn.addEventListener('click', async () => {
+            const user = document.getElementById('username').value.trim();
+            const msg = document.getElementById('message').value.trim();
+            if (!user || !msg) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'comments'), {
+                username: user, message: msg, timestamp: serverTimestamp()
             });
-            messageInput.value = '';
-        } catch (error) {
-            console.error("Post failed:", error);
-            alert("Could not post. Check if Database Rules allow writes.");
-        } finally {
-            postBtn.disabled = false;
-            postBtn.innerText = originalText;
-        }
-    });
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+            document.getElementById('message').value = '';
+        });
     }
-function toggleIframeFullscreen(buttonElement) {
-  // Find the parent card of the clicked button
-  const card = buttonElement.closest('.book-container');
-  
-  // Toggle the fullscreen class
-  card.classList.toggle('ios-pseudo-fullscreen');
-  
-  // Change the button icon/text so the user knows how to exit
-  if (card.classList.contains('ios-pseudo-fullscreen')) {
-    buttonElement.innerHTML = '✕'; // Close icon
-  } else {
-    buttonElement.innerHTML = '⛶'; // Expand icon
-  }
-}
 
+    // --- 7. INITIALIZE EVERYTHING ---
+    window.addEventListener('load', () => {
+        saveSettings(); // Apply saved theme
+        window.scaleGameIframes();
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.addEventListener('play', () => initAudioVisualizer(audio));
+        });
+    });
+    window.addEventListener('resize', window.scaleGameIframes);
     initAuth();
 </script>
 </body>
