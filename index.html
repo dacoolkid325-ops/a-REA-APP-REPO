@@ -23,7 +23,7 @@
   --text-main: #ffffff;
   --text-mute: rgba(255, 255, 255, 0.55);
   --accent: #007AFF; 
-  --accent-glow: transparent; /* Removed blue glow entirely */
+  --accent-glow: transparent; 
   
   --liquid-glass-bg: rgba(255, 255, 255, 0.08);
   --liquid-glass-border: rgba(255, 255, 255, 0.15);
@@ -44,7 +44,7 @@ body.light {
   --bg-dark: #f4f5f8;
   --text-main: #111111;
   --text-mute: rgba(0, 0, 0, 0.5);
-  --accent-glow: transparent; /* Removed blue glow entirely */
+  --accent-glow: transparent; 
   
   --liquid-glass-bg: rgba(255, 255, 255, 0.65);
   --liquid-glass-border: rgba(0, 0, 0, 0.08);
@@ -70,181 +70,96 @@ body.font-default, body.font-default * {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", "Poppins", sans-serif !important;
 }
 
-.custom-fs-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 16px;
-  backdrop-filter: blur(4px);
-  transition: all 0.2s ease;
+#initialLoader {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg-dark); z-index: 9999999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.4s ease;
+}
+#initialLoader h2 {
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 2rem;
+    animation: textFadeIn 0.8s infinite alternate;
 }
 
-.custom-fs-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
+.custom-fs-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 10;
+  background: rgba(0, 0, 0, 0.6); color: white; border: none;
+  border-radius: 8px; padding: 8px 12px; cursor: pointer;
+  font-size: 16px; backdrop-filter: blur(4px); transition: all 0.2s ease;
 }
+.custom-fs-btn:hover { background: rgba(0, 0, 0, 0.8); }
 
 .ios-pseudo-fullscreen {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 99999 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  background: #000 !important; 
+  position: fixed !important; top: 0 !important; left: 0 !important;
+  width: 100vw !important; height: 100vh !important; z-index: 99999 !important;
+  margin: 0 !important; padding: 0 !important; border-radius: 0 !important; background: #000 !important; 
 }
-
-.ios-pseudo-fullscreen .btn-ios {
-  display: none !important;
-}
-
-.ios-pseudo-fullscreen .fp-iframe {
-  height: 100% !important;
-  border-radius: 0 !important;
-}
+.ios-pseudo-fullscreen .btn-ios { display: none !important; }
+.ios-pseudo-fullscreen .fp-iframe { height: 100% !important; border-radius: 0 !important; }
 
 #app-wrapper {
-  transform: scale(var(--ui-zoom));
-  transform-origin: top center;
-  width: calc(100% / var(--ui-zoom));
-  min-height: 100vh;
-  padding-bottom: 160px;
-  transition: padding-left 0.4s var(--spring-smooth), filter 0.4s ease;
+  transform: scale(var(--ui-zoom)); transform-origin: top center;
+  width: calc(100% / var(--ui-zoom)); min-height: 100vh;
+  padding-bottom: 160px; transition: padding-left 0.4s var(--spring-smooth), filter 0.4s ease;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-body.theater-mode #app-wrapper {
-    background: rgba(0,0,0,0.85);
-}
-body.theater-mode .glass-card:not(.theater-focus) {
-    opacity: 0.1;
-    pointer-events: none;
-    filter: blur(5px);
-}
-.theater-focus {
-    z-index: 100;
-    position: relative;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8) !important;
-}
+body.theater-mode #app-wrapper { background: rgba(0,0,0,0.85); }
+body.theater-mode .glass-card:not(.theater-focus) { opacity: 0.1; pointer-events: none; filter: blur(5px); }
+.theater-focus { z-index: 100; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.8) !important; }
 
 h1 {
-  font-size: 3rem; 
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  margin-bottom: 30px;
-  text-align: left;
+  font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 30px; text-align: left;
   background: linear-gradient(135deg, var(--text-main), var(--text-mute));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   animation: textFadeIn 0.6s var(--spring-smooth) forwards;
 }
 
-@keyframes textFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes textFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 section {
-  display: none;
-  padding: 40px 5%;
-  max-width: 1000px;
-  margin: 0 auto;
-  animation: pageEnter 0.5s var(--spring-bounce);
-  content-visibility: auto; 
+  display: none; padding: 40px 5%; max-width: 1000px; margin: 0 auto;
+  animation: pageEnter 0.5s var(--spring-bounce); content-visibility: auto; 
 }
 section.active { display: block; }
 
-@keyframes pageEnter {
-  from { opacity: 0; transform: scale(0.96) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
+@keyframes pageEnter { from { opacity: 0; transform: scale(0.96) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
 .wix-iframe { will-change: transform, width; }
 
 #glassCanvas {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: -1;
-  filter: blur(80px) saturate(160%);
-  opacity: 0.85;
-  transition: opacity 0.5s;
-  will-change: opacity, transform;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+  filter: blur(80px) saturate(160%); opacity: 0.85; transition: opacity 0.5s; will-change: opacity, transform;
 }
 
 .glass-card {
-  background: var(--liquid-glass-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid var(--liquid-glass-border);
-  border-top: 1px solid var(--liquid-glass-shine);
-  border-radius: 28px;
-  padding: 28px;
-  margin-bottom: 24px;
-  box-shadow: var(--glass-shadow);
-  cursor: default;
+  background: var(--liquid-glass-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border: 1px solid var(--liquid-glass-border); border-top: 1px solid var(--liquid-glass-shine);
+  border-radius: 28px; padding: 28px; margin-bottom: 24px; box-shadow: var(--glass-shadow); cursor: default;
   transition: transform 0.3s var(--spring-bounce), box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 
-.glass-card:hover {
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--liquid-glass-border));
-  box-shadow: 0 25px 50px rgba(0,0,0,0.15); /* Removed Blue Glow */
-}
+.glass-card:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--liquid-glass-border)); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+.glass-card.clickable:active, .btn-ios:active, .song-item:active { transform: scale(0.97); }
 
-.glass-card.clickable:active, .btn-ios:active, .song-item:active { 
-    transform: scale(0.97); 
-}
-
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-}
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
 @media (min-width: 900px) {
-    .side-by-side-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        align-items: start;
-    }
+    .side-by-side-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; }
 }
 
 .search-wrapper { position: relative; margin-bottom: 30px; width: 100%; }
-
 .search-input {
-  width: 100%;
-  padding: 18px 20px 18px 50px;
-  border-radius: 24px;
-  font-family: inherit;
-  font-weight: 500;
-  font-size: 17px;
-  color: var(--text-main);
-  outline: none;
-  transition: all 0.3s var(--spring-smooth);
-  background: var(--liquid-glass-bg) !important;
-  backdrop-filter: blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-  border: 1px solid var(--liquid-glass-border) !important;
-  border-top: 1px solid var(--liquid-glass-shine) !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  width: 100%; padding: 18px 20px 18px 50px; border-radius: 24px; font-family: inherit; font-weight: 500; font-size: 17px;
+  color: var(--text-main); outline: none; transition: all 0.3s var(--spring-smooth);
+  background: var(--liquid-glass-bg) !important; backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important; border: 1px solid var(--liquid-glass-border) !important;
+  border-top: 1px solid var(--liquid-glass-shine) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
-
-.search-input:focus {
-  border-color: var(--accent) !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Removed Blue Glow */
-  transform: scale(1.01);
-}
+.search-input:focus { border-color: var(--accent) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transform: scale(1.01); }
 
 .search-icon-inside {
   position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
@@ -255,11 +170,7 @@ section.active { display: block; }
   display: flex; flex-direction: column; padding: 16px 10px; border-bottom: 1px solid var(--liquid-glass-border); min-height: 110px; 
   transition: background 0.2s, transform 0.2s var(--spring-bounce), border-radius 0.2s;
 }
-.song-item:hover {
-    background: rgba(255,255,255,0.05);
-    border-radius: 16px;
-    border-bottom-color: transparent;
-}
+.song-item:hover { background: rgba(255,255,255,0.05); border-radius: 16px; border-bottom-color: transparent; }
 .song-item:last-child { border-bottom: none; }
 
 .visualizer { display: flex; align-items: flex-end; height: 20px; gap: 4px; width: 34px; }
@@ -269,7 +180,6 @@ section.active { display: block; }
 .bar:nth-child(2) { height: 10px; animation-delay: 0.3s; }
 .bar:nth-child(3) { height: 8px; animation-delay: 0.0s; }
 .bar:nth-child(4) { height: 5px; animation-delay: 0.2s; }
-
 @keyframes bounce { from { height: 4px; } to { height: 16px; } }
 
 .song-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; pointer-events: none;}
@@ -287,9 +197,7 @@ video { width: 100%; border-radius: 20px; border: 1px solid var(--liquid-glass-b
   background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 80%, white));
   color: #fff; text-decoration: none; border-radius: 20px; text-align: center;
   font-weight: 700; font-size: 17px; margin-bottom: 20px; border: none; cursor: pointer;
-  box-shadow: none; /* Removed Blue Glow */
-  transition: transform 0.2s var(--spring-bounce), box-shadow 0.2s;
-  font-family: inherit;
+  transition: transform 0.2s var(--spring-bounce), box-shadow 0.2s; font-family: inherit;
 }
 .btn-ios:active { transform: scale(0.95); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
 
@@ -319,32 +227,24 @@ input[type="color"] { cursor: pointer; outline: none; }
 }
 
 .nav-container {
-  position: fixed; 
-  bottom: 30px; left: 50%; transform: translateX(-50%);
-  width: 95vw; max-width: 500px; 
-  display: flex; align-items: center; justify-content: flex-start;
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 95vw; max-width: 500px; display: flex; align-items: center; justify-content: flex-start;
   padding: 10px; z-index: 9999; background: var(--nav-bg);
   backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
   border-radius: 40px; border: 1px solid var(--liquid-glass-border);
   box-shadow: 0 20px 50px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-  transition: all 0.4s var(--spring-smooth);
-  
-  overflow-x: auto; 
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; 
-  gap: 5px;
+  transition: all 0.4s var(--spring-smooth); overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 5px;
 }
 .nav-container::-webkit-scrollbar { display: none; }
 
 .nav-item {
-  position: relative; background: none; border: none;
-  width: clamp(44px, 12vw, 56px); height: clamp(44px, 12vw, 56px);
+  position: relative; background: none; border: none; width: clamp(44px, 12vw, 56px); height: clamp(44px, 12vw, 56px);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: color 0.3s, transform 0.2s var(--spring-bounce); color: var(--text-mute); z-index: 2;
   flex-shrink: 0; border-radius: 50%; padding: 0;
 }
 .nav-item:active { transform: scale(0.88); }
-
 .nav-item.active { color: #ffffff; }
 svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.2s var(--spring-bounce); }
 .nav-item:hover svg { transform: scale(1.1); }
@@ -356,53 +256,27 @@ svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.2s 
 .nav-item:hover .nav-icon-img { transform: scale(1.1); }
 
 .nav-selection-pill {
-  position: absolute; left: 0; top: 0;
-  background: var(--pill-bg); 
-  box-shadow: none; /* Removed Blue Glow */
+  position: absolute; left: 0; top: 0; background: var(--pill-bg); 
   border: 1px solid var(--pill-border); border-radius: 30px; z-index: 1;
-  transition: all 0.4s var(--spring-bounce); pointer-events: none;
-  will-change: transform, width, height;
+  transition: all 0.4s var(--spring-bounce); pointer-events: none; will-change: transform, width, height;
 }
 
 @media (min-width: 850px) {
   #app-wrapper { padding-left: 100px; padding-bottom: 50px; }
-  
   .nav-container {
     bottom: auto; top: 50%; left: 30px; transform: translateY(-50%);
     width: 76px; height: auto; flex-direction: column; gap: 12px;
-    padding: 20px 10px; border-radius: 38px;
-    align-items: flex-start; overflow: hidden; 
+    padding: 20px 10px; border-radius: 38px; align-items: flex-start; overflow: hidden; 
   }
-  
-  .nav-container:hover {
-    width: 220px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-  }
-  
-  .nav-item svg, .nav-item img {
-      display: block !important;
-      width: 26px; height: 26px; flex-shrink: 0; margin: 0; /* Align fixed */
-  }
-  
-  .nav-item.airea-nav-btn img.nav-icon-img {
-      width: 38px; height: 38px; margin-left: -6px; /* Offset fixing for text alignment */
-  }
-  
-  .nav-item {
-    width: 100%; height: 56px; justify-content: flex-start; padding-left: 15px; border-radius: 20px;
-  }
-  
+  .nav-container:hover { width: 220px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+  .nav-item svg, .nav-item img { display: block !important; width: 26px; height: 26px; flex-shrink: 0; margin: 0; }
+  .nav-item.airea-nav-btn img.nav-icon-img { width: 38px; height: 38px; margin-left: -6px; }
+  .nav-item { width: 100%; height: 56px; justify-content: flex-start; padding-left: 15px; border-radius: 20px; }
   .nav-item::after {
-    content: attr(data-label);
-    font-family: 'Inter', sans-serif;
-    font-weight: 700; font-size: 16px;
-    opacity: 0; margin-left: 15px; 
-    transition: opacity 0.3s ease;
-    white-space: nowrap; pointer-events: none;
+    content: attr(data-label); font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px;
+    opacity: 0; margin-left: 15px; transition: opacity 0.3s ease; white-space: nowrap; pointer-events: none;
   }
-  
   .nav-container:hover .nav-item::after { opacity: 1; }
-  
   section { max-width: 1200px; }
 }
 
@@ -416,7 +290,6 @@ svg { width: 26px; height: 26px; fill: currentColor; transition: transform 0.2s 
   transition: all 0.5s var(--spring-bounce);
 }
 #miniPlayer.show { bottom: 110px; opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); }
-
 @media (min-width: 850px) {
   #miniPlayer { bottom: 30px; left: calc(50% + 50px); }
   #miniPlayer.show { bottom: 30px; }
@@ -445,18 +318,14 @@ body.ipad-mode .game-container-giant { height: 800px; }
 .game-label { font-weight: 800; letter-spacing: 1px; flex-grow: 1; color: #fff; font-size: 15px;}
 .expand-trigger { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 14px; cursor: pointer; transition: background 0.2s, transform 0.2s var(--spring-bounce);}
 .expand-trigger:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
-
 .game-viewport { flex-grow: 1; background: #000; position: relative; overflow: hidden; }
 .game-iframe { border: none; position: absolute; top: 0; left: 0; transform-origin: top left; width: 100%; height: 100%; transition: opacity 0.3s; }
 .game-container-giant.is-active-fs { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 999999 !important; border-radius: 0 !important; margin: 0 !important; }
 
 body.solid-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 body.solid-glass .glass-card, body.solid-glass .nav-container, body.solid-glass #miniPlayer { 
-    background: var(--player-bg) !important; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
-    border: 1px solid rgba(0,0,0,0.05);
+    background: var(--player-bg) !important; box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05);
 }
-
 body.ultra-saver .glass-card, body.ultra-saver .nav-container { box-shadow: none !important; }
 body.ultra-saver *, body.ultra-saver *:before, body.ultra-saver *:after { transition: none !important; animation: none !important; }
 body.no-bg #glassCanvas { display: none !important; }
@@ -470,6 +339,10 @@ body.no-bg #glassCanvas { display: none !important; }
 </style>
 </head>
 <body class="light ipad-mode">
+
+<div id="initialLoader">
+    <h2>Loading a-REA...</h2>
+</div>
 
 <canvas id="glassCanvas" width="1440" height="865"></canvas>
 
@@ -531,22 +404,10 @@ body.no-bg #glassCanvas { display: none !important; }
     </div>
 
     <div class="glass-card" style="padding: 0; overflow: hidden; max-width: 900px; margin: 20px auto;">
-        
         <div style="width: 100%; text-align: center; padding: 0; border-bottom: 1px solid var(--liquid-glass-border);">
-            <img src="icons/IMG_1193.jpeg" 
-                alt="ai-REA Icon" 
-                style="width: 100%; height: 250px; display: block; object-fit: cover; margin: 0; pointer-events: none;">
+            <img src="icons/IMG_1193.jpeg" alt="ai-REA Icon" style="width: 100%; height: 250px; display: block; object-fit: cover; margin: 0; pointer-events: none;">
         </div>
-
-        <iframe
-            src="https://ai-rea-ai-rea.hf.space"
-            frameborder="0"
-            width="100%"
-            height="1500"
-            style="display: block; background: transparent;"
-            title="ai-REA"
-            loading="lazy">
-        </iframe> 
+        <iframe src="https://ai-rea-ai-rea.hf.space" frameborder="0" width="100%" height="1500" style="display: block; background: transparent;" title="ai-REA" loading="lazy"></iframe> 
     </div>
 </section>
 
@@ -569,7 +430,6 @@ body.no-bg #glassCanvas { display: none !important; }
           </div>
           <audio controls="" src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
         </div>
-
         <div class="song-item" onclick="triggerDynamicTheming('#FF2D55')">
           <div class="song-header">
             <span class="song-title">02 – L-INE GRAPHS!</span>
@@ -577,7 +437,6 @@ body.no-bg #glassCanvas { display: none !important; }
           </div>
           <audio controls="" src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
         </div>
-
         <div class="song-item" onclick="triggerDynamicTheming('#FF9500')">
           <div class="song-header">
             <span class="song-title">03 – T-ABLES!!</span>
@@ -586,7 +445,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <audio controls="" src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
         </div>
     </div>
-    
     <div style="width:100%;">
         <div class="song-item" onclick="triggerDynamicTheming('#34C759')">
           <div class="song-header">
@@ -595,7 +453,6 @@ body.no-bg #glassCanvas { display: none !important; }
           </div>
           <audio controls="" src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
         </div>
-
         <div class="song-item" onclick="triggerDynamicTheming('#AF52DE')">
           <div class="song-header">
             <span class="song-title">05 – A-NGLES!!!!</span>
@@ -603,7 +460,6 @@ body.no-bg #glassCanvas { display: none !important; }
           </div>
           <audio controls="" src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
         </div>
-
         <div style="margin-top:20px; padding-top:10px; border-top: 1px solid var(--liquid-glass-border);">
           <div class="song-item" onclick="triggerDynamicTheming('#5AC8FA')">
             <div class="song-header">
@@ -636,7 +492,7 @@ body.no-bg #glassCanvas { display: none !important; }
   <div class="card-grid">
     <div class="glass-card" style="padding: 20px;">
       <div class="song-title" style="margin-bottom: 12px;">WE love TINY</div>
-<iframe width="140" height="84" src="https://www.youtube.com/embed/n5yhEJHhqOA?si=Bg63GRX0Yyj6dJAv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin border-radius: 20px; background:#000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" allowfullscreen></iframe>
+      <iframe style="width: 100%; aspect-ratio: 16/9; border-radius: 20px; border: 1px solid var(--liquid-glass-border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" src="https://www.youtube.com/embed/n5yhEJHhqOA?si=Bg63GRX0Yyj6dJAv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       <button class="theater-btn" onclick="toggleTheaterMode(this)">Enter Theater Mode</button>
     </div>
     <div class="glass-card" style="padding: 20px;">
@@ -678,9 +534,11 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
         </button>
       </div>
+      <div style="background: rgba(255, 204, 0, 0.15); color: #FFCC00; text-align: center; padding: 12px; font-weight: 800; font-size: 14px; border-bottom: 1px solid rgba(255, 204, 0, 0.2);">
+          Find TINYS FAMILY in the works!! Coming Soon!
+      </div>
       <div class="game-viewport">
         <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
-              <div class="song-title" style="margin-bottom: 12px;">Find TINYS FAMILY in the works!!</div>
       </div>
     </div>
   </div>
@@ -708,7 +566,6 @@ body.no-bg #glassCanvas { display: none !important; }
 
 <section id="books">
   <h1>Library</h1>
-  
   <div class="card-grid">
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
@@ -717,7 +574,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Trash
         </a>
       </div>
-
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
@@ -725,7 +581,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Skellig
         </a>
       </div>
-
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
@@ -733,7 +588,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Who Let The Gods Out
         </a>
       </div>
-
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
@@ -741,7 +595,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Simply The Quest
         </a>
       </div>
-
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
@@ -749,7 +602,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Beyond The Odyssey
         </a>
       </div>
-
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
@@ -757,7 +609,6 @@ body.no-bg #glassCanvas { display: none !important; }
           <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Against All Gods
         </a>
       </div>
-
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
@@ -769,9 +620,15 @@ body.no-bg #glassCanvas { display: none !important; }
 </section>
 
 <section id="community">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>a-REA Community</h1>
-        <button onclick="window.adminLogin()" class="btn-ios" style="padding: 10px 15px; font-size: 13px; width: auto; margin: 0; background: rgba(255, 215, 0, 0.2); border: 1px solid gold; color: gold;">Admin Login</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <h1 style="margin-bottom: 0;">a-REA Community</h1>
+        <div id="adminControls">
+            <button onclick="window.adminLogin()" id="adminLoginBtn" class="btn-ios" style="padding: 10px 15px; font-size: 13px; width: auto; margin: 0; background: rgba(255, 215, 0, 0.2); border: 1px solid gold; color: gold;">Admin Login</button>
+            <div id="adminActiveUI" style="display: none; align-items: center; gap: 10px;">
+                <span style="background: gold; color: black; font-weight: 800; padding: 6px 12px; border-radius: 8px; font-size: 13px;">ADMIN MODE ON</span>
+                <button onclick="window.adminLogout()" class="btn-ios" style="padding: 10px 15px; font-size: 13px; width: auto; margin: 0; background: rgba(255, 59, 48, 0.2); border: 1px solid #FF3B30; color: #FF3B30;">Log Out</button>
+            </div>
+        </div>
     </div>
     <div class="glass-card">
         <div style="margin-bottom: 20px;">
@@ -822,7 +679,6 @@ body.no-bg #glassCanvas { display: none !important; }
             <option value="default">Default</option>
         </select>
     </div>
-
     <div class="toggle-row">
         <span class="toggle-label">Moods</span>
         <select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)">
@@ -834,7 +690,6 @@ body.no-bg #glassCanvas { display: none !important; }
             <option value="custom">Custom Color</option>
         </select>
     </div>
-    
     <div id="customThemeSettings" style="display: none; flex-direction: column; gap: 15px; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--liquid-glass-border);">
         <div class="toggle-row" style="padding: 0; border: none;">
             <span class="toggle-label" style="font-size: 15px;">Background Shade 1</span>
@@ -849,7 +704,6 @@ body.no-bg #glassCanvas { display: none !important; }
             <input type="color" id="customAccentPicker" oninput="updateCustomTheme()" value="#007AFF" style="width: 40px; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: transparent;">
         </div>
     </div>
-
     <div class="toggle-row">
         <span class="toggle-label">Default Page</span>
         <select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage', this.value)">
@@ -883,7 +737,6 @@ body.no-bg #glassCanvas { display: none !important; }
       <span class="toggle-label">Page Zoom</span>
       <input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale', this.value)">
     </div>
-    
     <div class="toggle-row">
       <span class="toggle-label">Remove ai-REA Tab</span>
       <input type="checkbox" id="removeAireaToggle" onchange="updateSetting('removeAirea', this.checked)">
@@ -891,7 +744,6 @@ body.no-bg #glassCanvas { display: none !important; }
 
     <div style="height: 1px; background: var(--liquid-glass-border); margin: 30px 0 20px 0;"></div>
     <div style="margin-bottom: 16px; color: var(--accent); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px;">Battery & Performance</div>
-
     <div class="toggle-row" style="background: rgba(255,45,85,0.05); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,45,85,0.2);">
       <div style="display:flex; flex-direction:column; gap: 6px;">
         <span style="font-size: 17px; font-weight:800; color: #FF2D55;">Ultra Battery Saver</span>
@@ -899,7 +751,6 @@ body.no-bg #glassCanvas { display: none !important; }
       </div>
       <input type="checkbox" id="ultraSaverToggle" onchange="toggleUltraSaver(this.checked)" style="accent-color: #FF2D55; width: 24px; height: 24px;">
     </div>
-
     <div class="toggle-row">
       <span class="toggle-label">Remove Background</span>
       <input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg', this.checked)">
@@ -914,7 +765,6 @@ body.no-bg #glassCanvas { display: none !important; }
     </div>
   </div>
 </section>
-
 </div> 
 
 <div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:none; align-items:center; justify-content:center; z-index:99999; transition: opacity 0.3s;">
@@ -926,36 +776,50 @@ body.no-bg #glassCanvas { display: none !important; }
 </div>
 
 <script>
-window.isAdmin = false;
+window.isAdmin = localStorage.getItem('aREA_isAdmin') === 'true';
+
+function updateAdminUI() {
+    if(window.isAdmin) {
+        document.getElementById('adminLoginBtn').style.display = 'none';
+        document.getElementById('adminActiveUI').style.display = 'flex';
+    } else {
+        document.getElementById('adminLoginBtn').style.display = 'block';
+        document.getElementById('adminActiveUI').style.display = 'none';
+    }
+}
+
 window.adminLogin = () => {
     const user = prompt("Admin Username:");
     if (user !== "Aqeel") return alert("Invalid Username");
     const pass = prompt("Admin Password:");
     if (pass === "area2026") {
         window.isAdmin = true;
+        localStorage.setItem('aREA_isAdmin', 'true');
+        updateAdminUI();
+        if(typeof window.loadComments === 'function') window.loadComments();
         alert("Successfully logged in as Admin!");
     } else {
         alert("Invalid Password");
     }
 };
 
+window.adminLogout = () => {
+    window.isAdmin = false;
+    localStorage.removeItem('aREA_isAdmin');
+    updateAdminUI();
+    if(typeof window.loadComments === 'function') window.loadComments();
+};
+
 function toggleIframeFullscreen(buttonElement) {
   const card = buttonElement.closest('.book-container');
   card.classList.toggle('ios-pseudo-fullscreen');
-  if (card.classList.contains('ios-pseudo-fullscreen')) {
-    buttonElement.innerHTML = '✕'; 
-  } else {
-    buttonElement.innerHTML = '⛶'; 
-  }
+  if (card.classList.contains('ios-pseudo-fullscreen')) { buttonElement.innerHTML = '✕'; } 
+  else { buttonElement.innerHTML = '⛶'; }
 }
 
-function vibrate(ms = 15) {
-    if(navigator.vibrate) navigator.vibrate(ms);
-}
+function vibrate(ms = 15) { if(navigator.vibrate) navigator.vibrate(ms); }
 document.addEventListener('click', (e) => {
-    if(e.target.closest('button, a, input, select, .clickable, .song-item, .game-ui-header')) {
-        vibrate(15);
-    }
+    if(e.target.closest('button, a, input, select, .clickable, .song-item, .game-ui-header')) { vibrate(15); }
 });
 
 function triggerDynamicTheming(colorHex) {
@@ -992,26 +856,13 @@ const themes = {
 };
 
 let appSettings = {
-  appFont: 'imported',
-  lightMode: true,
-  ipadMode: false,
-  noBg: false,
-  solidGlass: false,
-  batterySaver: false,
-  ultraSaver: false,
-  removeAirea: false, 
-  wixWidth: 375,
-  uiScale: 0.95,
-  startPage: 'home',
-  theme: 'default',
-  customTheme: { bg1: '#050507', bg2: '#1a1a24', accent: '#007AFF' }
+  appFont: 'imported', lightMode: true, ipadMode: false, noBg: false, solidGlass: false,
+  batterySaver: false, ultraSaver: false, removeAirea: false, wixWidth: 375, uiScale: 0.95,
+  startPage: 'home', theme: 'default', customTheme: { bg1: '#050507', bg2: '#1a1a24', accent: '#007AFF' }
 };
 
 function initCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  points = [];
-  
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight; points = [];
   let palette;
   if (appSettings.theme === 'custom') {
       const ct = appSettings.customTheme || { bg1: '#050507', bg2: '#1a1a24', accent: '#007AFF' };
@@ -1020,30 +871,19 @@ function initCanvas() {
       const themeKey = appSettings.theme || 'default';
       palette = themes[themeKey] ? themes[themeKey].colors : themes.default.colors;
   }
-  
   for(let i=0; i<6; i++) {
     points.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 1.5,
-      vy: (Math.random() - 0.5) * 1.5,
-      r: Math.random() * 400 + 200, 
-      color: palette[i % palette.length]
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1.5, vy: (Math.random() - 0.5) * 1.5,
+      r: Math.random() * 400 + 200, color: palette[i % palette.length]
     });
   }
 }
 
 function loop() {
-  if (appSettings.noBg || appSettings.ultraSaver) {
-    animFrameId = null;
-    return;
-  }
-  
+  if (appSettings.noBg || appSettings.ultraSaver) { animFrameId = null; return; }
   bgFrameCount++;
-  if (appSettings.batterySaver && bgFrameCount % 2 !== 0) {
-      animFrameId = requestAnimationFrame(loop);
-      return;
-  }
+  if (appSettings.batterySaver && bgFrameCount % 2 !== 0) { animFrameId = requestAnimationFrame(loop); return; }
   
   ctx.clearRect(0,0,canvas.width, canvas.height);
   points.forEach(p => {
@@ -1051,33 +891,22 @@ function loop() {
     if(p.x < -p.r || p.x > canvas.width + p.r) p.vx *= -1;
     if(p.y < -p.r || p.y > canvas.height + p.r) p.vy *= -1;
     let g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-    g.addColorStop(0, p.color);
-    g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fill();
+    g.addColorStop(0, p.color); g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
   });
-  
   animFrameId = requestAnimationFrame(loop);
 }
 
 function updateSetting(key, val) {
-  appSettings[key] = val;
-  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
-  applySettings();
+  appSettings[key] = val; localStorage.setItem('aREASettings', JSON.stringify(appSettings)); applySettings();
 }
 
 function updateThemeSelection(val) {
     updateSetting('theme', val);
     const customSettings = document.getElementById('customThemeSettings');
-    if (val === 'custom') {
-        customSettings.style.display = 'flex';
-    } else {
-        customSettings.style.display = 'none';
-    }
-    applySettings();
-    initCanvas();
+    if (val === 'custom') { customSettings.style.display = 'flex'; } 
+    else { customSettings.style.display = 'none'; }
+    applySettings(); initCanvas();
 }
 
 function updateCustomTheme() {
@@ -1087,22 +916,15 @@ function updateCustomTheme() {
         accent: document.getElementById('customAccentPicker').value
     };
     localStorage.setItem('aREASettings', JSON.stringify(appSettings));
-    applySettings();
-    initCanvas();
+    applySettings(); initCanvas();
 }
 
 function toggleUltraSaver(isOn) {
   updateSetting('ultraSaver', isOn);
-  if (isOn) {
-    updateSetting('noBg', true);
-    updateSetting('solidGlass', true);
-    updateSetting('batterySaver', true); 
-  }
+  if (isOn) { updateSetting('noBg', true); updateSetting('solidGlass', true); updateSetting('batterySaver', true); }
 }
 
-let lastWixWidth = null;
-let lastIpadMode = null;
-let lastContainerWidth = null;
+let lastWixWidth = null; let lastIpadMode = null; let lastContainerWidth = null;
 
 function applySettings() {
   if (!appSettings) return;
@@ -1116,7 +938,6 @@ function applySettings() {
       document.documentElement.style.setProperty('--accent', ct.accent);
       document.body.style.background = `linear-gradient(135deg, ${ct.bg1}, ${ct.bg2})`;
       document.body.style.backgroundAttachment = 'fixed';
-      
       if(document.getElementById('customBg1Picker')) {
           document.getElementById('customBg1Picker').value = ct.bg1;
           document.getElementById('customBg2Picker').value = ct.bg2;
@@ -1128,9 +949,7 @@ function applySettings() {
       const themeObj = themes[themeKey] || themes.default;
       document.documentElement.style.setProperty('--accent', themeObj.accent);
       document.body.style.background = '';
-      if(document.getElementById('customThemeSettings')) {
-          document.getElementById('customThemeSettings').style.display = 'none';
-      }
+      if(document.getElementById('customThemeSettings')) { document.getElementById('customThemeSettings').style.display = 'none'; }
   }
   
   if(document.getElementById('themeSelect')) document.getElementById('themeSelect').value = appSettings.theme;
@@ -1156,9 +975,7 @@ function applySettings() {
       if (aireaNavBtn) aireaNavBtn.style.display = 'flex';
   }
   
-  if (!appSettings.noBg && !appSettings.ultraSaver && !animFrameId) {
-    loop();
-  }
+  if (!appSettings.noBg && !appSettings.ultraSaver && !animFrameId) { loop(); }
   
   if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
     document.documentElement.style.setProperty('--ui-zoom', appSettings.uiScale || 0.95);
@@ -1177,7 +994,6 @@ function applySettings() {
     const containerWidth = wrapper.offsetWidth;
     if (containerWidth > 0) {
         const targetWidth = parseInt(appSettings.wixWidth);
-        
         if (lastWixWidth !== targetWidth || lastIpadMode !== appSettings.ipadMode || lastContainerWidth !== containerWidth) {
             const scaleFactor = containerWidth / targetWidth;
             frame.style.width = targetWidth + "px";
@@ -1185,9 +1001,7 @@ function applySettings() {
             frame.style.transform = `scale(${scaleFactor})`;
             label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
             
-            lastWixWidth = targetWidth;
-            lastIpadMode = appSettings.ipadMode;
-            lastContainerWidth = containerWidth;
+            lastWixWidth = targetWidth; lastIpadMode = appSettings.ipadMode; lastContainerWidth = containerWidth;
         }
     }
   }
@@ -1212,7 +1026,6 @@ function showTab(id, btn) {
 function updatePillPosition(btn = document.querySelector('.nav-item.active')) {
   if (!btn) return;
   const pill = document.getElementById('selectionPill');
-  
   requestAnimationFrame(() => {
     pill.style.transform = `translate(${btn.offsetLeft}px, ${btn.offsetTop}px)`;
     pill.style.width = `${btn.offsetWidth}px`;
@@ -1220,15 +1033,8 @@ function updatePillPosition(btn = document.querySelector('.nav-item.active')) {
   });
 }
 
-const navResizeObserver = new ResizeObserver(() => {
-    updatePillPosition();
-});
-
-window.addEventListener('resize', () => { 
-    updatePillPosition(); 
-    initCanvas(); 
-    applySettings(); 
-});
+const navResizeObserver = new ResizeObserver(() => { updatePillPosition(); });
+window.addEventListener('resize', () => { updatePillPosition(); initCanvas(); applySettings(); });
 document.querySelector('.nav-container').addEventListener('scroll', () => updatePillPosition());
 
 let currentAudio = null;
@@ -1240,13 +1046,8 @@ const pausePath = "M6 19h4V5H6v14zm8-14v14h4V5h-4z";
 
 document.addEventListener('play', function(e){
     if(e.target.tagName !== 'AUDIO') return;
-    document.querySelectorAll('audio').forEach(audio => {
-        if(audio !== e.target) { audio.pause(); audio.currentTime = 0; }
-    });
-    currentAudio = e.target;
-    miniPlayer.classList.add('show');
-    mpPlayIcon.querySelector('path').setAttribute('d', pausePath);
-    
+    document.querySelectorAll('audio').forEach(audio => { if(audio !== e.target) { audio.pause(); audio.currentTime = 0; } });
+    currentAudio = e.target; miniPlayer.classList.add('show'); mpPlayIcon.querySelector('path').setAttribute('d', pausePath);
     const item = e.target.closest('.song-item');
     document.querySelectorAll('.visualizer').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.song-title').forEach(t => t.classList.remove('playing'));
@@ -1276,12 +1077,10 @@ function filterSongs(val) {
   searchTimeout = setTimeout(() => {
     const term = val.toLowerCase().trim();
     const items = document.querySelectorAll('.song-item');
-    
     items.forEach(item => {
       const title = item.querySelector('.song-title').innerText.toLowerCase();
       item.style.display = title.includes(term) ? 'flex' : 'none';
     });
-
     document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section => {
       const hasVisible = Array.from(section.querySelectorAll('.song-item')).some(s => s.style.display === 'flex');
       section.style.display = (hasVisible || term === "") ? 'block' : 'none';
@@ -1291,7 +1090,6 @@ function filterSongs(val) {
 
 function openAlexModal() {
   document.getElementById('alertTitle').innerText = "Alexandru News";
-  
   document.getElementById('alertMsg').innerHTML = `
     Alexandru Bojescu was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) He had some really cool friends like Abu (who sadly had appendicitis), Hamid, Aadil and Me. Though, lately, he moved to a more quiet neighbourhood. Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru.. I still have his contact at least...
     <br><br>
@@ -1302,7 +1100,6 @@ function openAlexModal() {
     </video>
     </div>
   `; 
-
   document.getElementById('customAlert').style.display = 'flex';
 }
 
@@ -1313,22 +1110,29 @@ function loadStoredSettings() {
     const saved = localStorage.getItem('aREASettings');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === 'object') {
-        appSettings = { ...appSettings, ...parsed };
-      }
+      if (parsed && typeof parsed === 'object') { appSettings = { ...appSettings, ...parsed }; }
     }
-  } catch(e) { 
-    console.error("Settings corrupted. Resetting...", e);
-    localStorage.removeItem('aREASettings');
-  }
+  } catch(e) { console.error("Settings corrupted. Resetting...", e); localStorage.removeItem('aREASettings'); }
 }
 
-window.onload = () => {
+// -------------------------------------------------------------
+// Lightning Fast Loader (Triggered immediately when HTML is parsed)
+// -------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
   navResizeObserver.observe(document.querySelector('.nav-container'));
+  
   loadStoredSettings();
   initCanvas();
   loop();
   applySettings();
+  updateAdminUI();
+
+  // Instantly fade out the load screen once settings are grabbed
+  const loader = document.getElementById('initialLoader');
+  if(loader) {
+      loader.style.opacity = '0';
+      setTimeout(() => loader.remove(), 400); // Remove after fade completes
+  }
   
   const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'extras', 'settings'];
   const startPage = appSettings.startPage || 'home';
@@ -1340,71 +1144,44 @@ window.onload = () => {
       showTab(startPage, document.querySelectorAll('.nav-item')[startIndex]);
     }
   }
-};
+});
 
-let audioCtx;
-let analyser;
-let dataArray;
-let sourceNodes = new Map();
+let audioCtx; let analyser; let dataArray; let sourceNodes = new Map();
 
 function initAudioVisualizer(audioElement) {
-  if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-  }
-  
+  if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 32;
-    const bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
+    analyser = audioCtx.createAnalyser(); analyser.fftSize = 32;
+    const bufferLength = analyser.frequencyBinCount; dataArray = new Uint8Array(bufferLength);
   }
-
   if (!sourceNodes.has(audioElement)) {
     const source = audioCtx.createMediaElementSource(audioElement);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    sourceNodes.set(audioElement, source);
+    source.connect(analyser); analyser.connect(audioCtx.destination); sourceNodes.set(audioElement, source);
   }
-
   let localFrames = 0;
   function updateBars() {
     if (audioElement.paused || appSettings.ultraSaver) return; 
-    
     localFrames++;
-    if (appSettings.batterySaver && localFrames % 2 !== 0) {
-        requestAnimationFrame(updateBars);
-        return;
-    }
-
+    if (appSettings.batterySaver && localFrames % 2 !== 0) { requestAnimationFrame(updateBars); return; }
     analyser.getByteFrequencyData(dataArray);
-    
     const container = audioElement.closest('.song-item');
     const bars = container.querySelectorAll('.bar');
-    
     bars.forEach((bar, i) => {
-      const val = dataArray[i] / 255;
-      const height = 4 + (val * 16);
-      bar.style.height = height + 'px';
+      const val = dataArray[i] / 255; const height = 4 + (val * 16); bar.style.height = height + 'px';
     });
-    
     requestAnimationFrame(updateBars);
   }
-  
   if (audioCtx.state === 'suspended') audioCtx.resume();
   updateBars();
 }
-
-document.querySelectorAll('audio').forEach(audio => {
-  audio.addEventListener('play', () => initAudioVisualizer(audio));
-});
+document.querySelectorAll('audio').forEach(audio => { audio.addEventListener('play', () => initAudioVisualizer(audio)); });
 </script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
 
     const firebaseConfig = {
       apiKey: "AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8",
@@ -1429,9 +1206,8 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
     let currentUser = null;
 
     const initAuth = async () => {
-        try {
-            await signInAnonymously(auth);
-        } catch (error) {
+        try { await signInAnonymously(auth); } 
+        catch (error) {
             console.error("Auth failed:", error);
             commentsContainer.innerHTML = `<div style="text-align: center; color: #ff6b6b;">Auth Error: Enable Anonymous Login in Firebase Console.</div>`;
         }
@@ -1439,19 +1215,14 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
 
     onAuthStateChanged(auth, (user) => {
         currentUser = user;
-        if (user) {
-            loadComments();
-        }
+        if (user) { loadComments(); }
     });
 
-    function loadComments() {
+    window.loadComments = function() {
         const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
-        
         onSnapshot(commentsRef, (snapshot) => {
             const comments = [];
-            snapshot.forEach(doc => {
-                comments.push({ id: doc.id, ...doc.data() });
-            });
+            snapshot.forEach(doc => { comments.push({ id: doc.id, ...doc.data() }); });
             comments.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
             renderComments(comments);
         }, (err) => {
@@ -1469,16 +1240,18 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
         commentsContainer.innerHTML = comments.map(c => {
             const isOwner = currentUser && c.userId === currentUser.uid;
             
-            // Checking if the author is recognized as Admin
             const isAuthorAdmin = c.isAdmin && c.username === 'Aqeel';
             const adminTag = isAuthorAdmin ? `<span style="background:gold; color:black; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; margin-left:6px; vertical-align:middle;">[ADMIN]</span>` : '';
             const usernameStyle = isAuthorAdmin ? `color: gold;` : `color: var(--accent);`;
             
-            const deleteBtn = isOwner ? 
+            // IF ADMIN, SHOW DELETE BUTTON EVERYWHERE
+            const canDelete = isOwner || window.isAdmin;
+            const deleteBtn = canDelete ? 
                 `<button onclick="window.confirmDelete('${c.id}')" style="background:none; border:none; color:#FF3B30; cursor:pointer; font-weight:bold; font-size:12px;">DELETE</button>` : '';
 
-            // Report button formatted as an email link
-            const reportBtn = `<a href="mailto:dacoolkid325@gmail.com?subject=Report Comment ${c.id}&body=Reporting comment by ${c.username}: ${c.message}" style="background:none; border:none; color:#FF9500; cursor:pointer; font-weight:bold; font-size:12px; text-decoration:none; margin-right: 10px;">REPORT</a>`;
+            // IF ADMIN, HIDE REPORT BUTTON
+            const reportBtn = !window.isAdmin ? 
+                `<a href="mailto:dacoolkid325@gmail.com?subject=Report Comment ${c.id}&body=Reporting comment by ${c.username}: ${c.message}" style="background:none; border:none; color:#FF9500; cursor:pointer; font-weight:bold; font-size:12px; text-decoration:none; margin-right: 10px;">REPORT</a>` : '';
 
             return `
                 <div class="glass-card" style="padding: 24px; margin-bottom: 0;">
@@ -1505,7 +1278,7 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
                 await deleteDoc(commentRef);
             } catch (error) {
                 console.error("Delete failed:", error);
-                alert("Error: You can only delete your own comments!");
+                alert("Error deleting! If you are Admin, make sure your Firebase Rules allow you to delete other people's comments.");
             }
         }
     };
@@ -1527,7 +1300,7 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
                 message: message,
                 timestamp: serverTimestamp(),
                 userId: currentUser.uid,
-                isAdmin: window.isAdmin && username === 'Aqeel' // Attaches admin boolean if authenticated
+                isAdmin: window.isAdmin && username === 'Aqeel' 
             });
             messageInput.value = '';
         } catch (error) {
