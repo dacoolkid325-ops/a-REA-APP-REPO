@@ -538,10 +538,7 @@ body.no-bg #glassCanvas { display: none !important; }
       <div class="game-viewport">
         <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
       </div>
-      </div>
-    </div>
-  </div>
-  <script>
+    </div> </div> <script>
     function setMaxPower(headerElement) {
       document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('max-power'));
       headerElement.closest('.game-container-giant').classList.add('max-power');
@@ -562,6 +559,7 @@ body.no-bg #glassCanvas { display: none !important; }
     setTimeout(() => { if (typeof scaleGameIframes === 'function') scaleGameIframes(); }, 500);
   </script>
 </section>
+
 
 <section id="books">
   <h1>Library</h1>
