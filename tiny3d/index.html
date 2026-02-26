@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -25,8 +24,8 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;
 pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
 }
 #menu::before{
-content:’’;position:absolute;inset:0;
-background:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘60’ height=‘60’%3E%3Ccircle cx=‘30’ cy=‘30’ r=‘1’ fill=‘white’ opacity=’.15’/%3E%3C/svg%3E”);
+content:'';position:absolute;inset:0;
+background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='white' opacity='.15'/%3E%3C/svg%3E");
 animation:starScroll 60s linear infinite;
 }
 @keyframes starScroll{from{background-position:0 0}to{background-position:1000px 1000px}}
@@ -35,13 +34,13 @@ animation:starScroll 60s linear infinite;
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
 
 .game-title{
-font-family:‘Baloo 2’,cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
+font-family:'Baloo 2',cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
 color:#fff; text-align:center; line-height:1; margin-bottom:6px;
 filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
 animation:titleFloat 4s ease-in-out infinite;
 }
 @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.game-sub{color:var(–gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
+.game-sub{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
 
 .menu-card{
 background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
@@ -54,17 +53,15 @@ box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
 .field-input{
 width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
 border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
-color:#fff;font-family:‘Nunito’,sans-serif;font-size:1rem;outline:none;
+color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;
 transition:border-color .2s;
 }
-.field-input:focus{border-color:var(–gold);}
+.field-input:focus{border-color:var(--gold);}
 .field-input::placeholder{color:rgba(255,255,255,.3);}
-.color-row{display:flex;gap:10px;align-items:center;}
-.color-pick{height:44px;width:80px;padding:4px;border-radius:10px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer;}
 .divider{height:1px;background:rgba(255,255,255,.08);margin:18px 0;}
 
 .btn-main{
-width:100%;padding:16px;font-family:‘Baloo 2’,cursive;font-size:1.4rem;font-weight:800;
+width:100%;padding:16px;font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;
 background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
 cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
 transition:transform .1s,box-shadow .1s;margin-bottom:10px;
@@ -72,10 +69,10 @@ transition:transform .1s,box-shadow .1s;margin-bottom:10px;
 .btn-main:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
 .btn-vc{background:linear-gradient(135deg,#4ECDC4,#44a08d);}
 .btn-key{background:linear-gradient(135deg,#6A0DAD,#9b59b6);}
-.btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:‘Nunito’,sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
 .btn-sm:hover{background:rgba(255,255,255,.15);}
 
-#conn-status{color:var(–gold);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px;}
+#conn-status{color:var(--gold);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px;}
 
 /* ── KEY MODAL ── */
 #key-modal{
@@ -88,15 +85,15 @@ border:2px solid rgba(106,13,173,.6);border-radius:24px;
 padding:36px 32px;text-align:center;width:90%;max-width:360px;
 box-shadow:0 0 60px rgba(106,13,173,.4);
 }
-.km-title{font-family:‘Baloo 2’,cursive;font-size:1.8rem;color:var(–gold);margin-bottom:8px;}
+.km-title{font-family:'Baloo 2',cursive;font-size:1.8rem;color:var(--gold);margin-bottom:8px;}
 .km-sub{color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:20px;}
 #key-input{
 font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
 border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
-font-family:‘Baloo 2’,cursive;background:rgba(0,0,0,.4);color:#fff;
+font-family:'Baloo 2',cursive;background:rgba(0,0,0,.4);color:#fff;
 margin-bottom:16px;outline:none;
 }
-#key-input:focus{border-color:var(–gold);}
+#key-input:focus{border-color:var(--gold);}
 #key-status{font-size:.9rem;font-weight:700;min-height:22px;margin-top:10px;}
 .km-btns{display:flex;gap:10px;justify-content:center;}
 
@@ -107,18 +104,18 @@ background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
 border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
 padding:12px 16px;min-width:180px;
 }
-.hud-room{color:var(–blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
-.hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:‘Baloo 2’,cursive;margin-bottom:8px;}
+.hud-room{color:var(--blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
+.hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:'Baloo 2',cursive;margin-bottom:8px;}
 .hud-mode{background:linear-gradient(90deg,#6A0DAD,#9b59b6);color:#fff;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;}
 .counts{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
 .cnt{font-size:.82rem;font-weight:700;color:#ddd;}
-.cnt-tiny{color:var(–gold)!important;font-weight:900;}
+.cnt-tiny{color:var(--gold)!important;font-weight:900;}
 
 /* ── TOP RIGHT ── */
 #top-right{position:absolute;top:12px;right:12px;display:flex;gap:8px;align-items:center;pointer-events:auto;}
 .map-sel{
 background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
-color:#fff;font-family:‘Nunito’,sans-serif;font-size:.9rem;font-weight:700;
+color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;
 padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
 }
 .icon-btn{
@@ -164,10 +161,10 @@ border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
 display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
 align-items:center;gap:16px;z-index:102;pointer-events:auto;
 }
-.d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(–blue);object-fit:cover;flex-shrink:0;}
+.d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(--blue);object-fit:cover;flex-shrink:0;}
 .d-text{font-size:1rem;color:#e0e0e0;line-height:1.5;flex-grow:1;}
-.d-name{color:var(–blue);font-weight:900;font-size:1.1rem;}
-.d-btn{background:linear-gradient(135deg,var(–blue),#44a08d);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:‘Baloo 2’,cursive;font-size:1rem;font-weight:700;white-space:nowrap;}
+.d-name{color:var(--blue);font-weight:900;font-size:1.1rem;}
+.d-btn{background:linear-gradient(135deg,var(--blue),#44a08d);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;white-space:nowrap;}
 
 /* ── BANNERS ── */
 #unlock-banner{
@@ -197,7 +194,7 @@ backdrop-filter:blur(10px);
 .sk-min{
 position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
 color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
-cursor:pointer;pointer-events:auto;font-family:‘Nunito’,sans-serif;font-weight:700;
+cursor:pointer;pointer-events:auto;font-family:'Nunito',sans-serif;font-weight:700;
 }
 #skin-sel{
 position:absolute;top:60px;right:12px;
@@ -211,11 +208,11 @@ display:none;max-width:160px;flex-direction:column;
 .sk-btn{
 padding:7px 14px;font-size:.82rem;font-weight:700;
 background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
-color:#fff;border-radius:8px;cursor:pointer;font-family:‘Nunito’,sans-serif;
+color:#fff;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;
 transition:.15s;
 }
 .sk-btn:hover{background:rgba(255,255,255,.2);}
-.sk-btn.sk-active{background:var(–gold);color:#333;border-color:var(–gold);}
+.sk-btn.sk-active{background:var(--gold);color:#333;border-color:var(--gold);}
 .sk-btn.sk-dev  {background:rgba(0,160,0,.6);border-color:#00aa00;}
 .sk-btn.sk-admin{background:rgba(140,0,210,.6);border-color:#8b00cc;}
 
@@ -235,7 +232,14 @@ box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
 position:absolute;bottom:40px;right:40px;width:82px;height:82px;
 background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
 border-radius:50%;pointer-events:auto;display:none;
-color:#fff;font-weight:900;font-size:1rem;font-family:‘Baloo 2’,cursive;
+color:#fff;font-weight:900;font-size:1rem;font-family:'Baloo 2',cursive;
+text-shadow:0 1px 3px #000;
+}
+#crouch-btn{
+position:absolute;bottom:40px;right:134px;width:82px;height:82px;
+background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
+border-radius:50%;pointer-events:auto;display:none;
+color:#fff;font-weight:900;font-size:.85rem;font-family:'Baloo 2',cursive;
 text-shadow:0 1px 3px #000;
 }
 
@@ -254,21 +258,27 @@ display:none;pointer-events:none;
 width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
 cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 }
-.sprite-opt.chosen{border-color:var(–gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
-</style>
+.sprite-opt.chosen{border-color:var(--gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
 
+/* ── DOOR INTERACT HINT ── */
+#door-hint{
+position:absolute;bottom:160px;left:50%;transform:translateX(-50%);
+background:rgba(255,209,102,.92);color:#333;border-radius:12px;
+padding:8px 20px;font-size:.9rem;font-weight:700;
+display:none;pointer-events:none;z-index:105;white-space:nowrap;
+box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+</style>
 </head>
 <body>
 <div id="ui">
 
 <!-- MAIN MENU -->
-
 <div id="menu">
   <div class="menu-stars" id="menu-stars"></div>
   <div class="game-title">Find Tiny's<br>Family</div>
   <div class="game-sub">A turtle's search across the world</div>
   <div class="menu-card">
-    <!-- Sprite picker -->
     <div class="field-group">
       <span class="field-label">Choose your character</span>
       <div id="sprite-row"></div>
@@ -299,7 +309,6 @@ cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 </div>
 
 <!-- KEY MODAL -->
-
 <div id="key-modal">
   <div class="km-inner">
     <div class="km-title">🔑 Access Key</div>
@@ -314,7 +323,6 @@ cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 </div>
 
 <!-- HUD -->
-
 <div id="hud">
   <div class="hud-panel">
     <div class="hud-room" id="room-tag">Connecting...</div>
@@ -343,12 +351,10 @@ cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 </div>
 
 <div id="dev-panel"></div>
-
 <div id="peer-labels"></div>
 <div id="name-label" class="fname">Player</div>
 
 <!-- DIALOGUE -->
-
 <div id="dialogue">
   <img class="d-img" id="d-img" src="friend.png"
     onerror="this.onerror=null;this.style.visibility='hidden';"
@@ -363,28 +369,22 @@ cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 </div>
 
 <!-- SKIN SELECTOR -->
-
 <div id="skin-sel"><span class="sk-lbl">Skin</span></div>
 
 <!-- BANNERS -->
-
 <div id="unlock-banner"></div>
 <div id="locked-msg"></div>
 <div id="toast"></div>
+<div id="door-hint">🚪 Walk through the door to enter!</div>
 
 <!-- CAM HINT -->
-
 <div id="cam-hint">
-  <b>Camera</b><br>
-  ← → ↑ ↓ Arrow keys<br>
-  Mouse drag · Scroll zoom<br>
-  Right-side touch drag
+  <b>Move</b> WASD &nbsp;|&nbsp; <b>Cam</b> Arrow keys / drag<br>
+  <b>Jump</b> Space &nbsp;|&nbsp; <b>Crouch</b> C (sneak under desks!)<br>
+  Scroll / pinch = zoom &nbsp;|&nbsp; Enter houses through the DOOR
 </div>
 
 <!-- MOBILE -->
-
-<!-- DEV MOBILE BUTTONS -->
-
 <div id="dev-btns">
   <button class="dev-mbtn" onclick="flyMode=!flyMode;showToast(flyMode?'Fly ON':'Fly OFF')">✈ Fly toggle</button>
   <button class="dev-mbtn" onclick="player.position.set(0,20,0);showToast('Reset')">⌂ Reset pos</button>
@@ -394,6 +394,7 @@ cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 </div>
 <div id="joy-wrap"><div id="joy-outer"><div id="joy-inner"></div></div></div>
 <button id="jump-btn">JUMP</button>
+<button id="crouch-btn">CROUCH</button>
 </div>
 
 <script>
@@ -407,27 +408,21 @@ const SPRITE_FALLBACK_COLORS = {
   brother:'#2980b9',sister:'#e91e63',admin:'#9b59b6',dev:'#27ae60'
 };
 
-// Skin groups: finding all of a type unlocks that skin
 const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',tiny:'tiny'};
-// These are special and only unlocked by keys
 const KEY_ONLY_SKINS = ['dev','admin'];
-// 'friend' is always unlocked (the default skin)
 const ALWAYS_UNLOCKED = ['friend'];
 
 let playerName='Player', chosenSprite='friend', accessMode='normal';
 let currentMap=1, secondsElapsed=0, timerInterval=null, gameStarted=false;
-let flyMode=false, flyVelY=0, velocityY=0, isGrounded=false;
+let flyMode=false, flyVelY=0, velocityY=0, isGrounded=false, isCrouching=false;
 
 let famTargets = {dad:1,mum:1,brother:8,sister:9,tiny:1};
 let famFound   = {dad:0,mum:0,brother:0,sister:0,tiny:0};
 let groupUnlocked = {};
 
-// ── PERSISTENT UNLOCK STORAGE ──
-// Only 'friend' is available by default. Everything else must be earned.
 function loadUnlocked(){
   try{
     const saved=JSON.parse(localStorage.getItem('ftf_unlocked')||'[]');
-    // Always include 'friend', merge saved
     const base=[...ALWAYS_UNLOCKED];
     saved.forEach(s=>{ if(!base.includes(s)) base.push(s); });
     return base;
@@ -438,9 +433,15 @@ function saveUnlocked(){
 }
 
 let unlockedSkins = loadUnlocked();
-let currentSkin = unlockedSkins[0]; // friend by default
+let currentSkin = unlockedSkins[0];
 
 let familyMeshes=[], obstacles=[], grassBlades=[], cloudMeshes=[];
+
+// Door zones — stored per house: {x, z, doorX, doorZ, doorW}
+// Player can only enter/exit through the door gap
+let doorZones = [];
+// Under-furniture zones — player can crouch to pass under
+let underFurniture = []; // {x, z, radius, minCrouchY}
 
 // ════════════════════════════════════════════════════
 //  MENU — animated stars
@@ -457,7 +458,7 @@ let familyMeshes=[], obstacles=[], grassBlades=[], cloudMeshes=[];
 })();
 
 // ════════════════════════════════════════════════════
-//  SPRITE PICKER — locked sprites shown greyed with padlock
+//  SPRITE PICKER
 // ════════════════════════════════════════════════════
 function buildSpritePicker(){
   const row=document.getElementById('sprite-row');
@@ -477,11 +478,9 @@ function buildSpritePicker(){
     img.onerror=function(){
       const cv=document.createElement('canvas'); cv.width=cv.height=48;
       const ctx=cv.getContext('2d');
-      // No initials/text — just a colored circle placeholder
       ctx.fillStyle=isUnlocked?(SPRITE_FALLBACK_COLORS[name]||'#555'):'#222';
       ctx.beginPath(); ctx.arc(24,24,22,0,Math.PI*2); ctx.fill();
       if(!isUnlocked){
-        // draw lock symbol
         ctx.fillStyle='#888'; ctx.fillRect(18,22,12,10); ctx.beginPath();
         ctx.arc(24,22,5,Math.PI,0); ctx.strokeStyle='#888'; ctx.lineWidth=2; ctx.stroke();
       }
@@ -495,7 +494,6 @@ function buildSpritePicker(){
         localStorage.setItem('ftf_lastSprite',name);
       };
     } else {
-      // Show lock icon overlay
       const lock=document.createElement('div');
       lock.textContent='🔒';
       lock.style.cssText='position:absolute;top:0;right:0;font-size:14px;pointer-events:none;';
@@ -506,7 +504,6 @@ function buildSpritePicker(){
     row.appendChild(wrap);
   });
 
-  // Restore last chosen sprite if still unlocked, else default to friend
   const last=localStorage.getItem('ftf_lastSprite');
   const defaultChoice=last&&unlockedSkins.includes(last)?last:'friend';
   chosenSprite=defaultChoice;
@@ -532,13 +529,13 @@ function submitKey(){
     ks.style.color='#00FF88';
     if(mode==='dev'){
       ks.textContent='✔ Dev Mode unlocked!';
-      // Dev only gets dev skin (not family skins — those must be earned)
+      // Dev key only gives dev skin — NOT admin skin
       giveExtraSkins(['dev']);
     } else {
       ks.textContent='✔ Admin Mode unlocked!';
-      // Admin gets dev + admin skins. Family skins still must be earned in-game.
-      // (adminCollect will auto-collect family, triggering group unlocks properly)
-      giveExtraSkins(['dev','admin']);
+      // Admin key only gives admin skin — NOT dev skin
+      // Family skins still earned in-game via collection
+      giveExtraSkins(['admin']);
     }
     if(gameStarted){ buildSkinSel(); updateModeTag(); if(mode==='admin') adminCollect(); }
     setTimeout(closeKey,1800);
@@ -563,7 +560,7 @@ function adminCollect(){
 }
 
 // ════════════════════════════════════════════════════
-//  VOICE CHAT (up to 10 players)
+//  VOICE CHAT
 // ════════════════════════════════════════════════════
 let peer, peers={}, localStream=null, micEnabled=false;
 
@@ -588,6 +585,9 @@ function toggleMic(){
   btn.style.background=micEnabled?'rgba(39,174,96,.8)':'rgba(10,10,26,.85)';
 }
 
+// ════════════════════════════════════════════════════
+//  NETWORKING
+// ════════════════════════════════════════════════════
 function initNet(code){
   const tag=document.getElementById('room-tag');
   const st=document.getElementById('conn-status');
@@ -641,7 +641,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.35;
+renderer.toneMappingExposure=1.4;
 document.body.insertBefore(renderer.domElement,document.getElementById('ui'));
 
 const tLoader=new THREE.TextureLoader();
@@ -652,7 +652,7 @@ scene.add(hemiLight);
 
 const sun=new THREE.DirectionalLight(0xffdd55,2.6);
 sun.castShadow=true;
-sun.shadow.mapSize.width=sun.shadow.mapSize.height=4096;  // Extended shadow map
+sun.shadow.mapSize.width=sun.shadow.mapSize.height=4096;
 sun.shadow.camera.near=1; sun.shadow.camera.far=800;
 sun.shadow.camera.left=-250; sun.shadow.camera.right=250;
 sun.shadow.camera.top=250;   sun.shadow.camera.bottom=-250;
@@ -660,7 +660,6 @@ sun.shadow.bias=-0.0005;
 sun.shadow.normalBias=0.02;
 scene.add(sun);
 
-// Secondary fill light from opposite side
 const fillLight=new THREE.DirectionalLight(0x4488ff,.35);
 fillLight.position.set(-1,.5,-1);
 scene.add(fillLight);
@@ -668,12 +667,40 @@ scene.add(fillLight);
 const ambient=new THREE.AmbientLight(0xffd0a0,.25);
 scene.add(ambient);
 
-// Day/night cycle — starts at dawn (~6am feel)
-let dayT=Math.PI*0.08;  // dawn
-const DAY_SPEED=0.00012; // full cycle ~14 min
+let dayT=Math.PI*0.08;
+let lastSunH=-1;
+const DAY_SPEED=0.00012;
 
-scene.fog=new THREE.FogExp2(0xffeaa0,.0018); // exponential for richer atmosphere
-scene.background=new THREE.Color(0xffc87a);
+scene.fog=new THREE.FogExp2(0xffe8b0,.0015);
+scene.background=new THREE.Color(0xff9944);
+
+// ── SKY DOME ──
+const skyGeo=new THREE.SphereGeometry(900,12,6);
+skyGeo.scale(-1,1,-1);
+const skyColors=new Float32Array(skyGeo.attributes.position.count*3);
+skyGeo.setAttribute('color',new THREE.BufferAttribute(skyColors,3));
+const skyMat=new THREE.MeshBasicMaterial({vertexColors:true,depthWrite:false,fog:false});
+const skyMesh=new THREE.Mesh(skyGeo,skyMat);
+skyMesh.renderOrder=-1;
+scene.add(skyMesh);
+
+function updateSky(sunH,sinT){
+  const pos=skyGeo.attributes.position;
+  const col=skyGeo.attributes.color;
+  const apex   = sunH>0.01 ? new THREE.Color(0x1a6ecc).lerp(new THREE.Color(0x0a2a60),Math.max(0,1-sunH*2)) : new THREE.Color(0x050520);
+  const midSky = sunH>0.01 ? new THREE.Color(0x44aaee).lerp(new THREE.Color(0x88ccff),sunH) : new THREE.Color(0x101840);
+  const horiz  = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
+  if(sunH<.02){ horiz.set(0xff5500); midSky.set(0x331122); }
+  for(let i=0;i<pos.count;i++){
+    const yN=Math.max(-1,Math.min(1,pos.getY(i)/900));
+    const t=Math.max(0,yN);
+    let c;
+    if(t<0.15) c=horiz.clone().lerp(midSky,t/0.15);
+    else c=midSky.clone().lerp(apex,(t-.15)/.85);
+    col.setXYZ(i,c.r,c.g,c.b);
+  }
+  col.needsUpdate=true;
+}
 
 // ── TERRAIN ──
 const terrainMats={
@@ -684,21 +711,38 @@ const terrainMats={
 tLoader.load('grass.png',tex=>{ tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(80,80); terrainMats[1].map=tex; terrainMats[1].needsUpdate=true; },null,()=>{});
 
 let terrain=null;
+const HOUSE_PADS=[
+  {x:30,z:30},{x:80,z:-20},{x:-60,z:50},{x:50,z:-80},{x:-90,z:-30},
+  {x:110,z:70},{x:-40,z:-120},{x:0,z:110},{x:130,z:-100},
+  {x:-120,z:80},{x:70,z:150},{x:-150,z:-80},{x:20,z:-160},{x:160,z:20},{x:-80,z:160}
+];
+const PAD_R=18;
+
 function buildTerrain(m){
   if(terrain){ scene.remove(terrain); terrain.geometry.dispose(); terrain=null; }
-  const size = m===3 ? 160 : 800;
-  const segs = m===3 ? 8   : 128;
+  const size = m===3 ? 140 : 800;
+  const segs = m===3 ? 4   : 80;
   const geo=new THREE.PlaneGeometry(size,size,segs,segs);
   geo.rotateX(-Math.PI/2);
   if(m!==3){
     const pos=geo.attributes.position;
     for(let i=0;i<pos.count;i++){
       const x=pos.getX(i),z=pos.getZ(i);
-      // Layered hills: large rolling + medium bumps + small noise
-      let y = Math.sin(x*0.012)*Math.cos(z*0.012)*18
-            + Math.sin(x*0.03 +1)*Math.cos(z*0.025+2)*8
-            + Math.sin(x*0.07 )*Math.cos(z*0.08 )*3;
-      if(m===2) y=0; // beach is flat sand
+      let y=0;
+      if(m===1){
+        y = Math.sin(x*0.012)*Math.cos(z*0.012)*18
+          + Math.sin(x*0.03+1)*Math.cos(z*0.025+2)*8
+          + Math.sin(x*0.07)*Math.cos(z*0.08)*3;
+        let flatBlend=0;
+        for(const pad of HOUSE_PADS){
+          const dist=Math.sqrt((x-pad.x)**2+(z-pad.z)**2);
+          if(dist<PAD_R){
+            const inner=PAD_R-5;
+            flatBlend=Math.max(flatBlend, dist<=inner ? 1 : 1-(dist-inner)/5);
+          }
+        }
+        y=y*(1-flatBlend);
+      }
       pos.setY(i,y);
     }
     geo.computeVertexNormals();
@@ -716,46 +760,27 @@ player.castShadow=true; scene.add(player);
 const disc=new THREE.Mesh(new THREE.CircleGeometry(.9,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.22}));
 disc.rotation.x=-Math.PI/2; scene.add(disc);
 
-// ── CLOUDS ──
-function buildClouds(){
-  cloudMeshes.forEach(c=>scene.remove(c)); cloudMeshes=[];
-  if(currentMap===3) return; // indoor classroom — no clouds
-  const cloudMat=new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.82,roughness:1,depthWrite:false});
-  for(let i=0;i<22;i++){
-    const g=new THREE.Group();
-    // Flatter, wider clouds — scale y down so they look like proper cumulus
-    const w=Math.random()*60+40, baseR=Math.random()*5+5;
-    for(let j=0;j<6;j++){
-      const r=baseR*(0.6+Math.random()*0.7);
-      const sphere=new THREE.Mesh(new THREE.SphereGeometry(r,7,5),cloudMat);
-      sphere.scale.y=0.45+Math.random()*0.2; // flatten each puff
-      sphere.position.set((Math.random()-.5)*w,(Math.random()-.3)*baseR*.5,(Math.random()-.5)*20);
-      g.add(sphere);
-    }
-    const spread=500;
-    // Height 140-200 — well above terrain and camera
-    g.position.set((Math.random()-.5)*spread, 140+Math.random()*60, (Math.random()-.5)*spread);
-    g.userData.speed=Math.random()*.008+.003;
-    g.userData.dir=Math.random()>.5?1:-1;
-    scene.add(g); cloudMeshes.push(g);
-  }
-}
-
 // ── RAYCASTER ──
 const gRay=new THREE.Raycaster();
 const dVec=new THREE.Vector3(0,-1,0);
+const _thCache=new Map();
 function terrainH(x,z){
   if(!terrain) return 0;
+  const key=(Math.round(x*2)/2)+','+(Math.round(z*2)/2);
+  if(_thCache.has(key)) return _thCache.get(key);
   gRay.set(new THREE.Vector3(x,500,z),dVec);
   const h=gRay.intersectObject(terrain);
-  return h.length?h[0].point.y:0;
+  const y=h.length?h[0].point.y:0;
+  if(_thCache.size>2000) _thCache.clear();
+  _thCache.set(key,y);
+  return y;
 }
 
 // ════════════════════════════════════════════════════
 //  CAMERA
 // ════════════════════════════════════════════════════
 let camYaw=0, camPitch=.42, camDist=22, camDistTarget=22;
-const housePositions=[]; // filled by addHouse
+const housePositions=[]; // {x, z, w, d, doorX, doorZ, doorW, doorFace}
 const CAM_SPD=.03;
 
 let mDrag=false,lmx=0,lmy=0;
@@ -770,30 +795,33 @@ renderer.domElement.addEventListener('touchstart',e=>{ for(const t of e.changedT
 renderer.domElement.addEventListener('touchmove',e=>{ for(const t of e.changedTouches){ if(camt[t.identifier]){ const p=camt[t.identifier]; camYaw-=(t.clientX-p.x)*.005; camPitch-=(t.clientY-p.y)*.005; camPitch=clamp(camPitch,.05,1.45); camt[t.identifier]={x:t.clientX,y:t.clientY}; e.preventDefault(); } } },{passive:false});
 renderer.domElement.addEventListener('touchend',e=>{ for(const t of e.changedTouches) delete camt[t.identifier]; },{passive:true});
 
+let insideHouseIdx=-1;
 function doUpdateCamera(){
-  // House proximity zoom — smoothly pull camera in when near a house
+  insideHouseIdx=-1;
   if(currentMap===1 && housePositions.length){
-    let nearest=9999;
-    for(const h of housePositions){
+    for(let i=0;i<housePositions.length;i++){
+      const h=housePositions[i];
       const dx=player.position.x-h.x, dz=player.position.z-h.z;
-      const inside=Math.abs(dx)<h.w*.55&&Math.abs(dz)<h.d*.55;
-      const dist=Math.sqrt(dx*dx+dz*dz);
-      nearest=Math.min(nearest,inside?0:dist);
+      const inside=Math.abs(dx)<h.w/2-0.5&&Math.abs(dz)<h.d/2-0.5;
+      if(inside){ insideHouseIdx=i; break; }
     }
-    // Inside house → pull to 10; near entrance (<8) → 14; else 22
-    if(nearest===0) camDistTarget=10;
-    else if(nearest<8) camDistTarget=14;
+    if(insideHouseIdx>=0) camDistTarget=8;
     else camDistTarget=22;
   } else {
-    camDistTarget=currentMap===3?12:22;
+    camDistTarget=currentMap===3?11:22;
   }
-  camDist+=(camDistTarget-camDist)*.08; // smooth lerp
+  camDist+=(camDistTarget-camDist)*.1;
+
+  // Crouching: lower camera, look along ground
+  const crouchPitch = isCrouching ? 0.06 : camPitch;
+  const crouchDist  = isCrouching ? camDist*.85 : camDist;
+  const lookH = isCrouching ? 0.2 : 1.2;
   camera.position.set(
-    player.position.x+Math.sin(camYaw)*camDist*Math.cos(camPitch),
-    player.position.y+Math.sin(camPitch)*camDist,
-    player.position.z+Math.cos(camYaw)*camDist*Math.cos(camPitch)
+    player.position.x+Math.sin(camYaw)*crouchDist*Math.cos(crouchPitch),
+    player.position.y+Math.sin(crouchPitch)*crouchDist,
+    player.position.z+Math.cos(camYaw)*crouchDist*Math.cos(crouchPitch)
   );
-  camera.lookAt(player.position.x,player.position.y+1.2,player.position.z);
+  camera.lookAt(player.position.x,player.position.y+lookH,player.position.z);
 }
 
 // ════════════════════════════════════════════════════
@@ -814,11 +842,10 @@ function applySkin(name){
     playerMat.needsUpdate=true;
   });
   document.querySelectorAll('.sk-btn').forEach(b=>b.classList.toggle('sk-active',b.dataset.s===name));
-  // Keep dialogue portrait in sync with current skin
   const dImg=document.getElementById('d-img');
   if(dImg){
     dImg.src=name+'.png';
-    dImg.onerror=function(){ this.onerror=null; this.style.visibility='hidden'; this.style.background=SPRITE_FALLBACK_COLORS[name]||'#4ECDC4'; };
+    dImg.onerror=function(){ this.onerror=null; this.style.visibility='hidden'; };
   }
   const dName=document.querySelector('#dialogue .d-name');
   if(dName) dName.textContent=(name[0].toUpperCase()+name.slice(1))+' 🐢';
@@ -826,17 +853,7 @@ function applySkin(name){
 let skinSelCollapsed=false;
 function buildSkinSel(){
   const sel=document.getElementById('skin-sel');
-  // Minimise button
-  let minBtn=sel.querySelector('.sk-min');
-  if(!minBtn){
-    minBtn=document.createElement('button'); minBtn.className='sk-min';
-    minBtn.textContent=skinSelCollapsed?'▲ Skin':'▼';
-    minBtn.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
-    sel.appendChild(minBtn);
-  }
-  // Rebuild content
   sel.innerHTML='';
-  // Re-add minimise button
   const mb=document.createElement('button'); mb.className='sk-min';
   mb.textContent=skinSelCollapsed?'▲ Skin':'▼ Hide';
   mb.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
@@ -856,62 +873,47 @@ function buildSkinSel(){
 }
 
 // ════════════════════════════════════════════════════
-//  FAMILY SPAWN — Map 1: 9, Map 2: 10, Map 3: Tiny only
+//  FAMILY SPAWN
 // ════════════════════════════════════════════════════
-// Distribution across maps:
-// Map1: dad, mum, 4 brothers, 4 sisters  = 10 (but tiny not here) = 9 non-tiny + 0
-// Map2: 4 brothers, 5 sisters = 10 (beach) — tortoises on dry sand
-// Map3: tiny only
-
 const MAP_ROSTER = {
   1:[{type:'dad',s:2.4},{type:'mum',s:2.2},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
   2:[{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
   3:[{type:'tiny',s:1.0}]
 };
 
-// Hard hiding spots for map 1 — behind/under things
 const HARD_SPOTS_MAP1 = [
-  // Inside houses (same coords as houseData entries)
-  [30,0,30],    // inside house 1
-  [80,0,-20],   // inside house 2
-  [-60,0,50],   // inside house 3
-  [50,0,-80],   // inside house 4
-  [-90,0,-30],  // inside house 5
-  // Behind hills / far edges
-  [160,0,100],
-  [-170,0,-60],
-  [0,0,180],
-  [-150,0,150]
+  [30,30],[80,-20],[-60,50],[50,-80],[-90,-30],
+  [110,70],[-40,-120],[0,110],[130,-100]
 ];
 
 function spawnFamily(){
+  if(currentMap===3) return;
   const roster=MAP_ROSTER[currentMap]||[];
   roster.forEach((mem,idx)=>{
-    const mat=new THREE.MeshStandardMaterial({side:THREE.DoubleSide,transparent:true,alphaTest:.05});
-    tLoader.load(mem.type+'.png',tex=>{mat.map=tex;mat.color.set(0xFFFFFF);mat.needsUpdate=true;},null,()=>mat.color.set(typeCol(mem.type)));
+    const mat=new THREE.MeshStandardMaterial({
+      color:typeCol(mem.type),side:THREE.DoubleSide,transparent:true,alphaTest:.05
+    });
+    tLoader.load(mem.type+'.png',
+      tex=>{ mat.map=tex; mat.color.set(0xFFFFFF); mat.needsUpdate=true; },
+      null, ()=>{}
+    );
     const mesh=new THREE.Mesh(new THREE.PlaneGeometry(mem.s,mem.s*1.3),mat);
     let mx,mz;
-    if(currentMap===3){
-      // Tiny hides specifically — behind teacher desk or in corner by bookshelf
-      const tinySpots=[[-48,28],[48,25],[-48,-28],[0,-32],[30,25]];
-      const spot=tinySpots[Math.floor(Math.random()*tinySpots.length)];
-      mx=spot[0]+(Math.random()-.5)*4; mz=spot[1]+(Math.random()-.5)*4;
-    }
-    else if(currentMap===1 && HARD_SPOTS_MAP1[idx]){
-      // Place near hard spots with small random offset
+    if(currentMap===1 && HARD_SPOTS_MAP1[idx]){
       const hs=HARD_SPOTS_MAP1[idx];
-      mx=hs[0]+(Math.random()-.5)*12; mz=hs[2]+(Math.random()-.5)*12;
+      mx=hs[0]+(Math.random()-.5)*6; mz=hs[1]+(Math.random()-.5)*6;
     } else if(currentMap===2){
-      // Beach: dry sand only (not in ocean zone). Keep inside z -150..150, x -300..300
-      mx=(Math.random()-.5)*500; mz=(Math.random()-.5)*250;
-      // Keep away from ocean edge
-      if(mz<-130) mz=-130+Math.random()*30;
+      mx=(Math.random()-.5)*460; mz=(Math.random()-.5)*180;
+      if(mz<-120) mz=-90+Math.random()*40;
     } else {
-      mx=(Math.random()-.5)*500; mz=(Math.random()-.5)*500;
+      mx=(Math.random()-.5)*380; mz=(Math.random()-.5)*380;
     }
-    const ty=terrainH(mx,mz);
-    mesh.position.set(mx,ty+mem.s*.6,mz);
-    mesh.castShadow=true; scene.add(mesh);
+    let ty=0;
+    try{ ty=terrainH(mx,mz); } catch(e){ ty=0; }
+    if(!isFinite(ty)||ty==null) ty=0;
+    mesh.position.set(mx, ty+mem.s*.6+.1, mz);
+    mesh.castShadow=false;
+    scene.add(mesh);
     familyMeshes.push({mesh,type:mem.type});
   });
 }
@@ -924,27 +926,33 @@ function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0
 function mkMesh(geo,params){ return new THREE.Mesh(geo,new THREE.MeshStandardMaterial(params)); }
 
 function clearScene(){
-  famFound={dad:0,mum:0,brother:0,sister:0,tiny:0};
-  groupUnlocked={};
+  _thCache.clear();
   familyMeshes.forEach(f=>scene.remove(f.mesh));
   obstacles.forEach(o=>scene.remove(o.mesh||o));
   grassBlades.forEach(g=>scene.remove(g));
   scene.children.filter(c=>c.userData.deco).forEach(c=>scene.remove(c));
   familyMeshes=[]; obstacles=[]; grassBlades=[]; housePositions.length=0;
+  doorZones=[]; underFurniture=[];
 }
 
 function loadMap(m){
-  clearScene(); buildTerrain(m); setLighting(m); buildClouds();
+  clearScene(); buildTerrain(m); setLighting(m);
   if(m===1) buildNeighborhood();
   else if(m===2) buildBeach();
   else buildClassroom();
-  player.position.set(0,20,0); flyVelY=0; velocityY=0; isGrounded=false;
+
+  // FIX: Spawn player at ground level on map 3 (classroom floor = 0.15)
+  if(m===3){
+    player.position.set(0, 1.5, 20); // front of classroom, on floor
+  } else {
+    player.position.set(0, terrainH(0,0)+1.5, 0);
+  }
+  flyVelY=0; velocityY=0; isGrounded=false;
   document.getElementById('c-map').textContent='Map '+m;
   updateHUD();
   if(accessMode==='admin') setTimeout(adminCollect,400);
 }
 
-// ── LIGHTING PER MAP ──
 function setLighting(m){
   if(m===1){
     hemiLight.color.set(0xffeaa0); hemiLight.groundColor.set(0x4a7a20); hemiLight.intensity=1.0;
@@ -963,165 +971,183 @@ function setLighting(m){
 
 // ── MAP 1: NEIGHBORHOOD ──
 function buildNeighborhood(){
-  // Houses
-  const houseData=[
-    [30,0,30],[80,0,-20],[-60,0,50],[50,0,-80],[-90,0,-30],[110,0,70],[-40,0,-120],[0,0,110],[130,0,-100],
-    [-120,0,80],[70,0,150],[-150,0,-80],[20,0,-160],[160,0,20],[-80,0,160]
-  ];
-  houseData.forEach(([x,,z])=>{ const ty=terrainH(x,z); addHouse(x,ty,z); });
+  HOUSE_PADS.forEach(({x,z})=>{ addHouse(x,0,z); });
 
-  // Trees — lots!
-  for(let i=0;i<120;i++) addTree((Math.random()-.5)*700,(Math.random()-.5)*700);
-
-  // Big rocks
-  for(let i=0;i<80;i++){
-    const s=Math.random()*4+1.5;
-    const rx=(Math.random()-.5)*700,rz=(Math.random()-.5)*700;
-    const rock=mkMesh(new THREE.DodecahedronGeometry(s,1),{color:0x666666,roughness:.95});
-    rock.position.set(rx,terrainH(rx,rz)+s/2,rz); rock.castShadow=rock.receiveShadow=true; rock.userData.deco=true; scene.add(rock);
-    obstacles.push({mesh:rock,radius:s*1.2,x:rx,z:rz});
+  for(let i=0;i<60;i++){
+    const tx=(Math.random()-.5)*700, tz=(Math.random()-.5)*700;
+    const nearHouse=HOUSE_PADS.some(h=>Math.sqrt((tx-h.x)**2+(tz-h.z)**2)<PAD_R+4);
+    if(!nearHouse) addTree(tx,tz);
   }
 
-  // Fences
   for(let i=0;i<30;i++){
-    const fx=(Math.random()-.5)*600,fz=(Math.random()-.5)*600;
-    for(let j=0;j<6;j++){
-      const post=mkMesh(new THREE.BoxGeometry(.4,3,.4),{color:0xd4a87a,roughness:.9});
-      post.position.set(fx+j*3,terrainH(fx+j*3,fz)+1.5,fz); post.castShadow=true; post.userData.deco=true; scene.add(post);
-    }
-    const rail=mkMesh(new THREE.BoxGeometry(18,.3,.3),{color:0xc49060,roughness:.9});
-    rail.position.set(fx+7.5,terrainH(fx,fz)+2.5,fz); rail.userData.deco=true; scene.add(rail);
+    const s=Math.random()*3+1;
+    const rx=(Math.random()-.5)*650, rz=(Math.random()-.5)*650;
+    const nearHouse=HOUSE_PADS.some(h=>Math.sqrt((rx-h.x)**2+(rz-h.z)**2)<PAD_R+2);
+    if(nearHouse) continue;
+    const rock=mkMesh(new THREE.DodecahedronGeometry(s,0),{color:0x777777,roughness:.95,metalness:.05});
+    rock.position.set(rx,terrainH(rx,rz)+s*.4,rz); rock.receiveShadow=true; rock.userData.deco=true; scene.add(rock);
+    obstacles.push({mesh:rock,radius:s*1.1,x:rx,z:rz});
   }
 
-  // Tall grass patches
-  spawnGrass(600,700);
+  spawnGrass(80,700);
   spawnFamily();
 }
 
+// ── HOUSE BUILDER — DOOR-ONLY ENTRY ──
+// The front wall has a door gap. The collision system only blocks the wall sections,
+// leaving the door opening free. Player can only enter/exit through the door.
 function addHouse(x,ty,z){
-  const w=14+Math.random()*10, d=12+Math.random()*8, h=7+Math.random()*4;
-  const cols=[0xF5E6C8,0xDCE8E8,0xF9D5A7,0xE8D5C8,0xCCDDCC];
-  const roofCols=[0xC0392B,0x7B3B2E,0x2C5F8A,0x4A4A4A,0x8B4513];
-  const col=cols[Math.floor(Math.random()*cols.length)];
-  const rcol=roofCols[Math.floor(Math.random()*roofCols.length)];
-  const wm=new THREE.MeshStandardMaterial({color:col,roughness:.9});
-  const doorW=3, doorH=4;
+  const W=18, D=16, H=8, WT=1.0;
+  const DOOR_W=3.2, DOOR_H=4.4;
+  const idx=housePositions.length;
+  const wallCols=[0xF2E0C0,0xDDE8DC,0xF5D9A8,0xE8D8C0,0xD0E0D0,0xEEDDCC];
+  const roofCols=[0xA03020,0x6B2E1A,0x2A5078,0x404040,0x703010];
+  const wMat=new THREE.MeshStandardMaterial({color:wallCols[idx%wallCols.length],roughness:.88});
+  const rMat=new THREE.MeshStandardMaterial({color:roofCols[idx%roofCols.length],roughness:.92});
+  const fMat=new THREE.MeshStandardMaterial({color:0xC8A878,roughness:.7});
+  const winMat=new THREE.MeshStandardMaterial({color:0x88CCFF,roughness:.05,metalness:.2,transparent:true,opacity:.55});
+  const frMat=new THREE.MeshStandardMaterial({color:0xDDDDDD,roughness:.8});
+  const dMat=new THREE.MeshStandardMaterial({color:0x5a3010,roughness:.85});
 
-  // Build walls as separate panels so there is a real door gap in the front
-  // Front wall: two side panels (left & right of door) + top strip
-  const frontSideW=(w-doorW)/2;
-  // Front left panel
-  const fl=new THREE.Mesh(new THREE.BoxGeometry(frontSideW,h,.3),wm);
-  fl.position.set(x-doorW/2-frontSideW/2,ty+h/2,z+d/2); fl.castShadow=fl.receiveShadow=true; fl.userData.deco=true; scene.add(fl);
-  // Front right panel
-  const fr=new THREE.Mesh(new THREE.BoxGeometry(frontSideW,h,.3),wm);
-  fr.position.set(x+doorW/2+frontSideW/2,ty+h/2,z+d/2); fr.castShadow=fr.receiveShadow=true; fr.userData.deco=true; scene.add(fr);
-  // Front top strip above door
-  const ft=new THREE.Mesh(new THREE.BoxGeometry(w,h-doorH,.3),wm);
-  ft.position.set(x,ty+doorH+(h-doorH)/2,z+d/2); ft.castShadow=true; ft.userData.deco=true; scene.add(ft);
-  // Back wall
-  const bk=new THREE.Mesh(new THREE.BoxGeometry(w,h,.3),wm);
-  bk.position.set(x,ty+h/2,z-d/2); bk.castShadow=bk.receiveShadow=true; bk.userData.deco=true; scene.add(bk);
-  // Left wall
-  const lw=new THREE.Mesh(new THREE.BoxGeometry(.3,h,d),wm);
-  lw.position.set(x-w/2,ty+h/2,z); lw.castShadow=lw.receiveShadow=true; lw.userData.deco=true; scene.add(lw);
-  // Right wall
-  const rw=new THREE.Mesh(new THREE.BoxGeometry(.3,h,d),wm);
-  rw.position.set(x+w/2,ty+h/2,z); rw.castShadow=rw.receiveShadow=true; rw.userData.deco=true; scene.add(rw);
-
-  // Roof
-  const roof=mkMesh(new THREE.ConeGeometry(Math.max(w,d)*.78,h*.65,4),{color:rcol,roughness:.9});
-  roof.position.set(x,ty+h+h*.32,z); roof.rotation.y=Math.PI/4; roof.castShadow=true; roof.userData.deco=true; scene.add(roof);
-
-  // Thick floor slab — extends 6 units below ground so hill cutaway is never visible
-  const floorSlab=mkMesh(new THREE.BoxGeometry(w+.4,8,d+.4),{color:0xc8a87a,roughness:.85});
-  floorSlab.position.set(x,ty-3.5,z); floorSlab.receiveShadow=true; floorSlab.userData.deco=true; scene.add(floorSlab);
-
-  // Windows — 2 on front sides, 1 each on left/right/back walls, all matched to wall height
-  const winH=h*.45, winY=ty+h*.6;
-  const winMat=new THREE.MeshStandardMaterial({color:0xaaddff,roughness:.05,metalness:.1,transparent:true,opacity:.65});
-  const winFrame=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.8});
-  function addWindow(wx,wy,wz,wo,ww2,wh2,rotY){
-    // Frame sits proud of wall; glass recessed inside frame — no z-fighting
-    const frame=new THREE.Mesh(new THREE.BoxGeometry(ww2+.5,wh2+.5,.35),winFrame);
-    frame.rotation.y=rotY; frame.position.set(wx,wy,wz); frame.userData.deco=true; scene.add(frame);
-    const glass=new THREE.Mesh(new THREE.BoxGeometry(ww2-.1,wh2-.1,.12),winMat);
-    glass.rotation.y=rotY; glass.position.set(wx,wy,wz); glass.userData.deco=true; scene.add(glass);
+  function box(geo,mat,px,py,pz,ry){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(px,py,pz);
+    if(ry) m.rotation.y=ry;
+    m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
-  // Front windows (each side of door)
-  addWindow(x-w/4,winY,z+d/2+.05,0,2.2,winH,0);
-  addWindow(x+w/4,winY,z+d/2+.05,0,2.2,winH,0);
-  // Back windows
-  addWindow(x-w/4,winY,z-d/2-.05,0,2.2,winH,0);
-  addWindow(x+w/4,winY,z-d/2-.05,0,2.2,winH,0);
-  // Side windows
-  addWindow(x+w/2+.05,winY,z-d/4,0,2.2,winH,Math.PI/2);
-  addWindow(x+w/2+.05,winY,z+d/4,0,2.2,winH,Math.PI/2);
-  addWindow(x-w/2-.05,winY,z-d/4,0,2.2,winH,Math.PI/2);
-  addWindow(x-w/2-.05,winY,z+d/4,0,2.2,winH,Math.PI/2);
 
-  // Door frame
-  const dfm=new THREE.MeshStandardMaterial({color:0x5c3010,roughness:.9});
-  const df=new THREE.Mesh(new THREE.BoxGeometry(doorW+.4,.2,d*.01+.4),dfm);
-  df.position.set(x,ty+doorH,z+d/2); df.userData.deco=true; scene.add(df);
+  // Floor slab
+  box(new THREE.BoxGeometry(W+WT*2+1,10,D+WT*2+1),
+    new THREE.MeshStandardMaterial({color:0x4a8c28,roughness:.9}), x,-5,z);
+  box(new THREE.BoxGeometry(W-0.2,0.2,D-0.2),fMat, x,0.1,z);
 
-  // Interior: bed + wardrobe for hiding spots
-  const bedMat=new THREE.MeshStandardMaterial({color:0x6688aa,roughness:.8});
-  const bed=new THREE.Mesh(new THREE.BoxGeometry(4,1,6),bedMat);
-  bed.position.set(x+w*.25,ty+.5,z-d*.2); bed.castShadow=true; bed.userData.deco=true; scene.add(bed);
-  // Wardrobe
-  const ward=mkMesh(new THREE.BoxGeometry(3,h*.7,2),{color:0x8B6535,roughness:.9});
-  ward.position.set(x-w*.3,ty+h*.35,z+d*.25); ward.castShadow=ward.receiveShadow=true; ward.userData.deco=true; scene.add(ward);
+  // Walls
+  const fSide=(W-DOOR_W)/2;
+  box(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, x,H/2,z-D/2-WT/2);        // back
+  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x-W/2-WT/2,H/2,z);        // left
+  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x+W/2+WT/2,H/2,z);        // right
+  box(new THREE.BoxGeometry(fSide,H,WT),wMat, x-DOOR_W/2-fSide/2,H/2,z+D/2+WT/2); // front-L
+  box(new THREE.BoxGeometry(fSide,H,WT),wMat, x+DOOR_W/2+fSide/2,H/2,z+D/2+WT/2); // front-R
+  box(new THREE.BoxGeometry(W+WT*2,H-DOOR_H,WT),wMat, x,DOOR_H+(H-DOOR_H)/2,z+D/2+WT/2); // front-top
 
-  // Collision: only the 4 wall CORNERS block (thin walls = radius just the corner posts)
-  // Left and right outer walls block
-  obstacles.push({mesh:lw,radius:.8,x:x-w/2,z});
-  obstacles.push({mesh:rw,radius:.8,x:x+w/2,z});
-  // Back wall blocks
-  obstacles.push({mesh:bk,radius:.8,x,z:z-d/2});
-  // Wardrobe blocks
-  obstacles.push({mesh:ward,radius:2,x:x-w*.3,z:z+d*.25});
-  // Record centre for camera zoom
-  housePositions.push({x,z,w,d});
+  // Roof — proper gabled prism via BufferGeometry (outward-facing slopes)
+  const roofW=W+WT*2+1.5, roofD=D+WT*2+1.5, roofH=H*0.6;
+  {
+    const hw=roofW/2, hd=roofD/2;
+    // 6 verts: 4 base corners + 2 ridge points along X at top-centre
+    const verts=new Float32Array([
+      -hw,0,-hd,  // 0 left-front
+       hw,0,-hd,  // 1 right-front
+       hw,0, hd,  // 2 right-back
+      -hw,0, hd,  // 3 left-back
+      -hw,roofH,0,// 4 left-ridge
+       hw,roofH,0,// 5 right-ridge
+    ]);
+    const idx=new Uint16Array([
+      // front slope (facing -Z)
+      0,4,1, 1,4,5,
+      // back slope (facing +Z)
+      2,5,3, 3,5,4,
+      // left gable (facing -X)
+      0,3,4,
+      // right gable (facing +X)
+      1,5,2,
+      // base (optional, faces down — useful for shadows)
+      0,1,2, 0,2,3,
+    ]);
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(verts,3));
+    geo.setIndex(new THREE.BufferAttribute(idx,1));
+    geo.computeVertexNormals();
+    const roofMesh=new THREE.Mesh(geo,rMat);
+    roofMesh.position.set(x,H+0.25,z);
+    roofMesh.castShadow=true; roofMesh.receiveShadow=true; roofMesh.userData.deco=true;
+    scene.add(roofMesh);
+  }
+  // Eave lip at base of roof
+  box(new THREE.BoxGeometry(roofW+.2,0.4,roofD+.2),rMat, x,H+.2,z);
+  // Ridge cap
+  box(new THREE.BoxGeometry(roofW+0.3,0.3,0.3),rMat, x,H+0.25+roofH,z);
+
+  // Ceiling
+  box(new THREE.BoxGeometry(W+.2,.25,D+.2),new THREE.MeshStandardMaterial({color:0xEEEEE8,roughness:.9}), x,H-.12,z);
+
+  // Windows
+  const wY=H*0.62, wW=2.0, wH2=1.7;
+  function win(px,pz,ry){
+    box(new THREE.BoxGeometry(wW+.5,wH2+.5,WT+.1),frMat,px,wY,pz,ry);
+    box(new THREE.BoxGeometry(wW,wH2,WT*.25),winMat,px,wY,pz,ry);
+  }
+  win(x-W*.25, z-D/2-WT/2, 0); win(x+W*.25, z-D/2-WT/2, 0);
+  win(x-W/2-WT/2, z-D*.2, Math.PI/2); win(x-W/2-WT/2, z+D*.2, Math.PI/2);
+  win(x+W/2+WT/2, z-D*.2, Math.PI/2); win(x+W/2+WT/2, z+D*.2, Math.PI/2);
+  if(fSide>3) win(x-(DOOR_W/2+fSide*.5), z+D/2+WT/2, 0);
+  if(fSide>3) win(x+(DOOR_W/2+fSide*.5), z+D/2+WT/2, 0);
+
+  // Door (visual only — open/ajar look)
+  // Door is slightly open to invite entry
+  const doorM=box(new THREE.BoxGeometry(DOOR_W-.4,DOOR_H-.4,.12),dMat, x-(DOOR_W*.35),DOOR_H/2,z+D/2+WT*.55);
+  doorM.rotation.y=Math.PI*0.3; // slightly open
+
+  // Interior furniture
+  const bedMesh=box(new THREE.BoxGeometry(4.5,.8,6.5),new THREE.MeshStandardMaterial({color:0x5577AA,roughness:.8}), x+W*.22,.4,z-D*.18);
+  box(new THREE.BoxGeometry(3.5,H*.65,1.8),new THREE.MeshStandardMaterial({color:0x7A5525,roughness:.85}), x-W*.28,H*.33,z+D*.2);
+  if(idx<5){
+    const pl=new THREE.PointLight(0xFFCC88,.8,20);
+    pl.position.set(x,H-.8,z); pl.userData.deco=true; scene.add(pl);
+  }
+
+  // Register bed for crouch-under
+  underFurniture.push({x:x+W*.22, z:z-D*.18, radius:3.5, clearanceY:1.2, topY:0.8+.4});
+
+  // ── COLLISION — DOOR-ONLY ENTRY ──
+  // Back wall — solid
+  const R=WT+.8;
+  for(let i=0;i<=W+WT*2;i+=2.5) obstacles.push({x:x-W/2-WT+i, z:z-D/2-WT, radius:R});
+  // Left wall — solid
+  for(let i=0;i<=D+WT*2;i+=2.5) obstacles.push({x:x-W/2-WT, z:z-D/2-WT+i, radius:R});
+  // Right wall — solid
+  for(let i=0;i<=D+WT*2;i+=2.5) obstacles.push({x:x+W/2+WT, z:z-D/2-WT+i, radius:R});
+  // Front wall — left section (to left of door)
+  for(let i=0;i<=fSide+WT;i+=2.5) obstacles.push({x:x-W/2-WT+i, z:z+D/2+WT, radius:R, isDoorWall:true});
+  // Front wall — right section (to right of door)
+  for(let i=0;i<=fSide+WT;i+=2.5) obstacles.push({x:x+DOOR_W/2+i, z:z+D/2+WT, radius:R, isDoorWall:true});
+  // Furniture collision — only when NOT crouching
+  obstacles.push({x:x+W*.22, z:z-D*.18, radius:2.6, requiresStanding:true}); // bed
+  obstacles.push({x:x-W*.28, z:z+D*.2, radius:2.0});                         // wardrobe
+
+  housePositions.push({
+    x, z, w:W+WT*2, d:D+WT*2,
+    doorX:x, doorZ:z+D/2+WT,
+    doorW:DOOR_W+0.5 // slightly generous door opening
+  });
 }
 
 function addTree(x,z){
   const ty=terrainH(x,z);
-  const trunk=mkMesh(new THREE.CylinderGeometry(.35,.6,5+Math.random()*3,7),{color:0x6b3d1e,roughness:1});
+  const trunk=mkMesh(new THREE.CylinderGeometry(.35,.6,5+Math.random()*3,4),{color:0x6b3d1e,roughness:1});
   trunk.position.set(x,ty+3,z); trunk.castShadow=true; trunk.userData.deco=true; scene.add(trunk);
   const cr=3+Math.random()*3;
-  const crown=mkMesh(new THREE.SphereGeometry(cr,8,6),{color:0x2d7a20+(Math.floor(Math.random()*4)*0x050000),roughness:1});
+  const crown=mkMesh(new THREE.SphereGeometry(cr,5,3),{color:0x2d7a20+(Math.floor(Math.random()*4)*0x050000),roughness:1});
   crown.position.set(x,ty+5+cr*.6,z); crown.castShadow=true; crown.userData.deco=true; scene.add(crown);
   obstacles.push({mesh:trunk,radius:1.4,x,z});
 }
 
 // ── MAP 2: TURTLE BEACH ──
 function buildBeach(){
-  // Single ocean plane — sits clearly below sand level, no layering
   const ocean=mkMesh(new THREE.PlaneGeometry(3000,1200),{color:0x0d7ab5,roughness:.08,metalness:.2});
   ocean.rotation.x=-Math.PI/2; ocean.position.set(0,-3,0); ocean.userData.deco=true; scene.add(ocean);
-
-  // Wet sand fringe where water meets beach — just a thin darker strip, same plane level as terrain
   const wet=mkMesh(new THREE.PlaneGeometry(3000,60),{color:0xd4a84a,roughness:.9});
   wet.rotation.x=-Math.PI/2; wet.position.set(0,0.01,-170); wet.userData.deco=true; scene.add(wet);
 
-  // Ocean only visible south of z=-180 — block player from swimming
-  // (beach terrain flat, water below it — clean edge)
-
-  // Palm trees on dry sand
   for(let i=0;i<70;i++){
     const px=(Math.random()-.5)*700, pz=(Math.random()-.5)*200;
     addPalm(px,pz);
   }
-
-  // Tall grass tufts on beach
-  spawnBeachGrass(200,600,180);
-
-  // Beach umbrellas and towels
+  spawnBeachGrass(80,600,180);
   for(let i=0;i<20;i++) addUmbrella((Math.random()-.5)*500,(Math.random()-.5)*200);
 
-  // Rocks/tide pools — keep on dry sand
-  for(let i=0;i<50;i++){
+  for(let i=0;i<20;i++){
     const s=Math.random()*3+.8;
     const rx=(Math.random()-.5)*600, rz=(Math.random()-.5)*220;
     const rock=mkMesh(new THREE.SphereGeometry(s,5,4),{color:0xB0A090,roughness:.95});
@@ -1129,14 +1155,12 @@ function buildBeach(){
     obstacles.push({mesh:rock,radius:s*1.2,x:rx,z:rz});
   }
 
-  // Sand dunes
   for(let i=0;i<20;i++){
     const dx=(Math.random()-.5)*600, dz=(Math.random()-.5)*220;
     const dune=mkMesh(new THREE.SphereGeometry(8+Math.random()*14,8,6),{color:0xe8c870,roughness:1});
     dune.scale.y=.22; dune.position.set(dx,.2,dz); dune.receiveShadow=true; dune.userData.deco=true; scene.add(dune);
   }
 
-  // Turtle shells (decorative)
   for(let i=0;i<14;i++){
     const sx=(Math.random()-.5)*500, sz=(Math.random()-.5)*200;
     addShell(sx,sz);
@@ -1146,7 +1170,6 @@ function buildBeach(){
 }
 
 function spawnBeachGrass(count,spreadX,spreadZ){
-  // Beach grass — yellowish sea grass tufts
   const gm=new THREE.MeshStandardMaterial({color:0xc8c040,side:THREE.DoubleSide,transparent:true,alphaTest:.08,roughness:1});
   for(let i=0;i<count;i++){
     const gx=(Math.random()-.5)*spreadX, gz=(Math.random()-.5)*spreadZ;
@@ -1173,7 +1196,6 @@ function addUmbrella(x,z){
   const cols=[0xff4444,0xffcc00,0x44aaff,0xff8800,0xff44ff,0x44ff88];
   const canopy=mkMesh(new THREE.ConeGeometry(3.2,1.2,8),{color:cols[Math.floor(Math.random()*cols.length)]});
   canopy.rotation.x=Math.PI; canopy.position.set(x,ty+4.2,z); canopy.userData.deco=true; scene.add(canopy);
-  // Towel
   const towel=mkMesh(new THREE.BoxGeometry(3.5,.05,5),{color:cols[Math.floor(Math.random()*cols.length)],roughness:.9});
   towel.position.set(x+(Math.random()-.5)*4,ty+.06,z+(Math.random()-.5)*4); towel.userData.deco=true; scene.add(towel);
 }
@@ -1185,94 +1207,134 @@ function addShell(x,z){
 }
 
 // ── MAP 3: CLASSROOM ──
+// FIX: Spawn player at floor level (y=1.5), not above ceiling
+// FIX: Tiny is always in the classroom with a guaranteed visible spot + bigger size
 function buildClassroom(){
-  const W=120,D=80,H=10;
-  const wm=new THREE.MeshStandardMaterial({color:0xf5f0e8,roughness:.9});
+  const W=80, D=60, H=9, WT=1.5;
+  const wMat=new THREE.MeshStandardMaterial({color:0xF2EFE8,roughness:.85});
+  const fMat=new THREE.MeshStandardMaterial({color:0xD4C4A0,roughness:.65});
 
-  // Walls with collision
-  const wallDefs=[[0,H/2,-D/2,W,H,.5],[0,H/2,D/2,W,H,.5],[-W/2,H/2,0,.5,H,D],[W/2,H/2,0,.5,H,D]];
-  wallDefs.forEach(([wx,wy,wz,ww,wh,wd])=>{
-    const m=new THREE.Mesh(new THREE.BoxGeometry(ww,wh,wd),wm); m.position.set(wx,wy,wz); m.castShadow=m.receiveShadow=true; m.userData.deco=true; scene.add(m);
-    // Collision: use the longer dimension as radius along correct axis
-    const colR=Math.max(ww,wd)*.5+.8;
-    // For front/back walls (z offset), block in z; for side walls (x offset), block in x
-    // We push per-wall segment obstacles
-    if(Math.abs(wz)>10){ // front or back wall
-      for(let seg=-W/2+4;seg<W/2;seg+=8) obstacles.push({mesh:m,radius:1.5,x:wx+seg,z:wz});
-    } else { // side walls
-      for(let seg=-D/2+4;seg<D/2;seg+=8) obstacles.push({mesh:m,radius:1.5,x:wx,z:wz+seg});
-    }
-  });
-  // Ceiling
-  const ceil=mkMesh(new THREE.PlaneGeometry(W,D),{color:0xeeeeee}); ceil.rotation.x=Math.PI/2; ceil.position.y=H; ceil.userData.deco=true; scene.add(ceil);
-  // Classroom tiled floor — raised above terrain so no z-fighting
-  const floorMat=new THREE.MeshStandardMaterial({color:0xd8c8a8,roughness:.6});
-  const classFloor=new THREE.Mesh(new THREE.PlaneGeometry(W-.6,D-.6),floorMat);
-  classFloor.rotation.x=-Math.PI/2; classFloor.position.set(0,.15,0); classFloor.receiveShadow=true; classFloor.userData.deco=true; scene.add(classFloor);
+  function cbox(geo,mat,px,py,pz){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(px,py,pz);
+    m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
+  }
+
+  // Floor slab
+  cbox(new THREE.BoxGeometry(W+WT*2,8,D+WT*2),fMat, 0,-3.5,0);
+  cbox(new THREE.BoxGeometry(W-.5,.15,D-.5),new THREE.MeshStandardMaterial({color:0xDDD0B0,roughness:.6}), 0,.07,0);
+
+  // 4 walls
+  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,-D/2-WT/2); // back
+  for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:-D/2-WT/2,radius:WT+.9});
+  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,D/2+WT/2); // front
+  for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:D/2+WT/2,radius:WT+.9});
+  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, -W/2-WT/2,H/2,0); // left
+  for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:-W/2-WT/2,z:iz,radius:WT+.9});
+  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, W/2+WT/2,H/2,0); // right
+  for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:W/2+WT/2,z:iz,radius:WT+.9});
+
+  // Ceiling — note: lower than player spawn so spawn needs to be inside
+  cbox(new THREE.BoxGeometry(W+WT*2,.3,D+WT*2),new THREE.MeshStandardMaterial({color:0xF5F5F0,roughness:.9}), 0,H+.15,0);
 
   // Blackboard
-  const board=mkMesh(new THREE.BoxGeometry(40,8,.4),{color:0x1a5c2a,roughness:.8}); board.position.set(0,6,-D/2+.5); board.castShadow=true; board.userData.deco=true; scene.add(board);
-  // Math equations on board (white lines)
-  const eqns=['2+2=4','π=3.14','∑n²','√64=8'];
-  eqns.forEach((eq,i)=>{
-    const line=mkMesh(new THREE.BoxGeometry(8,.4,.1),{color:0xffffff,emissive:0xffffff,emissiveIntensity:.3});
-    line.position.set(-14+i*9,6.5,-D/2+.7); line.userData.deco=true; scene.add(line);
-  });
-
-  // Desks (rows of 5 x 4)
-  for(let row=0;row<4;row++){
-    for(let col=0;col<5;col++){
-      const dx=-35+col*17, dz=-20+row*12;
-      addDesk(dx,dz);
-    }
+  cbox(new THREE.BoxGeometry(32,6,.6),new THREE.MeshStandardMaterial({color:0x1B5E30,roughness:.75}), 0,5,-D/2+WT*.4);
+  cbox(new THREE.BoxGeometry(33,6.6,.3),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.85}), 0,5,-D/2+WT*.1);
+  for(let i=0;i<4;i++){
+    cbox(new THREE.BoxGeometry(6+Math.random()*3,.15,.1),
+      new THREE.MeshStandardMaterial({color:0xF5F5F5,emissive:0xEEEEEE,emissiveIntensity:.12}),
+      -12+i*8, 4.5+Math.random()*2, -D/2+WT*.5);
   }
-  // Teacher desk
-  addDesk(0,-35,true);
+
+  // Desks
+  for(let row=0;row<4;row++) for(let col=0;col<4;col++) addDesk(-24+col*16,-20+row*12);
+  addDesk(0,-D/2+8,true); // teacher desk
 
   // Bookshelves
-  [-55,55].forEach(sx=>{
-    const shelf=mkMesh(new THREE.BoxGeometry(4,8,D*.7),{color:0x8B6535,roughness:.9}); shelf.position.set(sx,4,5); shelf.castShadow=shelf.receiveShadow=true; shelf.userData.deco=true; scene.add(shelf);
-    obstacles.push({mesh:shelf,radius:4,x:sx,z:5});
-    // Books on shelf
-    for(let b=0;b<20;b++){
-      const bookCols=[0xcc2222,0x2255cc,0x22aa44,0xcc8822,0x884499,0x226688,0xaa3355,0x558833];
-      const bk=mkMesh(new THREE.BoxGeometry(.4,1.5,.8),{color:bookCols[b%bookCols.length],roughness:.9}); bk.position.set(sx+1.6,b*.4+1,-25+b*2.5); bk.userData.deco=true; scene.add(bk);
+  [-37,37].forEach(sx=>{
+    cbox(new THREE.BoxGeometry(WT+.5,7,D*.65),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.9}), sx,3.5,2);
+    for(let sz=-D*.32;sz<=D*.32;sz+=2.5) obstacles.push({x:sx,z:2+sz,radius:WT+1.0});
+    const bookCols=[0xCC2222,0x2255CC,0x22AA44,0xCC8822,0x884499,0x226688,0xAA3355,0x558833];
+    for(let b=0;b<12;b++){
+      cbox(new THREE.BoxGeometry(.35,1.3+Math.random()*.3,.65),
+        new THREE.MeshStandardMaterial({color:bookCols[b%8],roughness:.85}),
+        sx+(sx>0?-.5:.5), .7+b*.55, -18+b*3);
     }
   });
 
   // Ceiling lights
-  for(let i=0;i<4;i++){
-    const bx=-30+i*20;
-    const bulb=mkMesh(new THREE.SphereGeometry(.4,6,4),{color:0xffffc8,emissive:0xffffaa,emissiveIntensity:1.5});
-    bulb.position.set(bx,H-.5,0); bulb.userData.deco=true; scene.add(bulb);
-    const pl=new THREE.PointLight(0xffeebb,2,35); pl.position.set(bx,H-1,0); pl.userData.deco=true; scene.add(pl);
+  for(let i=0;i<3;i++){
+    const bx=-20+i*20;
+    cbox(new THREE.BoxGeometry(10,.2,.4),new THREE.MeshStandardMaterial({color:0xEEEECC,emissive:0xDDDDAA,emissiveIntensity:1.1}), bx,H-.15,0);
+    const pl=new THREE.PointLight(0xFFF8EE,2.0,28);
+    pl.position.set(bx,H-1,0); pl.userData.deco=true; pl.castShadow=false; scene.add(pl);
   }
 
-  // Globe on teacher desk area
-  const globe=mkMesh(new THREE.SphereGeometry(2,12,8),{color:0x4488ff,roughness:.4,metalness:.2});
-  globe.position.set(12,4,-33); globe.userData.deco=true; scene.add(globe);
-  const stand=mkMesh(new THREE.CylinderGeometry(.15,.15,2.5,6),{color:0x888888});
-  stand.position.set(12,2.75,-33); stand.userData.deco=true; scene.add(stand);
-  const standBase=mkMesh(new THREE.CylinderGeometry(.6,.8,.3,8),{color:0x666666});
-  standBase.position.set(12,1.5,-33); standBase.userData.deco=true; scene.add(standBase);
-
-  // Windows with daylight
-  [[W/2,5,0],[W/2,5,20],[W/2,5,-20]].forEach(([x,y,z])=>{
-    const win=mkMesh(new THREE.BoxGeometry(.4,5,8),{color:0xaaddff,transparent:true,opacity:.65,roughness:.05}); win.position.set(x,y,z); win.userData.deco=true; scene.add(win);
+  // Windows
+  const winMat2=new THREE.MeshStandardMaterial({color:0x88CCFF,transparent:true,opacity:.5,roughness:.05});
+  [-18,0,18].forEach(wz=>{
+    cbox(new THREE.BoxGeometry(WT+.1,3.5,4.5),winMat2, W/2+WT/2,5.5,wz);
+    cbox(new THREE.BoxGeometry(WT+.5,4,5),new THREE.MeshStandardMaterial({color:0xDDDDDD,roughness:.8}), W/2+WT/2,5.5,wz);
   });
 
-  spawnFamily();
+  // Globe
+  cbox(new THREE.BoxGeometry(.2,2.5,.2),new THREE.MeshStandardMaterial({color:0x888888}), 8,1.5,-D/2+10);
+  cbox(new THREE.SphereGeometry(1.4,8,6),new THREE.MeshStandardMaterial({color:0x3388EE,roughness:.35}), 8,3.8,-D/2+10);
+
+  // ── SPAWN TINY — FIXED ──
+  // Tiny is always visible (not hidden behind furniture), just in a corner of the room
+  // Made bigger (1.8 size) so easier to spot, glowing outline added
+  // Spots: middle aisle, near teacher desk, near window, near door, center
+  const TINY_SPOTS=[
+    [0, 0],           // center of room — easy to find
+    [0, -D/2+12],     // near blackboard
+    [20, 10],         // right side middle
+    [-20, 10],        // left side middle
+    [0, D/2-10]       // near front
+  ];
+  const spot=TINY_SPOTS[Math.floor(Math.random()*TINY_SPOTS.length)];
+
+  const tinyMat=new THREE.MeshStandardMaterial({
+    color:typeCol('tiny'),side:THREE.DoubleSide,transparent:true,alphaTest:.05,
+    emissive:0xFFD166, emissiveIntensity:0.35 // glow to make Tiny easier to spot
+  });
+  tLoader.load('tiny.png',tex=>{
+    tinyMat.map=tex; tinyMat.color.set(0xFFFFFF);
+    tinyMat.emissive.set(0x000000); tinyMat.emissiveIntensity=0;
+    tinyMat.needsUpdate=true;
+  },null,()=>{});
+
+  // Tiny is bigger (1.8 instead of 1.0) — easier to find
+  const tinyMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.3), tinyMat);
+  tinyMesh.position.set(spot[0], 1.3, spot[1]); // on the floor
+  tinyMesh.castShadow=true; scene.add(tinyMesh);
+  familyMeshes.push({mesh:tinyMesh, type:'tiny'});
+
+  // Add a pulsing point light near Tiny so player can spot them
+  const tinyLight = new THREE.PointLight(0xFFD166, 1.5, 12);
+  tinyLight.position.set(spot[0], 2.5, spot[1]);
+  tinyLight.userData.deco=true;
+  tinyLight.userData.isTinyLight=true;
+  scene.add(tinyLight);
 }
 
 function addDesk(x,z,big=false){
   const s=big?1.6:1;
-  const desk=mkMesh(new THREE.BoxGeometry(7*s,.25,4*s),{color:0xc8a060,roughness:.8}); desk.position.set(x,1.6,z); desk.castShadow=desk.receiveShadow=true; desk.userData.deco=true; scene.add(desk);
+  const deskH = 1.6; // desk top height
+  const legH = 1.55;
+  const desk=mkMesh(new THREE.BoxGeometry(7*s,.25,4*s),{color:0xc8a060,roughness:.8});
+  desk.position.set(x,deskH,z); desk.castShadow=desk.receiveShadow=true; desk.userData.deco=true; scene.add(desk);
   [[-2.8,-.8],[2.8,-.8],[-2.8,1.5],[2.8,1.5]].forEach(([ox,oz])=>{
-    const leg=mkMesh(new THREE.CylinderGeometry(.15,.15,1.6,4),{color:0x7a5020}); leg.position.set(x+ox*s,1,z+oz*s); leg.userData.deco=true; scene.add(leg);
+    const leg=mkMesh(new THREE.CylinderGeometry(.15,.15,legH,4),{color:0x7a5020});
+    leg.position.set(x+ox*s,legH/2,z+oz*s); leg.userData.deco=true; scene.add(leg);
   });
-  // Paper on desk
-  if(!big){ const paper=mkMesh(new THREE.BoxGeometry(2,.03,2.5),{color:0xfafafa,roughness:.9}); paper.position.set(x,1.76,z); paper.userData.deco=true; scene.add(paper); }
-  obstacles.push({mesh:desk,radius:big?5.5:3.2,x,z});
+  if(!big){ const paper=mkMesh(new THREE.BoxGeometry(2,.03,2.5),{color:0xfafafa,roughness:.9}); paper.position.set(x,deskH+.14,z); paper.userData.deco=true; scene.add(paper); }
+
+  // FIX: Desk collision only when standing (player can crouch under)
+  obstacles.push({mesh:desk, radius:big?5.5:3.2, x, z, requiresStanding:true});
+
+  // Register as crouch-under zone
+  underFurniture.push({x, z, radius:big?5.0:3.0, clearanceY:deskH-0.15, topY:deskH});
 }
 
 function spawnGrass(count,spread){
@@ -1281,7 +1343,7 @@ function spawnGrass(count,spread){
     const g=new THREE.Mesh(new THREE.PlaneGeometry(1.5+Math.random(),3+Math.random()*2),gm);
     const gx=(Math.random()-.5)*spread,gz=(Math.random()-.5)*spread;
     g.position.set(gx,terrainH(gx,gz)+1.5+Math.random(),gz); g.rotation.y=Math.random()*Math.PI;
-    scene.add(g); grassBlades.push(g);
+    g.castShadow=false; scene.add(g); grassBlades.push(g);
   }
 }
 
@@ -1296,13 +1358,13 @@ window.addEventListener('keydown',e=>{
   if(k in moveK) moveK[k]=true;
   if(k in camK){ camK[k]=true; e.preventDefault(); }
   if(k===' ') doJump();
+  if(k==='c'||k==='C'){ isCrouching=true; }
   if((k==='f'||k==='F')&&accessMode==='dev'){ flyMode=!flyMode; showToast(flyMode?'Fly ON — jump=rise':'Fly OFF'); }
   if((k==='r'||k==='R')&&accessMode==='dev'){ player.position.set(0,20,0); showToast('Position reset'); }
   if((k==='g'||k==='G')&&accessMode!=='normal') adminCollect();
 });
-window.addEventListener('keyup',e=>{ const k=e.key; if(k in moveK)moveK[k]=false; if(k in camK)camK[k]=false; });
+window.addEventListener('keyup',e=>{ const k=e.key; if(k in moveK)moveK[k]=false; if(k in camK)camK[k]=false; if(k==='c'||k==='C') isCrouching=false; });
 
-// Joystick — direction relative to camera
 let joyX=0,joyY=0,joyActive=false,joyC={x:0,y:0};
 const GRAVITY=.024,JUMP_V=.55,SPEED=.38;
 
@@ -1319,6 +1381,9 @@ function joyMove(t){
   joyX=dx/m; joyY=dy/m;
 }
 document.getElementById('jump-btn').addEventListener('touchstart',e=>{e.preventDefault();doJump();});
+const crouchBtn=document.getElementById('crouch-btn');
+crouchBtn.addEventListener('touchstart',e=>{e.preventDefault();isCrouching=true;});
+crouchBtn.addEventListener('touchend',e=>{e.preventDefault();isCrouching=false;});
 function doJump(){ if(flyMode){flyVelY=.6;return;} if(isGrounded){velocityY=JUMP_V;isGrounded=false;} }
 
 // ════════════════════════════════════════════════════
@@ -1330,7 +1395,6 @@ function updateHUD(){
   document.getElementById('c-bro').textContent=`Bros ${famFound.brother}/${famTargets.brother}`;
   document.getElementById('c-sis').textContent=`Sis ${famFound.sister}/${famTargets.sister}`;
   document.getElementById('c-tiny').textContent=`Tiny ${famFound.tiny}/${famTargets.tiny}`;
-  // Unlock map 3 label
   const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister;
   const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister;
   if(nt>=tot){ const o=document.querySelector('#map-sel option[value="3"]'); if(o&&o.textContent.includes('🔒')) o.textContent="🏫 Map 3 — Tiny's Hideout"; }
@@ -1339,22 +1403,15 @@ function updateHUD(){
 // ════════════════════════════════════════════════════
 //  COLLECTION & UNLOCK
 // ════════════════════════════════════════════════════
-
-
-
-
-
-
-
 function checkGroupUnlock(type){
   if(groupUnlocked[type]) return;
   if(famFound[type]>=famTargets[type]){
     groupUnlocked[type]=true;
     if(!unlockedSkins.includes(type)){
       unlockedSkins.push(type);
-      saveUnlocked();        // persist to localStorage
-      buildSkinSel();        // update in-game switcher
-      buildSpritePicker();   // update menu picker (unlocks sprite)
+      saveUnlocked();
+      buildSkinSel();
+      buildSpritePicker();
       showUnlockBanner(type);
     }
   }
@@ -1378,47 +1435,51 @@ function tryMap(v){
   currentMap=v; loadMap(v);
 }
 
+// Door proximity hint timer
+let doorHintTimer=null;
+function showDoorHint(){
+  const el=document.getElementById('door-hint');
+  el.style.display='block';
+  clearTimeout(doorHintTimer);
+  doorHintTimer=setTimeout(()=>el.style.display='none',2500);
+}
+
 // ════════════════════════════════════════════════════
 //  MAIN LOOP
 // ════════════════════════════════════════════════════
-let lastT=0;
+let lastT=0, frameCount=0;
 function animate(ts=0){
+  frameCount++;
   requestAnimationFrame(animate);
   const dt=Math.min((ts-lastT)/1000,.05); lastT=ts;
 
-  // ── Day/Night cycle ──
+  // Day/Night cycle
   dayT+=DAY_SPEED;
   const sinT=Math.sin(dayT), cosT=Math.cos(dayT);
-  const sunH=Math.max(0,sinT); // 0 at night
+  const sunH=Math.max(0,sinT);
+  if(Math.abs(sunH-lastSunH)>.002){ updateSky(sunH,sinT); lastSunH=sunH; }
+  skyMesh.position.copy(camera.position);
   sun.position.set(cosT*300,sinT*300,80);
   sun.intensity=sunH*2.2+.05;
-  // Vivid: saturated gold noon, deep orange dusk, cool night
   if(sunH>0.01) sun.color.setHSL(0.10-sunH*0.05,1.0,Math.max(0.45,0.55+sunH*0.1));
   else sun.color.setHSL(0.62,0.4,0.15);
 
-  // Sky & fog colour — beautiful gradient
   const nightBlue=new THREE.Color(0x050520);
   const dawnOrange=new THREE.Color(0xff6600);
   const dayBlue=new THREE.Color(currentMap===2?0x55aaff:0x4499ee);
-  let skyCol;
-  if(sunH<.01){
-    skyCol=nightBlue.clone().lerp(dawnOrange,Math.max(0,(sinT+.1)*5));
-  } else {
-    skyCol=dawnOrange.clone().lerp(dayBlue,Math.min(1,sunH*3));
-  }
-  scene.background=skyCol; scene.fog.color.copy(skyCol);
-  // Fog denser at night/dawn
-  if(currentMap!==3) scene.fog.density=Math.max(.001, .0016-sunH*.0006);
+  const horizCol = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
+  scene.fog.color.copy(horizCol);
+  if(currentMap!==3) scene.fog.density=Math.max(.001,.0017-sunH*.0006);
 
-  // Ambient dims at night
   ambient.intensity=Math.max(.05,sunH*.3);
   hemiLight.intensity=Math.max(.1,sunH*1.1);
-  // Moonlight at night
   fillLight.intensity=Math.max(0,.4-sunH*.5);
   fillLight.color.set(sunH<.1?0x8899ff:0x4488ff);
 
-  // Clouds drift
-  cloudMeshes.forEach(c=>{ c.position.x+=c.userData.speed*c.userData.dir; if(Math.abs(c.position.x)>600) c.userData.dir*=-1; });
+  // Tiny light pulse
+  scene.children.filter(c=>c.userData.isTinyLight).forEach(l=>{
+    l.intensity=1.2+Math.sin(ts*.003)*0.6;
+  });
 
   // Camera keys
   if(camK.ArrowLeft)  camYaw  +=CAM_SPD;
@@ -1426,15 +1487,11 @@ function animate(ts=0){
   if(camK.ArrowUp)    camPitch =clamp(camPitch+CAM_SPD,.05,1.45);
   if(camK.ArrowDown)  camPitch =clamp(camPitch-CAM_SPD,.05,1.45);
 
-  // Movement — camera-relative, joystick follows camera direction
+  // Movement
   let mx=0,mz=0;
   const fwd=new THREE.Vector3(-Math.sin(camYaw),0,-Math.cos(camYaw));
   const rgt=new THREE.Vector3( Math.cos(camYaw),0,-Math.sin(camYaw));
   if(joyActive){
-    // Joystick: forward = camera forward
-    mx+=fwd.x*joyY*SPEED+rgt.x*joyX*SPEED;
-    mz+=fwd.z*joyY*SPEED+rgt.z*joyX*SPEED;
-    // Note: joyY negative = push up = move forward
     mx=-fwd.x*joyY*SPEED+rgt.x*joyX*SPEED;
     mz=-fwd.z*joyY*SPEED+rgt.z*joyX*SPEED;
   } else {
@@ -1445,22 +1502,79 @@ function animate(ts=0){
   }
 
   const nx=player.position.x+mx, nz=player.position.z+mz;
-  let hit=false;
-  if(!(accessMode==='dev'&&flyMode)){
-    for(const r of obstacles){ if(r.mesh&&Math.sqrt((nx-r.x)**2+(nz-r.z)**2)<r.radius+.9){hit=true;break;} }
-  }
-  if(!hit){player.position.x=nx;player.position.z=nz;}
 
-  // Physics
+  // ── COLLISION RESOLUTION ──
+  // Determine player effective height for crouch
+  const playerH = isCrouching ? 0.6 : 1.2; // crouching = low profile
+
+  let hitX=false, hitZ=false;
+  if(!(accessMode==='dev'&&flyMode)){
+    const px2=player.position.x, pz2=player.position.z;
+
+    for(const r of obstacles){
+      // Skip furniture when crouching (player slides under desks/beds)
+      if(r.requiresStanding && isCrouching) continue;
+
+      // Door wall: check if player is passing through the door gap
+      if(r.isDoorWall){
+        // Find which house this door belongs to
+        let inDoorGap=false;
+        for(const h of housePositions){
+          // The door gap is at x: [h.doorX - h.doorW/2, h.doorX + h.doorW/2]
+          const onFrontWall = Math.abs(nz - h.doorZ) < 1.5 || Math.abs(r.z - h.doorZ) < 1.5;
+          if(onFrontWall){
+            const inGap = Math.abs(nx - h.doorX) < h.doorW/2;
+            if(inGap){ inDoorGap=true; break; }
+          }
+        }
+        if(inDoorGap) continue; // allow through door
+      }
+
+      const rr=r.radius+1.0;
+      const rdxN=Math.abs(nx-r.x), rdzN=Math.abs(nz-r.z);
+      const rdxO=Math.abs(px2-r.x), rdzO=Math.abs(pz2-r.z);
+      if(rdxN*rdxN+rdzN*rdzN<rr*rr){
+        // Try sliding along X
+        if(rdxO*rdxO+rdzN*rdzN>=rr*rr){ hitX=true; }
+        // Try sliding along Z
+        else if(rdxN*rdxN+rdzO*rdzO>=rr*rr){ hitZ=true; }
+        else { hitX=true; hitZ=true; }
+      }
+    }
+  }
+
+  if(!hitX) player.position.x=nx;
+  if(!hitZ) player.position.z=nz;
+
+  // Door proximity hint for map 1
+  if(currentMap===1 && (mx!==0||mz!==0)){
+    for(const h of housePositions){
+      const dx=player.position.x-h.x, dz=player.position.z-h.z;
+      const nearFront=Math.abs(dz-(h.z+h.d/2))<3 && Math.abs(dx)<h.w/2;
+      if(nearFront && !(Math.abs(dx)<h.doorW/2+0.5)){
+        showDoorHint(); break;
+      }
+    }
+  }
+
+  // ── CROUCHING PHYSICS ──
+  // When crouching, player mesh shrinks and Y offset lowers
   const tH=terrainH(player.position.x,player.position.z);
+  const crouchYOffset = isCrouching ? 0.5 : 1.2; // lower Y when crouching
+  const groundY = tH + crouchYOffset;
+
   if(flyMode){
     flyVelY*=.9; player.position.y+=flyVelY;
-    if(player.position.y<tH+1.2) player.position.y=tH+1.2;
+    if(player.position.y<groundY) player.position.y=groundY;
     isGrounded=false;
   } else {
-    if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;} }
-    else{ player.position.y=tH+1.2; }
+    if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY; if(player.position.y<=groundY){player.position.y=groundY;isGrounded=true;velocityY=0;} }
+    else{ player.position.y=groundY; }
   }
+
+  // Player mesh scale for crouching (squish down)
+  player.scale.y = isCrouching ? 0.55 : 1.0;
+
   disc.position.set(player.position.x,tH+.04,player.position.z);
 
   // Billboards
@@ -1477,12 +1591,18 @@ function animate(ts=0){
   label3D(player,document.getElementById('name-label'));
   for(const id in peers) label3D(peers[id].mesh,peers[id].labelDiv);
 
-  // Collection — larger range for hard maps
+  // Collection
   const collectR=2.6;
   for(let i=familyMeshes.length-1;i>=0;i--){
     const f=familyMeshes[i];
     if(player.position.distanceTo(f.mesh.position)<collectR){
-      scene.remove(f.mesh); famFound[f.type]++; familyMeshes.splice(i,1);
+      scene.remove(f.mesh);
+      // Remove tiny's light too
+      if(f.type==='tiny'){
+        const tl=scene.children.find(c=>c.userData.isTinyLight);
+        if(tl) scene.remove(tl);
+      }
+      famFound[f.type]++; familyMeshes.splice(i,1);
       updateHUD(); checkGroupUnlock(f.type); checkWin();
     }
   }
@@ -1545,21 +1665,17 @@ function startGame(){
     document.getElementById('name-label').style.display='block';
     document.getElementById('joy-wrap').style.display='block';
     document.getElementById('jump-btn').style.display='block';
+    document.getElementById('crouch-btn').style.display='block';
     document.getElementById('cam-hint').style.display='block';
     document.getElementById('skin-sel').style.display='flex';
     document.getElementById('dialogue').style.display='flex';
-    // Update dialogue image + name to match the player's chosen sprite
+
     const dImg = document.getElementById('d-img');
     dImg.src = currentSkin + '.png';
-    dImg.onerror = function(){
-      this.onerror=null; this.style.visibility='hidden';
-      this.style.background=SPRITE_FALLBACK_COLORS[currentSkin]||'#4ECDC4';
-    };
+    dImg.onerror = function(){ this.onerror=null; this.style.visibility='hidden'; };
     document.querySelector('#dialogue .d-name').textContent = (currentSkin[0].toUpperCase()+currentSkin.slice(1)) + ' 🐢';
 
-    // Skin: use chosen sprite only if it is actually unlocked, else fall back to friend
     currentSkin=unlockedSkins.includes(chosenSprite)?chosenSprite:'friend';
-    // Do NOT add chosen sprite to unlocked here — it must be earned (except friend)
     currentMap=1; loadMap(1);
     buildSkinSel(); applySkin(currentSkin);
     startTimer(); gameStarted=true; animate();
@@ -1575,6 +1691,5 @@ function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
 
 window.addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 </script>
-
 </body>
 </html>
