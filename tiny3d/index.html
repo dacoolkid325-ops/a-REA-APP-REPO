@@ -18,15 +18,15 @@ canvas{display:block;width:100vw;height:100vh;}
 
 /* ── MENU ── */
 #menu{
-position:absolute;inset:0;
-background:radial-gradient(ellipse at 30% 40%,#0f3460 0%,#0a0a1a 70%);
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 40%,#0f3460 0%,#0a0a1a 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
 }
 #menu::before{
-content:'';position:absolute;inset:0;
-background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='white' opacity='.15'/%3E%3C/svg%3E");
-animation:starScroll 60s linear infinite;
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='white' opacity='.15'/%3E%3C/svg%3E");
+  animation:starScroll 60s linear infinite;
 }
 @keyframes starScroll{from{background-position:0 0}to{background-position:1000px 1000px}}
 .menu-stars{position:absolute;inset:0;pointer-events:none;}
@@ -34,37 +34,39 @@ animation:starScroll 60s linear infinite;
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
 
 .game-title{
-font-family:'Baloo 2',cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
-color:#fff; text-align:center; line-height:1; margin-bottom:6px;
-filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
-animation:titleFloat 4s ease-in-out infinite;
+  font-family:'Baloo 2',cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
+  color:#fff; text-align:center; line-height:1; margin-bottom:6px;
+  filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
+  animation:titleFloat 4s ease-in-out infinite;
 }
 @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .game-sub{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
 
 .menu-card{
-background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.12);border-radius:24px;
-padding:32px 28px;width:90%;max-width:440px;
-box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.12);border-radius:24px;
+  padding:32px 28px;width:90%;max-width:440px;
+  box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
 }
 .field-group{margin-bottom:14px;text-align:left;}
 .field-label{color:rgba(255,255,255,.6);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;display:block;}
 .field-input{
-width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
-border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
-color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;
-transition:border-color .2s;
+  width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;
+  transition:border-color .2s;
 }
 .field-input:focus{border-color:var(--gold);}
 .field-input::placeholder{color:rgba(255,255,255,.3);}
+.color-row{display:flex;gap:10px;align-items:center;}
+.color-pick{height:44px;width:80px;padding:4px;border-radius:10px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer;}
 .divider{height:1px;background:rgba(255,255,255,.08);margin:18px 0;}
 
 .btn-main{
-width:100%;padding:16px;font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;
-background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
-cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
-transition:transform .1s,box-shadow .1s;margin-bottom:10px;
+  width:100%;padding:16px;font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;
+  background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
+  cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
+  transition:transform .1s,box-shadow .1s;margin-bottom:10px;
 }
 .btn-main:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
 .btn-vc{background:linear-gradient(135deg,#4ECDC4,#44a08d);}
@@ -76,22 +78,22 @@ transition:transform .1s,box-shadow .1s;margin-bottom:10px;
 
 /* ── KEY MODAL ── */
 #key-modal{
-position:absolute;inset:0;background:rgba(0,0,0,.82);
-display:none;align-items:center;justify-content:center;z-index:400;pointer-events:auto;
+  position:absolute;inset:0;background:rgba(0,0,0,.82);
+  display:none;align-items:center;justify-content:center;z-index:400;pointer-events:auto;
 }
 .km-inner{
-background:linear-gradient(135deg,#1a1a2e,#16213e);
-border:2px solid rgba(106,13,173,.6);border-radius:24px;
-padding:36px 32px;text-align:center;width:90%;max-width:360px;
-box-shadow:0 0 60px rgba(106,13,173,.4);
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:2px solid rgba(106,13,173,.6);border-radius:24px;
+  padding:36px 32px;text-align:center;width:90%;max-width:360px;
+  box-shadow:0 0 60px rgba(106,13,173,.4);
 }
 .km-title{font-family:'Baloo 2',cursive;font-size:1.8rem;color:var(--gold);margin-bottom:8px;}
 .km-sub{color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:20px;}
 #key-input{
-font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
-border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
-font-family:'Baloo 2',cursive;background:rgba(0,0,0,.4);color:#fff;
-margin-bottom:16px;outline:none;
+  font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
+  border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
+  font-family:'Baloo 2',cursive;background:rgba(0,0,0,.4);color:#fff;
+  margin-bottom:16px;outline:none;
 }
 #key-input:focus{border-color:var(--gold);}
 #key-status{font-size:.9rem;font-weight:700;min-height:22px;margin-top:10px;}
@@ -100,9 +102,9 @@ margin-bottom:16px;outline:none;
 /* ── HUD ── */
 #hud{position:absolute;top:0;left:0;display:none;pointer-events:auto;}
 .hud-panel{
-background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
-padding:12px 16px;min-width:180px;
+  background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
+  padding:12px 16px;min-width:180px;
 }
 .hud-room{color:var(--blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
 .hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:'Baloo 2',cursive;margin-bottom:8px;}
@@ -114,52 +116,52 @@ padding:12px 16px;min-width:180px;
 /* ── TOP RIGHT ── */
 #top-right{position:absolute;top:12px;right:12px;display:flex;gap:8px;align-items:center;pointer-events:auto;}
 .map-sel{
-background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
-color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;
-padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
+  background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
+  color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;
+  padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
 }
 .icon-btn{
-width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
-background:rgba(10,10,26,.85);color:#fff;font-size:1rem;cursor:pointer;
-display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
-pointer-events:auto;
+  width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(10,10,26,.85);color:#fff;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
+  pointer-events:auto;
 }
 
 /* ── DEV PANEL ── */
 #dev-btns{
-position:absolute;bottom:175px;right:14px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;
+  position:absolute;bottom:175px;right:14px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;
 }
 .dev-mbtn{
-background:rgba(0,40,0,.9);border:1.5px solid #00ff00;color:#00ff00;
-font-family:monospace;font-size:.78rem;font-weight:bold;padding:8px 12px;
-border-radius:8px;cursor:pointer;text-align:left;white-space:nowrap;
+  background:rgba(0,40,0,.9);border:1.5px solid #00ff00;color:#00ff00;
+  font-family:monospace;font-size:.78rem;font-weight:bold;padding:8px 12px;
+  border-radius:8px;cursor:pointer;text-align:left;white-space:nowrap;
 }
 .dev-mbtn:active{background:rgba(0,100,0,.9);}
 #dev-panel{
-position:absolute;top:0;left:50%;transform:translateX(-50%);
-background:rgba(0,20,0,.9);border:1.5px solid #00FF00;border-radius:0 0 12px 12px;
-color:#00FF00;font-family:monospace;font-size:.68rem;padding:8px 14px;
-display:none;pointer-events:none;line-height:1.8;white-space:pre;z-index:150;
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  background:rgba(0,20,0,.9);border:1.5px solid #00FF00;border-radius:0 0 12px 12px;
+  color:#00FF00;font-family:monospace;font-size:.68rem;padding:8px 14px;
+  display:none;pointer-events:none;line-height:1.8;white-space:pre;z-index:150;
 }
 
 /* ── FLOATING NAMES ── */
 .fname{
-position:absolute;color:#fff;background:rgba(0,0,0,.7);
-padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;
-transform:translate(-50%,-100%);pointer-events:none;display:none;
-text-shadow:0 1px 2px #000;border:1px solid rgba(255,255,255,.2);
-white-space:nowrap;
+  position:absolute;color:#fff;background:rgba(0,0,0,.7);
+  padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;
+  transform:translate(-50%,-100%);pointer-events:none;display:none;
+  text-shadow:0 1px 2px #000;border:1px solid rgba(255,255,255,.2);
+  white-space:nowrap;
 }
 .fname-dev  {background:rgba(0,160,0,.85)!important;}
 .fname-admin{background:rgba(140,0,210,.85)!important;}
 
 /* ── DIALOGUE ── */
 #dialogue{
-position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-width:92%;max-width:640px;background:rgba(10,10,26,.95);
-border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
-display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
-align-items:center;gap:16px;z-index:102;pointer-events:auto;
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  width:92%;max-width:640px;background:rgba(10,10,26,.95);
+  border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
+  display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
+  align-items:center;gap:16px;z-index:102;pointer-events:auto;
 }
 .d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(--blue);object-fit:cover;flex-shrink:0;}
 .d-text{font-size:1rem;color:#e0e0e0;line-height:1.5;flex-grow:1;}
@@ -168,48 +170,97 @@ align-items:center;gap:16px;z-index:102;pointer-events:auto;
 
 /* ── BANNERS ── */
 #unlock-banner{
-position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-background:rgba(255,209,102,.97);border:4px solid #FF8C00;border-radius:24px;
-padding:24px 36px;font-size:1.4rem;font-weight:900;color:#333;
-display:none;z-index:200;text-align:center;pointer-events:none;
-box-shadow:0 0 60px rgba(255,209,102,.5);animation:bannerPop .3s cubic-bezier(.34,1.56,.64,1);
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(255,209,102,.97);border:4px solid #FF8C00;border-radius:24px;
+  padding:24px 36px;font-size:1.4rem;font-weight:900;color:#333;
+  display:none;z-index:200;text-align:center;pointer-events:none;
+  box-shadow:0 0 60px rgba(255,209,102,.5);animation:bannerPop .3s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes bannerPop{from{transform:translate(-50%,-50%) scale(.5)}to{transform:translate(-50%,-50%) scale(1)}}
 #unlock-banner img{width:80px;height:80px;border-radius:12px;display:block;margin:10px auto;object-fit:cover;}
 #locked-msg{
-position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-background:rgba(10,10,26,.95);border:3px solid #FF4444;border-radius:20px;
-padding:22px 30px;font-size:1.15rem;font-weight:700;color:#fff;
-display:none;z-index:200;text-align:center;pointer-events:none;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(10,10,26,.95);border:3px solid #FF4444;border-radius:20px;
+  padding:22px 30px;font-size:1.15rem;font-weight:700;color:#fff;
+  display:none;z-index:200;text-align:center;pointer-events:none;
 }
 #toast{
-position:absolute;top:75px;left:50%;transform:translateX(-50%);
-background:rgba(10,10,26,.92);color:#fff;border:1px solid rgba(255,255,255,.15);
-border-radius:12px;padding:10px 22px;font-size:.92rem;font-weight:700;
-display:none;z-index:250;pointer-events:none;white-space:nowrap;
-backdrop-filter:blur(10px);
+  position:absolute;top:75px;left:50%;transform:translateX(-50%);
+  background:rgba(10,10,26,.92);color:#fff;border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;padding:10px 22px;font-size:.92rem;font-weight:700;
+  display:none;z-index:250;pointer-events:none;white-space:nowrap;
+  backdrop-filter:blur(10px);
+}
+/* ── PAUSE MENU ── */
+#pause-overlay{
+  position:absolute;inset:0;background:rgba(5,5,20,.88);backdrop-filter:blur(16px);
+  display:none;z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+  pointer-events:auto;
+}
+#pause-overlay h2{color:#fff;font-size:2.2rem;font-family:'Baloo 2',cursive;margin:0;letter-spacing:.04em;}
+.pause-btn{
+  width:280px;padding:14px 0;font-size:1.1rem;font-weight:900;border:none;border-radius:14px;
+  cursor:pointer;font-family:'Baloo 2',cursive;letter-spacing:.03em;transition:.15s;
+}
+.pause-btn:active{transform:scale(.97);}
+.pause-resume{background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;}
+.pause-battery{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a;}
+.pause-feature{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;}
+.pause-quit{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;}
+.pause-sep{width:280px;height:1px;background:rgba(255,255,255,.1);}
+#battery-badge{
+  position:absolute;top:58px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a;border-radius:20px;
+  padding:5px 18px;font-size:.82rem;font-weight:900;display:none;z-index:110;
+  pointer-events:none;letter-spacing:.05em;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+/* ── FEATURE REQUEST MODAL ── */
+#feature-modal{
+  position:absolute;inset:0;background:rgba(5,5,20,.9);display:none;
+  z-index:600;align-items:center;justify-content:center;
+  pointer-events:auto;
+}
+#feature-box{
+  background:rgba(20,20,40,.98);border:2px solid rgba(78,205,196,.4);border-radius:24px;
+  padding:32px;width:92%;max-width:420px;display:flex;flex-direction:column;gap:14px;
+}
+#feature-box h3{color:#4ECDC4;font-family:'Baloo 2',cursive;font-size:1.5rem;margin:0;}
+#feature-box p{color:rgba(255,255,255,.7);font-size:.9rem;margin:0;}
+#feature-input{
+  width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(78,205,196,.3);border-radius:10px;
+  color:#fff;padding:10px 14px;font-size:.95rem;font-family:'Nunito',sans-serif;resize:vertical;min-height:80px;
+}
+#feature-send{
+  background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;border:none;
+  border-radius:10px;padding:12px;font-size:1rem;font-weight:900;cursor:pointer;font-family:'Baloo 2',cursive;
+}
+#feature-close{
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;padding:10px;font-size:.9rem;cursor:pointer;font-family:'Baloo 2',cursive;
 }
 
 /* ── SKIN SELECTOR ── */
 .sk-min{
-position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
-color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
-cursor:pointer;pointer-events:auto;font-family:'Nunito',sans-serif;font-weight:700;
+  position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
+  cursor:pointer;pointer-events:auto;font-family:'Nunito',sans-serif;font-weight:700;
 }
 #skin-sel{
-position:absolute;top:60px;right:12px;
-z-index:103;pointer-events:auto;
-background:rgba(10,10,26,.88);backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
-gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
-display:none;max-width:160px;flex-direction:column;
+  position:absolute;top:60px;right:12px;
+  z-index:103;pointer-events:auto;
+  background:rgba(10,10,26,.88);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
+  gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
+  display:none;max-width:160px;flex-direction:column;
 }
 .sk-lbl{color:rgba(255,255,255,.6);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;width:100%;text-align:center;margin-bottom:4px;}
 .sk-btn{
-padding:7px 14px;font-size:.82rem;font-weight:700;
-background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
-color:#fff;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;
-transition:.15s;
+  padding:7px 14px;font-size:.82rem;font-weight:700;
+  background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
+  color:#fff;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;
+  transition:.15s;
 }
 .sk-btn:hover{background:rgba(255,255,255,.2);}
 .sk-btn.sk-active{background:var(--gold);color:#333;border-color:var(--gold);}
@@ -219,55 +270,46 @@ transition:.15s;
 /* ── MOBILE JOYSTICK ── */
 #joy-wrap{position:absolute;bottom:28px;left:28px;display:none;pointer-events:auto;}
 #joy-outer{
-width:130px;height:130px;background:rgba(255,255,255,.1);
-border:3px solid rgba(255,255,255,.3);border-radius:50%;
-position:relative;touch-action:none;
+  width:130px;height:130px;background:rgba(255,255,255,.1);
+  border:3px solid rgba(255,255,255,.3);border-radius:50%;
+  position:relative;touch-action:none;
 }
 #joy-inner{
-width:58px;height:58px;background:rgba(255,255,255,.75);border-radius:50%;
-position:absolute;top:36px;left:36px;
-box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
+  width:58px;height:58px;background:rgba(255,255,255,.75);border-radius:50%;
+  position:absolute;top:36px;left:36px;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
 }
 #jump-btn{
-position:absolute;bottom:40px;right:40px;width:82px;height:82px;
-background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
-border-radius:50%;pointer-events:auto;display:none;
-color:#fff;font-weight:900;font-size:1rem;font-family:'Baloo 2',cursive;
-text-shadow:0 1px 3px #000;
+  position:absolute;bottom:40px;right:40px;width:82px;height:82px;
+  background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
+  border-radius:50%;pointer-events:auto;display:none;
+  color:#fff;font-weight:900;font-size:1rem;font-family:'Baloo 2',cursive;
+  text-shadow:0 1px 3px #000;
 }
 #crouch-btn{
-position:absolute;bottom:40px;right:134px;width:82px;height:82px;
-background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
-border-radius:50%;pointer-events:auto;display:none;
-color:#fff;font-weight:900;font-size:.85rem;font-family:'Baloo 2',cursive;
-text-shadow:0 1px 3px #000;
+  position:absolute;bottom:40px;right:134px;width:82px;height:82px;
+  background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
+  border-radius:50%;pointer-events:auto;display:none;
+  color:#fff;font-weight:900;font-size:.85rem;font-family:'Baloo 2',cursive;
+  text-shadow:0 1px 3px #000;
 }
 
 /* ── CAM HINT ── */
 #cam-hint{
-position:absolute;bottom:14px;right:14px;
-background:rgba(10,10,26,.82);backdrop-filter:blur(8px);
-border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);
-border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;
-display:none;pointer-events:none;
+  position:absolute;bottom:14px;right:14px;
+  background:rgba(10,10,26,.82);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);
+  border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;
+  display:none;pointer-events:none;
 }
 
 /* ── PLAYER SPRITE CHOOSER (multiplayer) ── */
 #sprite-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;}
 .sprite-opt{
-width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
-cursor:pointer;object-fit:cover;background:#222;transition:.15s;
+  width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
+  cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 }
 .sprite-opt.chosen{border-color:var(--gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
-
-/* ── DOOR INTERACT HINT ── */
-#door-hint{
-position:absolute;bottom:160px;left:50%;transform:translateX(-50%);
-background:rgba(255,209,102,.92);color:#333;border-radius:12px;
-padding:8px 20px;font-size:.9rem;font-weight:700;
-display:none;pointer-events:none;z-index:105;white-space:nowrap;
-box-shadow:0 4px 12px rgba(0,0,0,.3);
-}
 </style>
 </head>
 <body>
@@ -279,6 +321,7 @@ box-shadow:0 4px 12px rgba(0,0,0,.3);
   <div class="game-title">Find Tiny's<br>Family</div>
   <div class="game-sub">A turtle's search across the world</div>
   <div class="menu-card">
+    <!-- Sprite picker -->
     <div class="field-group">
       <span class="field-label">Choose your character</span>
       <div id="sprite-row"></div>
@@ -351,6 +394,40 @@ box-shadow:0 4px 12px rgba(0,0,0,.3);
 </div>
 
 <div id="dev-panel"></div>
+<div id="battery-badge">⚡ BATTERY SAVER</div>
+
+<!-- PAUSE BUTTON (always visible in-game) -->
+<button id="pause-btn" style="position:absolute;top:10px;left:10px;z-index:120;
+  background:rgba(10,10,26,.8);border:1.5px solid rgba(255,255,255,.2);color:#fff;
+  border-radius:10px;padding:7px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
+  display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸ Pause</button>
+
+<!-- PAUSE OVERLAY -->
+<div id="pause-overlay" style="display:none;position:absolute;inset:0;background:rgba(5,5,20,.88);
+  backdrop-filter:blur(16px);z-index:500;align-items:center;justify-content:center;
+  flex-direction:column;gap:18px;pointer-events:auto;">
+  <h2 style="color:#fff;font-size:2.2rem;font-family:'Baloo 2',cursive;margin:0;">⏸ Paused</h2>
+  <div style="color:rgba(255,255,255,.5);font-size:.9rem;" id="pause-mapinfo"></div>
+  <button class="pause-btn pause-resume" onclick="togglePause()">▶ Resume</button>
+  <button class="pause-btn pause-battery" onclick="toggleBattery()">⚡ Battery Saver: <span id="bat-label">OFF</span></button>
+  <div class="pause-sep"></div>
+  <button class="pause-btn pause-feature" onclick="openFeature()">💡 Request a Feature</button>
+  <div class="pause-sep"></div>
+  <button class="pause-btn pause-quit" onclick="quitGame()">✕ Quit to Menu</button>
+</div>
+
+<!-- FEATURE REQUEST MODAL -->
+<div id="feature-modal" style="display:none;position:absolute;inset:0;
+  background:rgba(5,5,20,.9);z-index:600;align-items:center;justify-content:center;pointer-events:auto;">
+  <div id="feature-box">
+    <h3>💡 Request a Feature</h3>
+    <p>Got an idea? We'd love to hear it! Your request goes straight to the developer.</p>
+    <textarea id="feature-input" placeholder="Describe your feature idea..."></textarea>
+    <button id="feature-send" onclick="sendFeature()">📨 Send to Developer</button>
+    <button id="feature-close" onclick="closeFeature()">Cancel</button>
+  </div>
+</div>
+
 <div id="peer-labels"></div>
 <div id="name-label" class="fname">Player</div>
 
@@ -375,22 +452,30 @@ box-shadow:0 4px 12px rgba(0,0,0,.3);
 <div id="unlock-banner"></div>
 <div id="locked-msg"></div>
 <div id="toast"></div>
-<div id="door-hint">🚪 Walk through the door to enter!</div>
 
 <!-- CAM HINT -->
 <div id="cam-hint">
   <b>Move</b> WASD &nbsp;|&nbsp; <b>Cam</b> Arrow keys / drag<br>
-  <b>Jump</b> Space &nbsp;|&nbsp; <b>Crouch</b> C (sneak under desks!)<br>
-  Scroll / pinch = zoom &nbsp;|&nbsp; Enter houses through the DOOR
+  <b>Jump</b> Space &nbsp;|&nbsp; <b>Crouch</b> C (look under beds!)<br>
+  Scroll / pinch = zoom
 </div>
 
 <!-- MOBILE -->
+<!-- DEV MOBILE BUTTONS -->
 <div id="dev-btns">
-  <button class="dev-mbtn" onclick="flyMode=!flyMode;showToast(flyMode?'Fly ON':'Fly OFF')">✈ Fly toggle</button>
-  <button class="dev-mbtn" onclick="player.position.set(0,20,0);showToast('Reset')">⌂ Reset pos</button>
+  <button class="dev-mbtn" onclick="flyMode=!flyMode;showToast(flyMode?'✈ Fly ON':'✈ Fly OFF')">✈ Fly</button>
+  <button class="dev-mbtn" onclick="noclipMode=!noclipMode;showToast(noclipMode?'👻 Noclip ON':'👻 Noclip OFF')">👻 Noclip</button>
+  <button class="dev-mbtn" onclick="superSpeed=!superSpeed;showToast(superSpeed?'⚡ Speed ON':'⚡ Speed OFF')">⚡ Speed</button>
+  <button class="dev-mbtn" onclick="player.position.set(0,20,0);showToast('⌂ Reset')">⌂ Reset</button>
   <button class="dev-mbtn" onclick="adminCollect()">★ Collect all</button>
-  <button class="dev-mbtn" onclick="camDist=Math.max(4,camDist-5)">+ Zoom in</button>
-  <button class="dev-mbtn" onclick="camDist=Math.min(80,camDist+5)">- Zoom out</button>
+  <button class="dev-mbtn" onclick="camDistTarget=Math.max(4,camDistTarget-4)">🔍+</button>
+  <button class="dev-mbtn" onclick="camDistTarget=Math.min(60,camDistTarget+4)">🔍−</button>
+</div>
+<!-- ADMIN MOBILE BUTTONS (separate) -->
+<div id="admin-btns" style="position:absolute;bottom:175px;left:85px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;">
+  <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="flyMode=!flyMode;showToast(flyMode?'✈ Fly ON':'✈ Fly OFF')">✈ Fly</button>
+  <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="adminCollect()">★ Collect</button>
+  <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="openFeature()">💡 Feature</button>
 </div>
 <div id="joy-wrap"><div id="joy-outer"><div id="joy-inner"></div></div></div>
 <button id="jump-btn">JUMP</button>
@@ -408,21 +493,181 @@ const SPRITE_FALLBACK_COLORS = {
   brother:'#2980b9',sister:'#e91e63',admin:'#9b59b6',dev:'#27ae60'
 };
 
+// Skin groups: finding all of a type unlocks that skin
 const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',tiny:'tiny'};
+// These are special and only unlocked by keys
 const KEY_ONLY_SKINS = ['dev','admin'];
+// 'friend' is always unlocked (the default skin)
 const ALWAYS_UNLOCKED = ['friend'];
 
 let playerName='Player', chosenSprite='friend', accessMode='normal';
 let currentMap=1, secondsElapsed=0, timerInterval=null, gameStarted=false;
 let flyMode=false, flyVelY=0, velocityY=0, isGrounded=false, isCrouching=false;
+let noclipMode=false;
+let superSpeed=false;
+let batterySaver=false;
+let gamePaused=false;
+let netSyncCounter=0;
 
-let famTargets = {dad:1,mum:1,brother:8,sister:9,tiny:1};
+// ── BATTERY SAVER ──
+function toggleBattery(){
+  batterySaver=!batterySaver;
+  document.getElementById('bat-label').textContent=batterySaver?'ON':'OFF';
+  document.getElementById('battery-badge').style.display=batterySaver?'block':'none';
+  applyBatteryMode();
+  showToast(batterySaver?'⚡ Battery Saver ON — optimised for low-end devices':'🔆 High Quality Mode');
+}
+
+function applyBatteryMode(){
+  if(batterySaver){
+    // ══ BATTERY ON: max performance, 60fps on 10yr old Android ══
+
+    // 1. Pixel ratio — 0.6 = render at 60% native res, huge GPU win
+    renderer.setPixelRatio(0.6);
+    renderer.setSize(innerWidth, innerHeight);
+
+    // 2. Kill all shadows completely
+    renderer.shadowMap.enabled = false;
+    sun.castShadow = false;
+    scene.traverse(obj=>{ obj.castShadow=false; obj.receiveShadow=false; });
+
+    // 3. Remove all directional/point lights — only flat ambient remains
+    sun.intensity = 0;
+    fillLight.intensity = 0;
+    // Boost ambient so world is still visible without directional lights
+    ambient.intensity = 2.0;
+    ambient.color.set(0xffffff);
+    hemiLight.intensity = 1.5;
+
+    // 4. Kill tone mapping (expensive post-process)
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.toneMappingExposure = 1.0;
+
+    // 5. Heavy fog = GPU renders far fewer objects
+    scene.fog.density = 0.018; // very short render distance
+
+    // 6. Freeze day/night — lock to midday (no per-frame sin/cos/color updates)
+    dayT = Math.PI * 0.5; // noon, frozen
+
+    // 7. Low bitrate VC
+    if(localStream){
+      localStream.getAudioTracks().forEach(t=>{
+        try{ t.applyConstraints({sampleRate:8000,channelCount:1,echoCancellation:true}); } catch(e){}
+      });
+    }
+
+    // 8. Hide sky dome (saves vertex shader cost)
+    skyMesh.visible = false;
+    scene.background = new THREE.Color(0x87ceeb);
+
+    // 9. Hide ALL grass blades — each is a draw call
+    grassBlades.forEach(g=>g.visible=false);
+
+    // 10. Reduce camera far plane to cull more geometry
+    camera.far = 200;
+    camera.updateProjectionMatrix();
+
+  } else {
+    // ══ BATTERY OFF: maximum quality ══
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+
+    // Re-enable shadows
+    renderer.shadowMap.enabled = true;
+    sun.castShadow = true;
+    // Re-enable cast/receive on scene objects
+    scene.traverse(obj=>{
+      if(obj.userData.deco||obj.isMesh){
+        obj.castShadow = !obj.userData.noShadow;
+        obj.receiveShadow = true;
+      }
+    });
+
+    // Restore tone mapping
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.4;
+
+    // Restore fog to map default
+    setLighting(currentMap);
+
+    // Restore sky dome
+    skyMesh.visible = true;
+    scene.background = null;
+
+    // Restore grass and camera
+    grassBlades.forEach(g=>g.visible=true);
+    camera.far = 1500;
+    camera.updateProjectionMatrix();
+
+    // Restore VC
+    if(localStream){
+      localStream.getAudioTracks().forEach(t=>{
+        try{ t.applyConstraints({sampleRate:48000,channelCount:2}); } catch(e){}
+      });
+    }
+
+    // Unfreeze day/night (lighting restored in animate loop)
+    lastSunH = -1; // force sky redraw
+  }
+}
+
+// ── PAUSE ──
+function togglePause(){
+  gamePaused=!gamePaused;
+  const ol=document.getElementById('pause-overlay');
+  ol.style.display=gamePaused?'flex':'none';
+  ol.style.pointerEvents=gamePaused?'auto':'none';
+  if(gamePaused){
+    const tot=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.tiny;
+    document.getElementById('pause-mapinfo').textContent=`Map ${currentMap} · Found ${tot}/20`;
+  }
+}
+function quitGame(){
+  gamePaused=false;
+  document.getElementById('pause-overlay').style.display='none';
+  document.getElementById('pause-btn').style.display='none';
+  document.getElementById('game-ui').style.display='none';
+  document.getElementById('joy-wrap').style.display='none';
+  document.getElementById('jump-btn').style.display='none';
+  document.getElementById('crouch-btn').style.display='none';
+  document.getElementById('skin-sel').style.display='none';
+  document.getElementById('menu').style.display='flex';
+  gameStarted=false;
+  if(peer){ peer.destroy(); peer=null; }
+}
+
+// ── FEATURE REQUEST ──
+function openFeature(){
+  document.getElementById('pause-overlay').style.display='none';
+  document.getElementById('feature-modal').style.display='flex';
+}
+function closeFeature(){
+  document.getElementById('feature-modal').style.display='none';
+  document.getElementById('pause-overlay').style.display='flex';
+}
+async function sendFeature(){
+  const txt=document.getElementById('feature-input').value.trim();
+  if(!txt){ showToast('Please enter your idea first!'); return; }
+  // Send via mailto as fallback (no backend)
+  const subject=encodeURIComponent('Find Tiny Feature Request');
+  const body=encodeURIComponent('Feature Request:\n\n'+txt+'\n\nFrom: '+playerName);
+  window.open('mailto:dacoolkid325@gmail.com?subject='+subject+'&body='+body);
+  document.getElementById('feature-input').value='';
+  closeFeature();
+  showToast('📨 Opening email to send request!');
+}
+
+let famTargets = {dad:1,mum:1,brother:8,sister:9,tiny:1}; // 20 total
 let famFound   = {dad:0,mum:0,brother:0,sister:0,tiny:0};
 let groupUnlocked = {};
 
+// ── PERSISTENT UNLOCK STORAGE ──
+// Only 'friend' is available by default. Everything else must be earned.
 function loadUnlocked(){
   try{
     const saved=JSON.parse(localStorage.getItem('ftf_unlocked')||'[]');
+    // Always include 'friend', merge saved
     const base=[...ALWAYS_UNLOCKED];
     saved.forEach(s=>{ if(!base.includes(s)) base.push(s); });
     return base;
@@ -433,15 +678,9 @@ function saveUnlocked(){
 }
 
 let unlockedSkins = loadUnlocked();
-let currentSkin = unlockedSkins[0];
+let currentSkin = unlockedSkins[0]; // friend by default
 
 let familyMeshes=[], obstacles=[], grassBlades=[], cloudMeshes=[];
-
-// Door zones — stored per house: {x, z, doorX, doorZ, doorW}
-// Player can only enter/exit through the door gap
-let doorZones = [];
-// Under-furniture zones — player can crouch to pass under
-let underFurniture = []; // {x, z, radius, minCrouchY}
 
 // ════════════════════════════════════════════════════
 //  MENU — animated stars
@@ -458,7 +697,7 @@ let underFurniture = []; // {x, z, radius, minCrouchY}
 })();
 
 // ════════════════════════════════════════════════════
-//  SPRITE PICKER
+//  SPRITE PICKER — locked sprites shown greyed with padlock
 // ════════════════════════════════════════════════════
 function buildSpritePicker(){
   const row=document.getElementById('sprite-row');
@@ -478,9 +717,11 @@ function buildSpritePicker(){
     img.onerror=function(){
       const cv=document.createElement('canvas'); cv.width=cv.height=48;
       const ctx=cv.getContext('2d');
+      // No initials/text — just a colored circle placeholder
       ctx.fillStyle=isUnlocked?(SPRITE_FALLBACK_COLORS[name]||'#555'):'#222';
       ctx.beginPath(); ctx.arc(24,24,22,0,Math.PI*2); ctx.fill();
       if(!isUnlocked){
+        // draw lock symbol
         ctx.fillStyle='#888'; ctx.fillRect(18,22,12,10); ctx.beginPath();
         ctx.arc(24,22,5,Math.PI,0); ctx.strokeStyle='#888'; ctx.lineWidth=2; ctx.stroke();
       }
@@ -494,6 +735,7 @@ function buildSpritePicker(){
         localStorage.setItem('ftf_lastSprite',name);
       };
     } else {
+      // Show lock icon overlay
       const lock=document.createElement('div');
       lock.textContent='🔒';
       lock.style.cssText='position:absolute;top:0;right:0;font-size:14px;pointer-events:none;';
@@ -504,6 +746,7 @@ function buildSpritePicker(){
     row.appendChild(wrap);
   });
 
+  // Restore last chosen sprite if still unlocked, else default to friend
   const last=localStorage.getItem('ftf_lastSprite');
   const defaultChoice=last&&unlockedSkins.includes(last)?last:'friend';
   chosenSprite=defaultChoice;
@@ -529,13 +772,13 @@ function submitKey(){
     ks.style.color='#00FF88';
     if(mode==='dev'){
       ks.textContent='✔ Dev Mode unlocked!';
-      // Dev key only gives dev skin — NOT admin skin
+      // Dev only gets dev skin (not family skins — those must be earned)
       giveExtraSkins(['dev']);
     } else {
       ks.textContent='✔ Admin Mode unlocked!';
-      // Admin key only gives admin skin — NOT dev skin
-      // Family skins still earned in-game via collection
-      giveExtraSkins(['admin']);
+      // Admin gets dev + admin skins. Family skins still must be earned in-game.
+      // (adminCollect will auto-collect family, triggering group unlocks properly)
+      giveExtraSkins(['dev','admin']);
     }
     if(gameStarted){ buildSkinSel(); updateModeTag(); if(mode==='admin') adminCollect(); }
     setTimeout(closeKey,1800);
@@ -549,7 +792,7 @@ function giveExtraSkins(arr){ let changed=false; arr.forEach(s=>{ if(!unlockedSk
 function updateModeTag(){
   const mt=document.getElementById('mode-tag');
   if(accessMode==='dev')  { mt.textContent='🛠 Dev Mode';   mt.style.display='inline-block'; document.getElementById('dev-panel').style.display='block'; document.getElementById('dev-btns').style.display='flex'; }
-  if(accessMode==='admin'){ mt.textContent='👑 Admin Mode'; mt.style.display='inline-block'; }
+  if(accessMode==='admin'){ mt.textContent='👑 Admin Mode'; mt.style.display='inline-block'; if(gameStarted) document.getElementById('admin-btns').style.display='flex'; }
 }
 function adminCollect(){
   for(let i=familyMeshes.length-1;i>=0;i--){
@@ -560,7 +803,7 @@ function adminCollect(){
 }
 
 // ════════════════════════════════════════════════════
-//  VOICE CHAT
+//  VOICE CHAT (up to 10 players)
 // ════════════════════════════════════════════════════
 let peer, peers={}, localStream=null, micEnabled=false;
 
@@ -585,9 +828,6 @@ function toggleMic(){
   btn.style.background=micEnabled?'rgba(39,174,96,.8)':'rgba(10,10,26,.85)';
 }
 
-// ════════════════════════════════════════════════════
-//  NETWORKING
-// ════════════════════════════════════════════════════
 function initNet(code){
   const tag=document.getElementById('room-tag');
   const st=document.getElementById('conn-status');
@@ -634,10 +874,16 @@ function playStream(stream){ const a=document.createElement('audio'); a.srcObjec
 //  THREE.JS CORE
 // ════════════════════════════════════════════════════
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,.1,1200);
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1500); // wider far plane = more visible
+// Detect if mobile for initial quality hints
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const renderer=new THREE.WebGLRenderer({
+  antialias:!isMobile,          // AA off on mobile by default
+  powerPreference:'high-performance',
+  precision: isMobile?'mediump':'highp'
+});
 renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile?1.5:2));
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -652,14 +898,15 @@ scene.add(hemiLight);
 
 const sun=new THREE.DirectionalLight(0xffdd55,2.6);
 sun.castShadow=true;
-sun.shadow.mapSize.width=sun.shadow.mapSize.height=4096;
-sun.shadow.camera.near=1; sun.shadow.camera.far=800;
-sun.shadow.camera.left=-250; sun.shadow.camera.right=250;
-sun.shadow.camera.top=250;   sun.shadow.camera.bottom=-250;
+sun.shadow.mapSize.width=sun.shadow.mapSize.height=isMobile?1024:2048;
+sun.shadow.camera.near=1; sun.shadow.camera.far=600;
+sun.shadow.camera.left=-200; sun.shadow.camera.right=200;
+sun.shadow.camera.top=200;   sun.shadow.camera.bottom=-200;
 sun.shadow.bias=-0.0005;
 sun.shadow.normalBias=0.02;
 scene.add(sun);
 
+// Secondary fill light from opposite side
 const fillLight=new THREE.DirectionalLight(0x4488ff,.35);
 fillLight.position.set(-1,.5,-1);
 scene.add(fillLight);
@@ -667,16 +914,19 @@ scene.add(fillLight);
 const ambient=new THREE.AmbientLight(0xffd0a0,.25);
 scene.add(ambient);
 
-let dayT=Math.PI*0.08;
+// Day/night cycle — starts at dawn (~6am feel)
+let dayT=Math.PI*0.08;  // dawn
 let lastSunH=-1;
-const DAY_SPEED=0.00012;
+const DAY_SPEED=0.00012; // full cycle ~14 min
 
 scene.fog=new THREE.FogExp2(0xffe8b0,.0015);
 scene.background=new THREE.Color(0xff9944);
 
 // ── SKY DOME ──
-const skyGeo=new THREE.SphereGeometry(900,12,6);
-skyGeo.scale(-1,1,-1);
+const SKY_SEGS=12;
+const skyGeo=new THREE.SphereGeometry(900,SKY_SEGS,SKY_SEGS*.5);
+skyGeo.scale(-1,1,-1); // invert normals so it's visible from inside
+// Gradient: warm orange at horizon, deep blue at apex — updated each frame
 const skyColors=new Float32Array(skyGeo.attributes.position.count*3);
 skyGeo.setAttribute('color',new THREE.BufferAttribute(skyColors,3));
 const skyMat=new THREE.MeshBasicMaterial({vertexColors:true,depthWrite:false,fog:false});
@@ -687,13 +937,18 @@ scene.add(skyMesh);
 function updateSky(sunH,sinT){
   const pos=skyGeo.attributes.position;
   const col=skyGeo.attributes.color;
+  // top = apex deep blue (night) or sky blue (day)
+  // horizon = warm orange (dawn/dusk) or pale sky (day) or near-black (night)
   const apex   = sunH>0.01 ? new THREE.Color(0x1a6ecc).lerp(new THREE.Color(0x0a2a60),Math.max(0,1-sunH*2)) : new THREE.Color(0x050520);
   const midSky = sunH>0.01 ? new THREE.Color(0x44aaee).lerp(new THREE.Color(0x88ccff),sunH) : new THREE.Color(0x101840);
   const horiz  = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
-  if(sunH<.02){ horiz.set(0xff5500); midSky.set(0x331122); }
+  if(sunH<.02){ // dawn tinge
+    horiz.set(0xff5500);
+    midSky.set(0x331122);
+  }
   for(let i=0;i<pos.count;i++){
-    const yN=Math.max(-1,Math.min(1,pos.getY(i)/900));
-    const t=Math.max(0,yN);
+    const yN=Math.max(-1,Math.min(1,pos.getY(i)/900)); // -1 to 1
+    const t=Math.max(0,yN); // 0 at horizon, 1 at top
     let c;
     if(t<0.15) c=horiz.clone().lerp(midSky,t/0.15);
     else c=midSky.clone().lerp(apex,(t-.15)/.85);
@@ -711,12 +966,13 @@ const terrainMats={
 tLoader.load('grass.png',tex=>{ tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(80,80); terrainMats[1].map=tex; terrainMats[1].needsUpdate=true; },null,()=>{});
 
 let terrain=null;
+// House flat pads — populated before buildTerrain so terrain can flatten under them
 const HOUSE_PADS=[
   {x:30,z:30},{x:80,z:-20},{x:-60,z:50},{x:50,z:-80},{x:-90,z:-30},
   {x:110,z:70},{x:-40,z:-120},{x:0,z:110},{x:130,z:-100},
   {x:-120,z:80},{x:70,z:150},{x:-150,z:-80},{x:20,z:-160},{x:160,z:20},{x:-80,z:160}
 ];
-const PAD_R=18;
+const PAD_R=18; // flatten radius around each house centre
 
 function buildTerrain(m){
   if(terrain){ scene.remove(terrain); terrain.geometry.dispose(); terrain=null; }
@@ -733,6 +989,7 @@ function buildTerrain(m){
         y = Math.sin(x*0.012)*Math.cos(z*0.012)*18
           + Math.sin(x*0.03+1)*Math.cos(z*0.025+2)*8
           + Math.sin(x*0.07)*Math.cos(z*0.08)*3;
+        // Hard flatten: vertices inside pad radius get y=0, taper in outer 5 units
         let flatBlend=0;
         for(const pad of HOUSE_PADS){
           const dist=Math.sqrt((x-pad.x)**2+(z-pad.z)**2);
@@ -743,6 +1000,7 @@ function buildTerrain(m){
         }
         y=y*(1-flatBlend);
       }
+      // m===2: y stays 0 (beach flat)
       pos.setY(i,y);
     }
     geo.computeVertexNormals();
@@ -760,18 +1018,23 @@ player.castShadow=true; scene.add(player);
 const disc=new THREE.Mesh(new THREE.CircleGeometry(.9,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.22}));
 disc.rotation.x=-Math.PI/2; scene.add(disc);
 
+// ── CLOUDS ──
+// clouds removed
+
 // ── RAYCASTER ──
 const gRay=new THREE.Raycaster();
 const dVec=new THREE.Vector3(0,-1,0);
+// Cache terrain heights for player pos to avoid per-frame raycasting overhead
 const _thCache=new Map();
 function terrainH(x,z){
   if(!terrain) return 0;
+  // Round to 1 decimal for caching — good enough for terrain
   const key=(Math.round(x*2)/2)+','+(Math.round(z*2)/2);
   if(_thCache.has(key)) return _thCache.get(key);
   gRay.set(new THREE.Vector3(x,500,z),dVec);
   const h=gRay.intersectObject(terrain);
   const y=h.length?h[0].point.y:0;
-  if(_thCache.size>2000) _thCache.clear();
+  if(_thCache.size>2000) _thCache.clear(); // prevent unbounded growth
   _thCache.set(key,y);
   return y;
 }
@@ -780,7 +1043,7 @@ function terrainH(x,z){
 //  CAMERA
 // ════════════════════════════════════════════════════
 let camYaw=0, camPitch=.42, camDist=22, camDistTarget=22;
-const housePositions=[]; // {x, z, w, d, doorX, doorZ, doorW, doorFace}
+const housePositions=[]; // filled by addHouse
 const CAM_SPD=.03;
 
 let mDrag=false,lmx=0,lmy=0;
@@ -795,27 +1058,34 @@ renderer.domElement.addEventListener('touchstart',e=>{ for(const t of e.changedT
 renderer.domElement.addEventListener('touchmove',e=>{ for(const t of e.changedTouches){ if(camt[t.identifier]){ const p=camt[t.identifier]; camYaw-=(t.clientX-p.x)*.005; camPitch-=(t.clientY-p.y)*.005; camPitch=clamp(camPitch,.05,1.45); camt[t.identifier]={x:t.clientX,y:t.clientY}; e.preventDefault(); } } },{passive:false});
 renderer.domElement.addEventListener('touchend',e=>{ for(const t of e.changedTouches) delete camt[t.identifier]; },{passive:true});
 
+// Track which house player is currently inside
 let insideHouseIdx=-1;
 function doUpdateCamera(){
+  // House proximity — find if inside any house
   insideHouseIdx=-1;
   if(currentMap===1 && housePositions.length){
+    let nearest=9999, nearestDoor=9999;
     for(let i=0;i<housePositions.length;i++){
       const h=housePositions[i];
       const dx=player.position.x-h.x, dz=player.position.z-h.z;
       const inside=Math.abs(dx)<h.w/2-0.5&&Math.abs(dz)<h.d/2-0.5;
-      if(inside){ insideHouseIdx=i; break; }
+      if(inside){ insideHouseIdx=i; nearest=0; break; }
+      const dist=Math.sqrt(dx*dx+dz*dz);
+      nearest=Math.min(nearest,dist);
     }
+    // Inside: zoom right in so walls fill frame; door area: pull back slightly
     if(insideHouseIdx>=0) camDistTarget=8;
+    else if(nearest<6) camDistTarget=13;
     else camDistTarget=22;
   } else {
     camDistTarget=currentMap===3?11:22;
   }
   camDist+=(camDistTarget-camDist)*.1;
 
-  // Crouching: lower camera, look along ground
+  // Crouch: lower camera pitch (look along ground), raise target dist slightly
   const crouchPitch = isCrouching ? 0.06 : camPitch;
   const crouchDist  = isCrouching ? camDist*.85 : camDist;
-  const lookH = isCrouching ? 0.2 : 1.2;
+  const lookH = isCrouching ? 0.3 : 1.2; // look at foot level when crouching
   camera.position.set(
     player.position.x+Math.sin(camYaw)*crouchDist*Math.cos(crouchPitch),
     player.position.y+Math.sin(crouchPitch)*crouchDist,
@@ -842,10 +1112,11 @@ function applySkin(name){
     playerMat.needsUpdate=true;
   });
   document.querySelectorAll('.sk-btn').forEach(b=>b.classList.toggle('sk-active',b.dataset.s===name));
+  // Keep dialogue portrait in sync with current skin
   const dImg=document.getElementById('d-img');
   if(dImg){
     dImg.src=name+'.png';
-    dImg.onerror=function(){ this.onerror=null; this.style.visibility='hidden'; };
+    dImg.onerror=function(){ this.onerror=null; this.style.visibility='hidden'; this.style.background=SPRITE_FALLBACK_COLORS[name]||'#4ECDC4'; };
   }
   const dName=document.querySelector('#dialogue .d-name');
   if(dName) dName.textContent=(name[0].toUpperCase()+name.slice(1))+' 🐢';
@@ -853,7 +1124,17 @@ function applySkin(name){
 let skinSelCollapsed=false;
 function buildSkinSel(){
   const sel=document.getElementById('skin-sel');
+  // Minimise button
+  let minBtn=sel.querySelector('.sk-min');
+  if(!minBtn){
+    minBtn=document.createElement('button'); minBtn.className='sk-min';
+    minBtn.textContent=skinSelCollapsed?'▲ Skin':'▼';
+    minBtn.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
+    sel.appendChild(minBtn);
+  }
+  // Rebuild content
   sel.innerHTML='';
+  // Re-add minimise button
   const mb=document.createElement('button'); mb.className='sk-min';
   mb.textContent=skinSelCollapsed?'▲ Skin':'▼ Hide';
   mb.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
@@ -873,22 +1154,35 @@ function buildSkinSel(){
 }
 
 // ════════════════════════════════════════════════════
-//  FAMILY SPAWN
+//  FAMILY SPAWN — Map 1: 9, Map 2: 10, Map 3: Tiny only
 // ════════════════════════════════════════════════════
+// Distribution across maps:
+// Map1: dad, mum, 4 brothers, 4 sisters  = 10 (but tiny not here) = 9 non-tiny + 0
+// Map2: 4 brothers, 5 sisters = 10 (beach) — tortoises on dry sand
+// Map3: tiny only
+
+// Family totals: dad=1 mum=1 brother=8 sister=9 tiny=1 = 20
+// Map1(9): dad mum 4bro 3sis | Map2(10): 4bro 6sis | Map3(1): tiny
 const MAP_ROSTER = {
-  1:[{type:'dad',s:2.4},{type:'mum',s:2.2},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
-  2:[{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
+  1:[{type:'dad',s:2.4},{type:'mum',s:2.2},
+     {type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
+     {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
+  2:[{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
+     {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
   3:[{type:'tiny',s:1.0}]
 };
 
+// Hard hiding spots for map 1 — behind/under things
+// Hard spots: [x,z] pairs — inside or near houses
 const HARD_SPOTS_MAP1 = [
   [30,30],[80,-20],[-60,50],[50,-80],[-90,-30],
   [110,70],[-40,-120],[0,110],[130,-100]
 ];
 
 function spawnFamily(){
-  if(currentMap===3) return;
+  if(currentMap===3) return; // Tiny is spawned synchronously inside buildClassroom
   const roster=MAP_ROSTER[currentMap]||[];
+  // Synchronous — terrain is already built by now
   roster.forEach((mem,idx)=>{
     const mat=new THREE.MeshStandardMaterial({
       color:typeCol(mem.type),side:THREE.DoubleSide,transparent:true,alphaTest:.05
@@ -927,12 +1221,12 @@ function mkMesh(geo,params){ return new THREE.Mesh(geo,new THREE.MeshStandardMat
 
 function clearScene(){
   _thCache.clear();
+  // famFound intentionally NOT reset — carries across maps
   familyMeshes.forEach(f=>scene.remove(f.mesh));
   obstacles.forEach(o=>scene.remove(o.mesh||o));
   grassBlades.forEach(g=>scene.remove(g));
   scene.children.filter(c=>c.userData.deco).forEach(c=>scene.remove(c));
   familyMeshes=[]; obstacles=[]; grassBlades=[]; housePositions.length=0;
-  doorZones=[]; underFurniture=[];
 }
 
 function loadMap(m){
@@ -940,45 +1234,44 @@ function loadMap(m){
   if(m===1) buildNeighborhood();
   else if(m===2) buildBeach();
   else buildClassroom();
-
-  // FIX: Spawn player at ground level on map 3 (classroom floor = 0.15)
-  if(m===3){
-    player.position.set(0, 1.5, 20); // front of classroom, on floor
-  } else {
-    player.position.set(0, terrainH(0,0)+1.5, 0);
-  }
-  flyVelY=0; velocityY=0; isGrounded=false;
+  player.position.set(0,20,0); flyVelY=0; velocityY=0; isGrounded=false;
   document.getElementById('c-map').textContent='Map '+m;
   updateHUD();
   if(accessMode==='admin') setTimeout(adminCollect,400);
 }
 
+// ── LIGHTING PER MAP ──
 function setLighting(m){
+  if(batterySaver) return; // battery saver controls its own lighting
   if(m===1){
-    hemiLight.color.set(0xffeaa0); hemiLight.groundColor.set(0x4a7a20); hemiLight.intensity=1.0;
-    ambient.color.set(0xffd0a0); ambient.intensity=.25;
-    scene.fog.color.set(0xffcc88); scene.fog.density=.0016;
+    hemiLight.color.set(0xffeaa0); hemiLight.groundColor.set(0x4a7a20); hemiLight.intensity=1.1;
+    ambient.color.set(0xffd0a0); ambient.intensity=.3;
+    scene.fog.color.set(0xffcc88); scene.fog.density=.0014;
   } else if(m===2){
-    hemiLight.color.set(0xaaddff); hemiLight.groundColor.set(0xf0d090); hemiLight.intensity=1.2;
-    ambient.color.set(0xbbeeff); ambient.intensity=.3;
-    scene.fog.color.set(0xaaccee); scene.fog.density=.0012;
+    hemiLight.color.set(0xaaddff); hemiLight.groundColor.set(0xf0d090); hemiLight.intensity=1.3;
+    ambient.color.set(0xbbeeff); ambient.intensity=.35;
+    scene.fog.color.set(0x88ccff); scene.fog.density=.001;
   } else {
-    hemiLight.color.set(0xffeedd); hemiLight.groundColor.set(0x997755); hemiLight.intensity=.7;
-    ambient.color.set(0xffddbf); ambient.intensity=.45;
-    scene.fog.color.set(0xeeddcc); scene.fog.density=.008;
+    hemiLight.color.set(0xffeedd); hemiLight.groundColor.set(0x997755); hemiLight.intensity=.8;
+    ambient.color.set(0xffddbf); ambient.intensity=.5;
+    scene.fog.color.set(0xeeddcc); scene.fog.density=.007;
   }
 }
 
 // ── MAP 1: NEIGHBORHOOD ──
 function buildNeighborhood(){
-  HOUSE_PADS.forEach(({x,z})=>{ addHouse(x,0,z); });
+  // Use HOUSE_PADS (already defined, matches terrain flat areas)
+  HOUSE_PADS.forEach(({x,z})=>{ addHouse(x,0,z); }); // ty=0 since terrain is flat there
 
+  // Trees — avoid house areas
   for(let i=0;i<60;i++){
     const tx=(Math.random()-.5)*700, tz=(Math.random()-.5)*700;
+    // Skip if too close to any house
     const nearHouse=HOUSE_PADS.some(h=>Math.sqrt((tx-h.x)**2+(tz-h.z)**2)<PAD_R+4);
     if(!nearHouse) addTree(tx,tz);
   }
 
+  // Rocks
   for(let i=0;i<30;i++){
     const s=Math.random()*3+1;
     const rx=(Math.random()-.5)*650, rz=(Math.random()-.5)*650;
@@ -993,10 +1286,8 @@ function buildNeighborhood(){
   spawnFamily();
 }
 
-// ── HOUSE BUILDER — DOOR-ONLY ENTRY ──
-// The front wall has a door gap. The collision system only blocks the wall sections,
-// leaving the door opening free. Player can only enter/exit through the door.
 function addHouse(x,ty,z){
+  // ty=0 since terrain is flat at house pads
   const W=18, D=16, H=8, WT=1.0;
   const DOOR_W=3.2, DOOR_H=4.4;
   const idx=housePositions.length;
@@ -1016,48 +1307,44 @@ function addHouse(x,ty,z){
     m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
 
-  // Floor slab
+  // ── FLOOR SLAB — thick, sinks 5u into ground, no gaps ──
+  // Use terrain colour so no colour extension visible
   box(new THREE.BoxGeometry(W+WT*2+1,10,D+WT*2+1),
     new THREE.MeshStandardMaterial({color:0x4a8c28,roughness:.9}), x,-5,z);
+  // Interior floor on top
   box(new THREE.BoxGeometry(W-0.2,0.2,D-0.2),fMat, x,0.1,z);
 
-  // Walls
+  // ── WALLS ──
   const fSide=(W-DOOR_W)/2;
-  box(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, x,H/2,z-D/2-WT/2);        // back
-  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x-W/2-WT/2,H/2,z);        // left
-  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x+W/2+WT/2,H/2,z);        // right
+  box(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, x,H/2,z-D/2-WT/2);         // back
+  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x-W/2-WT/2,H/2,z);         // left
+  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x+W/2+WT/2,H/2,z);         // right
   box(new THREE.BoxGeometry(fSide,H,WT),wMat, x-DOOR_W/2-fSide/2,H/2,z+D/2+WT/2); // front-L
   box(new THREE.BoxGeometry(fSide,H,WT),wMat, x+DOOR_W/2+fSide/2,H/2,z+D/2+WT/2); // front-R
   box(new THREE.BoxGeometry(W+WT*2,H-DOOR_H,WT),wMat, x,DOOR_H+(H-DOOR_H)/2,z+D/2+WT/2); // front-top
 
-  // Roof — proper gabled prism via BufferGeometry (outward-facing slopes)
+  // ── ROOF — proper gabled prism via BufferGeometry ──
   const roofW=W+WT*2+1.5, roofD=D+WT*2+1.5, roofH=H*0.6;
   {
     const hw=roofW/2, hd=roofD/2;
-    // 6 verts: 4 base corners + 2 ridge points along X at top-centre
     const verts=new Float32Array([
-      -hw,0,-hd,  // 0 left-front
-       hw,0,-hd,  // 1 right-front
-       hw,0, hd,  // 2 right-back
-      -hw,0, hd,  // 3 left-back
-      -hw,roofH,0,// 4 left-ridge
-       hw,roofH,0,// 5 right-ridge
+      -hw,0,-hd,   // 0 left-front base
+       hw,0,-hd,   // 1 right-front base
+       hw,0, hd,   // 2 right-back base
+      -hw,0, hd,   // 3 left-back base
+      -hw,roofH,0, // 4 left-ridge
+       hw,roofH,0, // 5 right-ridge
     ]);
-    const idx=new Uint16Array([
-      // front slope (facing -Z)
-      0,4,1, 1,4,5,
-      // back slope (facing +Z)
-      2,5,3, 3,5,4,
-      // left gable (facing -X)
-      0,3,4,
-      // right gable (facing +X)
-      1,5,2,
-      // base (optional, faces down — useful for shadows)
-      0,1,2, 0,2,3,
+    const idxArr=new Uint16Array([
+      0,4,1, 1,4,5,  // front slope
+      2,5,3, 3,5,4,  // back slope
+      0,3,4,         // left gable
+      1,5,2,         // right gable
+      0,1,2, 0,2,3,  // base (for shadows)
     ]);
     const geo=new THREE.BufferGeometry();
     geo.setAttribute('position',new THREE.BufferAttribute(verts,3));
-    geo.setIndex(new THREE.BufferAttribute(idx,1));
+    geo.setIndex(new THREE.BufferAttribute(idxArr,1));
     geo.computeVertexNormals();
     const roofMesh=new THREE.Mesh(geo,rMat);
     roofMesh.position.set(x,H+0.25,z);
@@ -1069,10 +1356,10 @@ function addHouse(x,ty,z){
   // Ridge cap
   box(new THREE.BoxGeometry(roofW+0.3,0.3,0.3),rMat, x,H+0.25+roofH,z);
 
-  // Ceiling
+  // ── CEILING ──
   box(new THREE.BoxGeometry(W+.2,.25,D+.2),new THREE.MeshStandardMaterial({color:0xEEEEE8,roughness:.9}), x,H-.12,z);
 
-  // Windows
+  // ── WINDOWS (embedded in wall — frame larger than glass) ──
   const wY=H*0.62, wW=2.0, wH2=1.7;
   function win(px,pz,ry){
     box(new THREE.BoxGeometry(wW+.5,wH2+.5,WT+.1),frMat,px,wY,pz,ry);
@@ -1084,43 +1371,29 @@ function addHouse(x,ty,z){
   if(fSide>3) win(x-(DOOR_W/2+fSide*.5), z+D/2+WT/2, 0);
   if(fSide>3) win(x+(DOOR_W/2+fSide*.5), z+D/2+WT/2, 0);
 
-  // Door (visual only — open/ajar look)
-  // Door is slightly open to invite entry
+  // ── DOOR — open/ajar to invite entry ──
   const doorM=box(new THREE.BoxGeometry(DOOR_W-.4,DOOR_H-.4,.12),dMat, x-(DOOR_W*.35),DOOR_H/2,z+D/2+WT*.55);
-  doorM.rotation.y=Math.PI*0.3; // slightly open
+  doorM.rotation.y=Math.PI*0.3; // swung open
 
-  // Interior furniture
-  const bedMesh=box(new THREE.BoxGeometry(4.5,.8,6.5),new THREE.MeshStandardMaterial({color:0x5577AA,roughness:.8}), x+W*.22,.4,z-D*.18);
+  // ── INTERIOR FURNITURE ──
+  box(new THREE.BoxGeometry(4.5,.8,6.5),new THREE.MeshStandardMaterial({color:0x5577AA,roughness:.8}), x+W*.22,.4,z-D*.18);
   box(new THREE.BoxGeometry(3.5,H*.65,1.8),new THREE.MeshStandardMaterial({color:0x7A5525,roughness:.85}), x-W*.28,H*.33,z+D*.2);
-  if(idx<5){
+  if(idx<5){ // limit interior lights for perf
     const pl=new THREE.PointLight(0xFFCC88,.8,20);
     pl.position.set(x,H-.8,z); pl.userData.deco=true; scene.add(pl);
   }
 
-  // Register bed for crouch-under
-  underFurniture.push({x:x+W*.22, z:z-D*.18, radius:3.5, clearanceY:1.2, topY:0.8+.4});
-
-  // ── COLLISION — DOOR-ONLY ENTRY ──
-  // Back wall — solid
+  // ── COLLISION — walls only need coverage at player height ──
   const R=WT+.8;
-  for(let i=0;i<=W+WT*2;i+=2.5) obstacles.push({x:x-W/2-WT+i, z:z-D/2-WT, radius:R});
-  // Left wall — solid
-  for(let i=0;i<=D+WT*2;i+=2.5) obstacles.push({x:x-W/2-WT, z:z-D/2-WT+i, radius:R});
-  // Right wall — solid
-  for(let i=0;i<=D+WT*2;i+=2.5) obstacles.push({x:x+W/2+WT, z:z-D/2-WT+i, radius:R});
-  // Front wall — left section (to left of door)
-  for(let i=0;i<=fSide+WT;i+=2.5) obstacles.push({x:x-W/2-WT+i, z:z+D/2+WT, radius:R, isDoorWall:true});
-  // Front wall — right section (to right of door)
-  for(let i=0;i<=fSide+WT;i+=2.5) obstacles.push({x:x+DOOR_W/2+i, z:z+D/2+WT, radius:R, isDoorWall:true});
-  // Furniture collision — only when NOT crouching
-  obstacles.push({x:x+W*.22, z:z-D*.18, radius:2.6, requiresStanding:true}); // bed
-  obstacles.push({x:x-W*.28, z:z+D*.2, radius:2.0});                         // wardrobe
+  for(let i=0;i<=W+WT*2;i+=3) obstacles.push({x:x-W/2-WT+i, z:z-D/2-WT, radius:R}); // back
+  for(let i=0;i<=D+WT*2;i+=3) obstacles.push({x:x-W/2-WT,  z:z-D/2-WT+i, radius:R}); // left
+  for(let i=0;i<=D+WT*2;i+=3) obstacles.push({x:x+W/2+WT,  z:z-D/2-WT+i, radius:R}); // right
+  for(let i=0;i<=fSide;i+=3)   obstacles.push({x:x-W/2+i,   z:z+D/2+WT,   radius:R}); // front-L
+  for(let i=0;i<=fSide;i+=3)   obstacles.push({x:x+DOOR_W/2+i, z:z+D/2+WT, radius:R}); // front-R
+  obstacles.push({x:x-W*.28, z:z+D*.2, radius:2.0});  // wardrobe
+  obstacles.push({x:x+W*.22, z:z-D*.18, radius:2.0}); // bed
 
-  housePositions.push({
-    x, z, w:W+WT*2, d:D+WT*2,
-    doorX:x, doorZ:z+D/2+WT,
-    doorW:DOOR_W+0.5 // slightly generous door opening
-  });
+  housePositions.push({x,z,w:W+WT*2,d:D+WT*2});
 }
 
 function addTree(x,z){
@@ -1135,18 +1408,30 @@ function addTree(x,z){
 
 // ── MAP 2: TURTLE BEACH ──
 function buildBeach(){
+  // Single ocean plane — sits clearly below sand level, no layering
   const ocean=mkMesh(new THREE.PlaneGeometry(3000,1200),{color:0x0d7ab5,roughness:.08,metalness:.2});
   ocean.rotation.x=-Math.PI/2; ocean.position.set(0,-3,0); ocean.userData.deco=true; scene.add(ocean);
+
+  // Wet sand fringe where water meets beach — just a thin darker strip, same plane level as terrain
   const wet=mkMesh(new THREE.PlaneGeometry(3000,60),{color:0xd4a84a,roughness:.9});
   wet.rotation.x=-Math.PI/2; wet.position.set(0,0.01,-170); wet.userData.deco=true; scene.add(wet);
 
+  // Ocean only visible south of z=-180 — block player from swimming
+  // (beach terrain flat, water below it — clean edge)
+
+  // Palm trees on dry sand
   for(let i=0;i<70;i++){
     const px=(Math.random()-.5)*700, pz=(Math.random()-.5)*200;
     addPalm(px,pz);
   }
+
+  // Tall grass tufts on beach
   spawnBeachGrass(80,600,180);
+
+  // Beach umbrellas and towels
   for(let i=0;i<20;i++) addUmbrella((Math.random()-.5)*500,(Math.random()-.5)*200);
 
+  // Rocks/tide pools — keep on dry sand
   for(let i=0;i<20;i++){
     const s=Math.random()*3+.8;
     const rx=(Math.random()-.5)*600, rz=(Math.random()-.5)*220;
@@ -1155,12 +1440,14 @@ function buildBeach(){
     obstacles.push({mesh:rock,radius:s*1.2,x:rx,z:rz});
   }
 
+  // Sand dunes
   for(let i=0;i<20;i++){
     const dx=(Math.random()-.5)*600, dz=(Math.random()-.5)*220;
     const dune=mkMesh(new THREE.SphereGeometry(8+Math.random()*14,8,6),{color:0xe8c870,roughness:1});
     dune.scale.y=.22; dune.position.set(dx,.2,dz); dune.receiveShadow=true; dune.userData.deco=true; scene.add(dune);
   }
 
+  // Turtle shells (decorative)
   for(let i=0;i<14;i++){
     const sx=(Math.random()-.5)*500, sz=(Math.random()-.5)*200;
     addShell(sx,sz);
@@ -1170,6 +1457,7 @@ function buildBeach(){
 }
 
 function spawnBeachGrass(count,spreadX,spreadZ){
+  // Beach grass — yellowish sea grass tufts
   const gm=new THREE.MeshStandardMaterial({color:0xc8c040,side:THREE.DoubleSide,transparent:true,alphaTest:.08,roughness:1});
   for(let i=0;i<count;i++){
     const gx=(Math.random()-.5)*spreadX, gz=(Math.random()-.5)*spreadZ;
@@ -1196,6 +1484,7 @@ function addUmbrella(x,z){
   const cols=[0xff4444,0xffcc00,0x44aaff,0xff8800,0xff44ff,0x44ff88];
   const canopy=mkMesh(new THREE.ConeGeometry(3.2,1.2,8),{color:cols[Math.floor(Math.random()*cols.length)]});
   canopy.rotation.x=Math.PI; canopy.position.set(x,ty+4.2,z); canopy.userData.deco=true; scene.add(canopy);
+  // Towel
   const towel=mkMesh(new THREE.BoxGeometry(3.5,.05,5),{color:cols[Math.floor(Math.random()*cols.length)],roughness:.9});
   towel.position.set(x+(Math.random()-.5)*4,ty+.06,z+(Math.random()-.5)*4); towel.userData.deco=true; scene.add(towel);
 }
@@ -1207,8 +1496,6 @@ function addShell(x,z){
 }
 
 // ── MAP 3: CLASSROOM ──
-// FIX: Spawn player at floor level (y=1.5), not above ceiling
-// FIX: Tiny is always in the classroom with a guaranteed visible spot + bigger size
 function buildClassroom(){
   const W=80, D=60, H=9, WT=1.5;
   const wMat=new THREE.MeshStandardMaterial({color:0xF2EFE8,roughness:.85});
@@ -1220,24 +1507,29 @@ function buildClassroom(){
     m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
 
-  // Floor slab
+  // ── FLOOR SLAB — thick enough to cover terrain ──
   cbox(new THREE.BoxGeometry(W+WT*2,8,D+WT*2),fMat, 0,-3.5,0);
+  // Interior floor surface (slightly lighter)
   cbox(new THREE.BoxGeometry(W-.5,.15,D-.5),new THREE.MeshStandardMaterial({color:0xDDD0B0,roughness:.6}), 0,.07,0);
 
-  // 4 walls
-  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,-D/2-WT/2); // back
+  // ── 4 SOLID WALLS with GUARANTEED collision ──
+  // Back wall
+  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,-D/2-WT/2);
   for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:-D/2-WT/2,radius:WT+.9});
-  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,D/2+WT/2); // front
+  // Front wall
+  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,D/2+WT/2);
   for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:D/2+WT/2,radius:WT+.9});
-  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, -W/2-WT/2,H/2,0); // left
+  // Left wall
+  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, -W/2-WT/2,H/2,0);
   for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:-W/2-WT/2,z:iz,radius:WT+.9});
-  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, W/2+WT/2,H/2,0); // right
+  // Right wall
+  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, W/2+WT/2,H/2,0);
   for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:W/2+WT/2,z:iz,radius:WT+.9});
 
-  // Ceiling — note: lower than player spawn so spawn needs to be inside
+  // ── CEILING ──
   cbox(new THREE.BoxGeometry(W+WT*2,.3,D+WT*2),new THREE.MeshStandardMaterial({color:0xF5F5F0,roughness:.9}), 0,H+.15,0);
 
-  // Blackboard
+  // ── BLACKBOARD ──
   cbox(new THREE.BoxGeometry(32,6,.6),new THREE.MeshStandardMaterial({color:0x1B5E30,roughness:.75}), 0,5,-D/2+WT*.4);
   cbox(new THREE.BoxGeometry(33,6.6,.3),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.85}), 0,5,-D/2+WT*.1);
   for(let i=0;i<4;i++){
@@ -1246,11 +1538,11 @@ function buildClassroom(){
       -12+i*8, 4.5+Math.random()*2, -D/2+WT*.5);
   }
 
-  // Desks
+  // ── DESKS: 4 rows x 4 cols (smaller room = fewer desks) ──
   for(let row=0;row<4;row++) for(let col=0;col<4;col++) addDesk(-24+col*16,-20+row*12);
-  addDesk(0,-D/2+8,true); // teacher desk
+  addDesk(0,-D/2+8,true); // teacher desk near board
 
-  // Bookshelves
+  // ── BOOKSHELVES ──
   [-37,37].forEach(sx=>{
     cbox(new THREE.BoxGeometry(WT+.5,7,D*.65),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.9}), sx,3.5,2);
     for(let sz=-D*.32;sz<=D*.32;sz+=2.5) obstacles.push({x:sx,z:2+sz,radius:WT+1.0});
@@ -1262,7 +1554,7 @@ function buildClassroom(){
     }
   });
 
-  // Ceiling lights
+  // ── CEILING LIGHTS ──
   for(let i=0;i<3;i++){
     const bx=-20+i*20;
     cbox(new THREE.BoxGeometry(10,.2,.4),new THREE.MeshStandardMaterial({color:0xEEEECC,emissive:0xDDDDAA,emissiveIntensity:1.1}), bx,H-.15,0);
@@ -1270,71 +1562,38 @@ function buildClassroom(){
     pl.position.set(bx,H-1,0); pl.userData.deco=true; pl.castShadow=false; scene.add(pl);
   }
 
-  // Windows
+  // ── WINDOWS ──
   const winMat2=new THREE.MeshStandardMaterial({color:0x88CCFF,transparent:true,opacity:.5,roughness:.05});
   [-18,0,18].forEach(wz=>{
     cbox(new THREE.BoxGeometry(WT+.1,3.5,4.5),winMat2, W/2+WT/2,5.5,wz);
     cbox(new THREE.BoxGeometry(WT+.5,4,5),new THREE.MeshStandardMaterial({color:0xDDDDDD,roughness:.8}), W/2+WT/2,5.5,wz);
   });
 
-  // Globe
+  // ── GLOBE ──
   cbox(new THREE.BoxGeometry(.2,2.5,.2),new THREE.MeshStandardMaterial({color:0x888888}), 8,1.5,-D/2+10);
   cbox(new THREE.SphereGeometry(1.4,8,6),new THREE.MeshStandardMaterial({color:0x3388EE,roughness:.35}), 8,3.8,-D/2+10);
 
-  // ── SPAWN TINY — FIXED ──
-  // Tiny is always visible (not hidden behind furniture), just in a corner of the room
-  // Made bigger (1.8 size) so easier to spot, glowing outline added
-  // Spots: middle aisle, near teacher desk, near window, near door, center
-  const TINY_SPOTS=[
-    [0, 0],           // center of room — easy to find
-    [0, -D/2+12],     // near blackboard
-    [20, 10],         // right side middle
-    [-20, 10],        // left side middle
-    [0, D/2-10]       // near front
-  ];
+  // ── SPAWN TINY — guaranteed synchronous placement ──
+  // Tiny hides behind teacher desk or in bookshelf corner
+  const TINY_SPOTS=[[0,-D/2+9],[32,2],[-32,2],[20,-22],[-20,-22]];
   const spot=TINY_SPOTS[Math.floor(Math.random()*TINY_SPOTS.length)];
-
-  const tinyMat=new THREE.MeshStandardMaterial({
-    color:typeCol('tiny'),side:THREE.DoubleSide,transparent:true,alphaTest:.05,
-    emissive:0xFFD166, emissiveIntensity:0.35 // glow to make Tiny easier to spot
-  });
-  tLoader.load('tiny.png',tex=>{
-    tinyMat.map=tex; tinyMat.color.set(0xFFFFFF);
-    tinyMat.emissive.set(0x000000); tinyMat.emissiveIntensity=0;
-    tinyMat.needsUpdate=true;
-  },null,()=>{});
-
-  // Tiny is bigger (1.8 instead of 1.0) — easier to find
-  const tinyMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.3), tinyMat);
-  tinyMesh.position.set(spot[0], 1.3, spot[1]); // on the floor
+  const tinyMat=new THREE.MeshStandardMaterial({color:typeCol('tiny'),side:THREE.DoubleSide,transparent:true,alphaTest:.05});
+  tLoader.load('tiny.png',tex=>{tinyMat.map=tex;tinyMat.color.set(0xFFFFFF);tinyMat.needsUpdate=true;},null,()=>{});
+  const tinyMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.0,1.3),tinyMat);
+  tinyMesh.position.set(spot[0],1.0,spot[1]);
   tinyMesh.castShadow=true; scene.add(tinyMesh);
-  familyMeshes.push({mesh:tinyMesh, type:'tiny'});
-
-  // Add a pulsing point light near Tiny so player can spot them
-  const tinyLight = new THREE.PointLight(0xFFD166, 1.5, 12);
-  tinyLight.position.set(spot[0], 2.5, spot[1]);
-  tinyLight.userData.deco=true;
-  tinyLight.userData.isTinyLight=true;
-  scene.add(tinyLight);
+  familyMeshes.push({mesh:tinyMesh,type:'tiny'});
 }
 
 function addDesk(x,z,big=false){
   const s=big?1.6:1;
-  const deskH = 1.6; // desk top height
-  const legH = 1.55;
-  const desk=mkMesh(new THREE.BoxGeometry(7*s,.25,4*s),{color:0xc8a060,roughness:.8});
-  desk.position.set(x,deskH,z); desk.castShadow=desk.receiveShadow=true; desk.userData.deco=true; scene.add(desk);
+  const desk=mkMesh(new THREE.BoxGeometry(7*s,.25,4*s),{color:0xc8a060,roughness:.8}); desk.position.set(x,1.6,z); desk.castShadow=desk.receiveShadow=true; desk.userData.deco=true; scene.add(desk);
   [[-2.8,-.8],[2.8,-.8],[-2.8,1.5],[2.8,1.5]].forEach(([ox,oz])=>{
-    const leg=mkMesh(new THREE.CylinderGeometry(.15,.15,legH,4),{color:0x7a5020});
-    leg.position.set(x+ox*s,legH/2,z+oz*s); leg.userData.deco=true; scene.add(leg);
+    const leg=mkMesh(new THREE.CylinderGeometry(.15,.15,1.6,4),{color:0x7a5020}); leg.position.set(x+ox*s,1,z+oz*s); leg.userData.deco=true; scene.add(leg);
   });
-  if(!big){ const paper=mkMesh(new THREE.BoxGeometry(2,.03,2.5),{color:0xfafafa,roughness:.9}); paper.position.set(x,deskH+.14,z); paper.userData.deco=true; scene.add(paper); }
-
-  // FIX: Desk collision only when standing (player can crouch under)
-  obstacles.push({mesh:desk, radius:big?5.5:3.2, x, z, requiresStanding:true});
-
-  // Register as crouch-under zone
-  underFurniture.push({x, z, radius:big?5.0:3.0, clearanceY:deskH-0.15, topY:deskH});
+  // Paper on desk
+  if(!big){ const paper=mkMesh(new THREE.BoxGeometry(2,.03,2.5),{color:0xfafafa,roughness:.9}); paper.position.set(x,1.76,z); paper.userData.deco=true; scene.add(paper); }
+  obstacles.push({mesh:desk,radius:big?5.5:3.2,x,z});
 }
 
 function spawnGrass(count,spread){
@@ -1359,12 +1618,16 @@ window.addEventListener('keydown',e=>{
   if(k in camK){ camK[k]=true; e.preventDefault(); }
   if(k===' ') doJump();
   if(k==='c'||k==='C'){ isCrouching=true; }
-  if((k==='f'||k==='F')&&accessMode==='dev'){ flyMode=!flyMode; showToast(flyMode?'Fly ON — jump=rise':'Fly OFF'); }
-  if((k==='r'||k==='R')&&accessMode==='dev'){ player.position.set(0,20,0); showToast('Position reset'); }
+  if(k==='Escape') togglePause();
+  if((k==='f'||k==='F')&&(accessMode==='dev'||accessMode==='admin')){ flyMode=!flyMode; showToast(flyMode?'Fly ON':'Fly OFF'); }
+  if((k==='r'||k==='R')&&(accessMode==='dev'||accessMode==='admin')){ player.position.set(0,20,0); showToast('Position reset'); }
   if((k==='g'||k==='G')&&accessMode!=='normal') adminCollect();
+  if((k==='n'||k==='N')&&accessMode==='dev'){ noclipMode=!noclipMode; showToast(noclipMode?'Noclip ON':'Noclip OFF'); }
+  if((k==='z'||k==='Z')&&accessMode==='dev'){ superSpeed=!superSpeed; showToast(superSpeed?'Super Speed ON':'Super Speed OFF'); }
 });
 window.addEventListener('keyup',e=>{ const k=e.key; if(k in moveK)moveK[k]=false; if(k in camK)camK[k]=false; if(k==='c'||k==='C') isCrouching=false; });
 
+// Joystick — direction relative to camera
 let joyX=0,joyY=0,joyActive=false,joyC={x:0,y:0};
 const GRAVITY=.024,JUMP_V=.55,SPEED=.38;
 
@@ -1390,11 +1653,13 @@ function doJump(){ if(flyMode){flyVelY=.6;return;} if(isGrounded){velocityY=JUMP
 //  HUD
 // ════════════════════════════════════════════════════
 function updateHUD(){
+  // Show cumulative found / total across all maps
   document.getElementById('c-dad').textContent=`Dad ${famFound.dad}/${famTargets.dad}`;
   document.getElementById('c-mum').textContent=`Mum ${famFound.mum}/${famTargets.mum}`;
   document.getElementById('c-bro').textContent=`Bros ${famFound.brother}/${famTargets.brother}`;
   document.getElementById('c-sis').textContent=`Sis ${famFound.sister}/${famTargets.sister}`;
   document.getElementById('c-tiny').textContent=`Tiny ${famFound.tiny}/${famTargets.tiny}`;
+  // Unlock map 3 label
   const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister;
   const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister;
   if(nt>=tot){ const o=document.querySelector('#map-sel option[value="3"]'); if(o&&o.textContent.includes('🔒')) o.textContent="🏫 Map 3 — Tiny's Hideout"; }
@@ -1403,15 +1668,22 @@ function updateHUD(){
 // ════════════════════════════════════════════════════
 //  COLLECTION & UNLOCK
 // ════════════════════════════════════════════════════
+
+
+
+
+
+
+
 function checkGroupUnlock(type){
   if(groupUnlocked[type]) return;
   if(famFound[type]>=famTargets[type]){
     groupUnlocked[type]=true;
     if(!unlockedSkins.includes(type)){
       unlockedSkins.push(type);
-      saveUnlocked();
-      buildSkinSel();
-      buildSpritePicker();
+      saveUnlocked();        // persist to localStorage
+      buildSkinSel();        // update in-game switcher
+      buildSpritePicker();   // update menu picker (unlocks sprite)
       showUnlockBanner(type);
     }
   }
@@ -1435,51 +1707,41 @@ function tryMap(v){
   currentMap=v; loadMap(v);
 }
 
-// Door proximity hint timer
-let doorHintTimer=null;
-function showDoorHint(){
-  const el=document.getElementById('door-hint');
-  el.style.display='block';
-  clearTimeout(doorHintTimer);
-  doorHintTimer=setTimeout(()=>el.style.display='none',2500);
-}
-
 // ════════════════════════════════════════════════════
 //  MAIN LOOP
 // ════════════════════════════════════════════════════
-let lastT=0, frameCount=0;
+let lastT=0;
+let frameCount=0;
 function animate(ts=0){
   frameCount++;
   requestAnimationFrame(animate);
   const dt=Math.min((ts-lastT)/1000,.05); lastT=ts;
+  if(gamePaused) return;
 
-  // Day/Night cycle
-  dayT+=DAY_SPEED;
-  const sinT=Math.sin(dayT), cosT=Math.cos(dayT);
-  const sunH=Math.max(0,sinT);
-  if(Math.abs(sunH-lastSunH)>.002){ updateSky(sunH,sinT); lastSunH=sunH; }
-  skyMesh.position.copy(camera.position);
-  sun.position.set(cosT*300,sinT*300,80);
-  sun.intensity=sunH*2.2+.05;
-  if(sunH>0.01) sun.color.setHSL(0.10-sunH*0.05,1.0,Math.max(0.45,0.55+sunH*0.1));
-  else sun.color.setHSL(0.62,0.4,0.15);
-
-  const nightBlue=new THREE.Color(0x050520);
-  const dawnOrange=new THREE.Color(0xff6600);
-  const dayBlue=new THREE.Color(currentMap===2?0x55aaff:0x4499ee);
-  const horizCol = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
-  scene.fog.color.copy(horizCol);
-  if(currentMap!==3) scene.fog.density=Math.max(.001,.0017-sunH*.0006);
-
-  ambient.intensity=Math.max(.05,sunH*.3);
-  hemiLight.intensity=Math.max(.1,sunH*1.1);
-  fillLight.intensity=Math.max(0,.4-sunH*.5);
-  fillLight.color.set(sunH<.1?0x8899ff:0x4488ff);
-
-  // Tiny light pulse
-  scene.children.filter(c=>c.userData.isTinyLight).forEach(l=>{
-    l.intensity=1.2+Math.sin(ts*.003)*0.6;
-  });
+  // ── Day/Night cycle — skipped entirely in battery saver ──
+  let sunH=0.9; // battery saver default: bright midday
+  if(!batterySaver){
+    dayT+=DAY_SPEED;
+    const sinT=Math.sin(dayT), cosT=Math.cos(dayT);
+    sunH=Math.max(0,sinT);
+    if(Math.abs(sunH-lastSunH)>.002){ updateSky(sunH,sinT); lastSunH=sunH; }
+    skyMesh.position.copy(camera.position);
+    sun.position.set(cosT*300,sinT*300,80);
+    sun.intensity=sunH*2.2+.05;
+    if(sunH>0.01) sun.color.setHSL(0.10-sunH*0.05,1.0,Math.max(0.45,0.55+sunH*0.1));
+    else sun.color.setHSL(0.62,0.4,0.15);
+    const nightBlue=new THREE.Color(0x050520);
+    const dawnOrange=new THREE.Color(0xff6600);
+    const dayBlue=new THREE.Color(currentMap===2?0x55aaff:0x4499ee);
+    const horizCol = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
+    scene.fog.color.copy(horizCol);
+    if(currentMap!==3) scene.fog.density=Math.max(.001,.0017-sunH*.0006);
+    ambient.intensity=Math.max(.05,sunH*.3);
+    hemiLight.intensity=Math.max(.1,sunH*1.1);
+    fillLight.intensity=Math.max(0,.4-sunH*.5);
+    fillLight.color.set(sunH<.1?0x8899ff:0x4488ff);
+    cloudMeshes.forEach(c=>{ c.position.x+=c.userData.speed*c.userData.dir; if(Math.abs(c.position.x)>600) c.userData.dir*=-1; });
+  }
 
   // Camera keys
   if(camK.ArrowLeft)  camYaw  +=CAM_SPD;
@@ -1487,94 +1749,49 @@ function animate(ts=0){
   if(camK.ArrowUp)    camPitch =clamp(camPitch+CAM_SPD,.05,1.45);
   if(camK.ArrowDown)  camPitch =clamp(camPitch-CAM_SPD,.05,1.45);
 
-  // Movement
+  // Movement — camera-relative, joystick follows camera direction
   let mx=0,mz=0;
   const fwd=new THREE.Vector3(-Math.sin(camYaw),0,-Math.cos(camYaw));
   const rgt=new THREE.Vector3( Math.cos(camYaw),0,-Math.sin(camYaw));
   if(joyActive){
-    mx=-fwd.x*joyY*SPEED+rgt.x*joyX*SPEED;
-    mz=-fwd.z*joyY*SPEED+rgt.z*joyX*SPEED;
+    // Joystick: forward = camera forward
+    mx+=fwd.x*joyY*SPEED+rgt.x*joyX*SPEED;
+    mz+=fwd.z*joyY*SPEED+rgt.z*joyX*SPEED;
+    // Note: joyY negative = push up = move forward
+    const jSPD=superSpeed?SPEED*4:SPEED;
+    mx=-fwd.x*joyY*jSPD+rgt.x*joyX*jSPD;
+    mz=-fwd.z*joyY*jSPD+rgt.z*joyX*jSPD;
   } else {
-    if(moveK.w){mx+=fwd.x*SPEED;mz+=fwd.z*SPEED;}
-    if(moveK.s){mx-=fwd.x*SPEED;mz-=fwd.z*SPEED;}
-    if(moveK.a){mx-=rgt.x*SPEED;mz-=rgt.z*SPEED;}
-    if(moveK.d){mx+=rgt.x*SPEED;mz+=rgt.z*SPEED;}
+    const SPD=superSpeed?SPEED*4:SPEED;
+    if(moveK.w){mx+=fwd.x*SPD;mz+=fwd.z*SPD;}
+    if(moveK.s){mx-=fwd.x*SPD;mz-=fwd.z*SPD;}
+    if(moveK.a){mx-=rgt.x*SPD;mz-=rgt.z*SPD;}
+    if(moveK.d){mx+=rgt.x*SPD;mz+=rgt.z*SPD;}
   }
 
   const nx=player.position.x+mx, nz=player.position.z+mz;
-
-  // ── COLLISION RESOLUTION ──
-  // Determine player effective height for crouch
-  const playerH = isCrouching ? 0.6 : 1.2; // crouching = low profile
-
-  let hitX=false, hitZ=false;
-  if(!(accessMode==='dev'&&flyMode)){
+  let hit=false;
+  if(!noclipMode && !(accessMode==='dev'&&flyMode)){
     const px2=player.position.x, pz2=player.position.z;
-
     for(const r of obstacles){
-      // Skip furniture when crouching (player slides under desks/beds)
-      if(r.requiresStanding && isCrouching) continue;
-
-      // Door wall: check if player is passing through the door gap
-      if(r.isDoorWall){
-        // Find which house this door belongs to
-        let inDoorGap=false;
-        for(const h of housePositions){
-          // The door gap is at x: [h.doorX - h.doorW/2, h.doorX + h.doorW/2]
-          const onFrontWall = Math.abs(nz - h.doorZ) < 1.5 || Math.abs(r.z - h.doorZ) < 1.5;
-          if(onFrontWall){
-            const inGap = Math.abs(nx - h.doorX) < h.doorW/2;
-            if(inGap){ inDoorGap=true; break; }
-          }
-        }
-        if(inDoorGap) continue; // allow through door
-      }
-
-      const rr=r.radius+1.0;
-      const rdxN=Math.abs(nx-r.x), rdzN=Math.abs(nz-r.z);
-      const rdxO=Math.abs(px2-r.x), rdzO=Math.abs(pz2-r.z);
-      if(rdxN*rdxN+rdzN*rdzN<rr*rr){
-        // Try sliding along X
-        if(rdxO*rdxO+rdzN*rdzN>=rr*rr){ hitX=true; }
-        // Try sliding along Z
-        else if(rdxN*rdxN+rdzO*rdzO>=rr*rr){ hitZ=true; }
-        else { hitX=true; hitZ=true; }
-      }
+      // Quick broad-phase: skip if more than radius+4 away on either axis
+      const rdx=Math.abs(nx-r.x), rdz=Math.abs(nz-r.z), rr=r.radius+1.0;
+      if(rdx>rr+2||rdz>rr+2) continue;
+      if(rdx*rdx+rdz*rdz<rr*rr){hit=true;break;}
     }
   }
+  if(!hit){player.position.x=nx;player.position.z=nz;}
 
-  if(!hitX) player.position.x=nx;
-  if(!hitZ) player.position.z=nz;
-
-  // Door proximity hint for map 1
-  if(currentMap===1 && (mx!==0||mz!==0)){
-    for(const h of housePositions){
-      const dx=player.position.x-h.x, dz=player.position.z-h.z;
-      const nearFront=Math.abs(dz-(h.z+h.d/2))<3 && Math.abs(dx)<h.w/2;
-      if(nearFront && !(Math.abs(dx)<h.doorW/2+0.5)){
-        showDoorHint(); break;
-      }
-    }
-  }
-
-  // ── CROUCHING PHYSICS ──
-  // When crouching, player mesh shrinks and Y offset lowers
+  // Physics
   const tH=terrainH(player.position.x,player.position.z);
-  const crouchYOffset = isCrouching ? 0.5 : 1.2; // lower Y when crouching
-  const groundY = tH + crouchYOffset;
-
   if(flyMode){
     flyVelY*=.9; player.position.y+=flyVelY;
-    if(player.position.y<groundY) player.position.y=groundY;
+    if(player.position.y<tH+1.2) player.position.y=tH+1.2;
     isGrounded=false;
   } else {
-    if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY; if(player.position.y<=groundY){player.position.y=groundY;isGrounded=true;velocityY=0;} }
-    else{ player.position.y=groundY; }
+    if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;} }
+    else{ player.position.y=tH+1.2; }
   }
-
-  // Player mesh scale for crouching (squish down)
-  player.scale.y = isCrouching ? 0.55 : 1.0;
-
   disc.position.set(player.position.x,tH+.04,player.position.z);
 
   // Billboards
@@ -1583,32 +1800,35 @@ function animate(ts=0){
   familyMeshes.forEach(f=>f.mesh.lookAt(cfx,f.mesh.position.y,cfz));
   for(const id in peers) peers[id].mesh.lookAt(cfx,peers[id].mesh.position.y,cfz);
 
-  // Grass sway
-  const t2=ts*.001;
-  grassBlades.forEach((g,i)=>{ g.rotation.z=Math.sin(t2*1.4+i*.7)*.09; });
+  // Grass sway — skip in battery mode (saves ~1ms/frame with 80 blades)
+  if(!batterySaver){
+    const t2=ts*.001;
+    grassBlades.forEach((g,i)=>{ g.rotation.z=Math.sin(t2*1.4+i*.7)*.09; });
+  }
 
   doUpdateCamera();
-  label3D(player,document.getElementById('name-label'));
-  for(const id in peers) label3D(peers[id].mesh,peers[id].labelDiv);
+  // Labels: every frame normally, every 3 frames in battery mode
+  if(!batterySaver||frameCount%3===0){
+    label3D(player,document.getElementById('name-label'));
+    for(const id in peers) label3D(peers[id].mesh,peers[id].labelDiv);
+  }
 
-  // Collection
+  // Collection — larger range for hard maps
   const collectR=2.6;
   for(let i=familyMeshes.length-1;i>=0;i--){
     const f=familyMeshes[i];
     if(player.position.distanceTo(f.mesh.position)<collectR){
-      scene.remove(f.mesh);
-      // Remove tiny's light too
-      if(f.type==='tiny'){
-        const tl=scene.children.find(c=>c.userData.isTinyLight);
-        if(tl) scene.remove(tl);
-      }
-      famFound[f.type]++; familyMeshes.splice(i,1);
+      scene.remove(f.mesh); famFound[f.type]++; familyMeshes.splice(i,1);
       updateHUD(); checkGroupUnlock(f.type); checkWin();
     }
   }
 
-  // Net sync
-  for(const id in peers){ const p=peers[id]; if(p.conn&&p.conn.open) p.conn.send({type:'move',x:player.position.x,y:player.position.y,z:player.position.z}); }
+  // Net sync — battery saver sends every 6 frames, normal every 2
+  netSyncCounter++;
+  const syncRate = batterySaver ? 6 : 2;
+  if(netSyncCounter%syncRate===0){
+    for(const id in peers){ const p=peers[id]; if(p.conn&&p.conn.open) p.conn.send({type:'move',x:player.position.x,y:player.position.y,z:player.position.z}); }
+  }
 
   // Dev panel
   if(accessMode==='dev'){
@@ -1663,19 +1883,25 @@ function startGame(){
     document.getElementById('hud').style.display='block';
     document.getElementById('top-right').style.display='flex';
     document.getElementById('name-label').style.display='block';
+    document.getElementById('pause-btn').style.display='block';
     document.getElementById('joy-wrap').style.display='block';
     document.getElementById('jump-btn').style.display='block';
     document.getElementById('crouch-btn').style.display='block';
     document.getElementById('cam-hint').style.display='block';
     document.getElementById('skin-sel').style.display='flex';
     document.getElementById('dialogue').style.display='flex';
-
+    // Update dialogue image + name to match the player's chosen sprite
     const dImg = document.getElementById('d-img');
     dImg.src = currentSkin + '.png';
-    dImg.onerror = function(){ this.onerror=null; this.style.visibility='hidden'; };
+    dImg.onerror = function(){
+      this.onerror=null; this.style.visibility='hidden';
+      this.style.background=SPRITE_FALLBACK_COLORS[currentSkin]||'#4ECDC4';
+    };
     document.querySelector('#dialogue .d-name').textContent = (currentSkin[0].toUpperCase()+currentSkin.slice(1)) + ' 🐢';
 
+    // Skin: use chosen sprite only if it is actually unlocked, else fall back to friend
     currentSkin=unlockedSkins.includes(chosenSprite)?chosenSprite:'friend';
+    // Do NOT add chosen sprite to unlocked here — it must be earned (except friend)
     currentMap=1; loadMap(1);
     buildSkinSel(); applySkin(currentSkin);
     startTimer(); gameStarted=true; animate();
