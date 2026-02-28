@@ -71,6 +71,7 @@ canvas{display:block;width:100vw;height:100vh;}
 .btn-main:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
 .btn-vc{background:linear-gradient(135deg,#4ECDC4,#44a08d);}
 .btn-key{background:linear-gradient(135deg,#6A0DAD,#9b59b6);}
+.btn-battery{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a!important;}
 .btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
 .btn-sm:hover{background:rgba(255,255,255,.15);}
 
@@ -347,6 +348,10 @@ canvas{display:block;width:100vw;height:100vh;}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
       Enter Access Key
     </button>
+    <!-- BATTERY SAVER on main menu -->
+    <button class="btn-main btn-battery" id="menu-battery-btn" onclick="menuToggleBattery()">
+      ⚡ Battery Saver: <span id="menu-bat-label">OFF</span>
+    </button>
     <div id="conn-status">Ready to connect</div>
   </div>
 </div>
@@ -411,8 +416,9 @@ canvas{display:block;width:100vw;height:100vh;}
   <button class="pause-btn pause-resume" onclick="togglePause()">▶ Resume</button>
   <button class="pause-btn pause-battery" onclick="toggleBattery()">⚡ Battery Saver: <span id="bat-label">OFF</span></button>
   <div class="pause-sep"></div>
-  <button class="pause-btn pause-feature" onclick="openFeature()">💡 Request a Feature</button>
-  <div class="pause-sep"></div>
+  <!-- Feature request: only shown for admin, NOT dev (dev IS the developer) -->
+  <button class="pause-btn pause-feature" id="pause-feature-btn" onclick="openFeature()" style="display:none;">💡 Request a Feature</button>
+  <div class="pause-sep" id="pause-feature-sep" style="display:none;"></div>
   <button class="pause-btn pause-quit" onclick="quitGame()">✕ Quit to Menu</button>
 </div>
 
@@ -471,10 +477,10 @@ canvas{display:block;width:100vw;height:100vh;}
   <button class="dev-mbtn" onclick="camDistTarget=Math.max(4,camDistTarget-4)">🔍+</button>
   <button class="dev-mbtn" onclick="camDistTarget=Math.min(60,camDistTarget+4)">🔍−</button>
 </div>
-<!-- ADMIN MOBILE BUTTONS (separate) -->
+<!-- ADMIN MOBILE BUTTONS — fly only, no noclip/speed -->
 <div id="admin-btns" style="position:absolute;bottom:175px;left:85px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;">
   <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="flyMode=!flyMode;showToast(flyMode?'✈ Fly ON':'✈ Fly OFF')">✈ Fly</button>
-  <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="adminCollect()">★ Collect</button>
+  <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="player.position.set(0,20,0);showToast('⌂ Reset pos')">⌂ Reset</button>
   <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="openFeature()">💡 Feature</button>
 </div>
 <div id="joy-wrap"><div id="joy-outer"><div id="joy-inner"></div></div></div>
@@ -493,11 +499,8 @@ const SPRITE_FALLBACK_COLORS = {
   brother:'#2980b9',sister:'#e91e63',admin:'#9b59b6',dev:'#27ae60'
 };
 
-// Skin groups: finding all of a type unlocks that skin
 const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',tiny:'tiny'};
-// These are special and only unlocked by keys
 const KEY_ONLY_SKINS = ['dev','admin'];
-// 'friend' is always unlocked (the default skin)
 const ALWAYS_UNLOCKED = ['friend'];
 
 let playerName='Player', chosenSprite='friend', accessMode='normal';
@@ -509,10 +512,24 @@ let batterySaver=false;
 let gamePaused=false;
 let netSyncCounter=0;
 
+// ── MENU BATTERY SAVER TOGGLE ──
+function menuToggleBattery(){
+  batterySaver=!batterySaver;
+  document.getElementById('menu-bat-label').textContent=batterySaver?'ON':'OFF';
+  // Sync the in-game bat label too if it exists
+  const bl=document.getElementById('bat-label');
+  if(bl) bl.textContent=batterySaver?'ON':'OFF';
+  const badge=document.getElementById('battery-badge');
+  if(badge) badge.style.display=batterySaver?'block':'none';
+}
+
 // ── BATTERY SAVER ──
 function toggleBattery(){
   batterySaver=!batterySaver;
   document.getElementById('bat-label').textContent=batterySaver?'ON':'OFF';
+  // sync menu label
+  const ml=document.getElementById('menu-bat-label');
+  if(ml) ml.textContent=batterySaver?'ON':'OFF';
   document.getElementById('battery-badge').style.display=batterySaver?'block':'none';
   applyBatteryMode();
   showToast(batterySaver?'⚡ Battery Saver ON — optimised for low-end devices':'🔆 High Quality Mode');
@@ -520,63 +537,47 @@ function toggleBattery(){
 
 function applyBatteryMode(){
   if(batterySaver){
-    // ══ BATTERY ON: max performance, 60fps on 10yr old Android ══
-
-    // 1. Pixel ratio — 0.6 = render at 60% native res, huge GPU win
     renderer.setPixelRatio(0.6);
     renderer.setSize(innerWidth, innerHeight);
 
-    // 2. Kill all shadows completely
     renderer.shadowMap.enabled = false;
     sun.castShadow = false;
     scene.traverse(obj=>{ obj.castShadow=false; obj.receiveShadow=false; });
 
-    // 3. Remove all directional/point lights — only flat ambient remains
+    // Reduced intensity — not so overwhelmingly bright
     sun.intensity = 0;
     fillLight.intensity = 0;
-    // Boost ambient so world is still visible without directional lights
-    ambient.intensity = 2.0;
-    ambient.color.set(0xffffff);
-    hemiLight.intensity = 1.5;
+    ambient.intensity = 1.2;          // was 2.0, now softer
+    ambient.color.set(0xfff0d0);      // warm tint instead of pure white
+    hemiLight.intensity = 0.9;        // was 1.5
 
-    // 4. Kill tone mapping (expensive post-process)
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
 
-    // 5. Heavy fog = GPU renders far fewer objects
-    scene.fog.density = 0.018; // very short render distance
+    scene.fog.density = 0.018;
 
-    // 6. Freeze day/night — lock to midday (no per-frame sin/cos/color updates)
-    dayT = Math.PI * 0.5; // noon, frozen
+    dayT = Math.PI * 0.5;
 
-    // 7. Low bitrate VC
     if(localStream){
       localStream.getAudioTracks().forEach(t=>{
         try{ t.applyConstraints({sampleRate:8000,channelCount:1,echoCancellation:true}); } catch(e){}
       });
     }
 
-    // 8. Hide sky dome (saves vertex shader cost)
     skyMesh.visible = false;
-    scene.background = new THREE.Color(0x87ceeb);
+    scene.background = new THREE.Color(0x87b8d4);   // softer sky blue (was 0x87ceeb)
 
-    // 9. Hide ALL grass blades — each is a draw call
     grassBlades.forEach(g=>g.visible=false);
 
-    // 10. Reduce camera far plane to cull more geometry
     camera.far = 200;
     camera.updateProjectionMatrix();
 
   } else {
-    // ══ BATTERY OFF: maximum quality ══
-
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(innerWidth, innerHeight);
 
-    // Re-enable shadows
     renderer.shadowMap.enabled = true;
     sun.castShadow = true;
-    // Re-enable cast/receive on scene objects
     scene.traverse(obj=>{
       if(obj.userData.deco||obj.isMesh){
         obj.castShadow = !obj.userData.noShadow;
@@ -584,31 +585,25 @@ function applyBatteryMode(){
       }
     });
 
-    // Restore tone mapping
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.4;
 
-    // Restore fog to map default
     setLighting(currentMap);
 
-    // Restore sky dome
     skyMesh.visible = true;
     scene.background = null;
 
-    // Restore grass and camera
     grassBlades.forEach(g=>g.visible=true);
     camera.far = 1500;
     camera.updateProjectionMatrix();
 
-    // Restore VC
     if(localStream){
       localStream.getAudioTracks().forEach(t=>{
         try{ t.applyConstraints({sampleRate:48000,channelCount:2}); } catch(e){}
       });
     }
 
-    // Unfreeze day/night (lighting restored in animate loop)
-    lastSunH = -1; // force sky redraw
+    lastSunH = -1;
   }
 }
 
@@ -621,35 +616,47 @@ function togglePause(){
   if(gamePaused){
     const tot=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.tiny;
     document.getElementById('pause-mapinfo').textContent=`Map ${currentMap} · Found ${tot}/20`;
+    // Show feature request only for admin (dev IS the developer)
+    const fb=document.getElementById('pause-feature-btn');
+    const fs=document.getElementById('pause-feature-sep');
+    if(fb){ fb.style.display=(accessMode==='admin')?'block':'none'; }
+    if(fs){ fs.style.display=(accessMode==='admin')?'block':'none'; }
   }
 }
 function quitGame(){
   gamePaused=false;
   document.getElementById('pause-overlay').style.display='none';
   document.getElementById('pause-btn').style.display='none';
-  document.getElementById('game-ui').style.display='none';
+  document.getElementById('hud').style.display='none';
   document.getElementById('joy-wrap').style.display='none';
   document.getElementById('jump-btn').style.display='none';
   document.getElementById('crouch-btn').style.display='none';
   document.getElementById('skin-sel').style.display='none';
   document.getElementById('menu').style.display='flex';
+  document.getElementById('menu').style.opacity='1';
   gameStarted=false;
   if(peer){ peer.destroy(); peer=null; }
 }
 
 // ── FEATURE REQUEST ──
+let _featureFromPause=false;
 function openFeature(){
+  _featureFromPause=gamePaused;
   document.getElementById('pause-overlay').style.display='none';
   document.getElementById('feature-modal').style.display='flex';
 }
 function closeFeature(){
   document.getElementById('feature-modal').style.display='none';
-  document.getElementById('pause-overlay').style.display='flex';
+  if(_featureFromPause){
+    // Re-open pause menu properly
+    document.getElementById('pause-overlay').style.display='flex';
+    document.getElementById('pause-overlay').style.pointerEvents='auto';
+  }
+  // If not from pause (e.g. admin mobile button), just close — don't open pause
 }
 async function sendFeature(){
   const txt=document.getElementById('feature-input').value.trim();
   if(!txt){ showToast('Please enter your idea first!'); return; }
-  // Send via mailto as fallback (no backend)
   const subject=encodeURIComponent('Find Tiny Feature Request');
   const body=encodeURIComponent('Feature Request:\n\n'+txt+'\n\nFrom: '+playerName);
   window.open('mailto:dacoolkid325@gmail.com?subject='+subject+'&body='+body);
@@ -658,16 +665,14 @@ async function sendFeature(){
   showToast('📨 Opening email to send request!');
 }
 
-let famTargets = {dad:1,mum:1,brother:8,sister:9,tiny:1}; // 20 total
+let famTargets = {dad:1,mum:1,brother:8,sister:9,tiny:1};
 let famFound   = {dad:0,mum:0,brother:0,sister:0,tiny:0};
 let groupUnlocked = {};
 
 // ── PERSISTENT UNLOCK STORAGE ──
-// Only 'friend' is available by default. Everything else must be earned.
 function loadUnlocked(){
   try{
     const saved=JSON.parse(localStorage.getItem('ftf_unlocked')||'[]');
-    // Always include 'friend', merge saved
     const base=[...ALWAYS_UNLOCKED];
     saved.forEach(s=>{ if(!base.includes(s)) base.push(s); });
     return base;
@@ -678,7 +683,7 @@ function saveUnlocked(){
 }
 
 let unlockedSkins = loadUnlocked();
-let currentSkin = unlockedSkins[0]; // friend by default
+let currentSkin = unlockedSkins[0];
 
 let familyMeshes=[], obstacles=[], grassBlades=[], cloudMeshes=[];
 
@@ -697,7 +702,7 @@ let familyMeshes=[], obstacles=[], grassBlades=[], cloudMeshes=[];
 })();
 
 // ════════════════════════════════════════════════════
-//  SPRITE PICKER — locked sprites shown greyed with padlock
+//  SPRITE PICKER
 // ════════════════════════════════════════════════════
 function buildSpritePicker(){
   const row=document.getElementById('sprite-row');
@@ -717,11 +722,9 @@ function buildSpritePicker(){
     img.onerror=function(){
       const cv=document.createElement('canvas'); cv.width=cv.height=48;
       const ctx=cv.getContext('2d');
-      // No initials/text — just a colored circle placeholder
       ctx.fillStyle=isUnlocked?(SPRITE_FALLBACK_COLORS[name]||'#555'):'#222';
       ctx.beginPath(); ctx.arc(24,24,22,0,Math.PI*2); ctx.fill();
       if(!isUnlocked){
-        // draw lock symbol
         ctx.fillStyle='#888'; ctx.fillRect(18,22,12,10); ctx.beginPath();
         ctx.arc(24,22,5,Math.PI,0); ctx.strokeStyle='#888'; ctx.lineWidth=2; ctx.stroke();
       }
@@ -735,7 +738,6 @@ function buildSpritePicker(){
         localStorage.setItem('ftf_lastSprite',name);
       };
     } else {
-      // Show lock icon overlay
       const lock=document.createElement('div');
       lock.textContent='🔒';
       lock.style.cssText='position:absolute;top:0;right:0;font-size:14px;pointer-events:none;';
@@ -746,7 +748,6 @@ function buildSpritePicker(){
     row.appendChild(wrap);
   });
 
-  // Restore last chosen sprite if still unlocked, else default to friend
   const last=localStorage.getItem('ftf_lastSprite');
   const defaultChoice=last&&unlockedSkins.includes(last)?last:'friend';
   chosenSprite=defaultChoice;
@@ -772,12 +773,11 @@ function submitKey(){
     ks.style.color='#00FF88';
     if(mode==='dev'){
       ks.textContent='✔ Dev Mode unlocked!';
-      // Dev only gets dev skin (not family skins — those must be earned)
-      giveExtraSkins(['dev']);
+      // Dev gets dev skin AND admin skin (dev is above admin)
+      giveExtraSkins(['dev','admin']);
     } else {
       ks.textContent='✔ Admin Mode unlocked!';
-      // Admin gets dev + admin skins. Family skins still must be earned in-game.
-      // (adminCollect will auto-collect family, triggering group unlocks properly)
+      // Admin gets dev + admin skins
       giveExtraSkins(['dev','admin']);
     }
     if(gameStarted){ buildSkinSel(); updateModeTag(); if(mode==='admin') adminCollect(); }
@@ -803,7 +803,7 @@ function adminCollect(){
 }
 
 // ════════════════════════════════════════════════════
-//  VOICE CHAT (up to 10 players)
+//  VOICE CHAT
 // ════════════════════════════════════════════════════
 let peer, peers={}, localStream=null, micEnabled=false;
 
@@ -874,11 +874,10 @@ function playStream(stream){ const a=document.createElement('audio'); a.srcObjec
 //  THREE.JS CORE
 // ════════════════════════════════════════════════════
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1500); // wider far plane = more visible
-// Detect if mobile for initial quality hints
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1500);
 const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const renderer=new THREE.WebGLRenderer({
-  antialias:!isMobile,          // AA off on mobile by default
+  antialias:!isMobile,
   powerPreference:'high-performance',
   precision: isMobile?'mediump':'highp'
 });
@@ -906,7 +905,6 @@ sun.shadow.bias=-0.0005;
 sun.shadow.normalBias=0.02;
 scene.add(sun);
 
-// Secondary fill light from opposite side
 const fillLight=new THREE.DirectionalLight(0x4488ff,.35);
 fillLight.position.set(-1,.5,-1);
 scene.add(fillLight);
@@ -914,10 +912,9 @@ scene.add(fillLight);
 const ambient=new THREE.AmbientLight(0xffd0a0,.25);
 scene.add(ambient);
 
-// Day/night cycle — starts at dawn (~6am feel)
-let dayT=Math.PI*0.08;  // dawn
+let dayT=Math.PI*0.08;
 let lastSunH=-1;
-const DAY_SPEED=0.00012; // full cycle ~14 min
+const DAY_SPEED=0.00012;
 
 scene.fog=new THREE.FogExp2(0xffe8b0,.0015);
 scene.background=new THREE.Color(0xff9944);
@@ -925,8 +922,7 @@ scene.background=new THREE.Color(0xff9944);
 // ── SKY DOME ──
 const SKY_SEGS=12;
 const skyGeo=new THREE.SphereGeometry(900,SKY_SEGS,SKY_SEGS*.5);
-skyGeo.scale(-1,1,-1); // invert normals so it's visible from inside
-// Gradient: warm orange at horizon, deep blue at apex — updated each frame
+skyGeo.scale(-1,1,-1);
 const skyColors=new Float32Array(skyGeo.attributes.position.count*3);
 skyGeo.setAttribute('color',new THREE.BufferAttribute(skyColors,3));
 const skyMat=new THREE.MeshBasicMaterial({vertexColors:true,depthWrite:false,fog:false});
@@ -937,18 +933,13 @@ scene.add(skyMesh);
 function updateSky(sunH,sinT){
   const pos=skyGeo.attributes.position;
   const col=skyGeo.attributes.color;
-  // top = apex deep blue (night) or sky blue (day)
-  // horizon = warm orange (dawn/dusk) or pale sky (day) or near-black (night)
   const apex   = sunH>0.01 ? new THREE.Color(0x1a6ecc).lerp(new THREE.Color(0x0a2a60),Math.max(0,1-sunH*2)) : new THREE.Color(0x050520);
   const midSky = sunH>0.01 ? new THREE.Color(0x44aaee).lerp(new THREE.Color(0x88ccff),sunH) : new THREE.Color(0x101840);
   const horiz  = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
-  if(sunH<.02){ // dawn tinge
-    horiz.set(0xff5500);
-    midSky.set(0x331122);
-  }
+  if(sunH<.02){ horiz.set(0xff5500); midSky.set(0x331122); }
   for(let i=0;i<pos.count;i++){
-    const yN=Math.max(-1,Math.min(1,pos.getY(i)/900)); // -1 to 1
-    const t=Math.max(0,yN); // 0 at horizon, 1 at top
+    const yN=Math.max(-1,Math.min(1,pos.getY(i)/900));
+    const t=Math.max(0,yN);
     let c;
     if(t<0.15) c=horiz.clone().lerp(midSky,t/0.15);
     else c=midSky.clone().lerp(apex,(t-.15)/.85);
@@ -966,13 +957,12 @@ const terrainMats={
 tLoader.load('grass.png',tex=>{ tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(80,80); terrainMats[1].map=tex; terrainMats[1].needsUpdate=true; },null,()=>{});
 
 let terrain=null;
-// House flat pads — populated before buildTerrain so terrain can flatten under them
 const HOUSE_PADS=[
   {x:30,z:30},{x:80,z:-20},{x:-60,z:50},{x:50,z:-80},{x:-90,z:-30},
   {x:110,z:70},{x:-40,z:-120},{x:0,z:110},{x:130,z:-100},
   {x:-120,z:80},{x:70,z:150},{x:-150,z:-80},{x:20,z:-160},{x:160,z:20},{x:-80,z:160}
 ];
-const PAD_R=18; // flatten radius around each house centre
+const PAD_R=18;
 
 function buildTerrain(m){
   if(terrain){ scene.remove(terrain); terrain.geometry.dispose(); terrain=null; }
@@ -989,7 +979,6 @@ function buildTerrain(m){
         y = Math.sin(x*0.012)*Math.cos(z*0.012)*18
           + Math.sin(x*0.03+1)*Math.cos(z*0.025+2)*8
           + Math.sin(x*0.07)*Math.cos(z*0.08)*3;
-        // Hard flatten: vertices inside pad radius get y=0, taper in outer 5 units
         let flatBlend=0;
         for(const pad of HOUSE_PADS){
           const dist=Math.sqrt((x-pad.x)**2+(z-pad.z)**2);
@@ -1000,13 +989,21 @@ function buildTerrain(m){
         }
         y=y*(1-flatBlend);
       }
-      // m===2: y stays 0 (beach flat)
       pos.setY(i,y);
     }
     geo.computeVertexNormals();
   }
   terrain=new THREE.Mesh(geo,terrainMats[m]);
   terrain.receiveShadow=true; scene.add(terrain);
+}
+
+// ── MAP BOUNDS — invisible barrier walls so player can't escape ──
+// Built per-map. Uses simple radius check in movement code.
+let mapBounds = { halfSize: 380 }; // default for map 1/2
+function setMapBounds(m){
+  if(m===1) mapBounds={halfSize:360};
+  else if(m===2) mapBounds={halfSize:340};
+  else mapBounds={halfSize:35}; // classroom interior
 }
 
 // ── PLAYER ──
@@ -1018,23 +1015,18 @@ player.castShadow=true; scene.add(player);
 const disc=new THREE.Mesh(new THREE.CircleGeometry(.9,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.22}));
 disc.rotation.x=-Math.PI/2; scene.add(disc);
 
-// ── CLOUDS ──
-// clouds removed
-
 // ── RAYCASTER ──
 const gRay=new THREE.Raycaster();
 const dVec=new THREE.Vector3(0,-1,0);
-// Cache terrain heights for player pos to avoid per-frame raycasting overhead
 const _thCache=new Map();
 function terrainH(x,z){
   if(!terrain) return 0;
-  // Round to 1 decimal for caching — good enough for terrain
   const key=(Math.round(x*2)/2)+','+(Math.round(z*2)/2);
   if(_thCache.has(key)) return _thCache.get(key);
   gRay.set(new THREE.Vector3(x,500,z),dVec);
   const h=gRay.intersectObject(terrain);
   const y=h.length?h[0].point.y:0;
-  if(_thCache.size>2000) _thCache.clear(); // prevent unbounded growth
+  if(_thCache.size>2000) _thCache.clear();
   _thCache.set(key,y);
   return y;
 }
@@ -1043,7 +1035,7 @@ function terrainH(x,z){
 //  CAMERA
 // ════════════════════════════════════════════════════
 let camYaw=0, camPitch=.42, camDist=22, camDistTarget=22;
-const housePositions=[]; // filled by addHouse
+const housePositions=[];
 const CAM_SPD=.03;
 
 let mDrag=false,lmx=0,lmy=0;
@@ -1058,13 +1050,11 @@ renderer.domElement.addEventListener('touchstart',e=>{ for(const t of e.changedT
 renderer.domElement.addEventListener('touchmove',e=>{ for(const t of e.changedTouches){ if(camt[t.identifier]){ const p=camt[t.identifier]; camYaw-=(t.clientX-p.x)*.005; camPitch-=(t.clientY-p.y)*.005; camPitch=clamp(camPitch,.05,1.45); camt[t.identifier]={x:t.clientX,y:t.clientY}; e.preventDefault(); } } },{passive:false});
 renderer.domElement.addEventListener('touchend',e=>{ for(const t of e.changedTouches) delete camt[t.identifier]; },{passive:true});
 
-// Track which house player is currently inside
 let insideHouseIdx=-1;
 function doUpdateCamera(){
-  // House proximity — find if inside any house
   insideHouseIdx=-1;
   if(currentMap===1 && housePositions.length){
-    let nearest=9999, nearestDoor=9999;
+    let nearest=9999;
     for(let i=0;i<housePositions.length;i++){
       const h=housePositions[i];
       const dx=player.position.x-h.x, dz=player.position.z-h.z;
@@ -1073,7 +1063,6 @@ function doUpdateCamera(){
       const dist=Math.sqrt(dx*dx+dz*dz);
       nearest=Math.min(nearest,dist);
     }
-    // Inside: zoom right in so walls fill frame; door area: pull back slightly
     if(insideHouseIdx>=0) camDistTarget=8;
     else if(nearest<6) camDistTarget=13;
     else camDistTarget=22;
@@ -1082,10 +1071,9 @@ function doUpdateCamera(){
   }
   camDist+=(camDistTarget-camDist)*.1;
 
-  // Crouch: lower camera pitch (look along ground), raise target dist slightly
   const crouchPitch = isCrouching ? 0.06 : camPitch;
   const crouchDist  = isCrouching ? camDist*.85 : camDist;
-  const lookH = isCrouching ? 0.3 : 1.2; // look at foot level when crouching
+  const lookH = isCrouching ? 0.3 : 1.2;
   camera.position.set(
     player.position.x+Math.sin(camYaw)*crouchDist*Math.cos(crouchPitch),
     player.position.y+Math.sin(crouchPitch)*crouchDist,
@@ -1112,7 +1100,6 @@ function applySkin(name){
     playerMat.needsUpdate=true;
   });
   document.querySelectorAll('.sk-btn').forEach(b=>b.classList.toggle('sk-active',b.dataset.s===name));
-  // Keep dialogue portrait in sync with current skin
   const dImg=document.getElementById('d-img');
   if(dImg){
     dImg.src=name+'.png';
@@ -1124,17 +1111,7 @@ function applySkin(name){
 let skinSelCollapsed=false;
 function buildSkinSel(){
   const sel=document.getElementById('skin-sel');
-  // Minimise button
-  let minBtn=sel.querySelector('.sk-min');
-  if(!minBtn){
-    minBtn=document.createElement('button'); minBtn.className='sk-min';
-    minBtn.textContent=skinSelCollapsed?'▲ Skin':'▼';
-    minBtn.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
-    sel.appendChild(minBtn);
-  }
-  // Rebuild content
   sel.innerHTML='';
-  // Re-add minimise button
   const mb=document.createElement('button'); mb.className='sk-min';
   mb.textContent=skinSelCollapsed?'▲ Skin':'▼ Hide';
   mb.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
@@ -1154,15 +1131,8 @@ function buildSkinSel(){
 }
 
 // ════════════════════════════════════════════════════
-//  FAMILY SPAWN — Map 1: 9, Map 2: 10, Map 3: Tiny only
+//  FAMILY SPAWN
 // ════════════════════════════════════════════════════
-// Distribution across maps:
-// Map1: dad, mum, 4 brothers, 4 sisters  = 10 (but tiny not here) = 9 non-tiny + 0
-// Map2: 4 brothers, 5 sisters = 10 (beach) — tortoises on dry sand
-// Map3: tiny only
-
-// Family totals: dad=1 mum=1 brother=8 sister=9 tiny=1 = 20
-// Map1(9): dad mum 4bro 3sis | Map2(10): 4bro 6sis | Map3(1): tiny
 const MAP_ROSTER = {
   1:[{type:'dad',s:2.4},{type:'mum',s:2.2},
      {type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
@@ -1172,17 +1142,14 @@ const MAP_ROSTER = {
   3:[{type:'tiny',s:1.0}]
 };
 
-// Hard hiding spots for map 1 — behind/under things
-// Hard spots: [x,z] pairs — inside or near houses
 const HARD_SPOTS_MAP1 = [
   [30,30],[80,-20],[-60,50],[50,-80],[-90,-30],
   [110,70],[-40,-120],[0,110],[130,-100]
 ];
 
 function spawnFamily(){
-  if(currentMap===3) return; // Tiny is spawned synchronously inside buildClassroom
+  if(currentMap===3) return;
   const roster=MAP_ROSTER[currentMap]||[];
-  // Synchronous — terrain is already built by now
   roster.forEach((mem,idx)=>{
     const mat=new THREE.MeshStandardMaterial({
       color:typeCol(mem.type),side:THREE.DoubleSide,transparent:true,alphaTest:.05
@@ -1221,7 +1188,6 @@ function mkMesh(geo,params){ return new THREE.Mesh(geo,new THREE.MeshStandardMat
 
 function clearScene(){
   _thCache.clear();
-  // famFound intentionally NOT reset — carries across maps
   familyMeshes.forEach(f=>scene.remove(f.mesh));
   obstacles.forEach(o=>scene.remove(o.mesh||o));
   grassBlades.forEach(g=>scene.remove(g));
@@ -1230,19 +1196,20 @@ function clearScene(){
 }
 
 function loadMap(m){
-  clearScene(); buildTerrain(m); setLighting(m);
+  clearScene(); buildTerrain(m); setLighting(m); setMapBounds(m);
   if(m===1) buildNeighborhood();
   else if(m===2) buildBeach();
   else buildClassroom();
-  player.position.set(0,20,0); flyVelY=0; velocityY=0; isGrounded=false;
+  player.position.set(0, currentMap===3 ? 3 : 20, 0); flyVelY=0; velocityY=0; isGrounded=false;
   document.getElementById('c-map').textContent='Map '+m;
   updateHUD();
+  if(batterySaver) applyBatteryMode();
   if(accessMode==='admin') setTimeout(adminCollect,400);
 }
 
 // ── LIGHTING PER MAP ──
 function setLighting(m){
-  if(batterySaver) return; // battery saver controls its own lighting
+  if(batterySaver) return;
   if(m===1){
     hemiLight.color.set(0xffeaa0); hemiLight.groundColor.set(0x4a7a20); hemiLight.intensity=1.1;
     ambient.color.set(0xffd0a0); ambient.intensity=.3;
@@ -1260,18 +1227,14 @@ function setLighting(m){
 
 // ── MAP 1: NEIGHBORHOOD ──
 function buildNeighborhood(){
-  // Use HOUSE_PADS (already defined, matches terrain flat areas)
-  HOUSE_PADS.forEach(({x,z})=>{ addHouse(x,0,z); }); // ty=0 since terrain is flat there
+  HOUSE_PADS.forEach(({x,z})=>{ addHouse(x,0,z); });
 
-  // Trees — avoid house areas
   for(let i=0;i<60;i++){
     const tx=(Math.random()-.5)*700, tz=(Math.random()-.5)*700;
-    // Skip if too close to any house
     const nearHouse=HOUSE_PADS.some(h=>Math.sqrt((tx-h.x)**2+(tz-h.z)**2)<PAD_R+4);
     if(!nearHouse) addTree(tx,tz);
   }
 
-  // Rocks
   for(let i=0;i<30;i++){
     const s=Math.random()*3+1;
     const rx=(Math.random()-.5)*650, rz=(Math.random()-.5)*650;
@@ -1287,7 +1250,6 @@ function buildNeighborhood(){
 }
 
 function addHouse(x,ty,z){
-  // ty=0 since terrain is flat at house pads
   const W=18, D=16, H=8, WT=1.0;
   const DOOR_W=3.2, DOOR_H=4.4;
   const idx=housePositions.length;
@@ -1307,40 +1269,30 @@ function addHouse(x,ty,z){
     m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
 
-  // ── FLOOR SLAB — thick, sinks 5u into ground, no gaps ──
-  // Use terrain colour so no colour extension visible
+  // Floor slab
   box(new THREE.BoxGeometry(W+WT*2+1,10,D+WT*2+1),
     new THREE.MeshStandardMaterial({color:0x4a8c28,roughness:.9}), x,-5,z);
-  // Interior floor on top
   box(new THREE.BoxGeometry(W-0.2,0.2,D-0.2),fMat, x,0.1,z);
 
-  // ── WALLS ──
+  // Walls
   const fSide=(W-DOOR_W)/2;
-  box(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, x,H/2,z-D/2-WT/2);         // back
-  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x-W/2-WT/2,H/2,z);         // left
-  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x+W/2+WT/2,H/2,z);         // right
-  box(new THREE.BoxGeometry(fSide,H,WT),wMat, x-DOOR_W/2-fSide/2,H/2,z+D/2+WT/2); // front-L
-  box(new THREE.BoxGeometry(fSide,H,WT),wMat, x+DOOR_W/2+fSide/2,H/2,z+D/2+WT/2); // front-R
-  box(new THREE.BoxGeometry(W+WT*2,H-DOOR_H,WT),wMat, x,DOOR_H+(H-DOOR_H)/2,z+D/2+WT/2); // front-top
+  box(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, x,H/2,z-D/2-WT/2);
+  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x-W/2-WT/2,H/2,z);
+  box(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, x+W/2+WT/2,H/2,z);
+  box(new THREE.BoxGeometry(fSide,H,WT),wMat, x-DOOR_W/2-fSide/2,H/2,z+D/2+WT/2);
+  box(new THREE.BoxGeometry(fSide,H,WT),wMat, x+DOOR_W/2+fSide/2,H/2,z+D/2+WT/2);
+  box(new THREE.BoxGeometry(W+WT*2,H-DOOR_H,WT),wMat, x,DOOR_H+(H-DOOR_H)/2,z+D/2+WT/2);
 
-  // ── ROOF — proper gabled prism via BufferGeometry ──
+  // Roof
   const roofW=W+WT*2+1.5, roofD=D+WT*2+1.5, roofH=H*0.6;
   {
     const hw=roofW/2, hd=roofD/2;
     const verts=new Float32Array([
-      -hw,0,-hd,   // 0 left-front base
-       hw,0,-hd,   // 1 right-front base
-       hw,0, hd,   // 2 right-back base
-      -hw,0, hd,   // 3 left-back base
-      -hw,roofH,0, // 4 left-ridge
-       hw,roofH,0, // 5 right-ridge
+      -hw,0,-hd, hw,0,-hd, hw,0,hd, -hw,0,hd,
+      -hw,roofH,0, hw,roofH,0,
     ]);
     const idxArr=new Uint16Array([
-      0,4,1, 1,4,5,  // front slope
-      2,5,3, 3,5,4,  // back slope
-      0,3,4,         // left gable
-      1,5,2,         // right gable
-      0,1,2, 0,2,3,  // base (for shadows)
+      0,4,1, 1,4,5, 2,5,3, 3,5,4, 0,3,4, 1,5,2, 0,1,2, 0,2,3,
     ]);
     const geo=new THREE.BufferGeometry();
     geo.setAttribute('position',new THREE.BufferAttribute(verts,3));
@@ -1351,15 +1303,13 @@ function addHouse(x,ty,z){
     roofMesh.castShadow=true; roofMesh.receiveShadow=true; roofMesh.userData.deco=true;
     scene.add(roofMesh);
   }
-  // Eave lip at base of roof
   box(new THREE.BoxGeometry(roofW+.2,0.4,roofD+.2),rMat, x,H+.2,z);
-  // Ridge cap
   box(new THREE.BoxGeometry(roofW+0.3,0.3,0.3),rMat, x,H+0.25+roofH,z);
 
-  // ── CEILING ──
+  // Ceiling
   box(new THREE.BoxGeometry(W+.2,.25,D+.2),new THREE.MeshStandardMaterial({color:0xEEEEE8,roughness:.9}), x,H-.12,z);
 
-  // ── WINDOWS (embedded in wall — frame larger than glass) ──
+  // Windows
   const wY=H*0.62, wW=2.0, wH2=1.7;
   function win(px,pz,ry){
     box(new THREE.BoxGeometry(wW+.5,wH2+.5,WT+.1),frMat,px,wY,pz,ry);
@@ -1371,26 +1321,39 @@ function addHouse(x,ty,z){
   if(fSide>3) win(x-(DOOR_W/2+fSide*.5), z+D/2+WT/2, 0);
   if(fSide>3) win(x+(DOOR_W/2+fSide*.5), z+D/2+WT/2, 0);
 
-  // ── DOOR — open/ajar to invite entry ──
+  // Door — open/ajar
   const doorM=box(new THREE.BoxGeometry(DOOR_W-.4,DOOR_H-.4,.12),dMat, x-(DOOR_W*.35),DOOR_H/2,z+D/2+WT*.55);
-  doorM.rotation.y=Math.PI*0.3; // swung open
+  doorM.rotation.y=Math.PI*0.3;
 
-  // ── INTERIOR FURNITURE ──
+  // Interior furniture
   box(new THREE.BoxGeometry(4.5,.8,6.5),new THREE.MeshStandardMaterial({color:0x5577AA,roughness:.8}), x+W*.22,.4,z-D*.18);
   box(new THREE.BoxGeometry(3.5,H*.65,1.8),new THREE.MeshStandardMaterial({color:0x7A5525,roughness:.85}), x-W*.28,H*.33,z+D*.2);
-  if(idx<5){ // limit interior lights for perf
+  if(idx<5){
     const pl=new THREE.PointLight(0xFFCC88,.8,20);
     pl.position.set(x,H-.8,z); pl.userData.deco=true; scene.add(pl);
   }
 
-  // ── COLLISION — walls only need coverage at player height ──
+  // ── COLLISION: walls only — NO door obstacle so player can walk through doorway ──
   const R=WT+.8;
   for(let i=0;i<=W+WT*2;i+=3) obstacles.push({x:x-W/2-WT+i, z:z-D/2-WT, radius:R}); // back
-  for(let i=0;i<=D+WT*2;i+=3) obstacles.push({x:x-W/2-WT,  z:z-D/2-WT+i, radius:R}); // left
-  for(let i=0;i<=D+WT*2;i+=3) obstacles.push({x:x+W/2+WT,  z:z-D/2-WT+i, radius:R}); // right
-  for(let i=0;i<=fSide;i+=3)   obstacles.push({x:x-W/2+i,   z:z+D/2+WT,   radius:R}); // front-L
-  for(let i=0;i<=fSide;i+=3)   obstacles.push({x:x+DOOR_W/2+i, z:z+D/2+WT, radius:R}); // front-R
-  obstacles.push({x:x-W*.28, z:z+D*.2, radius:2.0});  // wardrobe
+  for(let i=0;i<=D+WT*2;i+=3) obstacles.push({x:x-W/2-WT,   z:z-D/2-WT+i, radius:R}); // left
+  for(let i=0;i<=D+WT*2;i+=3) obstacles.push({x:x+W/2+WT,   z:z-D/2-WT+i, radius:R}); // right
+  // Front wall: only the solid sections beside the door opening — leave door gap clear
+  const doorLeft  = x - DOOR_W/2;
+  const doorRight = x + DOOR_W/2;
+  const frontZ = z+D/2+WT;
+  for(let i=0;i<=fSide+WT;i+=2){
+    const wx = x-W/2-WT+i;
+    if(wx < doorLeft-0.5 || wx > doorRight+0.5)
+      obstacles.push({x:wx, z:frontZ, radius:R});
+  }
+  for(let i=0;i<=fSide+WT;i+=2){
+    const wx = x+DOOR_W/2+i;
+    if(wx < doorLeft-0.5 || wx > doorRight+0.5)
+      obstacles.push({x:wx, z:frontZ, radius:R});
+  }
+  // Interior furniture collision
+  obstacles.push({x:x-W*.28, z:z+D*.2,  radius:2.0}); // wardrobe
   obstacles.push({x:x+W*.22, z:z-D*.18, radius:2.0}); // bed
 
   housePositions.push({x,z,w:W+WT*2,d:D+WT*2});
@@ -1408,30 +1371,21 @@ function addTree(x,z){
 
 // ── MAP 2: TURTLE BEACH ──
 function buildBeach(){
-  // Single ocean plane — sits clearly below sand level, no layering
   const ocean=mkMesh(new THREE.PlaneGeometry(3000,1200),{color:0x0d7ab5,roughness:.08,metalness:.2});
   ocean.rotation.x=-Math.PI/2; ocean.position.set(0,-3,0); ocean.userData.deco=true; scene.add(ocean);
 
-  // Wet sand fringe where water meets beach — just a thin darker strip, same plane level as terrain
   const wet=mkMesh(new THREE.PlaneGeometry(3000,60),{color:0xd4a84a,roughness:.9});
   wet.rotation.x=-Math.PI/2; wet.position.set(0,0.01,-170); wet.userData.deco=true; scene.add(wet);
 
-  // Ocean only visible south of z=-180 — block player from swimming
-  // (beach terrain flat, water below it — clean edge)
-
-  // Palm trees on dry sand
   for(let i=0;i<70;i++){
     const px=(Math.random()-.5)*700, pz=(Math.random()-.5)*200;
     addPalm(px,pz);
   }
 
-  // Tall grass tufts on beach
   spawnBeachGrass(80,600,180);
 
-  // Beach umbrellas and towels
   for(let i=0;i<20;i++) addUmbrella((Math.random()-.5)*500,(Math.random()-.5)*200);
 
-  // Rocks/tide pools — keep on dry sand
   for(let i=0;i<20;i++){
     const s=Math.random()*3+.8;
     const rx=(Math.random()-.5)*600, rz=(Math.random()-.5)*220;
@@ -1440,14 +1394,12 @@ function buildBeach(){
     obstacles.push({mesh:rock,radius:s*1.2,x:rx,z:rz});
   }
 
-  // Sand dunes
   for(let i=0;i<20;i++){
     const dx=(Math.random()-.5)*600, dz=(Math.random()-.5)*220;
     const dune=mkMesh(new THREE.SphereGeometry(8+Math.random()*14,8,6),{color:0xe8c870,roughness:1});
     dune.scale.y=.22; dune.position.set(dx,.2,dz); dune.receiveShadow=true; dune.userData.deco=true; scene.add(dune);
   }
 
-  // Turtle shells (decorative)
   for(let i=0;i<14;i++){
     const sx=(Math.random()-.5)*500, sz=(Math.random()-.5)*200;
     addShell(sx,sz);
@@ -1457,7 +1409,6 @@ function buildBeach(){
 }
 
 function spawnBeachGrass(count,spreadX,spreadZ){
-  // Beach grass — yellowish sea grass tufts
   const gm=new THREE.MeshStandardMaterial({color:0xc8c040,side:THREE.DoubleSide,transparent:true,alphaTest:.08,roughness:1});
   for(let i=0;i<count;i++){
     const gx=(Math.random()-.5)*spreadX, gz=(Math.random()-.5)*spreadZ;
@@ -1484,7 +1435,6 @@ function addUmbrella(x,z){
   const cols=[0xff4444,0xffcc00,0x44aaff,0xff8800,0xff44ff,0x44ff88];
   const canopy=mkMesh(new THREE.ConeGeometry(3.2,1.2,8),{color:cols[Math.floor(Math.random()*cols.length)]});
   canopy.rotation.x=Math.PI; canopy.position.set(x,ty+4.2,z); canopy.userData.deco=true; scene.add(canopy);
-  // Towel
   const towel=mkMesh(new THREE.BoxGeometry(3.5,.05,5),{color:cols[Math.floor(Math.random()*cols.length)],roughness:.9});
   towel.position.set(x+(Math.random()-.5)*4,ty+.06,z+(Math.random()-.5)*4); towel.userData.deco=true; scene.add(towel);
 }
@@ -1507,29 +1457,20 @@ function buildClassroom(){
     m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
 
-  // ── FLOOR SLAB — thick enough to cover terrain ──
   cbox(new THREE.BoxGeometry(W+WT*2,8,D+WT*2),fMat, 0,-3.5,0);
-  // Interior floor surface (slightly lighter)
   cbox(new THREE.BoxGeometry(W-.5,.15,D-.5),new THREE.MeshStandardMaterial({color:0xDDD0B0,roughness:.6}), 0,.07,0);
 
-  // ── 4 SOLID WALLS with GUARANTEED collision ──
-  // Back wall
   cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,-D/2-WT/2);
   for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:-D/2-WT/2,radius:WT+.9});
-  // Front wall
   cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,D/2+WT/2);
   for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:D/2+WT/2,radius:WT+.9});
-  // Left wall
   cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, -W/2-WT/2,H/2,0);
   for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:-W/2-WT/2,z:iz,radius:WT+.9});
-  // Right wall
   cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, W/2+WT/2,H/2,0);
   for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:W/2+WT/2,z:iz,radius:WT+.9});
 
-  // ── CEILING ──
   cbox(new THREE.BoxGeometry(W+WT*2,.3,D+WT*2),new THREE.MeshStandardMaterial({color:0xF5F5F0,roughness:.9}), 0,H+.15,0);
 
-  // ── BLACKBOARD ──
   cbox(new THREE.BoxGeometry(32,6,.6),new THREE.MeshStandardMaterial({color:0x1B5E30,roughness:.75}), 0,5,-D/2+WT*.4);
   cbox(new THREE.BoxGeometry(33,6.6,.3),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.85}), 0,5,-D/2+WT*.1);
   for(let i=0;i<4;i++){
@@ -1538,11 +1479,9 @@ function buildClassroom(){
       -12+i*8, 4.5+Math.random()*2, -D/2+WT*.5);
   }
 
-  // ── DESKS: 4 rows x 4 cols (smaller room = fewer desks) ──
   for(let row=0;row<4;row++) for(let col=0;col<4;col++) addDesk(-24+col*16,-20+row*12);
-  addDesk(0,-D/2+8,true); // teacher desk near board
+  addDesk(0,-D/2+8,true);
 
-  // ── BOOKSHELVES ──
   [-37,37].forEach(sx=>{
     cbox(new THREE.BoxGeometry(WT+.5,7,D*.65),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.9}), sx,3.5,2);
     for(let sz=-D*.32;sz<=D*.32;sz+=2.5) obstacles.push({x:sx,z:2+sz,radius:WT+1.0});
@@ -1554,7 +1493,6 @@ function buildClassroom(){
     }
   });
 
-  // ── CEILING LIGHTS ──
   for(let i=0;i<3;i++){
     const bx=-20+i*20;
     cbox(new THREE.BoxGeometry(10,.2,.4),new THREE.MeshStandardMaterial({color:0xEEEECC,emissive:0xDDDDAA,emissiveIntensity:1.1}), bx,H-.15,0);
@@ -1562,27 +1500,34 @@ function buildClassroom(){
     pl.position.set(bx,H-1,0); pl.userData.deco=true; pl.castShadow=false; scene.add(pl);
   }
 
-  // ── WINDOWS ──
   const winMat2=new THREE.MeshStandardMaterial({color:0x88CCFF,transparent:true,opacity:.5,roughness:.05});
   [-18,0,18].forEach(wz=>{
     cbox(new THREE.BoxGeometry(WT+.1,3.5,4.5),winMat2, W/2+WT/2,5.5,wz);
     cbox(new THREE.BoxGeometry(WT+.5,4,5),new THREE.MeshStandardMaterial({color:0xDDDDDD,roughness:.8}), W/2+WT/2,5.5,wz);
   });
 
-  // ── GLOBE ──
   cbox(new THREE.BoxGeometry(.2,2.5,.2),new THREE.MeshStandardMaterial({color:0x888888}), 8,1.5,-D/2+10);
   cbox(new THREE.SphereGeometry(1.4,8,6),new THREE.MeshStandardMaterial({color:0x3388EE,roughness:.35}), 8,3.8,-D/2+10);
 
-  // ── SPAWN TINY — guaranteed synchronous placement ──
-  // Tiny hides behind teacher desk or in bookshelf corner
-  const TINY_SPOTS=[[0,-D/2+9],[32,2],[-32,2],[20,-22],[-20,-22]];
-  const spot=TINY_SPOTS[Math.floor(Math.random()*TINY_SPOTS.length)];
+  // Tiny is always right in the centre of the classroom, slightly bigger and flashing
   const tinyMat=new THREE.MeshStandardMaterial({color:typeCol('tiny'),side:THREE.DoubleSide,transparent:true,alphaTest:.05});
   tLoader.load('tiny.png',tex=>{tinyMat.map=tex;tinyMat.color.set(0xFFFFFF);tinyMat.needsUpdate=true;},null,()=>{});
-  const tinyMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.0,1.3),tinyMat);
-  tinyMesh.position.set(spot[0],1.0,spot[1]);
-  tinyMesh.castShadow=true; scene.add(tinyMesh);
+  const tinyMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.4,1.82),tinyMat);
+  tinyMesh.position.set(0, 1.1, 0); // dead centre of classroom, feet on floor
+  tinyMesh.castShadow=true;
+  tinyMesh.userData.isTiny=true; // flag for flash animation
+  scene.add(tinyMesh);
   familyMeshes.push({mesh:tinyMesh,type:'tiny'});
+
+  // Glowing halo ring beneath Tiny
+  const haloGeo=new THREE.RingGeometry(0.8,1.6,32);
+  const haloMat=new THREE.MeshBasicMaterial({color:0xFFD166,side:THREE.DoubleSide,transparent:true,opacity:0.55});
+  const halo=new THREE.Mesh(haloGeo,haloMat);
+  halo.rotation.x=-Math.PI/2;
+  halo.position.set(0,0.08,0);
+  halo.userData.isTinyHalo=true;
+  halo.userData.deco=true;
+  scene.add(halo);
 }
 
 function addDesk(x,z,big=false){
@@ -1591,7 +1536,6 @@ function addDesk(x,z,big=false){
   [[-2.8,-.8],[2.8,-.8],[-2.8,1.5],[2.8,1.5]].forEach(([ox,oz])=>{
     const leg=mkMesh(new THREE.CylinderGeometry(.15,.15,1.6,4),{color:0x7a5020}); leg.position.set(x+ox*s,1,z+oz*s); leg.userData.deco=true; scene.add(leg);
   });
-  // Paper on desk
   if(!big){ const paper=mkMesh(new THREE.BoxGeometry(2,.03,2.5),{color:0xfafafa,roughness:.9}); paper.position.set(x,1.76,z); paper.userData.deco=true; scene.add(paper); }
   obstacles.push({mesh:desk,radius:big?5.5:3.2,x,z});
 }
@@ -1619,15 +1563,17 @@ window.addEventListener('keydown',e=>{
   if(k===' ') doJump();
   if(k==='c'||k==='C'){ isCrouching=true; }
   if(k==='Escape') togglePause();
+  // Fly: dev always; admin also gets fly
   if((k==='f'||k==='F')&&(accessMode==='dev'||accessMode==='admin')){ flyMode=!flyMode; showToast(flyMode?'Fly ON':'Fly OFF'); }
-  if((k==='r'||k==='R')&&(accessMode==='dev'||accessMode==='admin')){ player.position.set(0,20,0); showToast('Position reset'); }
+  if((k==='r'||k==='R')&&(accessMode==='dev'||accessMode==='admin')){ player.position.set(0, currentMap===3?3:20, 0); showToast('Position reset'); }
   if((k==='g'||k==='G')&&accessMode!=='normal') adminCollect();
+  // Noclip and speed: dev only
   if((k==='n'||k==='N')&&accessMode==='dev'){ noclipMode=!noclipMode; showToast(noclipMode?'Noclip ON':'Noclip OFF'); }
   if((k==='z'||k==='Z')&&accessMode==='dev'){ superSpeed=!superSpeed; showToast(superSpeed?'Super Speed ON':'Super Speed OFF'); }
 });
 window.addEventListener('keyup',e=>{ const k=e.key; if(k in moveK)moveK[k]=false; if(k in camK)camK[k]=false; if(k==='c'||k==='C') isCrouching=false; });
 
-// Joystick — direction relative to camera
+// Joystick
 let joyX=0,joyY=0,joyActive=false,joyC={x:0,y:0};
 const GRAVITY=.024,JUMP_V=.55,SPEED=.38;
 
@@ -1653,13 +1599,11 @@ function doJump(){ if(flyMode){flyVelY=.6;return;} if(isGrounded){velocityY=JUMP
 //  HUD
 // ════════════════════════════════════════════════════
 function updateHUD(){
-  // Show cumulative found / total across all maps
   document.getElementById('c-dad').textContent=`Dad ${famFound.dad}/${famTargets.dad}`;
   document.getElementById('c-mum').textContent=`Mum ${famFound.mum}/${famTargets.mum}`;
   document.getElementById('c-bro').textContent=`Bros ${famFound.brother}/${famTargets.brother}`;
   document.getElementById('c-sis').textContent=`Sis ${famFound.sister}/${famTargets.sister}`;
   document.getElementById('c-tiny').textContent=`Tiny ${famFound.tiny}/${famTargets.tiny}`;
-  // Unlock map 3 label
   const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister;
   const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister;
   if(nt>=tot){ const o=document.querySelector('#map-sel option[value="3"]'); if(o&&o.textContent.includes('🔒')) o.textContent="🏫 Map 3 — Tiny's Hideout"; }
@@ -1668,22 +1612,15 @@ function updateHUD(){
 // ════════════════════════════════════════════════════
 //  COLLECTION & UNLOCK
 // ════════════════════════════════════════════════════
-
-
-
-
-
-
-
 function checkGroupUnlock(type){
   if(groupUnlocked[type]) return;
   if(famFound[type]>=famTargets[type]){
     groupUnlocked[type]=true;
     if(!unlockedSkins.includes(type)){
       unlockedSkins.push(type);
-      saveUnlocked();        // persist to localStorage
-      buildSkinSel();        // update in-game switcher
-      buildSpritePicker();   // update menu picker (unlocks sprite)
+      saveUnlocked();
+      buildSkinSel();
+      buildSpritePicker();
       showUnlockBanner(type);
     }
   }
@@ -1712,14 +1649,14 @@ function tryMap(v){
 // ════════════════════════════════════════════════════
 let lastT=0;
 let frameCount=0;
+let _edgeMsgTime=0; // throttle for edge-of-map toast
 function animate(ts=0){
   frameCount++;
   requestAnimationFrame(animate);
   const dt=Math.min((ts-lastT)/1000,.05); lastT=ts;
   if(gamePaused) return;
 
-  // ── Day/Night cycle — skipped entirely in battery saver ──
-  let sunH=0.9; // battery saver default: bright midday
+  let sunH=0.9;
   if(!batterySaver){
     dayT+=DAY_SPEED;
     const sinT=Math.sin(dayT), cosT=Math.cos(dayT);
@@ -1730,9 +1667,6 @@ function animate(ts=0){
     sun.intensity=sunH*2.2+.05;
     if(sunH>0.01) sun.color.setHSL(0.10-sunH*0.05,1.0,Math.max(0.45,0.55+sunH*0.1));
     else sun.color.setHSL(0.62,0.4,0.15);
-    const nightBlue=new THREE.Color(0x050520);
-    const dawnOrange=new THREE.Color(0xff6600);
-    const dayBlue=new THREE.Color(currentMap===2?0x55aaff:0x4499ee);
     const horizCol = sunH>0.01 ? new THREE.Color(0xff7700).lerp(new THREE.Color(0xbbddff),Math.min(1,sunH*2)) : new THREE.Color(0x1a0808);
     scene.fog.color.copy(horizCol);
     if(currentMap!==3) scene.fog.density=Math.max(.001,.0017-sunH*.0006);
@@ -1743,21 +1677,15 @@ function animate(ts=0){
     cloudMeshes.forEach(c=>{ c.position.x+=c.userData.speed*c.userData.dir; if(Math.abs(c.position.x)>600) c.userData.dir*=-1; });
   }
 
-  // Camera keys
   if(camK.ArrowLeft)  camYaw  +=CAM_SPD;
   if(camK.ArrowRight) camYaw  -=CAM_SPD;
   if(camK.ArrowUp)    camPitch =clamp(camPitch+CAM_SPD,.05,1.45);
   if(camK.ArrowDown)  camPitch =clamp(camPitch-CAM_SPD,.05,1.45);
 
-  // Movement — camera-relative, joystick follows camera direction
   let mx=0,mz=0;
   const fwd=new THREE.Vector3(-Math.sin(camYaw),0,-Math.cos(camYaw));
   const rgt=new THREE.Vector3( Math.cos(camYaw),0,-Math.sin(camYaw));
   if(joyActive){
-    // Joystick: forward = camera forward
-    mx+=fwd.x*joyY*SPEED+rgt.x*joyX*SPEED;
-    mz+=fwd.z*joyY*SPEED+rgt.z*joyX*SPEED;
-    // Note: joyY negative = push up = move forward
     const jSPD=superSpeed?SPEED*4:SPEED;
     mx=-fwd.x*joyY*jSPD+rgt.x*joyX*jSPD;
     mz=-fwd.z*joyY*jSPD+rgt.z*joyX*jSPD;
@@ -1769,12 +1697,24 @@ function animate(ts=0){
     if(moveK.d){mx+=rgt.x*SPD;mz+=rgt.z*SPD;}
   }
 
-  const nx=player.position.x+mx, nz=player.position.z+mz;
+  let nx=player.position.x+mx, nz=player.position.z+mz;
+
+  // ── MAP BOUNDARY: hard clamp so player cannot leave the map ──
+  const bound = mapBounds.halfSize;
+  nx = clamp(nx, -bound, bound);
+  nz = clamp(nz, -bound, bound);
+
+  // If we hit the boundary, show a subtle edge-of-map toast (throttled)
+  if((nx <= -bound||nx>=bound||nz <= -bound||nz>=bound)&&(mx!==0||mz!==0)){
+    if(Date.now()-_edgeMsgTime>4000){
+      _edgeMsgTime=Date.now();
+      showToast('🗺️ Edge of map!',2000);
+    }
+  }
+
   let hit=false;
-  if(!noclipMode && !(accessMode==='dev'&&flyMode)){
-    const px2=player.position.x, pz2=player.position.z;
+  if(!noclipMode && !((accessMode==='dev'||accessMode==='admin')&&flyMode)){
     for(const r of obstacles){
-      // Quick broad-phase: skip if more than radius+4 away on either axis
       const rdx=Math.abs(nx-r.x), rdz=Math.abs(nz-r.z), rr=r.radius+1.0;
       if(rdx>rr+2||rdz>rr+2) continue;
       if(rdx*rdx+rdz*rdz<rr*rr){hit=true;break;}
@@ -1794,26 +1734,42 @@ function animate(ts=0){
   }
   disc.position.set(player.position.x,tH+.04,player.position.z);
 
-  // Billboards
   const cfx=camera.position.x,cfz=camera.position.z;
   player.lookAt(cfx,player.position.y,cfz);
   familyMeshes.forEach(f=>f.mesh.lookAt(cfx,f.mesh.position.y,cfz));
   for(const id in peers) peers[id].mesh.lookAt(cfx,peers[id].mesh.position.y,cfz);
 
-  // Grass sway — skip in battery mode (saves ~1ms/frame with 80 blades)
   if(!batterySaver){
     const t2=ts*.001;
     grassBlades.forEach((g,i)=>{ g.rotation.z=Math.sin(t2*1.4+i*.7)*.09; });
   }
 
+  // Tiny flash: pulse opacity and scale, halo rotates
+  if(currentMap===3){
+    const pulse=0.55+0.45*Math.abs(Math.sin(ts*0.004)); // 0.55–1.0 opacity cycle
+    const scl=0.92+0.12*Math.abs(Math.sin(ts*0.004));
+    familyMeshes.forEach(f=>{
+      if(f.mesh.userData.isTiny){
+        f.mesh.material.opacity=pulse;
+        f.mesh.scale.setScalar(scl);
+      }
+    });
+    scene.children.forEach(c=>{
+      if(c.userData.isTinyHalo){
+        c.material.opacity=0.2+0.45*Math.abs(Math.sin(ts*0.004));
+        c.rotation.z+=0.018; // spin
+        const hs=0.85+0.35*Math.abs(Math.sin(ts*0.003));
+        c.scale.setScalar(hs);
+      }
+    });
+  }
+
   doUpdateCamera();
-  // Labels: every frame normally, every 3 frames in battery mode
   if(!batterySaver||frameCount%3===0){
     label3D(player,document.getElementById('name-label'));
     for(const id in peers) label3D(peers[id].mesh,peers[id].labelDiv);
   }
 
-  // Collection — larger range for hard maps
   const collectR=2.6;
   for(let i=familyMeshes.length-1;i>=0;i--){
     const f=familyMeshes[i];
@@ -1823,20 +1779,18 @@ function animate(ts=0){
     }
   }
 
-  // Net sync — battery saver sends every 6 frames, normal every 2
   netSyncCounter++;
   const syncRate = batterySaver ? 6 : 2;
   if(netSyncCounter%syncRate===0){
     for(const id in peers){ const p=peers[id]; if(p.conn&&p.conn.open) p.conn.send({type:'move',x:player.position.x,y:player.position.y,z:player.position.z}); }
   }
 
-  // Dev panel
   if(accessMode==='dev'){
     const pp=player.position;
     document.getElementById('dev-panel').textContent=
       `POS(${pp.x.toFixed(0)},${pp.y.toFixed(0)},${pp.z.toFixed(0)}) CAM yaw:${(camYaw*57.3).toFixed(0)}° pitch:${(camPitch*57.3).toFixed(0)}°\n`+
       `Family left:${familyMeshes.length}  Map:${currentMap}  Fly:${flyMode?'ON':'OFF'}  Skin:${currentSkin}\n`+
-      `[F]fly [R]reset [G]collect [←→↑↓]camera`;
+      `[F]fly [R]reset [G]collect [N]noclip [Z]speed [←→↑↓]camera`;
   }
 
   renderer.render(scene,camera);
@@ -1890,7 +1844,7 @@ function startGame(){
     document.getElementById('cam-hint').style.display='block';
     document.getElementById('skin-sel').style.display='flex';
     document.getElementById('dialogue').style.display='flex';
-    // Update dialogue image + name to match the player's chosen sprite
+
     const dImg = document.getElementById('d-img');
     dImg.src = currentSkin + '.png';
     dImg.onerror = function(){
@@ -1899,11 +1853,21 @@ function startGame(){
     };
     document.querySelector('#dialogue .d-name').textContent = (currentSkin[0].toUpperCase()+currentSkin.slice(1)) + ' 🐢';
 
-    // Skin: use chosen sprite only if it is actually unlocked, else fall back to friend
     currentSkin=unlockedSkins.includes(chosenSprite)?chosenSprite:'friend';
-    // Do NOT add chosen sprite to unlocked here — it must be earned (except friend)
     currentMap=1; loadMap(1);
+
+    // Apply battery saver if it was toggled on the main menu
+    if(batterySaver){
+      document.getElementById('bat-label').textContent='ON';
+      document.getElementById('battery-badge').style.display='block';
+      // Defer slightly so scene is fully built first
+      setTimeout(applyBatteryMode,200);
+    }
+
     buildSkinSel(); applySkin(currentSkin);
+    // Show mode-specific mobile buttons
+    if(accessMode==='admin') document.getElementById('admin-btns').style.display='flex';
+    if(accessMode==='dev')   document.getElementById('dev-btns').style.display='flex';
     startTimer(); gameStarted=true; animate();
 
     setTimeout(()=>document.getElementById('cam-hint').style.display='none',8000);
