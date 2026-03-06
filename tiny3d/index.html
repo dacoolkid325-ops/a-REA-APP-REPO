@@ -255,6 +255,12 @@ canvas{display:block;width:100vw;height:100vh;}
   border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
   gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
   display:none;max-width:160px;flex-direction:column;
+  cursor:grab;touch-action:none;
+}
+#skin-sel.dragging{cursor:grabbing;}
+#skin-drag-handle{
+  width:100%;text-align:center;color:rgba(255,255,255,.25);font-size:.65rem;
+  letter-spacing:.1em;margin-bottom:2px;cursor:grab;user-select:none;
 }
 .sk-lbl{color:rgba(255,255,255,.6);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;width:100%;text-align:center;margin-bottom:4px;}
 .sk-btn{
@@ -311,6 +317,65 @@ canvas{display:block;width:100vw;height:100vh;}
   cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 }
 .sprite-opt.chosen{border-color:var(--gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
+
+/* ══════════════════════════════════════════
+   MOBILE MODE — body.mobile overrides
+   Applied automatically when isMobile===true
+════════════════════════════════════════════ */
+body.mobile .hud-panel{
+  padding:5px 8px;min-width:0;border-radius:0 0 10px 0;
+  background:rgba(10,10,26,.65);
+}
+body.mobile .hud-room{font-size:.6rem;margin-bottom:1px;}
+body.mobile .hud-time{font-size:.78rem;margin-bottom:3px;}
+body.mobile .hud-mode{font-size:.6rem;padding:2px 7px;margin-bottom:3px;}
+body.mobile .counts{grid-template-columns:1fr 1fr;gap:1px;}
+body.mobile .cnt{font-size:.6rem;}
+
+body.mobile #top-right{top:6px;right:6px;gap:4px;}
+body.mobile .map-sel{font-size:.7rem;padding:5px 7px;border-radius:8px;}
+body.mobile .icon-btn{width:28px;height:28px;font-size:.8rem;}
+
+body.mobile #pause-btn{
+  top:6px!important;left:130px!important;
+  padding:4px 9px!important;font-size:.72rem!important;border-radius:7px!important;
+}
+
+body.mobile #pause-overlay{gap:10px;}
+body.mobile #pause-overlay h2{font-size:1.5rem;}
+body.mobile .pause-btn{width:220px;padding:10px 0;font-size:.9rem;border-radius:10px;}
+body.mobile .pause-sep{width:220px;}
+body.mobile #pause-save-out,body.mobile #pause-save-in{font-size:.65rem;padding:5px 8px;}
+
+/* Dialogue: hidden immediately on mobile */
+body.mobile #dialogue{display:none!important;}
+
+/* Joystick slightly smaller */
+body.mobile #joy-wrap{bottom:18px;left:18px;}
+body.mobile #joy-outer{width:100px;height:100px;}
+body.mobile #joy-inner{width:44px;height:44px;top:28px;left:28px;}
+body.mobile #jump-btn{width:64px;height:64px;font-size:.8rem;bottom:24px;right:24px;}
+body.mobile #crouch-btn{width:64px;height:64px;font-size:.7rem;bottom:24px;right:100px;}
+
+/* Dev/admin mobile buttons smaller */
+body.mobile .dev-mbtn{font-size:.68rem;padding:5px 9px;}
+body.mobile #dev-btns{bottom:145px;right:10px;}
+body.mobile #admin-btns{bottom:145px;left:70px;}
+
+/* Skin selector compact */
+body.mobile #skin-sel{padding:4px 6px;border-radius:10px;}
+body.mobile .sk-btn{padding:4px 9px;font-size:.7rem;}
+body.mobile .sk-lbl{font-size:.6rem;}
+
+/* Battery badge smaller */
+body.mobile #battery-badge{top:48px;font-size:.7rem;padding:3px 12px;}
+
+/* Toast higher so joystick doesn't cover */
+body.mobile #toast{top:55px;}
+
+/* Unlock banner smaller */
+body.mobile #unlock-banner{padding:14px 22px;font-size:1.1rem;border-radius:16px;}
+body.mobile #unlock-banner img{width:56px;height:56px;}
 </style>
 </head>
 <body>
@@ -352,6 +417,16 @@ canvas{display:block;width:100vw;height:100vh;}
     <button class="btn-main btn-battery" id="menu-battery-btn" onclick="menuToggleBattery()">
       ⚡ Battery Saver: <span id="menu-bat-label">OFF</span>
     </button>
+    <div class="divider"></div>
+    <!-- SAVE / LOAD on main menu -->
+    <div class="field-group" style="margin-bottom:6px;">
+      <span class="field-label">💾 Load save data</span>
+      <div style="display:flex;gap:6px;">
+        <input id="menu-save-in" class="field-input" style="font-family:monospace;font-size:.78rem;padding:10px 12px;" placeholder="Paste your save code here...">
+        <button class="btn-sm" onclick="menuLoadSave()" style="white-space:nowrap;padding:0 16px;flex-shrink:0;">📥 Load</button>
+      </div>
+      <div id="menu-save-status" style="color:var(--gold);font-size:.78rem;min-height:18px;margin-top:5px;text-align:center;"></div>
+    </div>
     <div id="conn-status">Ready to connect</div>
   </div>
 </div>
@@ -381,6 +456,9 @@ canvas{display:block;width:100vw;height:100vh;}
       <div class="cnt" id="c-mum">Mum 0/1</div>
       <div class="cnt" id="c-bro">Bros 0/8</div>
       <div class="cnt" id="c-sis">Sis 0/9</div>
+      <div class="cnt" id="c-uncle">Uncle 0/2</div>
+      <div class="cnt" id="c-auntie">Auntie 0/2</div>
+      <div class="cnt" id="c-cousin">Cousins 0/4</div>
       <div class="cnt cnt-tiny" id="c-tiny">Tiny 0/1</div>
       <div class="cnt" id="c-map">Map 1</div>
     </div>
@@ -402,10 +480,10 @@ canvas{display:block;width:100vw;height:100vh;}
 <div id="battery-badge">⚡ BATTERY SAVER</div>
 
 <!-- PAUSE BUTTON (always visible in-game) -->
-<button id="pause-btn" style="position:absolute;top:10px;left:10px;z-index:120;
+<button id="pause-btn" style="position:absolute;top:10px;left:190px;z-index:120;
   background:rgba(10,10,26,.8);border:1.5px solid rgba(255,255,255,.2);color:#fff;
   border-radius:10px;padding:7px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
-  display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸ Pause</button>
+  display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸</button>
 
 <!-- PAUSE OVERLAY -->
 <div id="pause-overlay" style="display:none;position:absolute;inset:0;background:rgba(5,5,20,.88);
@@ -416,9 +494,24 @@ canvas{display:block;width:100vw;height:100vh;}
   <button class="pause-btn pause-resume" onclick="togglePause()">▶ Resume</button>
   <button class="pause-btn pause-battery" onclick="toggleBattery()">⚡ Battery Saver: <span id="bat-label">OFF</span></button>
   <div class="pause-sep"></div>
+  <button class="pause-btn" id="pause-collect-btn" onclick="adminCollect();togglePause();" style="display:none;background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;">★ Collect This Map</button>
+  <button class="pause-btn" id="pause-collect-all-btn" onclick="adminCollectAll();togglePause();" style="display:none;background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;">★★ Collect All Maps</button>
   <!-- Feature request: only shown for admin, NOT dev (dev IS the developer) -->
   <button class="pause-btn pause-feature" id="pause-feature-btn" onclick="openFeature()" style="display:none;">💡 Request a Feature</button>
   <div class="pause-sep" id="pause-feature-sep" style="display:none;"></div>
+  <div class="pause-sep"></div>
+  <div style="display:flex;flex-direction:column;gap:6px;width:280px;">
+    <div style="color:rgba(255,255,255,.5);font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">💾 Save Data</div>
+    <div style="display:flex;gap:6px;">
+      <input id="pause-save-out" readonly style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);color:#aaa;border-radius:8px;padding:7px 10px;font-size:.72rem;font-family:monospace;outline:none;cursor:pointer;" placeholder="Your save code..." onclick="this.select()">
+      <button onclick="copySave()" style="background:rgba(78,205,196,.25);border:1.5px solid rgba(78,205,196,.5);color:#4ECDC4;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:.8rem;font-weight:700;white-space:nowrap;">📋 Copy</button>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <input id="pause-save-in" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:7px 10px;font-size:.72rem;font-family:monospace;outline:none;" placeholder="Paste save code here...">
+      <button onclick="pasteSave()" style="background:rgba(255,209,102,.2);border:1.5px solid rgba(255,209,102,.4);color:#FFD166;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:.8rem;font-weight:700;white-space:nowrap;">📥 Load</button>
+    </div>
+  </div>
+  <div class="pause-sep"></div>
   <button class="pause-btn pause-quit" onclick="quitGame()">✕ Quit to Menu</button>
 </div>
 
@@ -460,10 +553,14 @@ canvas{display:block;width:100vw;height:100vh;}
 <div id="toast"></div>
 
 <!-- CAM HINT -->
-<div id="cam-hint">
+<div id="cam-hint" class="cam-hint-desktop">
   <b>Move</b> WASD &nbsp;|&nbsp; <b>Cam</b> Arrow keys / drag<br>
   <b>Jump</b> Space &nbsp;|&nbsp; <b>Crouch</b> C (look under beds!)<br>
-  Scroll / pinch = zoom
+  Scroll = zoom
+</div>
+<div id="cam-hint-mobile" style="display:none;position:absolute;bottom:14px;right:14px;background:rgba(10,10,26,.82);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;pointer-events:none;">
+  <b>Joystick</b> = move &nbsp;|&nbsp; <b>Right drag</b> = camera<br>
+  <b>JUMP / CROUCH</b> buttons below &nbsp;|&nbsp; Pinch = zoom
 </div>
 
 <!-- MOBILE -->
@@ -473,7 +570,8 @@ canvas{display:block;width:100vw;height:100vh;}
   <button class="dev-mbtn" onclick="noclipMode=!noclipMode;showToast(noclipMode?'👻 Noclip ON':'👻 Noclip OFF')">👻 Noclip</button>
   <button class="dev-mbtn" onclick="superSpeed=!superSpeed;showToast(superSpeed?'⚡ Speed ON':'⚡ Speed OFF')">⚡ Speed</button>
   <button class="dev-mbtn" onclick="player.position.set(0,20,0);showToast('⌂ Reset')">⌂ Reset</button>
-  <button class="dev-mbtn" onclick="adminCollect()">★ Collect all</button>
+  <button class="dev-mbtn" onclick="adminCollect()">★ This map</button>
+  <button class="dev-mbtn" onclick="adminCollectAll()">★★ All maps</button>
   <button class="dev-mbtn" onclick="camDistTarget=Math.max(4,camDistTarget-4)">🔍+</button>
   <button class="dev-mbtn" onclick="camDistTarget=Math.min(60,camDistTarget+4)">🔍−</button>
 </div>
@@ -481,6 +579,7 @@ canvas{display:block;width:100vw;height:100vh;}
 <div id="admin-btns" style="position:absolute;bottom:175px;left:85px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;">
   <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="flyMode=!flyMode;showToast(flyMode?'✈ Fly ON':'✈ Fly OFF')">✈ Fly</button>
   <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="player.position.set(0,20,0);showToast('⌂ Reset pos')">⌂ Reset</button>
+  <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="adminCollectAll()">★★ All maps</button>
   <button class="dev-mbtn" style="border-color:#cc88ff;color:#cc88ff;" onclick="openFeature()">💡 Feature</button>
 </div>
 <div id="joy-wrap"><div id="joy-outer"><div id="joy-inner"></div></div></div>
@@ -493,13 +592,14 @@ canvas{display:block;width:100vw;height:100vh;}
 // ════════════════════════════════════════════════════
 //  CONSTANTS & STATE
 // ════════════════════════════════════════════════════
-const SPRITES = ['friend','dad','mum','tiny','brother','sister','admin','dev'];
+const SPRITES = ['friend','dad','mum','tiny','brother','sister','uncle','auntie','cousin','admin','dev'];
 const SPRITE_FALLBACK_COLORS = {
   friend:'#4ECDC4',dad:'#3498db',mum:'#e91e8c',tiny:'#FFD166',
-  brother:'#2980b9',sister:'#e91e63',admin:'#9b59b6',dev:'#27ae60'
+  brother:'#2980b9',sister:'#e91e63',uncle:'#e67e22',auntie:'#e91e63',cousin:'#1abc9c',
+  admin:'#9b59b6',dev:'#27ae60'
 };
 
-const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',tiny:'tiny'};
+const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',uncle:'uncle',auntie:'auntie',cousin:'cousin',tiny:'tiny'};
 const KEY_ONLY_SKINS = ['dev','admin'];
 const ALWAYS_UNLOCKED = ['friend'];
 
@@ -537,45 +637,48 @@ function toggleBattery(){
 
 function applyBatteryMode(){
   if(batterySaver){
+    // ── Battery ON: lock to night ──
+    batteryNightLocked = true;
     renderer.setPixelRatio(0.6);
     renderer.setSize(innerWidth, innerHeight);
-
     renderer.shadowMap.enabled = false;
     sun.castShadow = false;
     scene.traverse(obj=>{ obj.castShadow=false; obj.receiveShadow=false; });
-
-    // Reduced intensity — not so overwhelmingly bright
-    sun.intensity = 0;
-    fillLight.intensity = 0;
-    ambient.intensity = 1.2;          // was 2.0, now softer
-    ambient.color.set(0xfff0d0);      // warm tint instead of pure white
-    hemiLight.intensity = 0.9;        // was 1.5
-
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
 
-    scene.fog.density = 0.018;
+    // Force deep night lighting
+    dayT = Math.PI * 1.5; // midnight
+    sun.intensity = 0;
+    fillLight.intensity = 0;
+    ambient.intensity = 0.35;
+    ambient.color.set(0x101830);
+    hemiLight.intensity = 0.25;
+    hemiLight.color.set(0x2244aa);
+    hemiLight.groundColor.set(0x050510);
 
-    dayT = Math.PI * 0.5;
+    scene.fog.density = 0.025;
+    scene.fog.color.set(0x050520);
+
+    // Use flat dark background instead of sky dome
+    skyMesh.visible = false;
+    scene.background = new THREE.Color(0x040415);
+
+    grassBlades.forEach(g=>g.visible=false);
+    camera.far = 200;
+    camera.updateProjectionMatrix();
 
     if(localStream){
       localStream.getAudioTracks().forEach(t=>{
         try{ t.applyConstraints({sampleRate:8000,channelCount:1,echoCancellation:true}); } catch(e){}
       });
     }
-
-    skyMesh.visible = false;
-    scene.background = new THREE.Color(0x87b8d4);   // softer sky blue (was 0x87ceeb)
-
-    grassBlades.forEach(g=>g.visible=false);
-
-    camera.far = 200;
-    camera.updateProjectionMatrix();
-
   } else {
+    // ── Battery OFF: resume day/night cycle ──
+    batteryNightLocked = false;
+    lastSunH = -1; // force full sky redraw next frame
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(innerWidth, innerHeight);
-
     renderer.shadowMap.enabled = true;
     sun.castShadow = true;
     scene.traverse(obj=>{
@@ -584,15 +687,11 @@ function applyBatteryMode(){
         obj.receiveShadow = true;
       }
     });
-
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.4;
-
     setLighting(currentMap);
-
     skyMesh.visible = true;
     scene.background = null;
-
     grassBlades.forEach(g=>g.visible=true);
     camera.far = 1500;
     camera.updateProjectionMatrix();
@@ -602,8 +701,105 @@ function applyBatteryMode(){
         try{ t.applyConstraints({sampleRate:48000,channelCount:2}); } catch(e){}
       });
     }
+  }
+}
 
-    lastSunH = -1;
+
+// ── SAVE DATA ──
+function buildSaveString(){
+  const joinCode=document.getElementById('inp-room')&&document.getElementById('inp-room').value.trim();
+  const data={
+    v:3,
+    name:playerName,
+    joinCode: joinCode||'',
+    map:currentMap,
+    x: Math.round(player.position.x),
+    y: Math.round(player.position.y),
+    z: Math.round(player.position.z),
+    found:{...famFound}, unlocked:[...unlockedSkins],
+    time:secondsElapsed, skin:currentSkin
+  };
+  return btoa(JSON.stringify(data));
+}
+function loadSaveString(str, fromMenu){
+  try{
+    const data=JSON.parse(atob(str));
+    if(!data||(data.v!==2&&data.v!==3)) return false;
+    // Restore family progress
+    if(data.found) Object.assign(famFound,data.found);
+    if(data.unlocked) data.unlocked.forEach(s=>{if(!unlockedSkins.includes(s))unlockedSkins.push(s);});
+    if(data.skin) currentSkin=data.skin;
+    if(data.time) secondsElapsed=data.time;
+    // Restore name and join code into menu fields
+    if(data.name){
+      playerName=data.name;
+      const ni=document.getElementById('inp-name');
+      if(ni) ni.value=data.name;
+    }
+    if(data.joinCode!==undefined){
+      const ri=document.getElementById('inp-room');
+      if(ri) ri.value=data.joinCode;
+    }
+    // Restore map
+    if(data.map) currentMap=data.map;
+    // Restore player position (only if in-game)
+    if(!fromMenu && data.x!==undefined){
+      player.position.set(data.x, data.y||3, data.z||0);
+    }
+    saveUnlocked();
+    buildSpritePicker();
+    if(!fromMenu){
+      buildSkinSel();
+      updateHUD();
+      applySkin(currentSkin);
+      // Jump to saved map
+      if(data.map && data.map!==currentMap){
+        loadMap(data.map);
+        // After map loads, restore position
+        setTimeout(()=>{
+          if(data.x!==undefined) player.position.set(data.x, data.y||3, data.z||0);
+        }, 300);
+      } else if(data.x!==undefined){
+        player.position.set(data.x, data.y||3, data.z||0);
+      }
+      showToast('✅ Save loaded! Map '+data.map+' restored.');
+    }
+    return true;
+  }catch(e){ console.warn('loadSaveString error:',e); return false; }
+}
+function menuLoadSave(){
+  const el=document.getElementById('menu-save-in');
+  const st=document.getElementById('menu-save-status');
+  if(!el||!el.value.trim()){ if(st) st.textContent='Paste a save code first.'; return; }
+  const ok=loadSaveString(el.value.trim(), true);
+  if(ok){
+    if(st){
+      const total=Object.values(famFound).reduce((a,b)=>a+b,0);
+      const target=Object.values(famTargets).reduce((a,b)=>a+b,0);
+      st.textContent='✅ Loaded! '+total+'/'+target+' family found. Name & code restored.';
+    }
+    el.value='';
+  } else {
+    if(st) st.style.color='#FF6B6B', st.textContent='❌ Invalid save code.';
+  }
+}
+function updateSaveDisplay(){
+  const el=document.getElementById('pause-save-out');
+  if(el) el.value=buildSaveString();
+}
+function copySave(){
+  const el=document.getElementById('pause-save-out');
+  if(!el) return;
+  el.select(); el.setSelectionRange(0,99999);
+  try{ navigator.clipboard.writeText(el.value).then(()=>showToast('📋 Save copied!')).catch(()=>{ document.execCommand('copy'); showToast('📋 Save copied!'); }); }
+  catch(e){ document.execCommand('copy'); showToast('📋 Save copied!'); }
+}
+function pasteSave(){
+  const el=document.getElementById('pause-save-in');
+  if(el&&el.value.trim()){
+    const ok=loadSaveString(el.value.trim(), false);
+    if(!ok) showToast('❌ Invalid save code');
+    else el.value='';
   }
 }
 
@@ -614,26 +810,37 @@ function togglePause(){
   ol.style.display=gamePaused?'flex':'none';
   ol.style.pointerEvents=gamePaused?'auto':'none';
   if(gamePaused){
-    const tot=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.tiny;
-    document.getElementById('pause-mapinfo').textContent=`Map ${currentMap} · Found ${tot}/20`;
-    // Show feature request only for admin (dev IS the developer)
+    const total=Object.values(famFound).reduce((a,b)=>a+b,0);
+    const target=Object.values(famTargets).reduce((a,b)=>a+b,0);
+    document.getElementById('pause-mapinfo').textContent=`Map ${currentMap} · Found ${total}/${target}`;
+    // Show feature request only for admin
     const fb=document.getElementById('pause-feature-btn');
     const fs=document.getElementById('pause-feature-sep');
     if(fb){ fb.style.display=(accessMode==='admin')?'block':'none'; }
     if(fs){ fs.style.display=(accessMode==='admin')?'block':'none'; }
+    // Show collect-all for admin or dev
+    const cb=document.getElementById('pause-collect-btn');
+    if(cb) cb.style.display=(accessMode==='admin'||accessMode==='dev')?'block':'none';
+    const cab=document.getElementById('pause-collect-all-btn');
+    if(cab) cab.style.display=(accessMode==='admin'||accessMode==='dev')?'block':'none';
+    // Update save data display
+    updateSaveDisplay();
   }
 }
 function quitGame(){
   gamePaused=false;
-  document.getElementById('pause-overlay').style.display='none';
-  document.getElementById('pause-btn').style.display='none';
-  document.getElementById('hud').style.display='none';
-  document.getElementById('joy-wrap').style.display='none';
-  document.getElementById('jump-btn').style.display='none';
-  document.getElementById('crouch-btn').style.display='none';
-  document.getElementById('skin-sel').style.display='none';
+  const hide=ids=>ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+  hide([
+    'pause-overlay','pause-btn','hud','joy-wrap','jump-btn','crouch-btn',
+    'dev-btns','admin-btns','dev-panel','skin-sel','top-right',
+    'dialogue','name-label','battery-badge','cam-hint','cam-hint-mobile',
+    'unlock-banner','locked-msg','toast'
+  ]);
   document.getElementById('menu').style.display='flex';
   document.getElementById('menu').style.opacity='1';
+  const ms=document.getElementById('map-sel');
+  if(ms) ms.value='1';
+  currentMap=1;
   gameStarted=false;
   if(peer){ peer.destroy(); peer=null; }
 }
@@ -665,8 +872,9 @@ async function sendFeature(){
   showToast('📨 Opening email to send request!');
 }
 
-let famTargets = {dad:1,mum:1,brother:8,sister:9,tiny:1};
-let famFound   = {dad:0,mum:0,brother:0,sister:0,tiny:0};
+// Family: dad=1 mum=1 brother=8 sister=9 uncle=2 auntie=2 cousin=4 tiny=1 = 28 total
+let famTargets = {dad:1,mum:1,brother:8,sister:9,uncle:2,auntie:2,cousin:4,tiny:1};
+let famFound   = {dad:0,mum:0,brother:0,sister:0,uncle:0,auntie:0,cousin:0,tiny:0};
 let groupUnlocked = {};
 
 // ── PERSISTENT UNLOCK STORAGE ──
@@ -795,11 +1003,37 @@ function updateModeTag(){
   if(accessMode==='admin'){ mt.textContent='👑 Admin Mode'; mt.style.display='inline-block'; if(gameStarted) document.getElementById('admin-btns').style.display='flex'; }
 }
 function adminCollect(){
+  const count=familyMeshes.length;
   for(let i=familyMeshes.length-1;i>=0;i--){
-    const f=familyMeshes[i]; scene.remove(f.mesh);
+    const f=familyMeshes[i];
+    scene.remove(f.mesh);
+    if(f.mesh.geometry) f.mesh.geometry.dispose();
     famFound[f.type]++; checkGroupUnlock(f.type); familyMeshes.splice(i,1);
   }
-  updateHUD(); showToast('👑 All family collected!');
+  if(currentMap===3){
+    scene.children.filter(c=>c.userData.isTinyHalo).forEach(c=>scene.remove(c));
+  }
+  updateHUD();
+  showToast(`👑 Collected ${count} on this map!`);
+  checkWin();
+}
+function adminCollectAll(){
+  // Collect current map first
+  adminCollect();
+  // Then fill in all remaining family across all maps
+  let filled=0;
+  Object.keys(famTargets).forEach(type=>{
+    const missing=famTargets[type]-famFound[type];
+    if(missing>0){
+      famFound[type]+=missing;
+      checkGroupUnlock(type);
+      filled+=missing;
+    }
+  });
+  updateHUD();
+  if(filled>0) showToast(`👑 All ${Object.values(famTargets).reduce((a,b)=>a+b,0)} family collected across all maps!`);
+  else showToast('👑 Already found all family!');
+  checkWin();
 }
 
 // ════════════════════════════════════════════════════
@@ -875,7 +1109,8 @@ function playStream(stream){ const a=document.createElement('audio'); a.srcObjec
 // ════════════════════════════════════════════════════
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1500);
-const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||window.innerWidth<600;
+if(isMobile) document.body.classList.add('mobile');
 const renderer=new THREE.WebGLRenderer({
   antialias:!isMobile,
   powerPreference:'high-performance',
@@ -912,9 +1147,11 @@ scene.add(fillLight);
 const ambient=new THREE.AmbientLight(0xffd0a0,.25);
 scene.add(ambient);
 
-let dayT=Math.PI*0.08;
+let dayT=Math.PI*0.25; // start just after dawn
 let lastSunH=-1;
-const DAY_SPEED=0.00012;
+// 7-minute full day/night cycle: 2π / (7*60) radians per second
+const DAY_SPEED = (2 * Math.PI) / (7 * 60); // ~0.01496 rad/s
+let batteryNightLocked=false; // true when battery saver forced night
 
 scene.fog=new THREE.FogExp2(0xffe8b0,.0015);
 scene.background=new THREE.Color(0xff9944);
@@ -966,8 +1203,8 @@ const PAD_R=18;
 
 function buildTerrain(m){
   if(terrain){ scene.remove(terrain); terrain.geometry.dispose(); terrain=null; }
-  const size = m===3 ? 140 : 800;
-  const segs = m===3 ? 4   : 80;
+  const size = m===3 ? 140 : m===1 ? 1200 : 900;
+  const segs = m===3 ? 4   : m===1 ? 100 : 80;
   const geo=new THREE.PlaneGeometry(size,size,segs,segs);
   geo.rotateX(-Math.PI/2);
   if(m!==3){
@@ -1001,8 +1238,8 @@ function buildTerrain(m){
 // Built per-map. Uses simple radius check in movement code.
 let mapBounds = { halfSize: 380 }; // default for map 1/2
 function setMapBounds(m){
-  if(m===1) mapBounds={halfSize:360};
-  else if(m===2) mapBounds={halfSize:340};
+  if(m===1) mapBounds={halfSize:560};
+  else if(m===2) mapBounds={halfSize:420};
   else mapBounds={halfSize:35}; // classroom interior
 }
 
@@ -1085,7 +1322,7 @@ function doUpdateCamera(){
 // ════════════════════════════════════════════════════
 //  SKINS
 // ════════════════════════════════════════════════════
-const SKIN_IMGS={friend:'friend.png',dad:'dad.png',mum:'mum.png',brother:'brother.png',sister:'sister.png',tiny:'tiny.png',admin:'admin.png',dev:'dev.png'};
+const SKIN_IMGS={friend:'friend.png',dad:'dad.png',mum:'mum.png',brother:'brother.png',sister:'sister.png',uncle:'uncle.png',auntie:'auntie.png',cousin:'cousin.png',tiny:'tiny.png',admin:'admin.png',dev:'dev.png'};
 const skinCache={};
 function loadSkinTex(name,cb){
   if(name in skinCache){cb(skinCache[name]);return;}
@@ -1112,6 +1349,7 @@ let skinSelCollapsed=false;
 function buildSkinSel(){
   const sel=document.getElementById('skin-sel');
   sel.innerHTML='';
+  const dh=document.createElement('div'); dh.id='skin-drag-handle'; dh.textContent='⠿ drag'; sel.appendChild(dh);
   const mb=document.createElement('button'); mb.className='sk-min';
   mb.textContent=skinSelCollapsed?'▲ Skin':'▼ Hide';
   mb.onclick=e=>{ e.stopPropagation(); skinSelCollapsed=!skinSelCollapsed; buildSkinSel(); };
@@ -1130,15 +1368,53 @@ function buildSkinSel(){
   sel.style.display = unlockedSkins.length > 1 ? 'flex' : 'none';
 }
 
+// ── SKIN SELECTOR DRAG ──
+(function(){
+  let dragging=false, ox=0, oy=0, startX=0, startY=0;
+  function getEl(){ return document.getElementById('skin-sel'); }
+  function onDown(e){
+    const el=getEl(); if(!el) return;
+    dragging=true; el.classList.add('dragging');
+    const pt=e.touches?e.touches[0]:e;
+    startX=pt.clientX; startY=pt.clientY;
+    const r=el.getBoundingClientRect();
+    ox=r.left; oy=r.top;
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!dragging) return;
+    const el=getEl(); if(!el) return;
+    const pt=e.touches?e.touches[0]:e;
+    const nx=ox+(pt.clientX-startX), ny=oy+(pt.clientY-startY);
+    el.style.right='auto'; el.style.top=ny+'px'; el.style.left=nx+'px';
+    e.preventDefault();
+  }
+  function onUp(){ dragging=false; const el=getEl(); if(el) el.classList.remove('dragging'); }
+  document.addEventListener('mousedown',e=>{ if(e.target.closest('#skin-sel')) onDown(e); });
+  document.addEventListener('mousemove',e=>{ if(dragging) onMove(e); });
+  document.addEventListener('mouseup',onUp);
+  document.addEventListener('touchstart',e=>{ if(e.target.closest('#skin-sel')) onDown(e); },{passive:false});
+  document.addEventListener('touchmove',e=>{ if(dragging) onMove(e); },{passive:false});
+  document.addEventListener('touchend',onUp);
+})();
+
 // ════════════════════════════════════════════════════
 //  FAMILY SPAWN
 // ════════════════════════════════════════════════════
+// Map distribution: 28 total
+// Map1(13): dad mum 4bro 3sis 1uncle 1auntie 2cousin
+// Map2(12):  4bro 6sis 1uncle 1auntie 2cousin
+// Map3(1):   tiny only
 const MAP_ROSTER = {
   1:[{type:'dad',s:2.4},{type:'mum',s:2.2},
      {type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
-     {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
+     {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},
+     {type:'uncle',s:2.1},{type:'auntie',s:2.0},
+     {type:'cousin',s:1.8},{type:'cousin',s:1.8}],
   2:[{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
-     {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7}],
+     {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},
+     {type:'uncle',s:2.1},{type:'auntie',s:2.0},
+     {type:'cousin',s:1.8},{type:'cousin',s:1.8}],
   3:[{type:'tiny',s:1.0}]
 };
 
@@ -1167,7 +1443,7 @@ function spawnFamily(){
       mx=(Math.random()-.5)*460; mz=(Math.random()-.5)*180;
       if(mz<-120) mz=-90+Math.random()*40;
     } else {
-      mx=(Math.random()-.5)*380; mz=(Math.random()-.5)*380;
+      mx=(Math.random()-.5)*500; mz=(Math.random()-.5)*500;
     }
     let ty=0;
     try{ ty=terrainH(mx,mz); } catch(e){ ty=0; }
@@ -1179,7 +1455,7 @@ function spawnFamily(){
   });
 }
 
-function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0xe91e63,tiny:0xFFD166}[t]||0xffffff; }
+function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0xe91e63,uncle:0xe67e22,auntie:0xff69b4,cousin:0x1abc9c,tiny:0xFFD166}[t]||0xffffff; }
 
 // ════════════════════════════════════════════════════
 //  MAP BUILDERS
@@ -1229,15 +1505,15 @@ function setLighting(m){
 function buildNeighborhood(){
   HOUSE_PADS.forEach(({x,z})=>{ addHouse(x,0,z); });
 
-  for(let i=0;i<60;i++){
-    const tx=(Math.random()-.5)*700, tz=(Math.random()-.5)*700;
+  for(let i=0;i<120;i++){
+    const tx=(Math.random()-.5)*1100, tz=(Math.random()-.5)*1100;
     const nearHouse=HOUSE_PADS.some(h=>Math.sqrt((tx-h.x)**2+(tz-h.z)**2)<PAD_R+4);
     if(!nearHouse) addTree(tx,tz);
   }
 
-  for(let i=0;i<30;i++){
+  for(let i=0;i<50;i++){
     const s=Math.random()*3+1;
-    const rx=(Math.random()-.5)*650, rz=(Math.random()-.5)*650;
+    const rx=(Math.random()-.5)*1050, rz=(Math.random()-.5)*1050;
     const nearHouse=HOUSE_PADS.some(h=>Math.sqrt((rx-h.x)**2+(rz-h.z)**2)<PAD_R+2);
     if(nearHouse) continue;
     const rock=mkMesh(new THREE.DodecahedronGeometry(s,0),{color:0x777777,roughness:.95,metalness:.05});
@@ -1245,7 +1521,7 @@ function buildNeighborhood(){
     obstacles.push({mesh:rock,radius:s*1.1,x:rx,z:rz});
   }
 
-  spawnGrass(80,700);
+  spawnGrass(160,1100);
   spawnFamily();
 }
 
@@ -1269,9 +1545,8 @@ function addHouse(x,ty,z){
     m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
 
-  // Floor slab
-  box(new THREE.BoxGeometry(W+WT*2+1,10,D+WT*2+1),
-    new THREE.MeshStandardMaterial({color:0x4a8c28,roughness:.9}), x,-5,z);
+  // Floor slab — reuse grass terrain material so it blends perfectly
+  box(new THREE.BoxGeometry(W+WT*2+1,10,D+WT*2+1), terrainMats[1], x,-5,z);
   box(new THREE.BoxGeometry(W-0.2,0.2,D-0.2),fMat, x,0.1,z);
 
   // Walls
@@ -1567,6 +1842,7 @@ window.addEventListener('keydown',e=>{
   if((k==='f'||k==='F')&&(accessMode==='dev'||accessMode==='admin')){ flyMode=!flyMode; showToast(flyMode?'Fly ON':'Fly OFF'); }
   if((k==='r'||k==='R')&&(accessMode==='dev'||accessMode==='admin')){ player.position.set(0, currentMap===3?3:20, 0); showToast('Position reset'); }
   if((k==='g'||k==='G')&&accessMode!=='normal') adminCollect();
+  if((k==='h'||k==='H')&&accessMode!=='normal') adminCollectAll();
   // Noclip and speed: dev only
   if((k==='n'||k==='N')&&accessMode==='dev'){ noclipMode=!noclipMode; showToast(noclipMode?'Noclip ON':'Noclip OFF'); }
   if((k==='z'||k==='Z')&&accessMode==='dev'){ superSpeed=!superSpeed; showToast(superSpeed?'Super Speed ON':'Super Speed OFF'); }
@@ -1603,9 +1879,12 @@ function updateHUD(){
   document.getElementById('c-mum').textContent=`Mum ${famFound.mum}/${famTargets.mum}`;
   document.getElementById('c-bro').textContent=`Bros ${famFound.brother}/${famTargets.brother}`;
   document.getElementById('c-sis').textContent=`Sis ${famFound.sister}/${famTargets.sister}`;
+  document.getElementById('c-uncle').textContent=`Uncle ${famFound.uncle}/${famTargets.uncle}`;
+  document.getElementById('c-auntie').textContent=`Auntie ${famFound.auntie}/${famTargets.auntie}`;
+  document.getElementById('c-cousin').textContent=`Cousins ${famFound.cousin}/${famTargets.cousin}`;
   document.getElementById('c-tiny').textContent=`Tiny ${famFound.tiny}/${famTargets.tiny}`;
-  const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister;
-  const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister;
+  const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin;
+  const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin;
   if(nt>=tot){ const o=document.querySelector('#map-sel option[value="3"]'); if(o&&o.textContent.includes('🔒')) o.textContent="🏫 Map 3 — Tiny's Hideout"; }
 }
 
@@ -1626,7 +1905,9 @@ function checkGroupUnlock(type){
   }
 }
 function checkWin(){
-  if(famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.tiny>=20){
+  const total=Object.values(famFound).reduce((a,b)=>a+b,0);
+  const target=Object.values(famTargets).reduce((a,b)=>a+b,0);
+  if(total>=target){
     setTimeout(()=>alert(`🎉 You found the WHOLE family!\n${document.getElementById('timer-tag').textContent}\nAmazing work!`),400);
   }
 }
@@ -1637,9 +1918,9 @@ function checkWin(){
 function tryMap(v){
   v=parseInt(v);
   if(v===3&&accessMode==='normal'){
-    const nf=famFound.dad+famFound.mum+famFound.brother+famFound.sister;
-    const nt=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister;
-    if(nf<nt){ showLocked("Find all of Dad, Mum, Brothers & Sisters first!\n(Across Maps 1 & 2)\nThen Tiny's Hideout unlocks 🔒"); document.getElementById('map-sel').value=currentMap; return; }
+    const nf=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin;
+    const nt=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin;
+    if(nf<nt){ showLocked("Find all of the family first!\n(Across Maps 1 & 2)\nThen Tiny's Hideout unlocks 🔒"); document.getElementById('map-sel').value=currentMap; return; }
   }
   currentMap=v; loadMap(v);
 }
@@ -1658,7 +1939,7 @@ function animate(ts=0){
 
   let sunH=0.9;
   if(!batterySaver){
-    dayT+=DAY_SPEED;
+    dayT+=DAY_SPEED*dt;
     const sinT=Math.sin(dayT), cosT=Math.cos(dayT);
     sunH=Math.max(0,sinT);
     if(Math.abs(sunH-lastSunH)>.002){ updateSky(sunH,sinT); lastSunH=sunH; }
@@ -1675,6 +1956,16 @@ function animate(ts=0){
     fillLight.intensity=Math.max(0,.4-sunH*.5);
     fillLight.color.set(sunH<.1?0x8899ff:0x4488ff);
     cloudMeshes.forEach(c=>{ c.position.x+=c.userData.speed*c.userData.dir; if(Math.abs(c.position.x)>600) c.userData.dir*=-1; });
+    // Night star twinkle via ambient pulse when very dark
+    if(sunH<0.05){
+      const twinkle=0.28+0.07*Math.sin(ts*0.003+1.4);
+      ambient.intensity=Math.max(twinkle,ambient.intensity);
+    }
+  } else {
+    // Battery saver: locked night — subtle moonlight flicker
+    sunH=0;
+    const moonFlicker=0.22+0.03*Math.sin(ts*0.0017);
+    ambient.intensity=moonFlicker;
   }
 
   if(camK.ArrowLeft)  camYaw  +=CAM_SPD;
@@ -1741,7 +2032,17 @@ function animate(ts=0){
 
   if(!batterySaver){
     const t2=ts*.001;
-    grassBlades.forEach((g,i)=>{ g.rotation.z=Math.sin(t2*1.4+i*.7)*.09; });
+    const camX=camera.position.x, camZ=camera.position.z;
+    const GRASS_DRAW=180, GRASS_ANIM=60;
+    grassBlades.forEach((g,i)=>{
+      const dx=g.position.x-camX, dz=g.position.z-camZ;
+      const d2=dx*dx+dz*dz;
+      if(d2>GRASS_DRAW*GRASS_DRAW){ g.visible=false; return; }
+      g.visible=true;
+      if(d2<GRASS_ANIM*GRASS_ANIM) g.rotation.z=Math.sin(t2*1.4+i*.7)*.09;
+    });
+  } else {
+    // battery saver: hide all grass (already handled in applyBatteryMode but guard here too)
   }
 
   // Tiny flash: pulse opacity and scale, halo rotates
@@ -1790,7 +2091,7 @@ function animate(ts=0){
     document.getElementById('dev-panel').textContent=
       `POS(${pp.x.toFixed(0)},${pp.y.toFixed(0)},${pp.z.toFixed(0)}) CAM yaw:${(camYaw*57.3).toFixed(0)}° pitch:${(camPitch*57.3).toFixed(0)}°\n`+
       `Family left:${familyMeshes.length}  Map:${currentMap}  Fly:${flyMode?'ON':'OFF'}  Skin:${currentSkin}\n`+
-      `[F]fly [R]reset [G]collect [N]noclip [Z]speed [←→↑↓]camera`;
+      `[F]fly [R]reset [G]collect map [H]collect ALL [N]noclip [Z]speed [←→↑↓]cam`;
   }
 
   renderer.render(scene,camera);
@@ -1843,7 +2144,7 @@ function startGame(){
     document.getElementById('crouch-btn').style.display='block';
     document.getElementById('cam-hint').style.display='block';
     document.getElementById('skin-sel').style.display='flex';
-    document.getElementById('dialogue').style.display='flex';
+    if(!isMobile) document.getElementById('dialogue').style.display='flex';
 
     const dImg = document.getElementById('d-img');
     dImg.src = currentSkin + '.png';
@@ -1854,6 +2155,9 @@ function startGame(){
     document.querySelector('#dialogue .d-name').textContent = (currentSkin[0].toUpperCase()+currentSkin.slice(1)) + ' 🐢';
 
     currentSkin=unlockedSkins.includes(chosenSprite)?chosenSprite:'friend';
+    // Reset family counts for fresh game
+    Object.keys(famFound).forEach(k=>famFound[k]=0);
+    groupUnlocked={};
     currentMap=1; loadMap(1);
 
     // Apply battery saver if it was toggled on the main menu
@@ -1870,7 +2174,13 @@ function startGame(){
     if(accessMode==='dev')   document.getElementById('dev-btns').style.display='flex';
     startTimer(); gameStarted=true; animate();
 
-    setTimeout(()=>document.getElementById('cam-hint').style.display='none',8000);
+    if(isMobile){
+      document.getElementById('cam-hint').style.display='none';
+      const mh=document.getElementById('cam-hint-mobile');
+      if(mh){ mh.style.display='block'; setTimeout(()=>mh.style.display='none',8000); }
+    } else {
+      setTimeout(()=>document.getElementById('cam-hint').style.display='none',8000);
+    }
   },600);
 }
 
