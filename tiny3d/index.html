@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -18,15 +19,15 @@ canvas{display:block;width:100vw;height:100vh;}
 
 /* ── MENU ── */
 #menu{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 30% 40%,#0f3460 0%,#0a0a1a 70%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
+position:absolute;inset:0;
+background:radial-gradient(ellipse at 30% 40%,#0f3460 0%,#0a0a1a 70%);
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
 }
 #menu::before{
-  content:'';position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='white' opacity='.15'/%3E%3C/svg%3E");
-  animation:starScroll 60s linear infinite;
+content:’’;position:absolute;inset:0;
+background:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘60’ height=‘60’%3E%3Ccircle cx=‘30’ cy=‘30’ r=‘1’ fill=‘white’ opacity=’.15’/%3E%3C/svg%3E”);
+animation:starScroll 60s linear infinite;
 }
 @keyframes starScroll{from{background-position:0 0}to{background-position:1000px 1000px}}
 .menu-stars{position:absolute;inset:0;pointer-events:none;}
@@ -34,174 +35,174 @@ canvas{display:block;width:100vw;height:100vh;}
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
 
 .game-title{
-  font-family:'Baloo 2',cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
-  color:#fff; text-align:center; line-height:1; margin-bottom:6px;
-  filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
-  animation:titleFloat 4s ease-in-out infinite;
+font-family:‘Baloo 2’,cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
+color:#fff; text-align:center; line-height:1; margin-bottom:6px;
+filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
+animation:titleFloat 4s ease-in-out infinite;
 }
 @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.game-sub{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
+.game-sub{color:var(–gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
 
 .menu-card{
-  background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.12);border-radius:24px;
-  padding:32px 28px;width:90%;max-width:440px;
-  box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
+background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.12);border-radius:24px;
+padding:32px 28px;width:90%;max-width:440px;
+box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
 }
 .field-group{margin-bottom:14px;text-align:left;}
 .field-label{color:rgba(255,255,255,.6);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;display:block;}
 .field-input{
-  width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
-  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
-  color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;
-  transition:border-color .2s;
+width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
+border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+color:#fff;font-family:‘Nunito’,sans-serif;font-size:1rem;outline:none;
+transition:border-color .2s;
 }
-.field-input:focus{border-color:var(--gold);}
+.field-input:focus{border-color:var(–gold);}
 .field-input::placeholder{color:rgba(255,255,255,.3);}
 .color-row{display:flex;gap:10px;align-items:center;}
 .color-pick{height:44px;width:80px;padding:4px;border-radius:10px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer;}
 .divider{height:1px;background:rgba(255,255,255,.08);margin:18px 0;}
 
 .btn-main{
-  width:100%;padding:16px;font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;
-  background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
-  cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
-  transition:transform .1s,box-shadow .1s;margin-bottom:10px;
+width:100%;padding:16px;font-family:‘Baloo 2’,cursive;font-size:1.4rem;font-weight:800;
+background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
+cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
+transition:transform .1s,box-shadow .1s;margin-bottom:10px;
 }
 .btn-main:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
 .btn-vc{background:linear-gradient(135deg,#4ECDC4,#44a08d);}
 .btn-key{background:linear-gradient(135deg,#6A0DAD,#9b59b6);}
 .btn-battery{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a!important;}
-.btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:‘Nunito’,sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
 .btn-sm:hover{background:rgba(255,255,255,.15);}
 
-#conn-status{color:var(--gold);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px;}
+#conn-status{color:var(–gold);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px;}
 
 /* ── KEY MODAL ── */
 #key-modal{
-  position:absolute;inset:0;background:rgba(0,0,0,.82);
-  display:none;align-items:center;justify-content:center;z-index:400;pointer-events:auto;
+position:absolute;inset:0;background:rgba(0,0,0,.82);
+display:none;align-items:center;justify-content:center;z-index:400;pointer-events:auto;
 }
 .km-inner{
-  background:linear-gradient(135deg,#1a1a2e,#16213e);
-  border:2px solid rgba(106,13,173,.6);border-radius:24px;
-  padding:36px 32px;text-align:center;width:90%;max-width:360px;
-  box-shadow:0 0 60px rgba(106,13,173,.4);
+background:linear-gradient(135deg,#1a1a2e,#16213e);
+border:2px solid rgba(106,13,173,.6);border-radius:24px;
+padding:36px 32px;text-align:center;width:90%;max-width:360px;
+box-shadow:0 0 60px rgba(106,13,173,.4);
 }
-.km-title{font-family:'Baloo 2',cursive;font-size:1.8rem;color:var(--gold);margin-bottom:8px;}
+.km-title{font-family:‘Baloo 2’,cursive;font-size:1.8rem;color:var(–gold);margin-bottom:8px;}
 .km-sub{color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:20px;}
 #key-input{
-  font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
-  border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
-  font-family:'Baloo 2',cursive;background:rgba(0,0,0,.4);color:#fff;
-  margin-bottom:16px;outline:none;
+font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
+border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
+font-family:‘Baloo 2’,cursive;background:rgba(0,0,0,.4);color:#fff;
+margin-bottom:16px;outline:none;
 }
-#key-input:focus{border-color:var(--gold);}
+#key-input:focus{border-color:var(–gold);}
 #key-status{font-size:.9rem;font-weight:700;min-height:22px;margin-top:10px;}
 .km-btns{display:flex;gap:10px;justify-content:center;}
 
 /* ── HUD ── */
 #hud{position:absolute;top:0;left:0;display:none;pointer-events:auto;}
 .hud-panel{
-  background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
-  padding:12px 16px;min-width:180px;
+background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
+padding:12px 16px;min-width:180px;
 }
-.hud-room{color:var(--blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
-.hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:'Baloo 2',cursive;margin-bottom:8px;}
+.hud-room{color:var(–blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
+.hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:‘Baloo 2’,cursive;margin-bottom:8px;}
 .hud-mode{background:linear-gradient(90deg,#6A0DAD,#9b59b6);color:#fff;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;}
 .counts{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
 .cnt{font-size:.82rem;font-weight:700;color:#ddd;}
-.cnt-tiny{color:var(--gold)!important;font-weight:900;}
+.cnt-tiny{color:var(–gold)!important;font-weight:900;}
 
 /* ── TOP RIGHT ── */
 #top-right{position:absolute;top:12px;right:12px;display:flex;gap:8px;align-items:center;pointer-events:auto;}
 .map-sel{
-  background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
-  color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;
-  padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
+background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
+color:#fff;font-family:‘Nunito’,sans-serif;font-size:.9rem;font-weight:700;
+padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
 }
 .icon-btn{
-  width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
-  background:rgba(10,10,26,.85);color:#fff;font-size:1rem;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
-  pointer-events:auto;
+width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
+background:rgba(10,10,26,.85);color:#fff;font-size:1rem;cursor:pointer;
+display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
+pointer-events:auto;
 }
 
 /* ── DEV PANEL ── */
 #dev-btns{
-  position:absolute;bottom:175px;right:14px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;
+position:absolute;bottom:175px;right:14px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;
 }
 .dev-mbtn{
-  background:rgba(0,40,0,.9);border:1.5px solid #00ff00;color:#00ff00;
-  font-family:monospace;font-size:.78rem;font-weight:bold;padding:8px 12px;
-  border-radius:8px;cursor:pointer;text-align:left;white-space:nowrap;
+background:rgba(0,40,0,.9);border:1.5px solid #00ff00;color:#00ff00;
+font-family:monospace;font-size:.78rem;font-weight:bold;padding:8px 12px;
+border-radius:8px;cursor:pointer;text-align:left;white-space:nowrap;
 }
 .dev-mbtn:active{background:rgba(0,100,0,.9);}
 #dev-panel{
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  background:rgba(0,20,0,.9);border:1.5px solid #00FF00;border-radius:0 0 12px 12px;
-  color:#00FF00;font-family:monospace;font-size:.68rem;padding:8px 14px;
-  display:none;pointer-events:none;line-height:1.8;white-space:pre;z-index:150;
+position:absolute;top:0;left:50%;transform:translateX(-50%);
+background:rgba(0,20,0,.9);border:1.5px solid #00FF00;border-radius:0 0 12px 12px;
+color:#00FF00;font-family:monospace;font-size:.68rem;padding:8px 14px;
+display:none;pointer-events:none;line-height:1.8;white-space:pre;z-index:150;
 }
 
 /* ── FLOATING NAMES ── */
 .fname{
-  position:absolute;color:#fff;background:rgba(0,0,0,.7);
-  padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;
-  transform:translate(-50%,-100%);pointer-events:none;display:none;
-  text-shadow:0 1px 2px #000;border:1px solid rgba(255,255,255,.2);
-  white-space:nowrap;
+position:absolute;color:#fff;background:rgba(0,0,0,.7);
+padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;
+transform:translate(-50%,-100%);pointer-events:none;display:none;
+text-shadow:0 1px 2px #000;border:1px solid rgba(255,255,255,.2);
+white-space:nowrap;
 }
 .fname-dev  {background:rgba(0,160,0,.85)!important;}
 .fname-admin{background:rgba(140,0,210,.85)!important;}
 
 /* ── DIALOGUE ── */
 #dialogue{
-  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-  width:92%;max-width:640px;background:rgba(10,10,26,.95);
-  border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
-  display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
-  align-items:center;gap:16px;z-index:102;pointer-events:auto;
+position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+width:92%;max-width:640px;background:rgba(10,10,26,.95);
+border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
+display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
+align-items:center;gap:16px;z-index:102;pointer-events:auto;
 }
-.d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(--blue);object-fit:cover;flex-shrink:0;}
+.d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(–blue);object-fit:cover;flex-shrink:0;}
 .d-text{font-size:1rem;color:#e0e0e0;line-height:1.5;flex-grow:1;}
-.d-name{color:var(--blue);font-weight:900;font-size:1.1rem;}
-.d-btn{background:linear-gradient(135deg,var(--blue),#44a08d);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;white-space:nowrap;}
+.d-name{color:var(–blue);font-weight:900;font-size:1.1rem;}
+.d-btn{background:linear-gradient(135deg,var(–blue),#44a08d);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:‘Baloo 2’,cursive;font-size:1rem;font-weight:700;white-space:nowrap;}
 
 /* ── BANNERS ── */
 #unlock-banner{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  background:rgba(255,209,102,.97);border:4px solid #FF8C00;border-radius:24px;
-  padding:24px 36px;font-size:1.4rem;font-weight:900;color:#333;
-  display:none;z-index:200;text-align:center;pointer-events:none;
-  box-shadow:0 0 60px rgba(255,209,102,.5);animation:bannerPop .3s cubic-bezier(.34,1.56,.64,1);
+position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+background:rgba(255,209,102,.97);border:4px solid #FF8C00;border-radius:24px;
+padding:24px 36px;font-size:1.4rem;font-weight:900;color:#333;
+display:none;z-index:200;text-align:center;pointer-events:none;
+box-shadow:0 0 60px rgba(255,209,102,.5);animation:bannerPop .3s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes bannerPop{from{transform:translate(-50%,-50%) scale(.5)}to{transform:translate(-50%,-50%) scale(1)}}
 #unlock-banner img{width:80px;height:80px;border-radius:12px;display:block;margin:10px auto;object-fit:cover;}
 #locked-msg{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  background:rgba(10,10,26,.95);border:3px solid #FF4444;border-radius:20px;
-  padding:22px 30px;font-size:1.15rem;font-weight:700;color:#fff;
-  display:none;z-index:200;text-align:center;pointer-events:none;
+position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+background:rgba(10,10,26,.95);border:3px solid #FF4444;border-radius:20px;
+padding:22px 30px;font-size:1.15rem;font-weight:700;color:#fff;
+display:none;z-index:200;text-align:center;pointer-events:none;
 }
 #toast{
-  position:absolute;top:75px;left:50%;transform:translateX(-50%);
-  background:rgba(10,10,26,.92);color:#fff;border:1px solid rgba(255,255,255,.15);
-  border-radius:12px;padding:10px 22px;font-size:.92rem;font-weight:700;
-  display:none;z-index:250;pointer-events:none;white-space:nowrap;
-  backdrop-filter:blur(10px);
+position:absolute;top:75px;left:50%;transform:translateX(-50%);
+background:rgba(10,10,26,.92);color:#fff;border:1px solid rgba(255,255,255,.15);
+border-radius:12px;padding:10px 22px;font-size:.92rem;font-weight:700;
+display:none;z-index:250;pointer-events:none;white-space:nowrap;
+backdrop-filter:blur(10px);
 }
 /* ── PAUSE MENU ── */
 #pause-overlay{
-  position:absolute;inset:0;background:rgba(5,5,20,.88);backdrop-filter:blur(16px);
-  display:none;z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:18px;
-  pointer-events:auto;
+position:absolute;inset:0;background:rgba(5,5,20,.88);backdrop-filter:blur(16px);
+display:none;z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+pointer-events:auto;
 }
-#pause-overlay h2{color:#fff;font-size:2.2rem;font-family:'Baloo 2',cursive;margin:0;letter-spacing:.04em;}
+#pause-overlay h2{color:#fff;font-size:2.2rem;font-family:‘Baloo 2’,cursive;margin:0;letter-spacing:.04em;}
 .pause-btn{
-  width:280px;padding:14px 0;font-size:1.1rem;font-weight:900;border:none;border-radius:14px;
-  cursor:pointer;font-family:'Baloo 2',cursive;letter-spacing:.03em;transition:.15s;
+width:280px;padding:14px 0;font-size:1.1rem;font-weight:900;border:none;border-radius:14px;
+cursor:pointer;font-family:‘Baloo 2’,cursive;letter-spacing:.03em;transition:.15s;
 }
 .pause-btn:active{transform:scale(.97);}
 .pause-resume{background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;}
@@ -210,121 +211,121 @@ canvas{display:block;width:100vw;height:100vh;}
 .pause-quit{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;}
 .pause-sep{width:280px;height:1px;background:rgba(255,255,255,.1);}
 #battery-badge{
-  position:absolute;top:58px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a;border-radius:20px;
-  padding:5px 18px;font-size:.82rem;font-weight:900;display:none;z-index:110;
-  pointer-events:none;letter-spacing:.05em;
-  box-shadow:0 2px 8px rgba(0,0,0,.3);
+position:absolute;top:58px;left:50%;transform:translateX(-50%);
+background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a;border-radius:20px;
+padding:5px 18px;font-size:.82rem;font-weight:900;display:none;z-index:110;
+pointer-events:none;letter-spacing:.05em;
+box-shadow:0 2px 8px rgba(0,0,0,.3);
 }
 /* ── FEATURE REQUEST MODAL ── */
 #feature-modal{
-  position:absolute;inset:0;background:rgba(5,5,20,.9);display:none;
-  z-index:600;align-items:center;justify-content:center;
-  pointer-events:auto;
+position:absolute;inset:0;background:rgba(5,5,20,.9);display:none;
+z-index:600;align-items:center;justify-content:center;
+pointer-events:auto;
 }
 #feature-box{
-  background:rgba(20,20,40,.98);border:2px solid rgba(78,205,196,.4);border-radius:24px;
-  padding:32px;width:92%;max-width:420px;display:flex;flex-direction:column;gap:14px;
+background:rgba(20,20,40,.98);border:2px solid rgba(78,205,196,.4);border-radius:24px;
+padding:32px;width:92%;max-width:420px;display:flex;flex-direction:column;gap:14px;
 }
-#feature-box h3{color:#4ECDC4;font-family:'Baloo 2',cursive;font-size:1.5rem;margin:0;}
+#feature-box h3{color:#4ECDC4;font-family:‘Baloo 2’,cursive;font-size:1.5rem;margin:0;}
 #feature-box p{color:rgba(255,255,255,.7);font-size:.9rem;margin:0;}
 #feature-input{
-  width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);
-  border:1.5px solid rgba(78,205,196,.3);border-radius:10px;
-  color:#fff;padding:10px 14px;font-size:.95rem;font-family:'Nunito',sans-serif;resize:vertical;min-height:80px;
+width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);
+border:1.5px solid rgba(78,205,196,.3);border-radius:10px;
+color:#fff;padding:10px 14px;font-size:.95rem;font-family:‘Nunito’,sans-serif;resize:vertical;min-height:80px;
 }
 #feature-send{
-  background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;border:none;
-  border-radius:10px;padding:12px;font-size:1rem;font-weight:900;cursor:pointer;font-family:'Baloo 2',cursive;
+background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;border:none;
+border-radius:10px;padding:12px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘Baloo 2’,cursive;
 }
 #feature-close{
-  background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);
-  border-radius:10px;padding:10px;font-size:.9rem;cursor:pointer;font-family:'Baloo 2',cursive;
+background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);
+border-radius:10px;padding:10px;font-size:.9rem;cursor:pointer;font-family:‘Baloo 2’,cursive;
 }
 
 /* ── SKIN SELECTOR ── */
 .sk-min{
-  position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
-  color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
-  cursor:pointer;pointer-events:auto;font-family:'Nunito',sans-serif;font-weight:700;
+position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
+color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
+cursor:pointer;pointer-events:auto;font-family:‘Nunito’,sans-serif;font-weight:700;
 }
 #skin-sel{
-  position:absolute;top:60px;right:12px;
-  z-index:103;pointer-events:auto;
-  background:rgba(10,10,26,.88);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
-  gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
-  display:none;max-width:160px;flex-direction:column;
-  cursor:grab;touch-action:none;
+position:absolute;top:60px;right:12px;
+z-index:103;pointer-events:auto;
+background:rgba(10,10,26,.88);backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
+gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
+display:none;max-width:160px;flex-direction:column;
+cursor:grab;touch-action:none;
 }
 #skin-sel.dragging{cursor:grabbing;}
 #skin-drag-handle{
-  width:100%;text-align:center;color:rgba(255,255,255,.25);font-size:.65rem;
-  letter-spacing:.1em;margin-bottom:2px;cursor:grab;user-select:none;
+width:100%;text-align:center;color:rgba(255,255,255,.25);font-size:.65rem;
+letter-spacing:.1em;margin-bottom:2px;cursor:grab;user-select:none;
 }
 .sk-lbl{color:rgba(255,255,255,.6);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;width:100%;text-align:center;margin-bottom:4px;}
 .sk-btn{
-  padding:7px 14px;font-size:.82rem;font-weight:700;
-  background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
-  color:#fff;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;
-  transition:.15s;
+padding:7px 14px;font-size:.82rem;font-weight:700;
+background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
+color:#fff;border-radius:8px;cursor:pointer;font-family:‘Nunito’,sans-serif;
+transition:.15s;
 }
 .sk-btn:hover{background:rgba(255,255,255,.2);}
-.sk-btn.sk-active{background:var(--gold);color:#333;border-color:var(--gold);}
+.sk-btn.sk-active{background:var(–gold);color:#333;border-color:var(–gold);}
 .sk-btn.sk-dev  {background:rgba(0,160,0,.6);border-color:#00aa00;}
 .sk-btn.sk-admin{background:rgba(140,0,210,.6);border-color:#8b00cc;}
 
 /* ── MOBILE JOYSTICK ── */
 #joy-wrap{position:absolute;bottom:28px;left:28px;display:none;pointer-events:auto;}
 #joy-outer{
-  width:130px;height:130px;background:rgba(255,255,255,.1);
-  border:3px solid rgba(255,255,255,.3);border-radius:50%;
-  position:relative;touch-action:none;
+width:130px;height:130px;background:rgba(255,255,255,.1);
+border:3px solid rgba(255,255,255,.3);border-radius:50%;
+position:relative;touch-action:none;
 }
 #joy-inner{
-  width:58px;height:58px;background:rgba(255,255,255,.75);border-radius:50%;
-  position:absolute;top:36px;left:36px;
-  box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
+width:58px;height:58px;background:rgba(255,255,255,.75);border-radius:50%;
+position:absolute;top:36px;left:36px;
+box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
 }
 #jump-btn{
-  position:absolute;bottom:40px;right:40px;width:82px;height:82px;
-  background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
-  border-radius:50%;pointer-events:auto;display:none;
-  color:#fff;font-weight:900;font-size:1rem;font-family:'Baloo 2',cursive;
-  text-shadow:0 1px 3px #000;
+position:absolute;bottom:40px;right:40px;width:82px;height:82px;
+background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
+border-radius:50%;pointer-events:auto;display:none;
+color:#fff;font-weight:900;font-size:1rem;font-family:‘Baloo 2’,cursive;
+text-shadow:0 1px 3px #000;
 }
 #crouch-btn{
-  position:absolute;bottom:40px;right:134px;width:82px;height:82px;
-  background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
-  border-radius:50%;pointer-events:auto;display:none;
-  color:#fff;font-weight:900;font-size:.85rem;font-family:'Baloo 2',cursive;
-  text-shadow:0 1px 3px #000;
+position:absolute;bottom:40px;right:134px;width:82px;height:82px;
+background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
+border-radius:50%;pointer-events:auto;display:none;
+color:#fff;font-weight:900;font-size:.85rem;font-family:‘Baloo 2’,cursive;
+text-shadow:0 1px 3px #000;
 }
 
 /* ── CAM HINT ── */
 #cam-hint{
-  position:absolute;bottom:14px;right:14px;
-  background:rgba(10,10,26,.82);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);
-  border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;
-  display:none;pointer-events:none;
+position:absolute;bottom:14px;right:14px;
+background:rgba(10,10,26,.82);backdrop-filter:blur(8px);
+border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);
+border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;
+display:none;pointer-events:none;
 }
 
 /* ── PLAYER SPRITE CHOOSER (multiplayer) ── */
 #sprite-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;}
 .sprite-opt{
-  width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
-  cursor:pointer;object-fit:cover;background:#222;transition:.15s;
+width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
+cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 }
-.sprite-opt.chosen{border-color:var(--gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
+.sprite-opt.chosen{border-color:var(–gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
 
 /* ══════════════════════════════════════════
-   MOBILE MODE — body.mobile overrides
-   Applied automatically when isMobile===true
+MOBILE MODE — body.mobile overrides
+Applied automatically when isMobile===true
 ════════════════════════════════════════════ */
 body.mobile .hud-panel{
-  padding:5px 8px;min-width:0;border-radius:0 0 10px 0;
-  background:rgba(10,10,26,.65);
+padding:5px 8px;min-width:0;border-radius:0 0 10px 0;
+background:rgba(10,10,26,.65);
 }
 body.mobile .hud-room{font-size:.6rem;margin-bottom:1px;}
 body.mobile .hud-time{font-size:.78rem;margin-bottom:3px;}
@@ -337,8 +338,8 @@ body.mobile .map-sel{font-size:.7rem;padding:5px 7px;border-radius:8px;}
 body.mobile .icon-btn{width:28px;height:28px;font-size:.8rem;}
 
 body.mobile #pause-btn{
-  top:6px!important;left:130px!important;
-  padding:4px 9px!important;font-size:.72rem!important;border-radius:7px!important;
+top:6px!important;left:130px!important;
+padding:4px 9px!important;font-size:.72rem!important;border-radius:7px!important;
 }
 
 body.mobile #pause-overlay{gap:10px;}
@@ -370,18 +371,20 @@ body.mobile .sk-lbl{font-size:.6rem;}
 /* Battery badge smaller */
 body.mobile #battery-badge{top:48px;font-size:.7rem;padding:3px 12px;}
 
-/* Toast higher so joystick doesn't cover */
+/* Toast higher so joystick doesn’t cover */
 body.mobile #toast{top:55px;}
 
 /* Unlock banner smaller */
 body.mobile #unlock-banner{padding:14px 22px;font-size:1.1rem;border-radius:16px;}
 body.mobile #unlock-banner img{width:56px;height:56px;}
 </style>
+
 </head>
 <body>
 <div id="ui">
 
 <!-- MAIN MENU -->
+
 <div id="menu">
   <div class="menu-stars" id="menu-stars"></div>
   <div class="game-title">Find Tiny's<br>Family</div>
@@ -432,6 +435,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- KEY MODAL -->
+
 <div id="key-modal">
   <div class="km-inner">
     <div class="km-title">🔑 Access Key</div>
@@ -446,6 +450,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- HUD -->
+
 <div id="hud">
   <div class="hud-panel">
     <div class="hud-room" id="room-tag">Connecting...</div>
@@ -458,6 +463,8 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
       <div class="cnt" id="c-sis">Sis 0/9</div>
       <div class="cnt" id="c-uncle">Uncle 0/2</div>
       <div class="cnt" id="c-auntie">Auntie 0/2</div>
+      <div class="cnt" id="c-grandpa">Grandpa 0/1</div>
+      <div class="cnt" id="c-grandma">Grandma 0/1</div>
       <div class="cnt" id="c-cousin">Cousins 0/4</div>
       <div class="cnt cnt-tiny" id="c-tiny">Tiny 0/1</div>
       <div class="cnt" id="c-map">Map 1</div>
@@ -473,6 +480,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
     <option value="1">🏠 Map 1 — Neighborhood</option>
     <option value="2">🐢 Map 2 — Turtle Beach</option>
     <option value="3">🔒 Map 3 — Tiny's Hideout</option>
+    <option value="4" style="display:none" id="map-opt-4">🚀 Map 4 — Space</option>
   </select>
 </div>
 
@@ -480,12 +488,14 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 <div id="battery-badge">⚡ BATTERY SAVER</div>
 
 <!-- PAUSE BUTTON (always visible in-game) -->
+
 <button id="pause-btn" style="position:absolute;top:10px;left:190px;z-index:120;
-  background:rgba(10,10,26,.8);border:1.5px solid rgba(255,255,255,.2);color:#fff;
-  border-radius:10px;padding:7px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
-  display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸</button>
+background:rgba(10,10,26,.8);border:1.5px solid rgba(255,255,255,.2);color:#fff;
+border-radius:10px;padding:7px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
+display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸</button>
 
 <!-- PAUSE OVERLAY -->
+
 <div id="pause-overlay" style="display:none;position:absolute;inset:0;background:rgba(5,5,20,.88);
   backdrop-filter:blur(16px);z-index:500;align-items:center;justify-content:center;
   flex-direction:column;gap:18px;pointer-events:auto;">
@@ -493,6 +503,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
   <div style="color:rgba(255,255,255,.5);font-size:.9rem;" id="pause-mapinfo"></div>
   <button class="pause-btn pause-resume" onclick="togglePause()">▶ Resume</button>
   <button class="pause-btn pause-battery" onclick="toggleBattery()">⚡ Battery Saver: <span id="bat-label">OFF</span></button>
+  <button class="pause-btn" id="blur-btn" onclick="toggleMotionBlur()" style="background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;">💫 Motion Blur: <span id="blur-label">OFF</span></button>
   <div class="pause-sep"></div>
   <button class="pause-btn" id="pause-collect-btn" onclick="adminCollect();togglePause();" style="display:none;background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;">★ Collect This Map</button>
   <button class="pause-btn" id="pause-collect-all-btn" onclick="adminCollectAll();togglePause();" style="display:none;background:linear-gradient(135deg,#8e44ad,#6c3483);color:#fff;">★★ Collect All Maps</button>
@@ -516,6 +527,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- FEATURE REQUEST MODAL -->
+
 <div id="feature-modal" style="display:none;position:absolute;inset:0;
   background:rgba(5,5,20,.9);z-index:600;align-items:center;justify-content:center;pointer-events:auto;">
   <div id="feature-box">
@@ -531,6 +543,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 <div id="name-label" class="fname">Player</div>
 
 <!-- DIALOGUE -->
+
 <div id="dialogue">
   <img class="d-img" id="d-img" src="friend.png"
     onerror="this.onerror=null;this.style.visibility='hidden';"
@@ -545,14 +558,54 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- SKIN SELECTOR -->
+
 <div id="skin-sel"><span class="sk-lbl">Skin</span></div>
 
 <!-- BANNERS -->
+
 <div id="unlock-banner"></div>
 <div id="locked-msg"></div>
 <div id="toast"></div>
+<div id="space-vignette" style="position:fixed;inset:0;pointer-events:none;z-index:199;opacity:0;transition:opacity .4s;background:radial-gradient(ellipse at center, transparent 30%, rgba(20,0,40,.95) 100%);"></div>
+<div id="devroom-overlay" style="position:fixed;inset:0;background:linear-gradient(135deg,#0a0a1a,#1a0a2e);z-index:4000;display:none;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:40px 20px;">
+  <button onclick="leaveDevRoom()" style="position:fixed;top:20px;right:24px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:20px;padding:8px 18px;cursor:pointer;z-index:4001;">← Back</button>
+  <h1 style="color:#4488ff;font-size:2.2rem;margin-bottom:8px;font-family:'Baloo 2',cursive;">🛠 Dev Room</h1>
+  <p style="color:rgba(255,255,255,.5);margin-bottom:32px;font-size:.9rem;">Behind the scenes of Find Tiny's Family</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:900px;width:100%;">
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(68,136,255,.3);border-radius:16px;padding:24px;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">📖 Story</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">Tiny the Turtle went on an adventure and the whole family scattered across the neighbourhood, turtle beach, and beyond. The a-REA gang — Aqeel, Oli, Hamid, Alexandru, Harry V, Aadil, Sabira, Zubair (Zuhaib 🙃), and Mirabelle — are all out there too. Help Tiny find everyone!</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.3);border-radius:16px;padding:24px;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">🎵 Music</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">All original songs by Aqeel for the a-REA project. The game's vibe is built around the a-REA universe — lore, memes (9+10=21 👀), and inside jokes baked into every corner.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(100,255,100,.3);border-radius:16px;padding:24px;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">🐢 Tiny</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">Tiny is the heart of the game. Find Tiny last — in the classroom hideout on Map 3. Tiny is golden and always glowing. The halo is real. 🌟</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,100,100,.3);border-radius:16px;padding:24px;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">🔑 Secret Codes</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">You already know one to be here. There's also a Supporter code earned by finding the space orb after collecting everyone. The dev secret: <span style="color:gold;font-family:monospace;">212121</span> is the a-REA secret code itself. 😉</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(200,100,255,.3);border-radius:16px;padding:24px;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">🚀 Space</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">Fly high on Turtle Beach to blast into space. Or find the watchtower / rocket if you can't fly! The secret orb in space grants Supporter status to those who've found the whole family.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(100,200,255,.3);border-radius:16px;padding:24px;">
+      <div style="font-size:1.5rem;margin-bottom:8px;">💌 Contact</div>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">Enjoyed the game? Feature ideas? Bugs? Hit us up at <a href="mailto:dacoolkid325@gmail.com" style="color:#4488ff;">dacoolkid325@gmail.com</a> — or use the Feature Request button in-game!</p>
+    </div>
+  </div>
+  <div style="margin-top:40px;color:rgba(255,255,255,.2);font-size:.75rem;">a-REA Project · Made with ♥ by Aqeel · secret code 212121</div>
+</div>
+<div id="cutscene-overlay">
+  <div id="cutscene-text"></div>
+  <button id="cutscene-skip" onclick="skipCutscene()">Skip ▶</button>
+</div>
 
 <!-- CAM HINT -->
+
 <div id="cam-hint" class="cam-hint-desktop">
   <b>Move</b> WASD &nbsp;|&nbsp; <b>Cam</b> Arrow keys / drag<br>
   <b>Jump</b> Space &nbsp;|&nbsp; <b>Crouch</b> C (look under beds!)<br>
@@ -564,7 +617,9 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- MOBILE -->
+
 <!-- DEV MOBILE BUTTONS -->
+
 <div id="dev-btns">
   <button class="dev-mbtn" onclick="flyMode=!flyMode;showToast(flyMode?'✈ Fly ON':'✈ Fly OFF')">✈ Fly</button>
   <button class="dev-mbtn" onclick="noclipMode=!noclipMode;showToast(noclipMode?'👻 Noclip ON':'👻 Noclip OFF')">👻 Noclip</button>
@@ -592,20 +647,23 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 // ════════════════════════════════════════════════════
 //  CONSTANTS & STATE
 // ════════════════════════════════════════════════════
-const SPRITES = ['friend','dad','mum','tiny','brother','sister','uncle','auntie','cousin','admin','dev'];
+const SPRITES = ['friend','dad','mum','tiny','brother','sister','uncle','auntie','cousin','grandpa','grandma','admin','dev','supporter'];
 const SPRITE_FALLBACK_COLORS = {
   friend:'#4ECDC4',dad:'#3498db',mum:'#e91e8c',tiny:'#FFD166',
   brother:'#2980b9',sister:'#e91e63',uncle:'#e67e22',auntie:'#e91e63',cousin:'#1abc9c',
   admin:'#9b59b6',dev:'#27ae60'
 };
 
-const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',uncle:'uncle',auntie:'auntie',cousin:'cousin',tiny:'tiny'};
+const SKIN_GROUPS = {dad:'dad',mum:'mum',brother:'brother',sister:'sister',uncle:'uncle',auntie:'auntie',cousin:'cousin',grandpa:'grandpa',grandma:'grandma',tiny:'tiny'};
 const KEY_ONLY_SKINS = ['dev','admin'];
 const ALWAYS_UNLOCKED = ['friend'];
 
 let playerName='Player', chosenSprite='friend', accessMode='normal';
 let currentMap=1, secondsElapsed=0, timerInterval=null, gameStarted=false;
 let flyMode=false, flyVelY=0, velocityY=0, isGrounded=false, isCrouching=false;
+let jumpCount=0, jumpHeld=false, crouchHeld=false;
+let spaceTransitioning=false, orbCollected=false, beachLaunchType=null, _spaceWarnShown=false, _rocketHintShown=false;
+let paintingPos=null, inDevRoom=false;
 let noclipMode=false;
 let superSpeed=false;
 let batterySaver=false;
@@ -816,13 +874,14 @@ function togglePause(){
     // Show feature request only for admin
     const fb=document.getElementById('pause-feature-btn');
     const fs=document.getElementById('pause-feature-sep');
-    if(fb){ fb.style.display=(accessMode==='admin')?'block':'none'; }
-    if(fs){ fs.style.display=(accessMode==='admin')?'block':'none'; }
+    if(fb){ fb.style.display=(accessMode==='admin'||accessMode==='supporter')?'block':'none'; }
+    if(fs){ fs.style.display=(accessMode==='admin'||accessMode==='supporter')?'block':'none'; }
     // Show collect-all for admin or dev
+    const isPriv=accessMode==='admin'||accessMode==='dev';
     const cb=document.getElementById('pause-collect-btn');
-    if(cb) cb.style.display=(accessMode==='admin'||accessMode==='dev')?'block':'none';
+    if(cb) cb.style.display=isPriv?'block':'none';
     const cab=document.getElementById('pause-collect-all-btn');
-    if(cab) cab.style.display=(accessMode==='admin'||accessMode==='dev')?'block':'none';
+    if(cab) cab.style.display=isPriv?'block':'none';
     // Update save data display
     updateSaveDisplay();
   }
@@ -872,9 +931,9 @@ async function sendFeature(){
   showToast('📨 Opening email to send request!');
 }
 
-// Family: dad=1 mum=1 brother=8 sister=9 uncle=2 auntie=2 cousin=4 tiny=1 = 28 total
-let famTargets = {dad:1,mum:1,brother:8,sister:9,uncle:2,auntie:2,cousin:4,tiny:1};
-let famFound   = {dad:0,mum:0,brother:0,sister:0,uncle:0,auntie:0,cousin:0,tiny:0};
+// Family: dad=1 mum=1 brother=8 sister=9 uncle=2 auntie=2 cousin=4 grandpa=1 grandma=1 tiny=1 = 30 total
+let famTargets = {dad:1,mum:1,brother:8,sister:9,uncle:2,auntie:2,cousin:4,grandpa:1,grandma:1,tiny:1};
+let famFound   = {dad:0,mum:0,brother:0,sister:0,uncle:0,auntie:0,cousin:0,grandpa:0,grandma:0,tiny:0};
 let groupUnlocked = {};
 
 // ── PERSISTENT UNLOCK STORAGE ──
@@ -916,6 +975,7 @@ function buildSpritePicker(){
   const row=document.getElementById('sprite-row');
   row.innerHTML='';
   SPRITES.forEach(name=>{
+    if(name==='supporter' && accessMode!=='supporter' && accessMode!=='admin' && accessMode!=='dev') return;
     const isUnlocked=unlockedSkins.includes(name);
     const wrap=document.createElement('div');
     wrap.style.cssText='position:relative;display:inline-block;';
@@ -967,7 +1027,7 @@ buildSpritePicker();
 // ════════════════════════════════════════════════════
 //  ACCESS KEY SYSTEM
 // ════════════════════════════════════════════════════
-const KEYS={'212121':'dev','221122':'admin'};
+const KEYS={'212121':'dev','221122':'admin','214161':'supporter'};
 function openKey(){ document.getElementById('key-modal').style.display='flex'; setTimeout(()=>document.getElementById('key-input').focus(),120); }
 function closeKey(){ document.getElementById('key-modal').style.display='none'; }
 document.getElementById('key-input').addEventListener('keydown',e=>{ if(e.key==='Enter')submitKey(); if(e.key==='Escape')closeKey(); });
@@ -975,7 +1035,7 @@ document.getElementById('key-input').addEventListener('keydown',e=>{ if(e.key===
 function submitKey(){
   const v=document.getElementById('key-input').value.trim();
   const ks=document.getElementById('key-status');
-  const mode=KEYS[v];
+  const mode=KEYS[v]||(v==='supporter'?'supporter':null);
   if(mode){
     accessMode=mode;
     ks.style.color='#00FF88';
@@ -988,7 +1048,7 @@ function submitKey(){
       // Admin gets dev + admin skins
       giveExtraSkins(['dev','admin']);
     }
-    if(gameStarted){ buildSkinSel(); updateModeTag(); if(mode==='admin') adminCollect(); }
+    if(gameStarted){ buildSkinSel(); updateModeTag(); }
     setTimeout(closeKey,1800);
   } else {
     ks.style.color='#FF4444'; ks.textContent='✘ Wrong key.';
@@ -1001,7 +1061,456 @@ function updateModeTag(){
   const mt=document.getElementById('mode-tag');
   if(accessMode==='dev')  { mt.textContent='🛠 Dev Mode';   mt.style.display='inline-block'; document.getElementById('dev-panel').style.display='block'; document.getElementById('dev-btns').style.display='flex'; }
   if(accessMode==='admin'){ mt.textContent='👑 Admin Mode'; mt.style.display='inline-block'; if(gameStarted) document.getElementById('admin-btns').style.display='flex'; }
+  if(accessMode==='supporter'){ mt.textContent='🌟 Supporter'; mt.style.display='inline-block'; if(gameStarted) document.getElementById('admin-btns').style.display='flex'; }
 }
+
+// ── CUTSCENE ──
+let _cutsceneCb=null, _cutsceneTimer=null;
+const CUTSCENES={
+  fly:[
+    "You spread your wings and leap into the sky...",
+    "Higher... and higher... the beach shrinks below.",
+    "Stars begin to appear. The air grows thin.",
+    "You burst through the atmosphere... into SPACE! 🚀",
+  ],
+  rocket:[
+    "You scramble into the rocket. The engine roars! 🔥",
+    "10... 9... 8... the ground shakes beneath you.",
+    "LAUNCH! You're slammed into your seat.",
+    "In seconds — the world disappears. You're in SPACE! 🌌",
+  ],
+  tower:[
+    "You begin climbing the watchtower...",
+    "Each step takes you closer to the clouds.",
+    "The beach looks tiny below. Your hands tremble.",
+    "You leap from the very top and... sail into SPACE! ⭐",
+  ],
+};
+function showCutscene(type, cb){
+  _cutsceneCb=cb;
+  const lines=CUTSCENES[type]||CUTSCENES.fly;
+  const ov=document.getElementById('cutscene-overlay');
+  const tx=document.getElementById('cutscene-text');
+  ov.classList.add('active');
+  let i=0;
+  function nextLine(){
+    tx.classList.remove('visible');
+    setTimeout(()=>{
+      if(i>=lines.length){ endCutscene(); return; }
+      tx.textContent=lines[i++];
+      tx.classList.add('visible');
+      _cutsceneTimer=setTimeout(nextLine,2400);
+    },400);
+  }
+  nextLine();
+}
+function skipCutscene(){
+  if(_cutsceneTimer) clearTimeout(_cutsceneTimer);
+  endCutscene();
+}
+function endCutscene(){
+  document.getElementById('cutscene-overlay').classList.remove('active');
+  document.getElementById('cutscene-text').classList.remove('visible');
+  if(_cutsceneCb){ const cb=_cutsceneCb; _cutsceneCb=null; cb(); }
+}
+
+
+// ── WATCHTOWER / ROCKET (50/50 for non-flyers) ──
+let beachLaunchBuilt=false;
+function buildBeachLaunch(){
+  if(beachLaunchBuilt) return;
+  beachLaunchBuilt=true;
+  beachLaunchType=(Math.random()<.5)?'tower':'rocket';
+  if(beachLaunchType==='tower') buildWatchtower();
+  else buildRocket();
+}
+let watchtowerTop=0, watchtowerPos={x:120,z:-60};
+let _wtSteps=[]; // [{x,z,y}] — world positions of each spiral step
+function buildWatchtower(){
+  const wx=watchtowerPos.x, wz=watchtowerPos.z;
+  // Aviation radio tower: central shaft, X-braced frame, wide climbable ramp stairs
+  const TOTAL_H=48, SHAFT_R=0.55;
+
+  // ── Central shaft with alternating red/white bands ──
+  const BAND_H=4;
+  for(let i=0;i<TOTAL_H/BAND_H;i++){
+    const col=i%2===0?0xEEEEEE:0xCC1111;
+    const band=mkMesh(new THREE.CylinderGeometry(SHAFT_R,SHAFT_R,BAND_H,10),{color:col,roughness:.5,metalness:.05});
+    band.position.set(wx,i*BAND_H+BAND_H/2,wz);
+    band.castShadow=true; band.userData.deco=true; scene.add(band);
+  }
+
+  // ── 4 corner columns — close together so player can walk between them ──
+  const COL_OFFSET=2.2; // tight square
+  const colPositions=[[-COL_OFFSET,-COL_OFFSET],[COL_OFFSET,-COL_OFFSET],[-COL_OFFSET,COL_OFFSET],[COL_OFFSET,COL_OFFSET]];
+  // Taper: columns start at COL_OFFSET at base, converge to 0.5 at top
+  for(let level=0;level<4;level++){
+    const y0=level*TOTAL_H/4, y1=(level+1)*TOTAL_H/4, segH=TOTAL_H/4;
+    const taper0=1-(level/4)*0.8, taper1=1-((level+1)/4)*0.8;
+    colPositions.forEach(([cx,cz])=>{
+      const colMesh=mkMesh(new THREE.CylinderGeometry(.18*taper1,.22*taper0,segH,6),{color:0xDDDDDD,roughness:.6,metalness:.15});
+      colMesh.position.set(wx+cx*taper0,y0+segH/2,wz+cz*taper0);
+      colMesh.castShadow=true; colMesh.userData.deco=true; scene.add(colMesh);
+    });
+    // X-braces on each face per level (horizontal bars)
+    const t=taper0;
+    [[[-COL_OFFSET,-COL_OFFSET],[COL_OFFSET,-COL_OFFSET]],
+     [[-COL_OFFSET,COL_OFFSET],[COL_OFFSET,COL_OFFSET]],
+     [[-COL_OFFSET,-COL_OFFSET],[-COL_OFFSET,COL_OFFSET]],
+     [[COL_OFFSET,-COL_OFFSET],[COL_OFFSET,COL_OFFSET]]
+    ].forEach(([[ax,az],[bx,bz]])=>{
+      const mx=(ax+bx)/2*t, mz=(az+bz)/2*t;
+      const dx=(bx-ax)*t, dz=(bz-az)*t;
+      const len=Math.sqrt(dx*dx+dz*dz);
+      const brace=mkMesh(new THREE.CylinderGeometry(.07,.07,len,4),{color:0xCCCCCC,metalness:.2});
+      brace.position.set(wx+mx,y0+segH*.5,wz+mz);
+      brace.rotation.z=Math.PI/2; brace.rotation.y=Math.atan2(dz,dx);
+      brace.userData.deco=true; scene.add(brace);
+    });
+  }
+
+  // ── CLIMBABLE SPIRAL STAIRCASE around the shaft ──
+  // Each step is a box radiating outward from the shaft, spiralling up
+  const STEPS=80, STEP_RISE=TOTAL_H/STEPS;
+  const stepW=2.2, stepD=1.1, stepR=COL_OFFSET+1.0;
+  _wtSteps=[];
+  for(let s=0;s<STEPS;s++){
+    const angle=(s/STEPS)*Math.PI*4; // 2 full turns
+    const sy=s*STEP_RISE; // TOP surface of step
+    const sx=Math.cos(angle)*stepR, sz=Math.sin(angle)*stepR;
+    const step=mkMesh(new THREE.BoxGeometry(stepW,0.25,stepD),{color:s%2===0?0xDDDDDD:0xBBBBBB,roughness:.7,metalness:.1});
+    step.position.set(wx+sx, sy+0.125, wz+sz); // centre of box = top - half thickness
+    step.rotation.y=-(angle+Math.PI/2);
+    step.userData.deco=true; scene.add(step);
+    // Store top-surface world position for terrainH lookup
+    _wtSteps.push({wx:wx+sx, wz:wz+sz, wy:sy, angle:angle, r:stepR});
+  }
+
+  // ── Top platform ──
+  const topPlat=mkMesh(new THREE.CylinderGeometry(COL_OFFSET+1.2,COL_OFFSET+1.2,0.2,12),{color:0xCCCCCC,roughness:.7});
+  topPlat.position.set(wx,TOTAL_H,wz); topPlat.userData.deco=true; scene.add(topPlat);
+  // Railing around top
+  for(let i=0;i<12;i++){
+    const a=i/12*Math.PI*2;
+    const pr=COL_OFFSET+1.1;
+    const post=mkMesh(new THREE.BoxGeometry(.12,1.1,.12),{color:0xAAAAAA});
+    post.position.set(wx+Math.cos(a)*pr,TOTAL_H+.55,wz+Math.sin(a)*pr); post.userData.deco=true; scene.add(post);
+    // Handrail segments
+    if(i>0){
+      const pa=(i-1)/12*Math.PI*2;
+      const rx=(Math.cos(a)+Math.cos(pa))/2*pr, rz=(Math.sin(a)+Math.sin(pa))/2*pr;
+      const rlen=2*pr*Math.sin(Math.PI/12);
+      const rail=mkMesh(new THREE.BoxGeometry(rlen,.08,.08),{color:0x999999});
+      rail.position.set(wx+rx,TOTAL_H+1.05,wz+rz);
+      rail.rotation.y=-(a+pa)/2; rail.userData.deco=true; scene.add(rail);
+    }
+  }
+
+  // ── Aviation warning light ──
+  const lightBulb=mkMesh(new THREE.SphereGeometry(.5,10,8),{color:0xff2200,emissive:0xff2200,emissiveIntensity:3,roughness:.1});
+  lightBulb.position.set(wx,TOTAL_H+2.2,wz); lightBulb.userData.deco=true; lightBulb.userData.isWarningLight=true; scene.add(lightBulb);
+  const warningPL=new THREE.PointLight(0xff3300,5,24); warningPL.position.set(wx,TOTAL_H+2.2,wz); warningPL.userData.deco=true; scene.add(warningPL);
+  scene.userData.warningLight={mesh:lightBulb,pl:warningPL};
+
+  // ── Concrete base ──
+  const base=mkMesh(new THREE.CylinderGeometry(COL_OFFSET+1.5,COL_OFFSET+2,1.5,12),{color:0x999988,roughness:.95});
+  base.position.set(wx,.75,wz); base.userData.deco=true; scene.add(base);
+
+  // Wide entrance ramp at ground level
+  const ramp=mkMesh(new THREE.BoxGeometry(3,.15,5),{color:0xCCCCBB,roughness:.8});
+  ramp.position.set(wx+COL_OFFSET+2.2,0.08,wz); ramp.userData.deco=true; scene.add(ramp);
+  ramp.rotation.x=-0.06;
+
+  watchtowerTop=TOTAL_H;
+  // Obstacle = shaft centre only (columns are climbable around them)
+  obstacles.push({x:wx,z:wz,radius:SHAFT_R+0.4});
+  showToast('🗼 Aviation tower! Spiral up to reach space!');
+}
+function buildRocket(){
+  const rx=-80, rz=40;
+  const rocketGrp=[];
+  // Body
+  const body=mkMesh(new THREE.CylinderGeometry(2,2.5,14,12),{color:0xDDDDDD,roughness:.4,metalness:.6});
+  body.position.set(rx,7,rz); body.userData.deco=true; scene.add(body);
+  // Nose cone
+  const nose=mkMesh(new THREE.ConeGeometry(2,6,12),{color:0xFF4422,roughness:.4,metalness:.3});
+  nose.position.set(rx,17,rz); nose.userData.deco=true; scene.add(nose);
+  // Fins
+  [0,120,240].forEach(deg=>{
+    const finGeo=new THREE.BoxGeometry(.2,5,3);
+    const fin=mkMesh(finGeo,{color:0xCC2222,roughness:.5});
+    const rad=deg*Math.PI/180;
+    fin.position.set(rx+Math.sin(rad)*2.5,2,rz+Math.cos(rad)*2.5);
+    fin.rotation.y=rad; fin.userData.deco=true; scene.add(fin);
+  });
+  // Ladder/hatch
+  const hatch=mkMesh(new THREE.BoxGeometry(.8,.8,.3),{color:0x888888,roughness:.6,metalness:.8});
+  hatch.position.set(rx+2,8,rz); hatch.userData.deco=true; scene.add(hatch);
+  // Exhaust glow
+  const exhaust=mkMesh(new THREE.CylinderGeometry(1.5,.5,2,8),{color:0xff8800,emissive:0xff6600,emissiveIntensity:1.5,transparent:true,opacity:.7});
+  exhaust.position.set(rx,0,rz); exhaust.userData.deco=true; scene.add(exhaust);
+  const pl2=new THREE.PointLight(0xff6600,3,12); pl2.position.set(rx,.5,rz); pl2.userData.deco=true; scene.add(pl2);
+  // Launch pad
+  const pad=mkMesh(new THREE.CylinderGeometry(5,5.5,1,12),{color:0x888877,roughness:.9});
+  pad.position.set(rx,.5,rz); pad.userData.deco=true; scene.add(pad);
+  // Obstacle: block sides/back but leave front (+x side) open for entry
+  // Left wall, right wall, back wall
+  [{ox:0,oz:-3.5,w:2.5,d:.4},{ox:0,oz:3.5,w:2.5,d:.4},{ox:-3,oz:0,w:.4,d:7}].forEach(({ox,oz,w,d})=>{
+    obstacles.push({x:rx+ox,z:rz+oz,radius:Math.max(w,d)*.6});
+  });
+  // Glowing enter button at hatch side
+  const btnGeo=new THREE.SphereGeometry(.55,8,8);
+  const btn=mkMesh(btnGeo,{color:0x00ff88,emissive:0x00ff44,emissiveIntensity:3,roughness:.1});
+  btn.position.set(rx+3,1.8,rz); btn.userData.deco=true; btn.userData.isRocketBtn=true; scene.add(btn);
+  const btnLight=new THREE.PointLight(0x00ff88,4,10); btnLight.position.copy(btn.position);
+  btnLight.userData.deco=true; scene.add(btnLight);
+  scene.userData.rocketBtn={mesh:btn,light:btnLight};
+  // Floating LAUNCH text sign
+  const signBox=mkMesh(new THREE.BoxGeometry(3,.7,.1),{color:0x111111,roughness:.5});
+  signBox.position.set(rx+3.2,3,rz); signBox.userData.deco=true; scene.add(signBox);
+  showToast('🚀 Rocket! Touch the green button to launch!');
+  beachRocketPos={x:rx,z:rz};
+}
+let beachRocketPos=null;
+
+
+
+// ── MOTION BLUR (WebGL accumulation — Rocket League style) ──
+// Two render targets: rtCurrent (scene render) + rtAccum (blended history)
+// Each frame: render scene→rtCurrent, blend rtCurrent+rtAccum→rtAccum, draw rtAccum to screen
+let motionBlurOn=false;
+const MB_DECAY=0.55; // how much of the previous frame survives (0=none, 1=infinite trail)
+let rtCurrent=null, rtAccum=null, mbRT3=null, mbScene=null, mbCamera=null, mbQuadA=null, mbQuadB=null;
+let mbBlendMat=null, mbOutputMat=null;
+
+function initMotionBlur(){
+  const W=innerWidth, H=innerHeight;
+  const rtOpts={minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBAFormat,type:THREE.UnsignedByteType};
+  rtCurrent=new THREE.WebGLRenderTarget(W,H,rtOpts);
+  // rtAccum and mbRT3 still used for ping-pong but blur is directional now
+  rtAccum=new THREE.WebGLRenderTarget(W,H,rtOpts);
+  mbRT3  =new THREE.WebGLRenderTarget(W,H,rtOpts);
+  mbCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  mbScene=new THREE.Scene();
+  const quadGeo=new THREE.PlaneGeometry(2,2);
+
+  // Combined DoF + directional motion blur shader
+  // DoF: radial blur from centre (simulates shallow depth of field always-on)
+  // Motion: directional streak along velocity vector
+  mbBlendMat=new THREE.ShaderMaterial({
+    uniforms:{
+      tScene:{value:null},
+      uVelocity:{value:new THREE.Vector2(0,0)},
+      uMotionStrength:{value:0.0},
+      uDofStrength:{value:0.0}, // scales with speed, 0 when stationary
+    },
+    vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.0);}`,
+    fragmentShader:`
+      uniform sampler2D tScene;
+      uniform vec2 uVelocity;
+      uniform float uMotionStrength;
+      uniform float uDofStrength;
+      varying vec2 vUv;
+      void main(){
+        const int N=16;
+        // ── Depth of field: radial blur from screen centre ──
+        vec2 centre=vec2(0.5);
+        vec2 dofDir=(vUv-centre)*uDofStrength;
+        // ── Motion blur: directional streak ──
+        vec2 motionDir=uVelocity*uMotionStrength;
+        // Combine both into sample direction
+        vec2 totalDir=dofDir+motionDir;
+        vec4 col=vec4(0.0);
+        float total=0.0;
+        for(int i=0;i<N;i++){
+          float t=float(i)/float(N-1)-0.5;
+          float w=1.0-abs(t)*0.8;
+          vec2 uv=vUv+totalDir*t*2.0;
+          col+=texture2D(tScene,clamp(uv,0.001,0.999))*w;
+          total+=w;
+        }
+        gl_FragColor=col/total;
+      }
+    `
+  });
+  mbOutputMat=new THREE.MeshBasicMaterial({map:null,depthWrite:false,depthTest:false});
+  mbQuadA=new THREE.Mesh(quadGeo,mbBlendMat); // blur pass
+  mbQuadB=new THREE.Mesh(quadGeo,mbOutputMat); // output pass (unused now, kept for safety)
+  mbScene.add(mbQuadA);
+}
+
+function toggleMotionBlur(){
+  motionBlurOn=!motionBlurOn;
+  document.getElementById('blur-label').textContent=motionBlurOn?'ON':'OFF';
+  if(motionBlurOn && !rtCurrent) initMotionBlur();
+  if(!motionBlurOn){
+    // Clear accumulation so turning off is instant-clean
+    if(rtAccum) renderer.setRenderTarget(rtAccum); renderer.clear(); renderer.setRenderTarget(null);
+  }
+}
+
+// Prev camera position for velocity calculation
+const _mbPrevCamPos=new THREE.Vector3();
+const _mbPrevCamQuat=new THREE.Quaternion();
+let _mbCamReady=false;
+
+function renderWithMotionBlur(){
+  if(!motionBlurOn||!rtCurrent){
+    renderer.render(scene,camera);
+    _mbPrevCamPos.copy(camera.position);
+    _mbPrevCamQuat.copy(camera.quaternion);
+    _mbCamReady=true;
+    return;
+  }
+  if(rtCurrent.width!==innerWidth||rtCurrent.height!==innerHeight){
+    rtCurrent.setSize(innerWidth,innerHeight);
+  }
+
+  // Compute screen-space velocity from camera delta
+  let velX=0, velY=0;
+  if(_mbCamReady){
+    // Project a world point through prev and curr camera to get screen delta
+    const ref=new THREE.Vector3(
+      player.position.x+Math.sin(camYaw)*5,
+      player.position.y+1.2,
+      player.position.z+Math.cos(camYaw)*5
+    );
+    // Current NDC
+    const cur=ref.clone().project(camera);
+    // Approx velocity from player movement in screen space
+    const worldDelta=new THREE.Vector3(
+      player.position.x-_mbPrevCamPos.x,
+      0,
+      player.position.z-_mbPrevCamPos.z
+    );
+    // Project delta into screen space
+    const speed=worldDelta.length();
+    if(speed>0.01){
+      const dir=worldDelta.clone().normalize();
+      // Get screen-space direction: project a point slightly ahead
+      const ahead=player.position.clone().add(dir.clone().multiplyScalar(2));
+      const aheadNDC=ahead.clone().project(camera);
+      velX=(aheadNDC.x-cur.x)*0.5;
+      velY=(aheadNDC.y-cur.y)*0.5;
+    }
+    // Also factor in camera rotation (looking left/right blurs horizontally)
+    const yawDelta=camYaw-(_mbPrevYaw||camYaw);
+    velX+=yawDelta*0.4;
+    _mbPrevYaw=camYaw;
+  }
+
+  const blurLen=Math.sqrt(velX*velX+velY*velY);
+  const motionStrength=Math.min(blurLen*6.0, 0.22);
+  const dofStrength=Math.min(blurLen*0.08, 0.022); // DoF only when moving
+
+  // Pass 1: render scene → rtCurrent
+  renderer.setRenderTarget(rtCurrent);
+  renderer.clear();
+  renderer.render(scene,camera);
+
+  // Pass 2: apply DoF + directional blur → screen
+  mbBlendMat.uniforms.tScene.value=rtCurrent.texture;
+  mbBlendMat.uniforms.uVelocity.value.set(velX, velY);
+  mbBlendMat.uniforms.uMotionStrength.value=motionStrength;
+  mbBlendMat.uniforms.uDofStrength.value=dofStrength;
+  renderer.setRenderTarget(null);
+  renderer.clear();
+  renderer.render(mbScene,mbCamera);
+
+  _mbPrevCamPos.copy(player.position);
+  _mbPrevCamQuat.copy(camera.quaternion);
+  _mbCamReady=true;
+}
+let _mbPrevYaw=0;
+
+
+// ── SPACE AMBIENCE (Web Audio) ──
+let ambienceCtx=null, ambienceNodes=[], ambienceRunning=false;
+function startSpaceAmbience(){
+  if(ambienceRunning) return;
+  try{
+    ambienceCtx=new (window.AudioContext||window.webkitAudioContext)();
+    ambienceRunning=true;
+    // Low drone
+    function makeDrone(freq,gain,detune){
+      const osc=ambienceCtx.createOscillator();
+      const gn=ambienceCtx.createGain();
+      const filt=ambienceCtx.createBiquadFilter();
+      osc.type='sine'; osc.frequency.value=freq; osc.detune.value=detune||0;
+      filt.type='lowpass'; filt.frequency.value=800;
+      gn.gain.value=0;
+      osc.connect(filt); filt.connect(gn); gn.connect(ambienceCtx.destination);
+      osc.start();
+      gn.gain.linearRampToValueAtTime(gain,ambienceCtx.currentTime+3);
+      ambienceNodes.push(osc,gn);
+      return gn;
+    }
+    // Subtle shimmer (tremolo)
+    function makeTremolo(freq,rate,depth,gain){
+      const osc=ambienceCtx.createOscillator();
+      const lfo=ambienceCtx.createOscillator();
+      const lfoGain=ambienceCtx.createGain();
+      const masterGain=ambienceCtx.createGain();
+      osc.type='sine'; osc.frequency.value=freq;
+      lfo.type='sine'; lfo.frequency.value=rate;
+      lfoGain.gain.value=depth;
+      masterGain.gain.value=0;
+      lfo.connect(lfoGain); lfoGain.connect(masterGain.gain);
+      osc.connect(masterGain); masterGain.connect(ambienceCtx.destination);
+      osc.start(); lfo.start();
+      masterGain.gain.linearRampToValueAtTime(gain,ambienceCtx.currentTime+5);
+      ambienceNodes.push(osc,lfo,lfoGain,masterGain);
+    }
+    makeDrone(55,.06); makeDrone(82,.04,5); makeDrone(110,.03,-3);
+    makeTremolo(220,.15,.008,.04);
+    makeTremolo(330,.07,.005,.025);
+  } catch(e){ console.log('Audio not available'); }
+}
+function stopSpaceAmbience(){
+  if(!ambienceRunning) return;
+  ambienceRunning=false;
+  ambienceNodes.forEach(n=>{ try{ if(n.gain) n.gain.linearRampToValueAtTime(0,ambienceCtx.currentTime+2); else n.stop(ambienceCtx.currentTime+2); }catch(e){} });
+  ambienceNodes=[];
+  setTimeout(()=>{ try{ ambienceCtx.close(); }catch(e){} ambienceCtx=null; },2500);
+}
+
+function enterDevRoom(){
+  if(accessMode==='normal') return;
+  inDevRoom=true;
+  document.getElementById('devroom-overlay').style.display='flex';
+  document.getElementById('hud').style.display='none';
+}
+function leaveDevRoom(){
+  inDevRoom=false;
+  document.getElementById('devroom-overlay').style.display='none';
+  document.getElementById('hud').style.display='flex';
+}
+
+function grantSupporter(){
+  if(!unlockedSkins.includes('supporter')) unlockedSkins.push('supporter');
+  buildSkinSelector();
+  if(accessMode!=='normal') return; // already has access
+  accessMode='supporter';
+  unlockedSkins.add('supporter');
+  updateModeTag();
+  buildSkinSel();
+  flyMode=true;
+  const code='214161';
+  showToast('🌟 Supporter unlocked! Your code: '+code+' — save it!');
+  // Show code in a modal-style overlay
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  d.innerHTML=`<div style="background:#1a1a2e;border:2px solid gold;border-radius:20px;padding:32px 40px;text-align:center;color:#fff;max-width:340px;">
+    <div style="font-size:2rem;margin-bottom:8px;">🌟</div>
+    <h2 style="color:gold;margin-bottom:12px;">Supporter Unlocked!</h2>
+    <p style="margin-bottom:16px;opacity:.8;">You found the secret way to space!<br>Here's your Supporter code:</p>
+    <div style="background:#000;border-radius:10px;padding:12px 20px;font-family:monospace;font-size:1.4rem;color:gold;letter-spacing:.1em;margin-bottom:20px;">${code}</div>
+    <p style="font-size:.8rem;opacity:.6;margin-bottom:16px;">Supporter perks: ✈ Fly mode · 💡 Feature requests</p>
+    <button onclick="this.parentElement.parentElement.remove()" style="background:gold;color:#333;border:none;border-radius:10px;padding:10px 24px;font-weight:700;cursor:pointer;font-size:1rem;">Got it!</button>
+  </div>`;
+  document.body.appendChild(d);
+}
+
 function adminCollect(){
   const count=familyMeshes.length;
   for(let i=familyMeshes.length-1;i>=0;i--){
@@ -1154,7 +1663,7 @@ const DAY_SPEED = (2 * Math.PI) / (7 * 60); // ~0.01496 rad/s
 let batteryNightLocked=false; // true when battery saver forced night
 
 scene.fog=new THREE.FogExp2(0xffe8b0,.0015);
-scene.background=new THREE.Color(0xff9944);
+scene.background=new THREE.Color(0x88ccff); // matches sky horizon, updated by updateSky
 
 // ── SKY DOME ──
 const SKY_SEGS=12;
@@ -1183,6 +1692,8 @@ function updateSky(sunH,sinT){
     col.setXYZ(i,c.r,c.g,c.b);
   }
   col.needsUpdate=true;
+  // Keep scene.background in sync with horizon so no gaps show
+  if(currentMap!==4) scene.background=horiz.clone();
 }
 
 // ── TERRAIN ──
@@ -1201,8 +1712,136 @@ const HOUSE_PADS=[
 ];
 const PAD_R=18;
 
+// Planet data accessible for gravity-walk logic
+let spacePlanets=[];
+
+function buildSpace(){
+  // ── Skybox — large inverted sphere with purple-to-black gradient ──
+  const skyR=3000;
+  const skySphereGeo=new THREE.SphereGeometry(skyR,32,24);
+  skySphereGeo.scale(-1,1,-1); // invert
+  const skySphereVerts=skySphereGeo.attributes.position;
+  const skyColAttr=new Float32Array(skySphereVerts.count*3);
+  for(let i=0;i<skySphereVerts.count;i++){
+    const y=skySphereVerts.getY(i)/skyR; // -1..1
+    const t=Math.max(0,(y+1)/2); // 0=bottom 1=top
+    // purple at top, near-black with blue at horizon
+    const r=0.04+0.22*t, g=0.0+0.02*t, b=0.12+0.28*t;
+    skyColAttr[i*3]=r; skyColAttr[i*3+1]=g; skyColAttr[i*3+2]=b;
+  }
+  skySphereGeo.setAttribute('color',new THREE.BufferAttribute(skyColAttr,3));
+  const skySphereMat=new THREE.MeshBasicMaterial({vertexColors:true,depthWrite:false,fog:false,side:THREE.BackSide});
+  const skySphereMesh=new THREE.Mesh(skySphereGeo,skySphereMat);
+  skySphereMesh.userData.deco=true; skySphereMesh.renderOrder=-2; scene.add(skySphereMesh);
+
+  // No ground — player starts on a planet surface
+
+  // ── Stars — billboard sprites ──
+  const starPositions=[], starColors=[], starSizes=[];
+  for(let i=0;i<1200;i++){
+    const theta=Math.random()*Math.PI*2;
+    const phi=Math.acos(2*Math.random()-1);
+    const r=200+Math.random()*2600;
+    starPositions.push(Math.sin(phi)*Math.cos(theta)*r, Math.sin(phi)*Math.sin(theta)*r, Math.cos(phi)*r);
+    const hue=Math.random()<.2?(0.55+Math.random()*.15):(Math.random()<.3?0.08:0);
+    const sat=Math.random()*.5, lit=0.7+Math.random()*.3;
+    const c=new THREE.Color().setHSL(hue,sat,lit);
+    starColors.push(c.r,c.g,c.b);
+    starSizes.push(1.5+Math.random()*4);
+  }
+  const starGeo=new THREE.BufferGeometry();
+  starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPositions,3));
+  starGeo.setAttribute('color',new THREE.Float32BufferAttribute(starColors,3));
+  starGeo.setAttribute('size',new THREE.Float32BufferAttribute(starSizes,1));
+  const starMat2=new THREE.PointsMaterial({size:2.5,sizeAttenuation:true,vertexColors:true,transparent:true,opacity:.95,depthWrite:false});
+  const stars=new THREE.Points(starGeo,starMat2);
+  stars.userData.deco=true; stars.renderOrder=0; scene.add(stars);
+
+  // ── Planets ──
+  spacePlanets=[];
+  const planetDefs=[
+    {col:0xff6633,emCol:0xff4411,r:55, x:0,    y:-52, z:0,    name:'Ember',  ring:false, arrival:true},
+    {col:0x3366ff,emCol:0x2244cc,r:90, x:-800, y:93, z:-900,  name:'Aqua',   ring:true},
+    {col:0xffcc44,emCol:0xffaa22,r:40, x:500,  y:42, z:600,   name:'Sol',    ring:false},
+    {col:0xcc44ff,emCol:0x9922cc,r:70, x:-500, y:72, z:500,   name:'Violet', ring:false},
+    {col:0x44ffcc,emCol:0x22ddaa,r:30, x:200,  y:32, z:-400,  name:'Jade',   ring:false},
+    {col:0xff88aa,emCol:0xff5577,r:48, x:-300, y:50, z:-250,  name:'Blush',  ring:false},
+  ];
+  planetDefs.forEach(p=>{
+    // Planet sphere
+    const pm=new THREE.Mesh(
+      new THREE.SphereGeometry(p.r,32,24),
+      new THREE.MeshStandardMaterial({color:p.col,roughness:.55,metalness:.15,emissive:p.emCol,emissiveIntensity:.35})
+    );
+    pm.position.set(p.x,p.y,p.z); pm.castShadow=true; pm.userData.deco=true; pm.userData.isPlanet=true; scene.add(pm);
+
+    // Glow sprite (billboard)
+    const glowCanvas=document.createElement('canvas'); glowCanvas.width=128; glowCanvas.height=128;
+    const gc=glowCanvas.getContext('2d');
+    const grad=gc.createRadialGradient(64,64,0,64,64,64);
+    const c=new THREE.Color(p.col);
+    grad.addColorStop(0,`rgba(${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)},0.7)`);
+    grad.addColorStop(0.4,`rgba(${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)},0.3)`);
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    gc.fillStyle=grad; gc.fillRect(0,0,128,128);
+    const glowTex=new THREE.CanvasTexture(glowCanvas);
+    const glowMat=new THREE.SpriteMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+    const glowSprite=new THREE.Sprite(glowMat);
+    glowSprite.scale.setScalar(p.r*5.5); glowSprite.position.set(p.x,p.y,p.z);
+    glowSprite.userData.deco=true; glowSprite.renderOrder=1; scene.add(glowSprite);
+
+    // Point light for planet glow
+    const pl=new THREE.PointLight(p.col, 2.5, p.r*6); pl.position.set(p.x,p.y,p.z); pl.userData.deco=true; scene.add(pl);
+
+    // Ring for Aqua
+    if(p.ring){
+      const ringGeo=new THREE.RingGeometry(p.r*1.3,p.r*2.1,64);
+      const ringMat=new THREE.MeshBasicMaterial({color:0xaaccff,side:THREE.DoubleSide,transparent:true,opacity:.35,depthWrite:false});
+      const ring=new THREE.Mesh(ringGeo,ringMat);
+      ring.rotation.x=Math.PI*.35; ring.position.set(p.x,p.y,p.z); ring.renderOrder=2;
+      ring.userData.deco=true; scene.add(ring);
+    }
+
+    spacePlanets.push({x:p.x,y:p.y,z:p.z,r:p.r,mesh:pm});
+  });
+
+  // ── A few distant asteroid clusters (far from center, no z-fight with ground) ──
+  for(let i=0;i<30;i++){
+    const s=2+Math.random()*8;
+    const angle=Math.random()*Math.PI*2, dist=80+Math.random()*400;
+    const ax=Math.cos(angle)*dist, az=Math.sin(angle)*dist;
+    const ast=new THREE.Mesh(new THREE.SphereGeometry(s,6,5),new THREE.MeshStandardMaterial({color:0x4a4050,roughness:1}));
+    ast.scale.set(1,0.45+Math.random()*.4,1);
+    ast.position.set(ax,s*.3+0.2,az); // slightly above ground to avoid z-fight
+    ast.userData.deco=true; scene.add(ast);
+    if(s>4) obstacles.push({x:ax,z:az,radius:s*1.1});
+  }
+
+  // ── Secret table ──
+  buildSpaceTable();
+}
+
+let spaceTablePos={x:350,z:380}; // for supporter trigger check
+function buildSpaceTable(){
+  const tx=spaceTablePos.x, tz=spaceTablePos.z;
+  // Table surface
+  const t=mkMesh(new THREE.BoxGeometry(4,.25,2.5),{color:0x888888,roughness:.5,metalness:.3});
+  t.position.set(tx,1.1,tz); t.userData.deco=true; scene.add(t);
+  // Legs
+  [[-.8,0],[ .8,0],[-.8,1.1],[.8,1.1]].forEach(([lx,lz])=>{
+    const leg=mkMesh(new THREE.BoxGeometry(.15,1.1,.15),{color:0x666666,metalness:.4});
+    leg.position.set(tx+lx,.55,tz+lz); leg.userData.deco=true; scene.add(leg);
+  });
+  // Glowing orb on table
+  const orb=mkMesh(new THREE.SphereGeometry(.4,10,8),{color:0x00ffcc,emissive:0x00ffcc,emissiveIntensity:2,roughness:.1});
+  orb.position.set(tx,1.6,tz); orb.userData.deco=true; orb.userData.isSpaceOrb=true; scene.add(orb);
+  const pl=new THREE.PointLight(0x00ffcc,3,12); pl.position.set(tx,2,tz); pl.userData.deco=true; scene.add(pl);
+  obstacles.push({x:tx,z:tz,radius:3});
+}
+
 function buildTerrain(m){
   if(terrain){ scene.remove(terrain); terrain.geometry.dispose(); terrain=null; }
+  if(m===4) return; // space has no ground — planets handle it
   const size = m===3 ? 140 : m===1 ? 1200 : 900;
   const segs = m===3 ? 4   : m===1 ? 100 : 80;
   const geo=new THREE.PlaneGeometry(size,size,segs,segs);
@@ -1232,6 +1871,15 @@ function buildTerrain(m){
   }
   terrain=new THREE.Mesh(geo,terrainMats[m]);
   terrain.receiveShadow=true; scene.add(terrain);
+
+  // ── Terrain skirt: solid box underneath so no gaps/background bleeds through ──
+  // Matches terrain surface colour exactly
+  const skirtColor = m===2 ? 0xf0d090 : m===3 ? 0xd4c4a0 : 0x4a8c28;
+  const skirtSize = size + 40; // slightly wider than terrain
+  const skirtMat = new THREE.MeshStandardMaterial({color:skirtColor, roughness:.95, metalness:0});
+  const skirtMesh = new THREE.Mesh(new THREE.BoxGeometry(skirtSize, 80, skirtSize), skirtMat);
+  skirtMesh.position.set(0, -40, 0);
+  skirtMesh.receiveShadow=true; skirtMesh.userData.deco=true; scene.add(skirtMesh);
 }
 
 // ── MAP BOUNDS — invisible barrier walls so player can't escape ──
@@ -1240,6 +1888,7 @@ let mapBounds = { halfSize: 380 }; // default for map 1/2
 function setMapBounds(m){
   if(m===1) mapBounds={halfSize:560};
   else if(m===2) mapBounds={halfSize:420};
+  else if(m===4) mapBounds={halfSize:2000};
   else mapBounds={halfSize:35}; // classroom interior
 }
 
@@ -1256,7 +1905,25 @@ disc.rotation.x=-Math.PI/2; scene.add(disc);
 const gRay=new THREE.Raycaster();
 const dVec=new THREE.Vector3(0,-1,0);
 const _thCache=new Map();
-function terrainH(x,z){
+function terrainH(x,z){ if(currentMap===4) return -9999; // no floor — planet gravity handles it
+  // Watchtower spiral stairs — find nearest step under player
+  if(currentMap===2 && beachLaunchType==='tower' && _wtSteps.length){
+    const wx=watchtowerPos.x, wz=watchtowerPos.z;
+    const dx=x-wx, dz=z-wz;
+    const distFromCentre=Math.sqrt(dx*dx+dz*dz);
+    // Only check if player is in staircase zone
+    if(distFromCentre>0.8 && distFromCentre<5.5){
+      // Find the step closest horizontally to the player
+      let bestStep=null, bestDist2=9999;
+      for(const st of _wtSteps){
+        const sdx=x-st.wx, sdz=z-st.wz;
+        const d2=sdx*sdx+sdz*sdz;
+        if(d2<bestDist2){ bestDist2=d2; bestStep=st; }
+      }
+      // If within 1.8 units of a step centre, use its height
+      if(bestStep && bestDist2<3.2) return bestStep.wy;
+    }
+  }
   if(!terrain) return 0;
   const key=(Math.round(x*2)/2)+','+(Math.round(z*2)/2);
   if(_thCache.has(key)) return _thCache.get(key);
@@ -1283,7 +1950,7 @@ renderer.domElement.addEventListener('mouseleave',()=>mDrag=false);
 renderer.domElement.addEventListener('wheel',e=>{ camDistTarget=clamp((camDistTarget||camDist)+e.deltaY*.06,4,80); },{passive:true});
 
 const camt={};
-renderer.domElement.addEventListener('touchstart',e=>{ for(const t of e.changedTouches) if(t.clientX>innerWidth*.45) camt[t.identifier]={x:t.clientX,y:t.clientY}; },{passive:true});
+renderer.domElement.addEventListener('touchstart',e=>{ for(const t of e.changedTouches) if(t.clientX>innerWidth*.45 && t.identifier!==joyTouchId) camt[t.identifier]={x:t.clientX,y:t.clientY}; },{passive:true});
 renderer.domElement.addEventListener('touchmove',e=>{ for(const t of e.changedTouches){ if(camt[t.identifier]){ const p=camt[t.identifier]; camYaw-=(t.clientX-p.x)*.005; camPitch-=(t.clientY-p.y)*.005; camPitch=clamp(camPitch,.05,1.45); camt[t.identifier]={x:t.clientX,y:t.clientY}; e.preventDefault(); } } },{passive:false});
 renderer.domElement.addEventListener('touchend',e=>{ for(const t of e.changedTouches) delete camt[t.identifier]; },{passive:true});
 
@@ -1322,7 +1989,7 @@ function doUpdateCamera(){
 // ════════════════════════════════════════════════════
 //  SKINS
 // ════════════════════════════════════════════════════
-const SKIN_IMGS={friend:'friend.png',dad:'dad.png',mum:'mum.png',brother:'brother.png',sister:'sister.png',uncle:'uncle.png',auntie:'auntie.png',cousin:'cousin.png',tiny:'tiny.png',admin:'admin.png',dev:'dev.png'};
+const SKIN_IMGS={friend:'friend.png',dad:'dad.png',mum:'mum.png',brother:'brother.png',sister:'sister.png',uncle:'uncle.png',auntie:'auntie.png',cousin:'cousin.png',grandpa:'grandpa.png',grandma:'grandma.png',tiny:'tiny.png',admin:'admin.png',dev:'dev.png',supporter:'supporter.png'};
 const skinCache={};
 function loadSkinTex(name,cb){
   if(name in skinCache){cb(skinCache[name]);return;}
@@ -1410,12 +2077,14 @@ const MAP_ROSTER = {
      {type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
      {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},
      {type:'uncle',s:2.1},{type:'auntie',s:2.0},
-     {type:'cousin',s:1.8},{type:'cousin',s:1.8}],
+     {type:'cousin',s:1.8},{type:'cousin',s:1.8},
+     {type:'grandpa',s:2.3},{type:'grandma',s:2.2}],
   2:[{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},{type:'brother',s:1.9},
      {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},
      {type:'uncle',s:2.1},{type:'auntie',s:2.0},
      {type:'cousin',s:1.8},{type:'cousin',s:1.8}],
-  3:[{type:'tiny',s:1.0}]
+  3:[{type:'tiny',s:1.0}],
+  4:[] // space — no family
 };
 
 const HARD_SPOTS_MAP1 = [
@@ -1455,7 +2124,7 @@ function spawnFamily(){
   });
 }
 
-function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0xe91e63,uncle:0xe67e22,auntie:0xff69b4,cousin:0x1abc9c,tiny:0xFFD166}[t]||0xffffff; }
+function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0xe91e63,uncle:0xe67e22,auntie:0xff69b4,cousin:0x1abc9c,grandpa:0x7f8c8d,grandma:0x9b59b6,tiny:0xFFD166}[t]||0xffffff; }
 
 // ════════════════════════════════════════════════════
 //  MAP BUILDERS
@@ -1475,25 +2144,47 @@ function loadMap(m){
   clearScene(); buildTerrain(m); setLighting(m); setMapBounds(m);
   if(m===1) buildNeighborhood();
   else if(m===2) buildBeach();
+  else if(m===4) buildSpace();
   else buildClassroom();
-  player.position.set(0, currentMap===3 ? 3 : 20, 0); flyVelY=0; velocityY=0; isGrounded=false;
+  if(currentMap===4){
+    player.position.set(0,4,0); // on top of Ember planet (r=55 centred at y=-52, surface=y=3)
+  } else {
+    player.position.set(0, currentMap===3 ? 3 : 20, 0);
+  }
+  flyVelY=0; velocityY=0; isGrounded=false;
+  currentMap=m; // ensure correct before buildX calls
+  if(m===4){ GRAVITY_CUR=GRAVITY_SPACE; startSpaceAmbience(); } else { GRAVITY_CUR=GRAVITY; stopSpaceAmbience(); }
+  paintingPos=null;
+  if(m===2){ beachLaunchBuilt=false; beachRocketPos=null; }
+  // map-opt-4 revealed by cutscene callback after first visit
   document.getElementById('c-map').textContent='Map '+m;
   updateHUD();
   if(batterySaver) applyBatteryMode();
-  if(accessMode==='admin') setTimeout(adminCollect,400);
+  // no auto-collect — admin/dev collect manually
 }
 
 // ── LIGHTING PER MAP ──
 function setLighting(m){
   if(batterySaver) return;
+  if(m===4){
+    hemiLight.color.set(0x330066); hemiLight.groundColor.set(0x110022); hemiLight.intensity=0.4;
+    ambient.color.set(0x1a0033); ambient.intensity=0.2;
+    scene.fog.density=0.0;
+    scene.background=null;
+    sun.intensity=0.8; sun.color.set(0xffffff); sun.position.set(500,400,200);
+    fillLight.intensity=0.1; fillLight.color.set(0x6644ff);
+    return;
+  }
   if(m===1){
     hemiLight.color.set(0xffeaa0); hemiLight.groundColor.set(0x4a7a20); hemiLight.intensity=1.1;
     ambient.color.set(0xffd0a0); ambient.intensity=.3;
     scene.fog.color.set(0xffcc88); scene.fog.density=.0014;
+    scene.background=new THREE.Color(0x88ccff);
   } else if(m===2){
     hemiLight.color.set(0xaaddff); hemiLight.groundColor.set(0xf0d090); hemiLight.intensity=1.3;
     ambient.color.set(0xbbeeff); ambient.intensity=.35;
     scene.fog.color.set(0x88ccff); scene.fog.density=.001;
+    scene.background=new THREE.Color(0x88ccff);
   } else {
     hemiLight.color.set(0xffeedd); hemiLight.groundColor.set(0x997755); hemiLight.intensity=.8;
     ambient.color.set(0xffddbf); ambient.intensity=.5;
@@ -1545,7 +2236,7 @@ function addHouse(x,ty,z){
     m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
   }
 
-  // Floor slab — reuse grass terrain material so it blends perfectly
+  // Floor slab — plain grass color so sides match ground
   box(new THREE.BoxGeometry(W+WT*2+1,10,D+WT*2+1), terrainMats[1], x,-5,z);
   box(new THREE.BoxGeometry(W-0.2,0.2,D-0.2),fMat, x,0.1,z);
 
@@ -1680,6 +2371,8 @@ function buildBeach(){
     addShell(sx,sz);
   }
 
+  // 50/50 launch for non-flyers
+  buildBeachLaunch();
   spawnFamily();
 }
 
@@ -1747,6 +2440,20 @@ function buildClassroom(){
   cbox(new THREE.BoxGeometry(W+WT*2,.3,D+WT*2),new THREE.MeshStandardMaterial({color:0xF5F5F0,roughness:.9}), 0,H+.15,0);
 
   cbox(new THREE.BoxGeometry(32,6,.6),new THREE.MeshStandardMaterial({color:0x1B5E30,roughness:.75}), 0,5,-D/2+WT*.4);
+
+  // Secret painting — only visible to access code holders
+  if(accessMode!=='normal'){
+    const paintingFrame=new THREE.Mesh(new THREE.BoxGeometry(4.5,3.5,.15),new THREE.MeshStandardMaterial({color:0x7B5B2A,roughness:.8}));
+    paintingFrame.position.set(W/2-.1,5.5,8); paintingFrame.rotation.y=-Math.PI/2;
+    paintingFrame.userData.deco=true; paintingFrame.userData.isPainting=true; scene.add(paintingFrame);
+    const canvas2=new THREE.Mesh(new THREE.BoxGeometry(3.8,2.8,.18),new THREE.MeshStandardMaterial({color:0x1a3a6e,emissive:0x112244,emissiveIntensity:.5,roughness:.2}));
+    canvas2.position.set(W/2-.15,5.5,8); canvas2.rotation.y=-Math.PI/2;
+    canvas2.userData.deco=true; canvas2.userData.isPainting=true; scene.add(canvas2);
+    // Glowing sparkle on the painting
+    const pl=new THREE.PointLight(0x4488ff,2,6); pl.position.set(W/2-.3,5.5,8); pl.userData.deco=true; scene.add(pl);
+    // Text prompt (shown via proximity in animate loop)
+    paintingPos={x:W/2,z:8};
+  }
   cbox(new THREE.BoxGeometry(33,6.6,.3),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.85}), 0,5,-D/2+WT*.1);
   for(let i=0;i<4;i++){
     cbox(new THREE.BoxGeometry(6+Math.random()*3,.15,.1),
@@ -1835,29 +2542,47 @@ window.addEventListener('keydown',e=>{
   const k=e.key;
   if(k in moveK) moveK[k]=true;
   if(k in camK){ camK[k]=true; e.preventDefault(); }
-  if(k===' ') doJump();
-  if(k==='c'||k==='C'){ isCrouching=true; }
+  if(k===' ' && !e.repeat){ doJump(); jumpHeld=true; }
+  if(k==='c'||k==='C'){ isCrouching=true; crouchHeld=true; }
   if(k==='Escape') togglePause();
   // Fly: dev always; admin also gets fly
-  if((k==='f'||k==='F')&&(accessMode==='dev'||accessMode==='admin')){ flyMode=!flyMode; showToast(flyMode?'Fly ON':'Fly OFF'); }
+  if((k==='f'||k==='F')&&(accessMode==='dev'||accessMode==='admin'||accessMode==='supporter')){ flyMode=!flyMode; showToast(flyMode?'Fly ON':'Fly OFF'); }
   if((k==='r'||k==='R')&&(accessMode==='dev'||accessMode==='admin')){ player.position.set(0, currentMap===3?3:20, 0); showToast('Position reset'); }
   if((k==='g'||k==='G')&&accessMode!=='normal') adminCollect();
+  // [E] removed — painting auto-enters on walk-through (see animate loop)
   if((k==='h'||k==='H')&&accessMode!=='normal') adminCollectAll();
   // Noclip and speed: dev only
   if((k==='n'||k==='N')&&accessMode==='dev'){ noclipMode=!noclipMode; showToast(noclipMode?'Noclip ON':'Noclip OFF'); }
   if((k==='z'||k==='Z')&&accessMode==='dev'){ superSpeed=!superSpeed; showToast(superSpeed?'Super Speed ON':'Super Speed OFF'); }
 });
-window.addEventListener('keyup',e=>{ const k=e.key; if(k in moveK)moveK[k]=false; if(k in camK)camK[k]=false; if(k==='c'||k==='C') isCrouching=false; });
+window.addEventListener('keyup',e=>{ const k=e.key; if(k in moveK)moveK[k]=false; if(k in camK)camK[k]=false; if(k==='c'||k==='C'){ isCrouching=false; crouchHeld=false; } if(k===' '){ jumpHeld=false; doJumpRelease(); } });
 
 // Joystick
-let joyX=0,joyY=0,joyActive=false,joyC={x:0,y:0};
-const GRAVITY=.024,JUMP_V=.55,SPEED=.38;
+let joyX=0,joyY=0,joyActive=false,joyC={x:0,y:0},joyTouchId=null;
+const GRAVITY=.024, GRAVITY_SPACE=.006, JUMP_V=.55, SPEED=.38;
+let GRAVITY_CUR=GRAVITY;
+const _planetNormal=new THREE.Vector3(0,1,0); // used for planet-surface camera up
 
 const joyOuter=document.getElementById('joy-outer');
 const joyInner=document.getElementById('joy-inner');
-joyOuter.addEventListener('touchstart',e=>{ joyActive=true; const r=joyOuter.getBoundingClientRect(); joyC={x:r.left+65,y:r.top+65}; joyMove(e.touches[0]); },{passive:true});
-joyOuter.addEventListener('touchmove',e=>{ if(joyActive){e.preventDefault();joyMove(e.touches[0]);} },{passive:false});
-joyOuter.addEventListener('touchend',()=>{ joyActive=false; joyX=joyY=0; joyInner.style.transform='translate(0,0)'; });
+joyOuter.addEventListener('touchstart',e=>{
+  e.stopPropagation();
+  const t=e.changedTouches[0];
+  joyActive=true; joyTouchId=t.identifier;
+  const r=joyOuter.getBoundingClientRect(); joyC={x:r.left+r.width/2,y:r.top+r.height/2};
+  joyMove(t);
+},{passive:true});
+joyOuter.addEventListener('touchmove',e=>{
+  if(!joyActive) return;
+  for(const t of e.changedTouches){
+    if(t.identifier===joyTouchId){ e.preventDefault(); joyMove(t); break; }
+  }
+},{passive:false});
+joyOuter.addEventListener('touchend',e=>{
+  for(const t of e.changedTouches){
+    if(t.identifier===joyTouchId){ joyActive=false; joyTouchId=null; joyX=joyY=0; joyInner.style.transform='translate(0,0)'; break; }
+  }
+});
 function joyMove(t){
   let dx=t.clientX-joyC.x,dy=t.clientY-joyC.y;
   const d=Math.sqrt(dx*dx+dy*dy),m=42;
@@ -1865,11 +2590,30 @@ function joyMove(t){
   joyInner.style.transform=`translate(${dx}px,${dy}px)`;
   joyX=dx/m; joyY=dy/m;
 }
-document.getElementById('jump-btn').addEventListener('touchstart',e=>{e.preventDefault();doJump();});
+document.getElementById('jump-btn').addEventListener('touchstart',e=>{e.preventDefault();doJump();jumpHeld=true;});
+document.getElementById('jump-btn').addEventListener('touchend',e=>{e.preventDefault();jumpHeld=false;doJumpRelease();});
 const crouchBtn=document.getElementById('crouch-btn');
-crouchBtn.addEventListener('touchstart',e=>{e.preventDefault();isCrouching=true;});
-crouchBtn.addEventListener('touchend',e=>{e.preventDefault();isCrouching=false;});
-function doJump(){ if(flyMode){flyVelY=.6;return;} if(isGrounded){velocityY=JUMP_V;isGrounded=false;} }
+crouchBtn.addEventListener('touchstart',e=>{e.preventDefault();isCrouching=true;crouchHeld=true;});
+crouchBtn.addEventListener('touchend',e=>{e.preventDefault();isCrouching=false;crouchHeld=false;});
+function doJump(){
+  if(isCrouching && flyMode){ flyMode=false; flyVelY=0; showToast('✈ Fly OFF'); return; } // jump+crouch = stop flying
+  if(flyMode){ flyVelY=.5; return; }
+  if(isGrounded){ velocityY=JUMP_V; isGrounded=false; jumpCount=1; }
+  else if(jumpCount===1){
+    // Double jump in air → fly, but only for admin/dev/supporter
+    if(accessMode==='admin'||accessMode==='dev'||accessMode==='supporter'){
+      flyMode=true; flyVelY=.3; jumpCount=0;
+      showToast('✈ Fly ON — double-jump again to land');
+    } else {
+      // Normal players get a small boost instead
+      velocityY=JUMP_V*.6; jumpCount=2;
+    }
+  }
+}
+function doJumpRelease(){
+  // stop upward fly boost when key released
+  if(flyMode && flyVelY>0) flyVelY*=.3;
+}
 
 // ════════════════════════════════════════════════════
 //  HUD
@@ -1881,10 +2625,12 @@ function updateHUD(){
   document.getElementById('c-sis').textContent=`Sis ${famFound.sister}/${famTargets.sister}`;
   document.getElementById('c-uncle').textContent=`Uncle ${famFound.uncle}/${famTargets.uncle}`;
   document.getElementById('c-auntie').textContent=`Auntie ${famFound.auntie}/${famTargets.auntie}`;
+  document.getElementById('c-grandpa').textContent=`Grandpa ${famFound.grandpa}/${famTargets.grandpa}`;
+  document.getElementById('c-grandma').textContent=`Grandma ${famFound.grandma}/${famTargets.grandma}`;
   document.getElementById('c-cousin').textContent=`Cousins ${famFound.cousin}/${famTargets.cousin}`;
   document.getElementById('c-tiny').textContent=`Tiny ${famFound.tiny}/${famTargets.tiny}`;
-  const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin;
-  const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin;
+  const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin+famFound.grandpa+famFound.grandma;
+  const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin+famTargets.grandpa+famTargets.grandma;
   if(nt>=tot){ const o=document.querySelector('#map-sel option[value="3"]'); if(o&&o.textContent.includes('🔒')) o.textContent="🏫 Map 3 — Tiny's Hideout"; }
 }
 
@@ -1908,7 +2654,19 @@ function checkWin(){
   const total=Object.values(famFound).reduce((a,b)=>a+b,0);
   const target=Object.values(famTargets).reduce((a,b)=>a+b,0);
   if(total>=target){
-    setTimeout(()=>alert(`🎉 You found the WHOLE family!\n${document.getElementById('timer-tag').textContent}\nAmazing work!`),400);
+    setTimeout(()=>{
+      // Full win — show modal
+      const d=document.createElement('div');
+      d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;';
+      d.innerHTML=`<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid gold;border-radius:20px;padding:32px 40px;text-align:center;color:#fff;max-width:360px;">
+        <div style="font-size:2.5rem;margin-bottom:8px;">🎉🐢✨</div>
+        <h2 style="color:gold;margin-bottom:12px;">You found everyone!</h2>
+        <p style="opacity:.8;line-height:1.6;margin-bottom:8px;">The whole family is reunited with Tiny!</p>
+        <p style="color:#4affd4;font-size:.9rem;margin-bottom:20px;">⭐ Head back to Map 4 — Space and look for the secret glowing orb to unlock your Supporter code!</p>
+        <button onclick="this.parentElement.parentElement.remove()" style="background:gold;color:#333;border:none;border-radius:10px;padding:10px 24px;font-weight:700;cursor:pointer;font-size:1rem;">Back to the adventure!</button>
+      </div>`;
+      document.body.appendChild(d);
+    },400);
   }
 }
 
@@ -1917,12 +2675,13 @@ function checkWin(){
 // ════════════════════════════════════════════════════
 function tryMap(v){
   v=parseInt(v);
+  if(v===4&&accessMode==='normal'&&document.querySelector('#map-opt-4')?.style.display==='none'){ showLocked('Reach space first!\nFly high on Turtle Beach 🚀'); document.getElementById('map-sel').value=currentMap; return; }
   if(v===3&&accessMode==='normal'){
-    const nf=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin;
-    const nt=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin;
+    const nf=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin+famFound.grandpa+famFound.grandma;
+    const nt=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin+famTargets.grandpa+famTargets.grandma;
     if(nf<nt){ showLocked("Find all of the family first!\n(Across Maps 1 & 2)\nThen Tiny's Hideout unlocks 🔒"); document.getElementById('map-sel').value=currentMap; return; }
   }
-  currentMap=v; loadMap(v);
+  loadMap(v);
 }
 
 // ════════════════════════════════════════════════════
@@ -1956,6 +2715,19 @@ function animate(ts=0){
     fillLight.intensity=Math.max(0,.4-sunH*.5);
     fillLight.color.set(sunH<.1?0x8899ff:0x4488ff);
     cloudMeshes.forEach(c=>{ c.position.x+=c.userData.speed*c.userData.dir; if(Math.abs(c.position.x)>600) c.userData.dir*=-1; });
+    // Rocket button pulse + watchtower warning light (map 2)
+    if(currentMap===2){
+      if(scene.userData.rocketBtn){
+        const pulse=1.5+Math.sin(ts*0.006)*1.5;
+        scene.userData.rocketBtn.mesh.material.emissiveIntensity=Math.max(0,pulse);
+        scene.userData.rocketBtn.light.intensity=Math.max(0,pulse*1.5);
+      }
+      if(scene.userData.warningLight){
+        const flash=Math.sin(ts*0.004)>0.3;
+        scene.userData.warningLight.mesh.material.emissiveIntensity=flash?3:0.1;
+        scene.userData.warningLight.pl.intensity=flash?5:0;
+      }
+    }
     // Night star twinkle via ambient pulse when very dark
     if(sunH<0.05){
       const twinkle=0.28+0.07*Math.sin(ts*0.003+1.4);
@@ -1991,15 +2763,13 @@ function animate(ts=0){
   let nx=player.position.x+mx, nz=player.position.z+mz;
 
   // ── MAP BOUNDARY: hard clamp so player cannot leave the map ──
-  const bound = mapBounds.halfSize;
-  nx = clamp(nx, -bound, bound);
-  nz = clamp(nz, -bound, bound);
-
-  // If we hit the boundary, show a subtle edge-of-map toast (throttled)
-  if((nx <= -bound||nx>=bound||nz <= -bound||nz>=bound)&&(mx!==0||mz!==0)){
-    if(Date.now()-_edgeMsgTime>4000){
-      _edgeMsgTime=Date.now();
-      showToast('🗺️ Edge of map!',2000);
+  // No boundary on space map
+  if(currentMap!==4){
+    const bound = mapBounds.halfSize;
+    nx = clamp(nx, -bound, bound);
+    nz = clamp(nz, -bound, bound);
+    if((nx <= -bound||nx>=bound||nz <= -bound||nz>=bound)&&(mx!==0||mz!==0)){
+      if(Date.now()-_edgeMsgTime>4000){ _edgeMsgTime=Date.now(); showToast('🗺️ Edge of map!',2000); }
     }
   }
 
@@ -2013,17 +2783,73 @@ function animate(ts=0){
   }
   if(!hit){player.position.x=nx;player.position.z=nz;}
 
-  // Physics
+  // Physics — space has planet gravity
   const tH=terrainH(player.position.x,player.position.z);
-  if(flyMode){
-    flyVelY*=.9; player.position.y+=flyVelY;
-    if(player.position.y<tH+1.2) player.position.y=tH+1.2;
-    isGrounded=false;
+  if(currentMap===4 && spacePlanets.length){
+    // Find nearest planet
+    let nearestPlanet=null, nearestDist=Infinity;
+    spacePlanets.forEach(p=>{
+      const dx=player.position.x-p.x, dy=player.position.y-p.y, dz=player.position.z-p.z;
+      const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+      if(d<nearestDist){ nearestDist=d; nearestPlanet=p; }
+    });
+    if(nearestPlanet && nearestDist<nearestPlanet.r*3.5){
+      // Walk-around-planet mode (Mario Galaxy style)
+      const pd=new THREE.Vector3(player.position.x-nearestPlanet.x, player.position.y-nearestPlanet.y, player.position.z-nearestPlanet.z);
+      const surfDist=nearestPlanet.r+1.2;
+      const actualDist=pd.length();
+      const pNorm=pd.clone().normalize();
+      // Surface gravity pulls toward planet centre
+      if(!flyMode){
+        if(actualDist>surfDist+.1){
+          velocityY-=GRAVITY_CUR*3; // stronger pull near planets
+          // project velocity along radial direction
+          const radVel=pNorm.clone().multiplyScalar(velocityY);
+          player.position.addScaledVector(pNorm,velocityY);
+          if(actualDist<=surfDist+.15){ isGrounded=true; velocityY=0; jumpCount=0; }
+          else { isGrounded=false; }
+        } else {
+          // On surface — snap to shell + allow walking
+          player.position.copy(new THREE.Vector3(nearestPlanet.x,nearestPlanet.y,nearestPlanet.z).addScaledVector(pNorm,surfDist));
+          isGrounded=true; velocityY=0; jumpCount=0;
+        }
+      } else {
+        if(jumpHeld) flyVelY=Math.min(flyVelY+.04,.6);
+        else if(crouchHeld) flyVelY=Math.max(flyVelY-.04,-.6);
+        else flyVelY*=.88;
+        player.position.addScaledVector(pNorm,flyVelY);
+        isGrounded=false;
+      }
+      // Orient camera up-vector toward planet surface normal (gradual lerp)
+      _planetNormal.lerp(pNorm,.08).normalize();
+    } else {
+      // Free space — normal flat-ish gravity
+      if(flyMode){
+        if(jumpHeld) flyVelY=Math.min(flyVelY+.04,.6);
+        else if(crouchHeld) flyVelY=Math.max(flyVelY-.04,-.6);
+        else flyVelY*=.88;
+        player.position.y+=flyVelY;
+        isGrounded=false;
+      } else {
+        if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY_SPACE; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;jumpCount=0;} }
+        else{ player.position.y=tH+1.2; }
+      }
+      _planetNormal.lerp(new THREE.Vector3(0,1,0),.05).normalize();
+    }
   } else {
-    if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;} }
-    else{ player.position.y=tH+1.2; }
+    if(flyMode){
+      if(jumpHeld) flyVelY=Math.min(flyVelY+.04,.6);
+      else if(crouchHeld) flyVelY=Math.max(flyVelY-.04,-.6);
+      else flyVelY*=.88;
+      player.position.y+=flyVelY;
+      if(player.position.y<tH+1.2){ player.position.y=tH+1.2; if(flyVelY<0) flyVelY=0; }
+      isGrounded=false;
+    } else {
+      if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY_CUR; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;jumpCount=0;} }
+      else{ player.position.y=tH+1.2; }
+    }
   }
-  disc.position.set(player.position.x,tH+.04,player.position.z);
+  disc.position.set(player.position.x,tH+.05,player.position.z);
 
   const cfx=camera.position.x,cfz=camera.position.z;
   player.lookAt(cfx,player.position.y,cfz);
@@ -2043,6 +2869,79 @@ function animate(ts=0){
     });
   } else {
     // battery saver: hide all grass (already handled in applyBatteryMode but guard here too)
+  }
+
+  // Beach launches
+  if(currentMap===2 && !spaceTransitioning){
+    // Non-flyer watchtower: reach top
+    if(beachLaunchType==='tower' && player.position.y>=watchtowerTop-2){
+      spaceTransitioning=true;
+      showCutscene('tower',()=>{ const o=document.querySelector('#map-opt-4'); if(o) o.style.display=''; loadMap(4); spaceTransitioning=false; });
+    }
+    // Rocket: touch the green button (at rx+3, rz)
+    if(beachLaunchType==='rocket' && beachRocketPos){
+      const btnX=beachRocketPos.x+3, btnZ=beachRocketPos.z;
+      const rdx=player.position.x-btnX, rdz=player.position.z-btnZ;
+      const rDist2=rdx*rdx+rdz*rdz;
+      if(rDist2<64 && !_rocketHintShown){
+        _rocketHintShown=true;
+        showToast('🚀 Touch the green button to launch!', 3000);
+      }
+      if(rDist2<6){ // within ~2.5 units of button
+        spaceTransitioning=true;
+        showCutscene('rocket',()=>{ const o=document.querySelector('#map-opt-4'); if(o) o.style.display=''; loadMap(4); spaceTransitioning=false; });
+      }
+    }
+    // Flyer (admin/dev): fly high → auto-launch to space
+    if(flyMode && (accessMode==='admin'||accessMode==='dev'||accessMode==='supporter')){
+      if(player.position.y>60 && player.position.y<120){
+        // Build atmosphere entry effect on vignette
+        const v=Math.min(1,(player.position.y-60)/60);
+        document.getElementById('space-vignette').style.opacity=v*0.8;
+        if(!_spaceWarnShown && player.position.y>80){
+          _spaceWarnShown=true;
+          showToast('🚀 Keep flying — nearly in space!',2500);
+        }
+      } else if(player.position.y<=60){
+        document.getElementById('space-vignette').style.opacity=0;
+        _spaceWarnShown=false;
+      }
+      if(player.position.y>=120){
+        document.getElementById('space-vignette').style.opacity=1;
+        spaceTransitioning=true;
+        showCutscene('fly',()=>{ document.getElementById('space-vignette').style.opacity=0; _spaceWarnShown=false; const o=document.querySelector('#map-opt-4'); if(o) o.style.display=''; loadMap(4); spaceTransitioning=false; });
+      }
+    }
+  }
+  // Painting → dev room proximity
+  if(currentMap===3 && paintingPos && accessMode!=='normal' && !inDevRoom){
+    const pdx=player.position.x-paintingPos.x, pdz=player.position.z-paintingPos.z;
+    if(pdx*pdx+pdz*pdz<6) enterDevRoom();
+  }
+
+  // Space orb → supporter check
+  if(currentMap===4 && !orbCollected){
+    const all=Object.keys(famTargets).filter(t=>t!=='tiny');
+    const allFound=all.every(t=>famFound[t]>=famTargets[t]);
+    if(allFound){
+      const dx=player.position.x-spaceTablePos.x, dz=player.position.z-spaceTablePos.z;
+      if(dx*dx+dz*dz<16) grantSupporter();
+    }
+  }
+
+  // Space effects
+  if(currentMap===4){
+    // Rotate planet glow sprites to face camera (sprites do this auto)
+    // Slowly rotate planets
+    spacePlanets.forEach((p,i)=>{
+      if(p.mesh) p.mesh.rotation.y=ts*0.0003*(i%2===0?1:-1);
+    });
+    // Skysphere follows camera
+    scene.children.forEach(c=>{
+      if(c.userData.deco && c.geometry && c.geometry.type==='SphereGeometry' && c.isMesh && c.geometry.parameters && c.geometry.parameters.radius>500){
+        c.position.copy(camera.position);
+      }
+    });
   }
 
   // Tiny flash: pulse opacity and scale, halo rotates
@@ -2094,7 +2993,7 @@ function animate(ts=0){
       `[F]fly [R]reset [G]collect map [H]collect ALL [N]noclip [Z]speed [←→↑↓]cam`;
   }
 
-  renderer.render(scene,camera);
+  renderWithMotionBlur();
 }
 
 function label3D(mesh,el){
@@ -2158,6 +3057,9 @@ function startGame(){
     // Reset family counts for fresh game
     Object.keys(famFound).forEach(k=>famFound[k]=0);
     groupUnlocked={};
+    // Hide space map until player earns it this run
+    const spaceOpt=document.querySelector('#map-opt-4');
+    if(spaceOpt && accessMode==='normal') spaceOpt.style.display='none';
     currentMap=1; loadMap(1);
 
     // Apply battery saver if it was toggled on the main menu
@@ -2191,5 +3093,6 @@ function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
 
 window.addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 </script>
+
 </body>
 </html>
