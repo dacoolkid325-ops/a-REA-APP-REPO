@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -19,15 +18,15 @@ canvas{display:block;width:100vw;height:100vh;}
 
 /* ── MENU ── */
 #menu{
-position:absolute;inset:0;
-background:radial-gradient(ellipse at 30% 40%,#0f3460 0%,#0a0a1a 70%);
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 40%,#0f3460 0%,#0a0a1a 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:auto;transition:opacity .6s;z-index:100;overflow:hidden;
 }
 #menu::before{
-content:’’;position:absolute;inset:0;
-background:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘60’ height=‘60’%3E%3Ccircle cx=‘30’ cy=‘30’ r=‘1’ fill=‘white’ opacity=’.15’/%3E%3C/svg%3E”);
-animation:starScroll 60s linear infinite;
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='white' opacity='.15'/%3E%3C/svg%3E");
+  animation:starScroll 60s linear infinite;
 }
 @keyframes starScroll{from{background-position:0 0}to{background-position:1000px 1000px}}
 .menu-stars{position:absolute;inset:0;pointer-events:none;}
@@ -35,174 +34,174 @@ animation:starScroll 60s linear infinite;
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
 
 .game-title{
-font-family:‘Baloo 2’,cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
-color:#fff; text-align:center; line-height:1; margin-bottom:6px;
-filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
-animation:titleFloat 4s ease-in-out infinite;
+  font-family:'Baloo 2',cursive; font-size:clamp(2rem,7vw,4.5rem); font-weight:800;
+  color:#fff; text-align:center; line-height:1; margin-bottom:6px;
+  filter:drop-shadow(0 0 20px rgba(255,209,102,.6));
+  animation:titleFloat 4s ease-in-out infinite;
 }
 @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.game-sub{color:var(–gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
+.game-sub{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;margin-bottom:28px;opacity:.8;}
 
 .menu-card{
-background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.12);border-radius:24px;
-padding:32px 28px;width:90%;max-width:440px;
-box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.12);border-radius:24px;
+  padding:32px 28px;width:90%;max-width:440px;
+  box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
 }
 .field-group{margin-bottom:14px;text-align:left;}
 .field-label{color:rgba(255,255,255,.6);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;display:block;}
 .field-input{
-width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
-border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
-color:#fff;font-family:‘Nunito’,sans-serif;font-size:1rem;outline:none;
-transition:border-color .2s;
+  width:100%;padding:12px 16px;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:12px;
+  color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;
+  transition:border-color .2s;
 }
-.field-input:focus{border-color:var(–gold);}
+.field-input:focus{border-color:var(--gold);}
 .field-input::placeholder{color:rgba(255,255,255,.3);}
 .color-row{display:flex;gap:10px;align-items:center;}
 .color-pick{height:44px;width:80px;padding:4px;border-radius:10px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer;}
 .divider{height:1px;background:rgba(255,255,255,.08);margin:18px 0;}
 
 .btn-main{
-width:100%;padding:16px;font-family:‘Baloo 2’,cursive;font-size:1.4rem;font-weight:800;
-background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
-cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
-transition:transform .1s,box-shadow .1s;margin-bottom:10px;
+  width:100%;padding:16px;font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;
+  background:linear-gradient(135deg,#FFD166,#FF6B6B);color:#fff;border:none;border-radius:14px;
+  cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 0 30px rgba(255,209,102,.3);
+  transition:transform .1s,box-shadow .1s;margin-bottom:10px;
 }
 .btn-main:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
 .btn-vc{background:linear-gradient(135deg,#4ECDC4,#44a08d);}
 .btn-key{background:linear-gradient(135deg,#6A0DAD,#9b59b6);}
 .btn-battery{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a!important;}
-.btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:‘Nunito’,sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-sm{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px 16px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;}
 .btn-sm:hover{background:rgba(255,255,255,.15);}
 
-#conn-status{color:var(–gold);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px;}
+#conn-status{color:var(--gold);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px;}
 
 /* ── KEY MODAL ── */
 #key-modal{
-position:absolute;inset:0;background:rgba(0,0,0,.82);
-display:none;align-items:center;justify-content:center;z-index:400;pointer-events:auto;
+  position:absolute;inset:0;background:rgba(0,0,0,.82);
+  display:none;align-items:center;justify-content:center;z-index:400;pointer-events:auto;
 }
 .km-inner{
-background:linear-gradient(135deg,#1a1a2e,#16213e);
-border:2px solid rgba(106,13,173,.6);border-radius:24px;
-padding:36px 32px;text-align:center;width:90%;max-width:360px;
-box-shadow:0 0 60px rgba(106,13,173,.4);
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:2px solid rgba(106,13,173,.6);border-radius:24px;
+  padding:36px 32px;text-align:center;width:90%;max-width:360px;
+  box-shadow:0 0 60px rgba(106,13,173,.4);
 }
-.km-title{font-family:‘Baloo 2’,cursive;font-size:1.8rem;color:var(–gold);margin-bottom:8px;}
+.km-title{font-family:'Baloo 2',cursive;font-size:1.8rem;color:var(--gold);margin-bottom:8px;}
 .km-sub{color:rgba(255,255,255,.5);font-size:.85rem;margin-bottom:20px;}
 #key-input{
-font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
-border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
-font-family:‘Baloo 2’,cursive;background:rgba(0,0,0,.4);color:#fff;
-margin-bottom:16px;outline:none;
+  font-size:2.4rem;letter-spacing:.6rem;padding:14px;border-radius:14px;
+  border:2px solid rgba(106,13,173,.5);width:100%;text-align:center;
+  font-family:'Baloo 2',cursive;background:rgba(0,0,0,.4);color:#fff;
+  margin-bottom:16px;outline:none;
 }
-#key-input:focus{border-color:var(–gold);}
+#key-input:focus{border-color:var(--gold);}
 #key-status{font-size:.9rem;font-weight:700;min-height:22px;margin-top:10px;}
 .km-btns{display:flex;gap:10px;justify-content:center;}
 
 /* ── HUD ── */
 #hud{position:absolute;top:0;left:0;display:none;pointer-events:auto;}
 .hud-panel{
-background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
-padding:12px 16px;min-width:180px;
+  background:rgba(10,10,26,.75);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.1);border-radius:0 0 16px 0;
+  padding:12px 16px;min-width:180px;
 }
-.hud-room{color:var(–blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
-.hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:‘Baloo 2’,cursive;margin-bottom:8px;}
+.hud-room{color:var(--blue);font-weight:700;font-size:.85rem;margin-bottom:4px;}
+.hud-time{color:#fff;font-size:1.1rem;font-weight:900;font-family:'Baloo 2',cursive;margin-bottom:8px;}
 .hud-mode{background:linear-gradient(90deg,#6A0DAD,#9b59b6);color:#fff;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;}
 .counts{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
 .cnt{font-size:.82rem;font-weight:700;color:#ddd;}
-.cnt-tiny{color:var(–gold)!important;font-weight:900;}
+.cnt-tiny{color:var(--gold)!important;font-weight:900;}
 
 /* ── TOP RIGHT ── */
 #top-right{position:absolute;top:12px;right:12px;display:flex;gap:8px;align-items:center;pointer-events:auto;}
 .map-sel{
-background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
-color:#fff;font-family:‘Nunito’,sans-serif;font-size:.9rem;font-weight:700;
-padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
+  background:rgba(10,10,26,.85);border:1.5px solid rgba(255,255,255,.2);
+  color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;
+  padding:8px 12px;border-radius:10px;cursor:pointer;outline:none;backdrop-filter:blur(10px);
 }
 .icon-btn{
-width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
-background:rgba(10,10,26,.85);color:#fff;font-size:1rem;cursor:pointer;
-display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
-pointer-events:auto;
+  width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(10,10,26,.85);color:#fff;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
+  pointer-events:auto;
 }
 
 /* ── DEV PANEL ── */
 #dev-btns{
-position:absolute;bottom:175px;right:14px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;
+  position:absolute;bottom:175px;right:14px;display:none;flex-direction:column;gap:6px;pointer-events:auto;z-index:160;
 }
 .dev-mbtn{
-background:rgba(0,40,0,.9);border:1.5px solid #00ff00;color:#00ff00;
-font-family:monospace;font-size:.78rem;font-weight:bold;padding:8px 12px;
-border-radius:8px;cursor:pointer;text-align:left;white-space:nowrap;
+  background:rgba(0,40,0,.9);border:1.5px solid #00ff00;color:#00ff00;
+  font-family:monospace;font-size:.78rem;font-weight:bold;padding:8px 12px;
+  border-radius:8px;cursor:pointer;text-align:left;white-space:nowrap;
 }
 .dev-mbtn:active{background:rgba(0,100,0,.9);}
 #dev-panel{
-position:absolute;top:0;left:50%;transform:translateX(-50%);
-background:rgba(0,20,0,.9);border:1.5px solid #00FF00;border-radius:0 0 12px 12px;
-color:#00FF00;font-family:monospace;font-size:.68rem;padding:8px 14px;
-display:none;pointer-events:none;line-height:1.8;white-space:pre;z-index:150;
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  background:rgba(0,20,0,.9);border:1.5px solid #00FF00;border-radius:0 0 12px 12px;
+  color:#00FF00;font-family:monospace;font-size:.68rem;padding:8px 14px;
+  display:none;pointer-events:none;line-height:1.8;white-space:pre;z-index:150;
 }
 
 /* ── FLOATING NAMES ── */
 .fname{
-position:absolute;color:#fff;background:rgba(0,0,0,.7);
-padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;
-transform:translate(-50%,-100%);pointer-events:none;display:none;
-text-shadow:0 1px 2px #000;border:1px solid rgba(255,255,255,.2);
-white-space:nowrap;
+  position:absolute;color:#fff;background:rgba(0,0,0,.7);
+  padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;
+  transform:translate(-50%,-100%);pointer-events:none;display:none;
+  text-shadow:0 1px 2px #000;border:1px solid rgba(255,255,255,.2);
+  white-space:nowrap;
 }
 .fname-dev  {background:rgba(0,160,0,.85)!important;}
 .fname-admin{background:rgba(140,0,210,.85)!important;}
 
 /* ── DIALOGUE ── */
 #dialogue{
-position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-width:92%;max-width:640px;background:rgba(10,10,26,.95);
-border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
-display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
-align-items:center;gap:16px;z-index:102;pointer-events:auto;
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  width:92%;max-width:640px;background:rgba(10,10,26,.95);
+  border:2px solid rgba(78,205,196,.4);border-radius:20px;padding:18px;
+  display:none;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 20px rgba(78,205,196,.15);
+  align-items:center;gap:16px;z-index:102;pointer-events:auto;
 }
-.d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(–blue);object-fit:cover;flex-shrink:0;}
+.d-img{width:72px;height:72px;border-radius:14px;border:2px solid var(--blue);object-fit:cover;flex-shrink:0;}
 .d-text{font-size:1rem;color:#e0e0e0;line-height:1.5;flex-grow:1;}
-.d-name{color:var(–blue);font-weight:900;font-size:1.1rem;}
-.d-btn{background:linear-gradient(135deg,var(–blue),#44a08d);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:‘Baloo 2’,cursive;font-size:1rem;font-weight:700;white-space:nowrap;}
+.d-name{color:var(--blue);font-weight:900;font-size:1.1rem;}
+.d-btn{background:linear-gradient(135deg,var(--blue),#44a08d);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;white-space:nowrap;}
 
 /* ── BANNERS ── */
 #unlock-banner{
-position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-background:rgba(255,209,102,.97);border:4px solid #FF8C00;border-radius:24px;
-padding:24px 36px;font-size:1.4rem;font-weight:900;color:#333;
-display:none;z-index:200;text-align:center;pointer-events:none;
-box-shadow:0 0 60px rgba(255,209,102,.5);animation:bannerPop .3s cubic-bezier(.34,1.56,.64,1);
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(255,209,102,.97);border:4px solid #FF8C00;border-radius:24px;
+  padding:24px 36px;font-size:1.4rem;font-weight:900;color:#333;
+  display:none;z-index:200;text-align:center;pointer-events:none;
+  box-shadow:0 0 60px rgba(255,209,102,.5);animation:bannerPop .3s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes bannerPop{from{transform:translate(-50%,-50%) scale(.5)}to{transform:translate(-50%,-50%) scale(1)}}
 #unlock-banner img{width:80px;height:80px;border-radius:12px;display:block;margin:10px auto;object-fit:cover;}
 #locked-msg{
-position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-background:rgba(10,10,26,.95);border:3px solid #FF4444;border-radius:20px;
-padding:22px 30px;font-size:1.15rem;font-weight:700;color:#fff;
-display:none;z-index:200;text-align:center;pointer-events:none;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(10,10,26,.95);border:3px solid #FF4444;border-radius:20px;
+  padding:22px 30px;font-size:1.15rem;font-weight:700;color:#fff;
+  display:none;z-index:200;text-align:center;pointer-events:none;
 }
 #toast{
-position:absolute;top:75px;left:50%;transform:translateX(-50%);
-background:rgba(10,10,26,.92);color:#fff;border:1px solid rgba(255,255,255,.15);
-border-radius:12px;padding:10px 22px;font-size:.92rem;font-weight:700;
-display:none;z-index:250;pointer-events:none;white-space:nowrap;
-backdrop-filter:blur(10px);
+  position:absolute;top:75px;left:50%;transform:translateX(-50%);
+  background:rgba(10,10,26,.92);color:#fff;border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;padding:10px 22px;font-size:.92rem;font-weight:700;
+  display:none;z-index:250;pointer-events:none;white-space:nowrap;
+  backdrop-filter:blur(10px);
 }
 /* ── PAUSE MENU ── */
 #pause-overlay{
-position:absolute;inset:0;background:rgba(5,5,20,.88);backdrop-filter:blur(16px);
-display:none;z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:18px;
-pointer-events:auto;
+  position:absolute;inset:0;background:rgba(5,5,20,.88);backdrop-filter:blur(16px);
+  display:none;z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+  pointer-events:auto;
 }
-#pause-overlay h2{color:#fff;font-size:2.2rem;font-family:‘Baloo 2’,cursive;margin:0;letter-spacing:.04em;}
+#pause-overlay h2{color:#fff;font-size:2.2rem;font-family:'Baloo 2',cursive;margin:0;letter-spacing:.04em;}
 .pause-btn{
-width:280px;padding:14px 0;font-size:1.1rem;font-weight:900;border:none;border-radius:14px;
-cursor:pointer;font-family:‘Baloo 2’,cursive;letter-spacing:.03em;transition:.15s;
+  width:280px;padding:14px 0;font-size:1.1rem;font-weight:900;border:none;border-radius:14px;
+  cursor:pointer;font-family:'Baloo 2',cursive;letter-spacing:.03em;transition:.15s;
 }
 .pause-btn:active{transform:scale(.97);}
 .pause-resume{background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;}
@@ -211,121 +210,121 @@ cursor:pointer;font-family:‘Baloo 2’,cursive;letter-spacing:.03em;transition
 .pause-quit{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;}
 .pause-sep{width:280px;height:1px;background:rgba(255,255,255,.1);}
 #battery-badge{
-position:absolute;top:58px;left:50%;transform:translateX(-50%);
-background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a;border-radius:20px;
-padding:5px 18px;font-size:.82rem;font-weight:900;display:none;z-index:110;
-pointer-events:none;letter-spacing:.05em;
-box-shadow:0 2px 8px rgba(0,0,0,.3);
+  position:absolute;top:58px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a1a;border-radius:20px;
+  padding:5px 18px;font-size:.82rem;font-weight:900;display:none;z-index:110;
+  pointer-events:none;letter-spacing:.05em;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
 }
 /* ── FEATURE REQUEST MODAL ── */
 #feature-modal{
-position:absolute;inset:0;background:rgba(5,5,20,.9);display:none;
-z-index:600;align-items:center;justify-content:center;
-pointer-events:auto;
+  position:absolute;inset:0;background:rgba(5,5,20,.9);display:none;
+  z-index:600;align-items:center;justify-content:center;
+  pointer-events:auto;
 }
 #feature-box{
-background:rgba(20,20,40,.98);border:2px solid rgba(78,205,196,.4);border-radius:24px;
-padding:32px;width:92%;max-width:420px;display:flex;flex-direction:column;gap:14px;
+  background:rgba(20,20,40,.98);border:2px solid rgba(78,205,196,.4);border-radius:24px;
+  padding:32px;width:92%;max-width:420px;display:flex;flex-direction:column;gap:14px;
 }
-#feature-box h3{color:#4ECDC4;font-family:‘Baloo 2’,cursive;font-size:1.5rem;margin:0;}
+#feature-box h3{color:#4ECDC4;font-family:'Baloo 2',cursive;font-size:1.5rem;margin:0;}
 #feature-box p{color:rgba(255,255,255,.7);font-size:.9rem;margin:0;}
 #feature-input{
-width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);
-border:1.5px solid rgba(78,205,196,.3);border-radius:10px;
-color:#fff;padding:10px 14px;font-size:.95rem;font-family:‘Nunito’,sans-serif;resize:vertical;min-height:80px;
+  width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(78,205,196,.3);border-radius:10px;
+  color:#fff;padding:10px 14px;font-size:.95rem;font-family:'Nunito',sans-serif;resize:vertical;min-height:80px;
 }
 #feature-send{
-background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;border:none;
-border-radius:10px;padding:12px;font-size:1rem;font-weight:900;cursor:pointer;font-family:‘Baloo 2’,cursive;
+  background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;border:none;
+  border-radius:10px;padding:12px;font-size:1rem;font-weight:900;cursor:pointer;font-family:'Baloo 2',cursive;
 }
 #feature-close{
-background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);
-border-radius:10px;padding:10px;font-size:.9rem;cursor:pointer;font-family:‘Baloo 2’,cursive;
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;padding:10px;font-size:.9rem;cursor:pointer;font-family:'Baloo 2',cursive;
 }
 
 /* ── SKIN SELECTOR ── */
 .sk-min{
-position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
-color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
-cursor:pointer;pointer-events:auto;font-family:‘Nunito’,sans-serif;font-weight:700;
+  position:absolute;top:-28px;right:0;background:rgba(10,10,26,.88);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.7);border-radius:8px 8px 0 0;padding:3px 10px;font-size:.75rem;
+  cursor:pointer;pointer-events:auto;font-family:'Nunito',sans-serif;font-weight:700;
 }
 #skin-sel{
-position:absolute;top:60px;right:12px;
-z-index:103;pointer-events:auto;
-background:rgba(10,10,26,.88);backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
-gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
-display:none;max-width:160px;flex-direction:column;
-cursor:grab;touch-action:none;
+  position:absolute;top:60px;right:12px;
+  z-index:103;pointer-events:auto;
+  background:rgba(10,10,26,.88);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:8px 10px;
+  gap:5px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end;
+  display:none;max-width:160px;flex-direction:column;
+  cursor:grab;touch-action:none;
 }
 #skin-sel.dragging{cursor:grabbing;}
 #skin-drag-handle{
-width:100%;text-align:center;color:rgba(255,255,255,.25);font-size:.65rem;
-letter-spacing:.1em;margin-bottom:2px;cursor:grab;user-select:none;
+  width:100%;text-align:center;color:rgba(255,255,255,.25);font-size:.65rem;
+  letter-spacing:.1em;margin-bottom:2px;cursor:grab;user-select:none;
 }
 .sk-lbl{color:rgba(255,255,255,.6);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;width:100%;text-align:center;margin-bottom:4px;}
 .sk-btn{
-padding:7px 14px;font-size:.82rem;font-weight:700;
-background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
-color:#fff;border-radius:8px;cursor:pointer;font-family:‘Nunito’,sans-serif;
-transition:.15s;
+  padding:7px 14px;font-size:.82rem;font-weight:700;
+  background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
+  color:#fff;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;
+  transition:.15s;
 }
 .sk-btn:hover{background:rgba(255,255,255,.2);}
-.sk-btn.sk-active{background:var(–gold);color:#333;border-color:var(–gold);}
+.sk-btn.sk-active{background:var(--gold);color:#333;border-color:var(--gold);}
 .sk-btn.sk-dev  {background:rgba(0,160,0,.6);border-color:#00aa00;}
 .sk-btn.sk-admin{background:rgba(140,0,210,.6);border-color:#8b00cc;}
 
 /* ── MOBILE JOYSTICK ── */
 #joy-wrap{position:absolute;bottom:28px;left:28px;display:none;pointer-events:auto;}
 #joy-outer{
-width:130px;height:130px;background:rgba(255,255,255,.1);
-border:3px solid rgba(255,255,255,.3);border-radius:50%;
-position:relative;touch-action:none;
+  width:130px;height:130px;background:rgba(255,255,255,.1);
+  border:3px solid rgba(255,255,255,.3);border-radius:50%;
+  position:relative;touch-action:none;
 }
 #joy-inner{
-width:58px;height:58px;background:rgba(255,255,255,.75);border-radius:50%;
-position:absolute;top:36px;left:36px;
-box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
+  width:58px;height:58px;background:rgba(255,255,255,.75);border-radius:50%;
+  position:absolute;top:36px;left:36px;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);transition:none;pointer-events:none;
 }
 #jump-btn{
-position:absolute;bottom:40px;right:40px;width:82px;height:82px;
-background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
-border-radius:50%;pointer-events:auto;display:none;
-color:#fff;font-weight:900;font-size:1rem;font-family:‘Baloo 2’,cursive;
-text-shadow:0 1px 3px #000;
+  position:absolute;bottom:40px;right:40px;width:82px;height:82px;
+  background:rgba(255,209,102,.25);border:3px solid rgba(255,209,102,.7);
+  border-radius:50%;pointer-events:auto;display:none;
+  color:#fff;font-weight:900;font-size:1rem;font-family:'Baloo 2',cursive;
+  text-shadow:0 1px 3px #000;
 }
 #crouch-btn{
-position:absolute;bottom:40px;right:134px;width:82px;height:82px;
-background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
-border-radius:50%;pointer-events:auto;display:none;
-color:#fff;font-weight:900;font-size:.85rem;font-family:‘Baloo 2’,cursive;
-text-shadow:0 1px 3px #000;
+  position:absolute;bottom:40px;right:134px;width:82px;height:82px;
+  background:rgba(78,205,196,.2);border:3px solid rgba(78,205,196,.6);
+  border-radius:50%;pointer-events:auto;display:none;
+  color:#fff;font-weight:900;font-size:.85rem;font-family:'Baloo 2',cursive;
+  text-shadow:0 1px 3px #000;
 }
 
 /* ── CAM HINT ── */
 #cam-hint{
-position:absolute;bottom:14px;right:14px;
-background:rgba(10,10,26,.82);backdrop-filter:blur(8px);
-border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);
-border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;
-display:none;pointer-events:none;
+  position:absolute;bottom:14px;right:14px;
+  background:rgba(10,10,26,.82);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.8);
+  border-radius:12px;padding:10px 14px;font-size:.75rem;line-height:1.7;
+  display:none;pointer-events:none;
 }
 
 /* ── PLAYER SPRITE CHOOSER (multiplayer) ── */
 #sprite-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;}
 .sprite-opt{
-width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
-cursor:pointer;object-fit:cover;background:#222;transition:.15s;
+  width:48px;height:48px;border-radius:10px;border:2.5px solid rgba(255,255,255,.2);
+  cursor:pointer;object-fit:cover;background:#222;transition:.15s;
 }
-.sprite-opt.chosen{border-color:var(–gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
+.sprite-opt.chosen{border-color:var(--gold);box-shadow:0 0 12px rgba(255,209,102,.5);}
 
 /* ══════════════════════════════════════════
-MOBILE MODE — body.mobile overrides
-Applied automatically when isMobile===true
+   MOBILE MODE — body.mobile overrides
+   Applied automatically when isMobile===true
 ════════════════════════════════════════════ */
 body.mobile .hud-panel{
-padding:5px 8px;min-width:0;border-radius:0 0 10px 0;
-background:rgba(10,10,26,.65);
+  padding:5px 8px;min-width:0;border-radius:0 0 10px 0;
+  background:rgba(10,10,26,.65);
 }
 body.mobile .hud-room{font-size:.6rem;margin-bottom:1px;}
 body.mobile .hud-time{font-size:.78rem;margin-bottom:3px;}
@@ -338,8 +337,8 @@ body.mobile .map-sel{font-size:.7rem;padding:5px 7px;border-radius:8px;}
 body.mobile .icon-btn{width:28px;height:28px;font-size:.8rem;}
 
 body.mobile #pause-btn{
-top:6px!important;left:130px!important;
-padding:4px 9px!important;font-size:.72rem!important;border-radius:7px!important;
+  top:6px!important;left:130px!important;
+  padding:4px 9px!important;font-size:.72rem!important;border-radius:7px!important;
 }
 
 body.mobile #pause-overlay{gap:10px;}
@@ -371,20 +370,18 @@ body.mobile .sk-lbl{font-size:.6rem;}
 /* Battery badge smaller */
 body.mobile #battery-badge{top:48px;font-size:.7rem;padding:3px 12px;}
 
-/* Toast higher so joystick doesn’t cover */
+/* Toast higher so joystick doesn't cover */
 body.mobile #toast{top:55px;}
 
 /* Unlock banner smaller */
 body.mobile #unlock-banner{padding:14px 22px;font-size:1.1rem;border-radius:16px;}
 body.mobile #unlock-banner img{width:56px;height:56px;}
 </style>
-
 </head>
 <body>
 <div id="ui">
 
 <!-- MAIN MENU -->
-
 <div id="menu">
   <div class="menu-stars" id="menu-stars"></div>
   <div class="game-title">Find Tiny's<br>Family</div>
@@ -435,7 +432,6 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- KEY MODAL -->
-
 <div id="key-modal">
   <div class="km-inner">
     <div class="km-title">🔑 Access Key</div>
@@ -450,7 +446,6 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 </div>
 
 <!-- HUD -->
-
 <div id="hud">
   <div class="hud-panel">
     <div class="hud-room" id="room-tag">Connecting...</div>
@@ -467,6 +462,8 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
       <div class="cnt" id="c-grandma">Grandma 0/1</div>
       <div class="cnt" id="c-cousin">Cousins 0/4</div>
       <div class="cnt cnt-tiny" id="c-tiny">Tiny 0/1</div>
+      <div class="cnt" id="c-principal">Principal 0/1</div>
+      <div class="cnt" id="c-astro">Astro 👨‍🚀0 👩‍🚀0/2</div>
       <div class="cnt" id="c-map">Map 1</div>
     </div>
   </div>
@@ -488,14 +485,12 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 <div id="battery-badge">⚡ BATTERY SAVER</div>
 
 <!-- PAUSE BUTTON (always visible in-game) -->
-
 <button id="pause-btn" style="position:absolute;top:10px;left:190px;z-index:120;
-background:rgba(10,10,26,.8);border:1.5px solid rgba(255,255,255,.2);color:#fff;
-border-radius:10px;padding:7px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
-display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸</button>
+  background:rgba(10,10,26,.8);border:1.5px solid rgba(255,255,255,.2);color:#fff;
+  border-radius:10px;padding:7px 14px;font-size:.9rem;font-weight:700;cursor:pointer;
+  display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="togglePause()">⏸</button>
 
 <!-- PAUSE OVERLAY -->
-
 <div id="pause-overlay" style="display:none;position:absolute;inset:0;background:rgba(5,5,20,.88);
   backdrop-filter:blur(16px);z-index:500;align-items:center;justify-content:center;
   flex-direction:column;gap:18px;pointer-events:auto;">
@@ -527,7 +522,6 @@ display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="toggle
 </div>
 
 <!-- FEATURE REQUEST MODAL -->
-
 <div id="feature-modal" style="display:none;position:absolute;inset:0;
   background:rgba(5,5,20,.9);z-index:600;align-items:center;justify-content:center;pointer-events:auto;">
   <div id="feature-box">
@@ -543,7 +537,6 @@ display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="toggle
 <div id="name-label" class="fname">Player</div>
 
 <!-- DIALOGUE -->
-
 <div id="dialogue">
   <img class="d-img" id="d-img" src="friend.png"
     onerror="this.onerror=null;this.style.visibility='hidden';"
@@ -558,14 +551,26 @@ display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="toggle
 </div>
 
 <!-- SKIN SELECTOR -->
-
 <div id="skin-sel"><span class="sk-lbl">Skin</span></div>
 
 <!-- BANNERS -->
-
 <div id="unlock-banner"></div>
 <div id="locked-msg"></div>
 <div id="toast"></div>
+<div id="oxygen-hud" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;pointer-events:none;text-align:center;">
+  <div style="font-size:.7rem;color:#aef;font-weight:700;letter-spacing:.1em;margin-bottom:3px;">⚗ OXYGEN</div>
+  <div style="background:rgba(0,0,0,.5);border:1.5px solid rgba(100,200,255,.4);border-radius:8px;width:160px;height:14px;overflow:hidden;">
+    <div id="oxy-bar" style="height:100%;background:linear-gradient(90deg,#4ECDC4,#44f4cc);width:100%;transition:width .3s,background .3s;border-radius:6px;"></div>
+  </div>
+  <div id="oxy-label" style="font-size:.65rem;color:#aef;margin-top:2px;">100%</div>
+</div>
+<div id="oxygen-hud" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:210;pointer-events:none;text-align:center;">
+  <div style="font-size:.7rem;color:#aef;font-weight:700;letter-spacing:.1em;margin-bottom:3px;">⚗ OXYGEN</div>
+  <div style="background:rgba(0,0,0,.5);border:1.5px solid rgba(100,200,255,.4);border-radius:8px;width:160px;height:14px;overflow:hidden;">
+    <div id="oxy-bar" style="height:100%;background:linear-gradient(90deg,#4ECDC4,#44f4cc);width:100%;transition:width .3s,background .3s;border-radius:6px;"></div>
+  </div>
+  <div id="oxy-label" style="font-size:.65rem;color:#aef;margin-top:2px;">100%</div>
+</div>
 <div id="space-vignette" style="position:fixed;inset:0;pointer-events:none;z-index:199;opacity:0;transition:opacity .4s;background:radial-gradient(ellipse at center, transparent 30%, rgba(20,0,40,.95) 100%);"></div>
 <div id="devroom-overlay" style="position:fixed;inset:0;background:linear-gradient(135deg,#0a0a1a,#1a0a2e);z-index:4000;display:none;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:40px 20px;">
   <button onclick="leaveDevRoom()" style="position:fixed;top:20px;right:24px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:20px;padding:8px 18px;cursor:pointer;z-index:4001;">← Back</button>
@@ -605,7 +610,6 @@ display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="toggle
 </div>
 
 <!-- CAM HINT -->
-
 <div id="cam-hint" class="cam-hint-desktop">
   <b>Move</b> WASD &nbsp;|&nbsp; <b>Cam</b> Arrow keys / drag<br>
   <b>Jump</b> Space &nbsp;|&nbsp; <b>Crouch</b> C (look under beds!)<br>
@@ -617,9 +621,7 @@ display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="toggle
 </div>
 
 <!-- MOBILE -->
-
 <!-- DEV MOBILE BUTTONS -->
-
 <div id="dev-btns">
   <button class="dev-mbtn" onclick="flyMode=!flyMode;showToast(flyMode?'✈ Fly ON':'✈ Fly OFF')">✈ Fly</button>
   <button class="dev-mbtn" onclick="noclipMode=!noclipMode;showToast(noclipMode?'👻 Noclip ON':'👻 Noclip OFF')">👻 Noclip</button>
@@ -647,7 +649,7 @@ display:none;pointer-events:auto;font-family:'Baloo 2',cursive;" onclick="toggle
 // ════════════════════════════════════════════════════
 //  CONSTANTS & STATE
 // ════════════════════════════════════════════════════
-const SPRITES = ['friend','dad','mum','tiny','brother','sister','uncle','auntie','cousin','grandpa','grandma','admin','dev','supporter'];
+const SPRITES = ['friend','dad','mum','tiny','brother','sister','uncle','auntie','cousin','grandpa','grandma','admin','dev','supporter','principal','astrodad','astromum'];
 const SPRITE_FALLBACK_COLORS = {
   friend:'#4ECDC4',dad:'#3498db',mum:'#e91e8c',tiny:'#FFD166',
   brother:'#2980b9',sister:'#e91e63',uncle:'#e67e22',auntie:'#e91e63',cousin:'#1abc9c',
@@ -664,6 +666,14 @@ let flyMode=false, flyVelY=0, velocityY=0, isGrounded=false, isCrouching=false;
 let jumpCount=0, jumpHeld=false, crouchHeld=false;
 let spaceTransitioning=false, orbCollected=false, beachLaunchType=null, _spaceWarnShown=false, _rocketHintShown=false;
 let paintingPos=null, inDevRoom=false;
+// Oxygen system
+let oxygenLevel=100, hasHelmet=false, oxygenWarnShown=false, helmetMeshes=[];
+// TSS (Tiny Space Station)
+let tssBuilt=false, tssPos={x:-200,y:150,z:300}, tssArrivalShown=false;
+// Shuttle system
+let shuttles=[], _shuttleActive=null, _shuttleT=0, _shuttleDir=1;
+// Supporter NPC
+let supporterNpcMesh=null, supporterNpcBuilt=false;
 let noclipMode=false;
 let superSpeed=false;
 let batterySaver=false;
@@ -931,9 +941,9 @@ async function sendFeature(){
   showToast('📨 Opening email to send request!');
 }
 
-// Family: dad=1 mum=1 brother=8 sister=9 uncle=2 auntie=2 cousin=4 grandpa=1 grandma=1 tiny=1 = 30 total
-let famTargets = {dad:1,mum:1,brother:8,sister:9,uncle:2,auntie:2,cousin:4,grandpa:1,grandma:1,tiny:1};
-let famFound   = {dad:0,mum:0,brother:0,sister:0,uncle:0,auntie:0,cousin:0,grandpa:0,grandma:0,tiny:0};
+// Family: dad=1 mum=1 brother=8 sister=9 uncle=2 auntie=2 cousin=4 grandpa=1 grandma=1 tiny=1 principal=1 astrodad=1 astromum=1 = 33 total
+let famTargets = {dad:1,mum:1,brother:8,sister:9,uncle:2,auntie:2,cousin:4,grandpa:1,grandma:1,tiny:1,principal:1,astrodad:1,astromum:1};
+let famFound   = {dad:0,mum:0,brother:0,sister:0,uncle:0,auntie:0,cousin:0,grandpa:0,grandma:0,tiny:0,principal:0,astrodad:0,astromum:0};
 let groupUnlocked = {};
 
 // ── PERSISTENT UNLOCK STORAGE ──
@@ -1084,6 +1094,30 @@ const CUTSCENES={
     "Each step takes you closer to the clouds.",
     "The beach looks tiny below. Your hands tremble.",
     "You leap from the very top and... sail into SPACE! ⭐",
+  ],
+  tss_arrival:[
+    "⚠ WARNING: Low oxygen detected outside the station.",
+    "A massive structure looms ahead... the T.S.S.",
+    "The Tiny Space Station — built by the family themselves!",
+    "An airlock cycles open. You float inside... 🌌",
+  ],
+  shuttle_launch:[
+    "The shuttle hatch seals with a hiss. 🚀",
+    "Engines ignite — a deep rumble shakes your bones.",
+    "You're pressed into your seat as stars blur past.",
+    "The T.S.S. grows larger on the viewport...",
+  ],
+  shuttle_return:[
+    "The TSS docking clamps release with a CLUNK.",
+    "Retro-thrusters fire — you're heading home.",
+    "The planet's blue glow fills the window...",
+    "Touchdown! The shuttle lands safely. 🌍",
+  ],
+  astro_meet:[
+    "👨‍🚀 Astro Dad: 'You made it all the way to space?!'",
+    "👩‍🚀 Astro Mum: 'We've been waiting so long for you!'",
+    "👨‍🚀 Astro Dad: 'We got a little... stuck up here.'",
+    "👩‍🚀 Astro Mum: 'Now let\\'s find Tiny and go home! 💛'",
   ],
 };
 function showCutscene(type, cb){
@@ -1395,13 +1429,16 @@ function renderWithMotionBlur(){
     }
     // Also factor in camera rotation (looking left/right blurs horizontally)
     const yawDelta=camYaw-(_mbPrevYaw||camYaw);
-    velX+=yawDelta*0.4;
+    // Smooth yaw blur: exponential average so quick flicks don't spike hard
+    _mbYawSmooth=(_mbYawSmooth||0)*0.65+yawDelta*0.35;
+    velX+=_mbYawSmooth*0.55;
     _mbPrevYaw=camYaw;
   }
 
   const blurLen=Math.sqrt(velX*velX+velY*velY);
-  const motionStrength=Math.min(blurLen*6.0, 0.22);
-  const dofStrength=Math.min(blurLen*0.08, 0.022); // DoF only when moving
+  // Separate turn-blur (horizontal) from movement-blur (directional)
+  const motionStrength=Math.min(blurLen*5.0, 0.18); // slightly softer cap
+  const dofStrength=Math.min(blurLen*0.06, 0.018); // DoF only when moving
 
   // Pass 1: render scene → rtCurrent
   renderer.setRenderTarget(rtCurrent);
@@ -1421,7 +1458,7 @@ function renderWithMotionBlur(){
   _mbPrevCamQuat.copy(camera.quaternion);
   _mbCamReady=true;
 }
-let _mbPrevYaw=0;
+let _mbPrevYaw=0, _mbYawSmooth=0;
 
 
 // ── SPACE AMBIENCE (Web Audio) ──
@@ -1698,11 +1735,10 @@ function updateSky(sunH,sinT){
 
 // ── TERRAIN ──
 const terrainMats={
-  1:new THREE.MeshStandardMaterial({color:0x4a8c28,roughness:.9,metalness:0}),
+  1:new THREE.MeshStandardMaterial({color:0x5a9e32,roughness:.85,metalness:0}),
   2:new THREE.MeshStandardMaterial({color:0xf0d090,roughness:.85,metalness:0}),
   3:new THREE.MeshStandardMaterial({color:0xd4c4a0,roughness:.7,metalness:0})
 };
-tLoader.load('grass.png',tex=>{ tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(80,80); terrainMats[1].map=tex; terrainMats[1].needsUpdate=true; },null,()=>{});
 
 let terrain=null;
 const HOUSE_PADS=[
@@ -1839,6 +1875,288 @@ function buildSpaceTable(){
   obstacles.push({x:tx,z:tz,radius:3});
 }
 
+// ════════════════════════════════════════════════════
+//  TINY SPACE STATION (TSS)
+// ════════════════════════════════════════════════════
+function buildTSS(){
+  if(tssBuilt) return;
+  tssBuilt=true;
+  const TX=tssPos.x, TY=tssPos.y, TZ=tssPos.z;
+
+  function tbox(geo,col,px,py,pz,rx,ry,rz,opts){
+    const mat=new THREE.MeshStandardMaterial(Object.assign({color:col,roughness:.4,metalness:.55},opts||{}));
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(TX+px,TY+py,TZ+pz);
+    if(rx) m.rotation.x=rx; if(ry) m.rotation.y=ry; if(rz) m.rotation.z=rz;
+    m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; m.userData.isTSS=true;
+    scene.add(m); return m;
+  }
+
+  // ── Central hub — large hexagonal command module ──
+  tbox(new THREE.CylinderGeometry(18,18,12,6),0x8899aa,0,0,0); // hub body
+  tbox(new THREE.CylinderGeometry(19,19,.8,6),0x667788,0,-6,0); // floor ring
+  tbox(new THREE.CylinderGeometry(19,19,.8,6),0x667788,0,6,0);  // ceiling ring
+
+  // ── Solar panel wings (2 sides) ──
+  [[-1,1]].forEach(([sx])=>{
+    [-1,1].forEach(sz=>{
+      const armX=sx*36, armZ=sz*8;
+      // Arm strut
+      tbox(new THREE.BoxGeometry(28,.6,.6),0x556677,armX*.5,2,armZ*.5);
+      // Solar panel
+      const panelMat={color:0x112244,emissive:0x001133,emissiveIntensity:.4,roughness:.3,metalness:.8};
+      tbox(new THREE.BoxGeometry(20,8,.3),0x112244,armX,2,armZ,0,0,0,panelMat);
+      // Panel grid lines
+      for(let g=-8;g<=8;g+=4){
+        tbox(new THREE.BoxGeometry(20,.05,.05),0x2244aa,armX,2+g*.4,armZ);
+      }
+    });
+  });
+
+  // ── Docking bay module (front) ──
+  tbox(new THREE.CylinderGeometry(9,9,16,8),0x778899,0,0,26); // docking cylinder
+  tbox(new THREE.CylinderGeometry(9.5,9.5,.5,8),0x55667a,0,-8,26); // bottom ring
+  tbox(new THREE.CylinderGeometry(9.5,9.5,.5,8),0x55667a,0,8,26);  // top ring
+  // Docking port — glowing ring
+  const dockMat=new THREE.MeshBasicMaterial({color:0x00ffcc,transparent:true,opacity:.8});
+  const dockRing=new THREE.Mesh(new THREE.RingGeometry(7,8.5,16),dockMat);
+  dockRing.position.set(TX,TY,TZ+35); dockRing.rotation.x=Math.PI/2;
+  dockRing.userData.deco=true; dockRing.userData.isDockRing=true; scene.add(dockRing);
+  const dockLight=new THREE.PointLight(0x00ffcc,4,30);
+  dockLight.position.set(TX,TY,TZ+34); dockLight.userData.deco=true; scene.add(dockLight);
+
+  // ── Corridor connecting hub to docking bay ──
+  tbox(new THREE.CylinderGeometry(4,4,10,8),0x99aabb,0,0,17,Math.PI/2); // horizontal tube
+  // Windows along corridor
+  const winMat=new THREE.MeshBasicMaterial({color:0x88ccff,transparent:true,opacity:.6});
+  [-3,0,3].forEach(woff=>{
+    const win=new THREE.Mesh(new THREE.CircleGeometry(1.2,12),winMat);
+    win.position.set(TX+4.1,TY+1,TZ+17+woff); win.rotation.y=-Math.PI/2;
+    win.userData.deco=true; scene.add(win);
+  });
+
+  // ── Lab module (back) ──
+  tbox(new THREE.BoxGeometry(22,10,18),0x6677aa,0,0,-22);
+  tbox(new THREE.BoxGeometry(22.4,10.4,.3),0x445566,0,0,-31); // back wall
+  // Large viewing window — looking out into space
+  const bigWin=new THREE.Mesh(new THREE.BoxGeometry(16,7,.15),new THREE.MeshBasicMaterial({color:0xaaddff,transparent:true,opacity:.4}));
+  bigWin.position.set(TX,TY+1,TZ-31.1); bigWin.userData.deco=true; scene.add(bigWin);
+  // Window frame
+  tbox(new THREE.BoxGeometry(17,.4,.4),0x334455,0,4.5,-31.2); // top
+  tbox(new THREE.BoxGeometry(17,.4,.4),0x334455,0,-2,-31.2);  // bottom
+  tbox(new THREE.BoxGeometry(.4,7,.4),0x334455,-8,1,-31.2);   // left
+  tbox(new THREE.BoxGeometry(.4,7,.4),0x334455,8,1,-31.2);    // right
+
+  // ── Interior floor + walls (walkable area inside hub) ──
+  tbox(new THREE.BoxGeometry(34,.4,50),0x445566,0,-5.8,2);  // floor
+  tbox(new THREE.BoxGeometry(34,.4,50),0x334455,0,5.8,2);   // ceiling (above player)
+
+  // ── Holographic display in command centre ──
+  const holoGeo=new THREE.BoxGeometry(6,4,.05);
+  const holoMat=new THREE.MeshBasicMaterial({color:0x00eeff,transparent:true,opacity:.55,side:THREE.DoubleSide});
+  const holo=new THREE.Mesh(holoGeo,holoMat);
+  holo.position.set(TX,TY+1,TZ-5); holo.userData.deco=true; holo.userData.isHolo=true; scene.add(holo);
+  const holoLight=new THREE.PointLight(0x00eeff,3,15); holoLight.position.set(TX,TY+1,TZ-5); holoLight.userData.deco=true; scene.add(holoLight);
+
+  // ── Station light ──
+  const stationLight=new THREE.PointLight(0xffffff,3,120);
+  stationLight.position.set(TX,TY+20,TZ); stationLight.userData.deco=true; scene.add(stationLight);
+
+  // ── Helmet pickup near docking bay ──
+  buildHelmetPickup(TX+8,TY-2,TZ+26);
+  buildHelmetPickup(TX-8,TY-2,TZ-20);
+
+  // ── Astro Dad and Mum spawn positions in TSS command centre ──
+  // (spawnFamily handles placing them via MAP_ROSTER at random spots,
+  //  but we override their positions to be inside the TSS)
+  setTimeout(()=>{
+    familyMeshes.forEach(f=>{
+      if(f.type==='astrodad') f.mesh.position.set(TX-6,TY-4,TZ-8);
+      if(f.type==='astromum') f.mesh.position.set(TX+6,TY-4,TZ-8);
+    });
+  },500);
+
+  showToast('🚀 T.S.S. detected! Shuttle ready to dock.',4000);
+}
+
+// ════════════════════════════════════════════════════
+//  HELMET PICKUPS
+// ════════════════════════════════════════════════════
+function buildHelmetPickup(x,y,z){
+  const group=new THREE.Group();
+  // Dome
+  const dome=new THREE.Mesh(new THREE.SphereGeometry(1.1,12,8,0,Math.PI*2,0,Math.PI/2),
+    new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.7,roughness:.1,metalness:.3}));
+  dome.position.y=1.1; group.add(dome);
+  // Visor
+  const visor=new THREE.Mesh(new THREE.SphereGeometry(1.05,12,8,Math.PI*.15,Math.PI*.7,Math.PI*.15,Math.PI*.5),
+    new THREE.MeshBasicMaterial({color:0x88aaff,transparent:true,opacity:.8,side:THREE.DoubleSide}));
+  visor.position.y=1.1; group.add(visor);
+  // Neck ring
+  const ring=new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.1,.25,12),
+    new THREE.MeshStandardMaterial({color:0xcccccc,metalness:.7}));
+  ring.position.y=.5; group.add(ring);
+  // Glow
+  const glow=new THREE.PointLight(0xaaccff,4,8);
+  glow.position.y=1.4; group.add(glow);
+
+  group.position.set(x,y,z);
+  group.userData.isHelmet=true; group.userData.deco=false; // important: not deco so it stays
+  scene.add(group);
+  helmetMeshes.push(group);
+}
+
+// ════════════════════════════════════════════════════
+//  SPACE SHUTTLES
+// ════════════════════════════════════════════════════
+function buildSpaceShuttles(){
+  // Shuttle 1: docked at Ember planet surface
+  const s1=buildShuttle(60,4,20,'planet');
+  // Shuttle 2: docked at TSS
+  const s2=buildShuttle(tssPos.x+12,tssPos.y-4,tssPos.z+30,'tss');
+  shuttles=[s1,s2];
+}
+
+function buildShuttle(x,y,z,dock){
+  const g=new THREE.Group();
+  // Fuselage
+  const fuse=new THREE.Mesh(new THREE.CylinderGeometry(2.5,2,12,10),
+    new THREE.MeshStandardMaterial({color:0xddddee,roughness:.35,metalness:.5}));
+  fuse.rotation.z=Math.PI/2; fuse.position.set(0,0,0); g.add(fuse);
+  // Nose cone
+  const nose=new THREE.Mesh(new THREE.ConeGeometry(2,4,10),
+    new THREE.MeshStandardMaterial({color:0xccccdd,roughness:.3,metalness:.4}));
+  nose.rotation.z=Math.PI/2; nose.position.set(8,0,0); g.add(nose);
+  // Wings
+  [-1,1].forEach(s=>{
+    const wing=new THREE.Mesh(new THREE.BoxGeometry(6,.3,8),
+      new THREE.MeshStandardMaterial({color:0xbbbbcc,roughness:.4,metalness:.4}));
+    wing.position.set(-1,0,s*6); g.add(wing);
+    // Engine nozzle
+    const eng=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.6,2,8),
+      new THREE.MeshStandardMaterial({color:0x444444,roughness:.8,metalness:.6}));
+    eng.rotation.z=Math.PI/2; eng.position.set(-7,.3,s*6); g.add(eng);
+  });
+  // Cockpit window
+  const cwMat=new THREE.MeshBasicMaterial({color:0x88ccff,transparent:true,opacity:.7});
+  const cw=new THREE.Mesh(new THREE.SphereGeometry(1.2,8,6,0,Math.PI),cwMat);
+  cw.position.set(5.5,.8,0); cw.rotation.z=Math.PI/2; g.add(cw);
+  // Trigger zone indicator (glowing E prompt sphere, hidden)
+  const prompt=new THREE.Mesh(new THREE.SphereGeometry(.5,8,6),
+    new THREE.MeshBasicMaterial({color:0xffdd00,transparent:true,opacity:.9}));
+  prompt.position.set(0,3,0); prompt.userData.isShuttlePrompt=true; g.add(prompt);
+  prompt.visible=false;
+
+  g.position.set(x,y,z);
+  g.userData.deco=true; g.userData.isShuttle=true; g.userData.dock=dock;
+  g.userData.prompt=prompt;
+  scene.add(g);
+
+  // Add proximity obstacle
+  obstacles.push({x,z,radius:6});
+  return {mesh:g, dock, baseX:x, baseY:y, baseZ:z};
+}
+
+// ════════════════════════════════════════════════════
+//  OXYGEN SYSTEM
+// ════════════════════════════════════════════════════
+let _oxyLastTick=0;
+function tickOxygen(ts){
+  if(currentMap!==4){ 
+    // Outside space: hide oxygen HUD, full oxygen, no helmet needed
+    document.getElementById('oxygen-hud').style.display='none';
+    oxygenLevel=100; oxygenWarnShown=false; return;
+  }
+  document.getElementById('oxygen-hud').style.display='block';
+  if(ts-_oxyLastTick<500) return; // tick every 0.5s
+  _oxyLastTick=ts;
+
+  // Check if inside TSS (within 35 units of TSS centre)
+  const dx=player.position.x-tssPos.x,dy=player.position.y-tssPos.y,dz=player.position.z-tssPos.z;
+  const inTSS=(dx*dx+dy*dy+dz*dz)<1225; // 35^2
+
+  if(inTSS || hasHelmet){
+    oxygenLevel=Math.min(100,oxygenLevel+2.0); // recover 2%/s in TSS
+  } else {
+    oxygenLevel=Math.max(0,oxygenLevel-0.15*0.5*2); // drain ~0.15%/s (0.075 per 0.5s tick)
+  }
+
+  // Update HUD
+  const bar=document.getElementById('oxy-bar');
+  const lbl=document.getElementById('oxy-label');
+  bar.style.width=oxygenLevel+'%';
+  lbl.textContent=Math.round(oxygenLevel)+'%';
+  if(oxygenLevel<30){
+    bar.style.background='linear-gradient(90deg,#ff4444,#ff8844)';
+    if(!oxygenWarnShown){ oxygenWarnShown=true; showToast('⚠️ LOW OXYGEN! Find a helmet or reach the TSS!',4000); }
+  } else if(oxygenLevel<60){
+    bar.style.background='linear-gradient(90deg,#ffcc00,#ff8844)';
+    oxygenWarnShown=false;
+  } else {
+    bar.style.background='linear-gradient(90deg,#4ECDC4,#44f4cc)';
+    oxygenWarnShown=false;
+  }
+  if(oxygenLevel<=0) showToast('💀 Out of oxygen! Get to safety!',3000);
+}
+
+// ════════════════════════════════════════════════════
+//  SUPPORTER NPC
+// ════════════════════════════════════════════════════
+function buildSupporterNpc(){
+  if(supporterNpcBuilt) return;
+  supporterNpcBuilt=true;
+  // Place supporter NPC near the space orb table
+  const nx=spaceTablePos.x+8, nz=spaceTablePos.z;
+  const mat=new THREE.MeshStandardMaterial({color:0xFFD700,side:THREE.DoubleSide,transparent:true,alphaTest:.05});
+  tLoader.load('supporter.png',tex=>{mat.map=tex;mat.color.set(0xFFFFFF);mat.needsUpdate=true;},null,()=>{});
+  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2.4,2.7),mat);
+  mesh.position.set(nx,1.5,nz); mesh.userData.deco=true; mesh.userData.isSupporterNpc=true;
+  scene.add(mesh);
+  supporterNpcMesh=mesh;
+
+  // Glow aura
+  const glow=new THREE.PointLight(0xFFD700,3,10);
+  glow.position.set(nx,2,nz); glow.userData.deco=true; scene.add(glow);
+
+  // Label
+  const lbl=document.createElement('div');
+  lbl.className='fname'; lbl.style.color='gold'; lbl.style.display='block';
+  lbl.textContent='★ Supporter';
+  document.getElementById('peer-labels').appendChild(lbl);
+  mesh.userData.labelDiv=lbl;
+}
+
+function showSupporterMenu(){
+  // Two-action menu: fly / request_to_dev
+  let d=document.getElementById('supporter-menu');
+  if(!d){
+    d=document.createElement('div');
+    d.id='supporter-menu';
+    d.style.cssText='position:fixed;bottom:140px;left:50%;transform:translateX(-50%);z-index:500;pointer-events:auto;background:rgba(20,20,40,.92);border:2px solid gold;border-radius:18px;padding:20px 28px;text-align:center;min-width:260px;';
+    d.innerHTML=`<div style="font-family:'Baloo 2',cursive;color:gold;font-size:1.3rem;margin-bottom:14px;">★ Supporter</div>
+      <button onclick="supporterAction('fly')" style="display:block;width:100%;margin-bottom:10px;padding:12px;background:linear-gradient(135deg,#4ECDC4,#44a08d);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;">✈ Toggle Fly Mode</button>
+      <button onclick="supporterAction('request_to_dev')" style="display:block;width:100%;margin-bottom:10px;padding:12px;background:linear-gradient(135deg,#6A0DAD,#9b59b6);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;">💡 Request to Dev</button>
+      <button onclick="document.getElementById('supporter-menu').style.display='none'" style="display:block;width:100%;padding:8px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;cursor:pointer;font-size:.9rem;">Close</button>`;
+    document.body.appendChild(d);
+  }
+  d.style.display='block';
+}
+
+function supporterAction(act){
+  document.getElementById('supporter-menu').style.display='none';
+  if(act==='fly'){
+    flyMode=!flyMode;
+    showToast(flyMode?'✈ Fly mode ON!':'✈ Fly mode OFF',2000);
+  } else if(act==='request_to_dev'){
+    const msg=prompt('Send a feature request to the dev:');
+    if(msg && msg.trim()){
+      const mailto=`mailto:dacoolkid325@gmail.com?subject=FTF Feature Request&body=${encodeURIComponent(msg)}`;
+      window.open(mailto);
+      showToast('💌 Request sent to dev!',3000);
+    }
+  }
+}
+
 function buildTerrain(m){
   if(terrain){ scene.remove(terrain); terrain.geometry.dispose(); terrain=null; }
   if(m===4) return; // space has no ground — planets handle it
@@ -1872,14 +2190,14 @@ function buildTerrain(m){
   terrain=new THREE.Mesh(geo,terrainMats[m]);
   terrain.receiveShadow=true; scene.add(terrain);
 
-  // ── Terrain skirt: solid box underneath so no gaps/background bleeds through ──
-  // Matches terrain surface colour exactly
-  const skirtColor = m===2 ? 0xf0d090 : m===3 ? 0xd4c4a0 : 0x4a8c28;
-  const skirtSize = size + 40; // slightly wider than terrain
-  const skirtMat = new THREE.MeshStandardMaterial({color:skirtColor, roughness:.95, metalness:0});
-  const skirtMesh = new THREE.Mesh(new THREE.BoxGeometry(skirtSize, 80, skirtSize), skirtMat);
-  skirtMesh.position.set(0, -40, 0);
-  skirtMesh.receiveShadow=true; skirtMesh.userData.deco=true; scene.add(skirtMesh);
+  // Deep fill box — sits BELOW all terrain valleys so no gaps ever show
+  if(m!==4){
+    const fillCol=m===2?0xf0d090:m===3?0xd4c4a0:0x5a9e32;
+    const fillMat=new THREE.MeshBasicMaterial({color:fillCol});
+    const fillBox=new THREE.Mesh(new THREE.BoxGeometry(size+400,200,size+400),fillMat);
+    // Top of box at y=-32 (below deepest valley ~-29), extends down 200 units
+    fillBox.position.set(0,-132,0); fillBox.userData.deco=true; scene.add(fillBox);
+  }
 }
 
 // ── MAP BOUNDS — invisible barrier walls so player can't escape ──
@@ -1911,17 +2229,19 @@ function terrainH(x,z){ if(currentMap===4) return -9999; // no floor — planet 
     const wx=watchtowerPos.x, wz=watchtowerPos.z;
     const dx=x-wx, dz=z-wz;
     const distFromCentre=Math.sqrt(dx*dx+dz*dz);
-    // Only check if player is in staircase zone
-    if(distFromCentre>0.8 && distFromCentre<5.5){
-      // Find the step closest horizontally to the player
-      let bestStep=null, bestDist2=9999;
+    // Staircase zone: between shaft (r~1) and outer edge (r~5.5)
+    if(distFromCentre>0.9 && distFromCentre<6.0){
+      // Find the highest step below the player (within horizontal reach)
+      let bestStep=null, bestH=-Infinity;
       for(const st of _wtSteps){
         const sdx=x-st.wx, sdz=z-st.wz;
         const d2=sdx*sdx+sdz*sdz;
-        if(d2<bestDist2){ bestDist2=d2; bestStep=st; }
+        // Looser radius (5.5 units covers step width + diagonal approach) 
+        if(d2<6.5 && st.wy<=bestH+4){ // allow climbing within 4 units height
+          if(st.wy>bestH){ bestH=st.wy; bestStep=st; }
+        }
       }
-      // If within 1.8 units of a step centre, use its height
-      if(bestStep && bestDist2<3.2) return bestStep.wy;
+      if(bestStep) return bestStep.wy;
     }
   }
   if(!terrain) return 0;
@@ -1978,18 +2298,19 @@ function doUpdateCamera(){
   const crouchPitch = isCrouching ? 0.06 : camPitch;
   const crouchDist  = isCrouching ? camDist*.85 : camDist;
   const lookH = isCrouching ? 0.3 : 1.2;
-  camera.position.set(
-    player.position.x+Math.sin(camYaw)*crouchDist*Math.cos(crouchPitch),
-    player.position.y+Math.sin(crouchPitch)*crouchDist,
-    player.position.z+Math.cos(camYaw)*crouchDist*Math.cos(crouchPitch)
-  );
+  const camX=player.position.x+Math.sin(camYaw)*crouchDist*Math.cos(crouchPitch);
+  const camZ=player.position.z+Math.cos(camYaw)*crouchDist*Math.cos(crouchPitch);
+  const camY=player.position.y+Math.sin(crouchPitch)*crouchDist;
+  // Never let camera clip below terrain
+  const camFloor=currentMap===4?-9999:terrainH(camX,camZ)+1.2;
+  camera.position.set(camX, Math.max(camY, camFloor), camZ);
   camera.lookAt(player.position.x,player.position.y+lookH,player.position.z);
 }
 
 // ════════════════════════════════════════════════════
 //  SKINS
 // ════════════════════════════════════════════════════
-const SKIN_IMGS={friend:'friend.png',dad:'dad.png',mum:'mum.png',brother:'brother.png',sister:'sister.png',uncle:'uncle.png',auntie:'auntie.png',cousin:'cousin.png',grandpa:'grandpa.png',grandma:'grandma.png',tiny:'tiny.png',admin:'admin.png',dev:'dev.png',supporter:'supporter.png'};
+const SKIN_IMGS={friend:'friend.png',dad:'dad.png',mum:'mum.png',brother:'brother.png',sister:'sister.png',uncle:'uncle.png',auntie:'auntie.png',cousin:'cousin.png',grandpa:'grandpa.png',grandma:'grandma.png',tiny:'tiny.png',admin:'admin.png',dev:'dev.png',supporter:'supporter.png',principal:'principal.png',astrodad:'astrodad.png',astromum:'astromum.png'};
 const skinCache={};
 function loadSkinTex(name,cb){
   if(name in skinCache){cb(skinCache[name]);return;}
@@ -2083,8 +2404,8 @@ const MAP_ROSTER = {
      {type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},{type:'sister',s:1.7},
      {type:'uncle',s:2.1},{type:'auntie',s:2.0},
      {type:'cousin',s:1.8},{type:'cousin',s:1.8}],
-  3:[{type:'tiny',s:1.0}],
-  4:[] // space — no family
+  3:[{type:'tiny',s:1.0},{type:'principal',s:2.0}],
+  4:[{type:'astrodad',s:2.2},{type:'astromum',s:2.2}] // space — astro parents at TSS
 };
 
 const HARD_SPOTS_MAP1 = [
@@ -2093,7 +2414,7 @@ const HARD_SPOTS_MAP1 = [
 ];
 
 function spawnFamily(){
-  if(currentMap===3) return;
+  if(currentMap===3) return; // tiny + principal placed directly in buildClassroom/buildPrincipalOffice
   const roster=MAP_ROSTER[currentMap]||[];
   roster.forEach((mem,idx)=>{
     const mat=new THREE.MeshStandardMaterial({
@@ -2104,19 +2425,24 @@ function spawnFamily(){
       null, ()=>{}
     );
     const mesh=new THREE.Mesh(new THREE.PlaneGeometry(mem.s,mem.s*1.3),mat);
-    let mx,mz;
+    let mx,my,mz;
     if(currentMap===1 && HARD_SPOTS_MAP1[idx]){
       const hs=HARD_SPOTS_MAP1[idx];
       mx=hs[0]+(Math.random()-.5)*6; mz=hs[1]+(Math.random()-.5)*6;
     } else if(currentMap===2){
       mx=(Math.random()-.5)*460; mz=(Math.random()-.5)*180;
       if(mz<-120) mz=-90+Math.random()*40;
+    } else if(currentMap===4){
+      // Space family: place inside TSS command centre area
+      mx=tssPos.x+(idx===0?-6:6); my=tssPos.y-4; mz=tssPos.z-8;
     } else {
       mx=(Math.random()-.5)*500; mz=(Math.random()-.5)*500;
     }
-    let ty=0;
-    try{ ty=terrainH(mx,mz); } catch(e){ ty=0; }
-    if(!isFinite(ty)||ty==null) ty=0;
+    let ty=my!==undefined?my:0;
+    if(my===undefined){
+      try{ ty=terrainH(mx,mz); } catch(e){ ty=0; }
+      if(!isFinite(ty)||ty==null) ty=0;
+    }
     mesh.position.set(mx, ty+mem.s*.6+.1, mz);
     mesh.castShadow=false;
     scene.add(mesh);
@@ -2124,7 +2450,7 @@ function spawnFamily(){
   });
 }
 
-function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0xe91e63,uncle:0xe67e22,auntie:0xff69b4,cousin:0x1abc9c,grandpa:0x7f8c8d,grandma:0x9b59b6,tiny:0xFFD166}[t]||0xffffff; }
+function typeCol(t){ return {dad:0x3498db,mum:0xe91e8c,brother:0x2980b9,sister:0xe91e63,uncle:0xe67e22,auntie:0xff69b4,cousin:0x1abc9c,grandpa:0x7f8c8d,grandma:0x9b59b6,tiny:0xFFD166,principal:0x8B0000,astrodad:0x1a6bcc,astromum:0xcc1a8e}[t]||0xffffff; }
 
 // ════════════════════════════════════════════════════
 //  MAP BUILDERS
@@ -2144,15 +2470,22 @@ function loadMap(m){
   clearScene(); buildTerrain(m); setLighting(m); setMapBounds(m);
   if(m===1) buildNeighborhood();
   else if(m===2) buildBeach();
-  else if(m===4) buildSpace();
+  else if(m===4){ buildSpace(); setTimeout(()=>{ buildTSS(); buildSpaceShuttles(); buildSupporterNpc(); },200); }
   else buildClassroom();
-  if(currentMap===4){
-    player.position.set(0,4,0); // on top of Ember planet (r=55 centred at y=-52, surface=y=3)
-  } else {
-    player.position.set(0, currentMap===3 ? 3 : 20, 0);
-  }
+  currentMap=m; // set BEFORE spawn so terrainH uses correct map
   flyVelY=0; velocityY=0; isGrounded=false;
-  currentMap=m; // ensure correct before buildX calls
+  // Reset per-map space state
+  if(m!==4){ helmetMeshes=[]; hasHelmet=false; oxygenLevel=100; tssBuilt=false; tssArrivalShown=false; shuttles=[]; supporterNpcBuilt=false; }
+  if(m===4){ oxygenLevel=100; hasHelmet=false; tssBuilt=false; tssArrivalShown=false; if(scene.userData) scene.userData._astroMeetShown=false; }
+  if(m===4){
+    player.position.set(0,4,0);
+  } else if(m===3){
+    player.position.set(0,3,0);
+  } else {
+    // Spawn at correct terrain height so player doesn't fall through
+    const spawnTH=terrainH(0,0);
+    player.position.set(0, spawnTH+1.5, 0);
+  }
   if(m===4){ GRAVITY_CUR=GRAVITY_SPACE; startSpaceAmbience(); } else { GRAVITY_CUR=GRAVITY; stopSpaceAmbience(); }
   paintingPos=null;
   if(m===2){ beachLaunchBuilt=false; beachRocketPos=null; }
@@ -2212,7 +2545,6 @@ function buildNeighborhood(){
     obstacles.push({mesh:rock,radius:s*1.1,x:rx,z:rz});
   }
 
-  spawnGrass(160,1100);
   spawnFamily();
 }
 
@@ -2446,7 +2778,10 @@ function buildClassroom(){
     const paintingFrame=new THREE.Mesh(new THREE.BoxGeometry(4.5,3.5,.15),new THREE.MeshStandardMaterial({color:0x7B5B2A,roughness:.8}));
     paintingFrame.position.set(W/2-.1,5.5,8); paintingFrame.rotation.y=-Math.PI/2;
     paintingFrame.userData.deco=true; paintingFrame.userData.isPainting=true; scene.add(paintingFrame);
-    const canvas2=new THREE.Mesh(new THREE.BoxGeometry(3.8,2.8,.18),new THREE.MeshStandardMaterial({color:0x1a3a6e,emissive:0x112244,emissiveIntensity:.5,roughness:.2}));
+    // Load painting.png onto canvas surface
+    const pvMat=new THREE.MeshStandardMaterial({color:0x1a3a6e,emissive:0x112244,emissiveIntensity:.3,roughness:.2});
+    tLoader.load('painting.png',tex=>{pvMat.map=tex;pvMat.color.set(0xFFFFFF);pvMat.emissiveIntensity=0;pvMat.needsUpdate=true;},null,()=>{});
+    const canvas2=new THREE.Mesh(new THREE.BoxGeometry(3.8,2.8,.18),pvMat);
     canvas2.position.set(W/2-.15,5.5,8); canvas2.rotation.y=-Math.PI/2;
     canvas2.userData.deco=true; canvas2.userData.isPainting=true; scene.add(canvas2);
     // Glowing sparkle on the painting
@@ -2501,6 +2836,15 @@ function buildClassroom(){
   scene.add(tinyMesh);
   familyMeshes.push({mesh:tinyMesh,type:'tiny'});
 
+  // ── Principal NPC (collectible) — in principal's office ──
+  const principalMat=new THREE.MeshStandardMaterial({color:typeCol('principal'),side:THREE.DoubleSide,transparent:true,alphaTest:.05});
+  tLoader.load('principal.png',tex=>{principalMat.map=tex;principalMat.color.set(0xFFFFFF);principalMat.needsUpdate=true;},null,()=>{});
+  const principalMesh=new THREE.Mesh(new THREE.PlaneGeometry(2.2,2.86),principalMat);
+  // Will be repositioned by buildPrincipalOffice setTimeout
+  principalMesh.position.set(-80/2-10-12,1.5,60/2+8-2);
+  principalMesh.castShadow=false; scene.add(principalMesh);
+  familyMeshes.push({mesh:principalMesh,type:'principal'});
+
   // Glowing halo ring beneath Tiny
   const haloGeo=new THREE.RingGeometry(0.8,1.6,32);
   const haloMat=new THREE.MeshBasicMaterial({color:0xFFD166,side:THREE.DoubleSide,transparent:true,opacity:0.55});
@@ -2510,6 +2854,141 @@ function buildClassroom(){
   halo.userData.isTinyHalo=true;
   halo.userData.deco=true;
   scene.add(halo);
+
+  // ── School expansion: hallway + extra rooms ──
+  buildSchoolHallway();
+  buildLibraryRoom();
+  buildPrincipalOffice();
+  // Dev room hidden passage
+  buildDevRoom();
+}
+
+function buildSchoolHallway(){
+  // Hallway extending from the main classroom's left side (negative X)
+  const W=80, D=60, H=9, WT=1.5;
+  const wMat=new THREE.MeshStandardMaterial({color:0xF0EDE6,roughness:.85});
+  const fMat=new THREE.MeshStandardMaterial({color:0xCFBF9A,roughness:.65});
+  function cb(geo,mat,px,py,pz){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(px,py,pz); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
+  }
+  // Hallway: 20 wide, 60 long, connects left wall of classroom to two side rooms
+  const HX=-W/2-WT-10, HW=20, HL=60;
+  cb(new THREE.BoxGeometry(HW,H,HL+WT*2),wMat, HX,H/2,0); // hallway fill (walls hollow)
+  // Remove inside: hallway floor
+  cb(new THREE.BoxGeometry(HW-.2,.3,HL),fMat, HX,.15,0);
+  // Ceiling
+  cb(new THREE.BoxGeometry(HW+.2,.3,HL),new THREE.MeshStandardMaterial({color:0xF8F6F0,roughness:.9}), HX,H+.15,0);
+  // Hallway walls (sides)
+  cb(new THREE.BoxGeometry(WT,H,HL),wMat, HX-HW/2+WT/2,H/2,0); // left wall
+  cb(new THREE.BoxGeometry(WT,H,HL),wMat, HX+HW/2-WT/2,H/2,0); // right wall (adjacent to class)
+  // End wall
+  cb(new THREE.BoxGeometry(HW,H,WT),wMat, HX,H/2,-HL/2);
+  // Opening in classroom left wall (doorway): 6 wide, 7 tall at z=0
+  // (leave a gap — no new wall segment at z=0 on classroom side, already open)
+  // Door frame
+  cb(new THREE.BoxGeometry(.3,H,1.5),wMat, -W/2-WT-WT/2,H/2,-3);
+  cb(new THREE.BoxGeometry(.3,H,1.5),wMat, -W/2-WT-WT/2,H/2,3);
+  cb(new THREE.BoxGeometry(.3,1.5,7),wMat, -W/2-WT-WT/2,H-.75,0);
+  // Hallway light
+  const hl=new THREE.PointLight(0xFFF8EE,1.5,28); hl.position.set(HX,H-1,0); hl.userData.deco=true; scene.add(hl);
+  // Hallway obstacles
+  obstacles.push({x:HX-HW/2+1,z:0,radius:1.5}); // left wall
+  obstacles.push({x:HX+HW/2-1,z:0,radius:1.5}); // right wall
+}
+
+function buildLibraryRoom(){
+  const W=80, D=60, H=9, WT=1.5;
+  const wMat=new THREE.MeshStandardMaterial({color:0xEDE5D8,roughness:.85});
+  const fMat=new THREE.MeshStandardMaterial({color:0xC8A870,roughness:.65});
+  const LRX=-W/2-WT-20-12, LRW=24, LRD=26; // Library: north end of hallway
+  const LRZ=-D/2-8;
+  function cb(geo,mat,px,py,pz){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(px,py,pz); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
+  }
+  // Walls
+  cb(new THREE.BoxGeometry(LRW,H,WT),wMat, LRX,H/2,LRZ-LRD/2);
+  cb(new THREE.BoxGeometry(LRW,H,WT),wMat, LRX,H/2,LRZ+LRD/2);
+  cb(new THREE.BoxGeometry(WT,H,LRD),wMat, LRX-LRW/2,H/2,LRZ);
+  cb(new THREE.BoxGeometry(WT,H,LRD),wMat, LRX+LRW/2,H/2,LRZ);
+  // Floor / ceiling
+  cb(new THREE.BoxGeometry(LRW,.3,LRD),fMat, LRX,.15,LRZ);
+  cb(new THREE.BoxGeometry(LRW,.3,LRD),new THREE.MeshStandardMaterial({color:0xF8F6F0,roughness:.9}), LRX,H+.15,LRZ);
+  // Bookshelves
+  const bookCols=[0xCC2222,0x2255CC,0x22AA44,0xCC8822,0x884499,0x226688];
+  [-6,6].forEach(bz=>{
+    cb(new THREE.BoxGeometry(WT+.5,6.5,LRD*.4),new THREE.MeshStandardMaterial({color:0x7B4F20,roughness:.9}), LRX-LRW/2+1,3,LRZ+bz);
+    for(let b=0;b<10;b++){
+      cb(new THREE.BoxGeometry(.3,1.2+Math.random()*.4,.7),
+        new THREE.MeshStandardMaterial({color:bookCols[b%6],roughness:.85}),
+        LRX-LRW/2+1.3, .6+b*.58, LRZ+bz-3.5+b*.7);
+    }
+    obstacles.push({x:LRX-LRW/2+1,z:LRZ+bz,radius:2});
+  });
+  // Sign above door
+  const signMesh=new THREE.Mesh(new THREE.BoxGeometry(6,.5,.08),new THREE.MeshStandardMaterial({color:0x8B4513,roughness:.8}));
+  signMesh.position.set(LRX+LRW/2+.1,7,LRZ); signMesh.rotation.y=-Math.PI/2; signMesh.userData.deco=true; scene.add(signMesh);
+  // Library light
+  const ll=new THREE.PointLight(0xFFF8D0,1.8,22); ll.position.set(LRX,H-1,LRZ); ll.userData.deco=true; scene.add(ll);
+  showToast('📚 Library discovered!',2000);
+}
+
+function buildPrincipalOffice(){
+  const W=80, D=60, H=9, WT=1.5;
+  const wMat=new THREE.MeshStandardMaterial({color:0xE5DDD0,roughness:.85});
+  const fMat=new THREE.MeshStandardMaterial({color:0xC0A060,roughness:.65});
+  const POX=-W/2-WT-20-12, POW=22, POD=22;
+  const POZ=D/2+8; // south end of hallway
+  function cb(geo,mat,px,py,pz){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(px,py,pz); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
+  }
+  // Walls
+  cb(new THREE.BoxGeometry(POW,H,WT),wMat, POX,H/2,POZ-POD/2);
+  cb(new THREE.BoxGeometry(POW,H,WT),wMat, POX,H/2,POZ+POD/2);
+  cb(new THREE.BoxGeometry(WT,H,POD),wMat, POX-POW/2,H/2,POZ);
+  cb(new THREE.BoxGeometry(WT,H,POD),wMat, POX+POW/2,H/2,POZ);
+  // Floor / ceiling
+  cb(new THREE.BoxGeometry(POW,.3,POD),fMat, POX,.15,POZ);
+  cb(new THREE.BoxGeometry(POW,.3,POD),new THREE.MeshStandardMaterial({color:0xF8F6F0,roughness:.9}), POX,H+.15,POZ);
+  // Principal's big desk
+  cb(new THREE.BoxGeometry(9,.25,5),new THREE.MeshStandardMaterial({color:0x6B3A1F,roughness:.7}), POX,1.6,POZ-4);
+  [[-3.8,-1.8],[3.8,-1.8],[-3.8,1.5],[3.8,1.5]].forEach(([ox,oz])=>{
+    cb(new THREE.CylinderGeometry(.15,.15,1.6,4),new THREE.MeshStandardMaterial({color:0x4a2010}), POX+ox,1,POZ-4+oz);
+  });
+  // Certificate on wall
+  cb(new THREE.BoxGeometry(5,3.5,.1),new THREE.MeshStandardMaterial({color:0xf5e6c8,roughness:.6}), POX-POW/2+.1,6,POZ);
+  // Sign: "Principal's Office"
+  const sign=new THREE.Mesh(new THREE.BoxGeometry(8,.5,.08),new THREE.MeshStandardMaterial({color:0x8B2222,roughness:.8}));
+  sign.position.set(POX+POW/2+.1,7,POZ); sign.rotation.y=-Math.PI/2; sign.userData.deco=true; scene.add(sign);
+  // Light
+  const pl=new THREE.PointLight(0xFFF0E0,1.8,20); pl.position.set(POX,H-1,POZ); pl.userData.deco=true; scene.add(pl);
+  // Principal NPC spawn position — set in spawnFamily via MAP_ROSTER but override here
+  setTimeout(()=>{
+    familyMeshes.forEach(f=>{
+      if(f.type==='principal') f.mesh.position.set(POX,1.5,POZ-2);
+    });
+  },300);
+  showToast("🏫 Principal's Office found!",2000);
+}
+
+function buildDevRoom(){
+  // Hidden dev room: underground below the classroom, accessible via painting
+  // Rendered as an overlay when entered (existing enterDevRoom mechanism)
+  // Place painting on right wall as normal — that's the trigger
+  // Also build a small 3D corridor leading to a door for atmosphere
+  const W=80, H=9, WT=1.5;
+  if(accessMode==='normal') return; // only visible to key holders
+  const DRX=W/2+5, DRZ=8; // matches paintingPos set in buildClassroom
+  paintingPos={x:DRX,z:DRZ}; // ensure paintingPos set
+  // The painting is already built in buildClassroom for non-normal modes
+  // Add a floor indicator glow
+  const indicator=new THREE.Mesh(new THREE.CircleGeometry(1.2,16),
+    new THREE.MeshBasicMaterial({color:0x4488ff,transparent:true,opacity:.5}));
+  indicator.rotation.x=-Math.PI/2;
+  indicator.position.set(DRX-.5,.15,DRZ); indicator.userData.deco=true; scene.add(indicator);
+  const glow=new THREE.PointLight(0x4488ff,2,6); glow.position.set(DRX-.5,1,DRZ); glow.userData.deco=true; scene.add(glow);
 }
 
 function addDesk(x,z,big=false){
@@ -2629,6 +3108,9 @@ function updateHUD(){
   document.getElementById('c-grandma').textContent=`Grandma ${famFound.grandma}/${famTargets.grandma}`;
   document.getElementById('c-cousin').textContent=`Cousins ${famFound.cousin}/${famTargets.cousin}`;
   document.getElementById('c-tiny').textContent=`Tiny ${famFound.tiny}/${famTargets.tiny}`;
+  // New members
+  const pe=document.getElementById('c-principal'); if(pe) pe.textContent=`Principal ${famFound.principal||0}/${famTargets.principal}`;
+  const ae=document.getElementById('c-astro'); if(ae) ae.textContent=`Astro 👨‍🚀${famFound.astrodad||0} 👩‍🚀${famFound.astromum||0}/2`;
   const nt=famFound.dad+famFound.mum+famFound.brother+famFound.sister+famFound.uncle+famFound.auntie+famFound.cousin+famFound.grandpa+famFound.grandma;
   const tot=famTargets.dad+famTargets.mum+famTargets.brother+famTargets.sister+famTargets.uncle+famTargets.auntie+famTargets.cousin+famTargets.grandpa+famTargets.grandma;
   if(nt>=tot){ const o=document.querySelector('#map-sel option[value="3"]'); if(o&&o.textContent.includes('🔒')) o.textContent="🏫 Map 3 — Tiny's Hideout"; }
@@ -2831,8 +3313,8 @@ function animate(ts=0){
         player.position.y+=flyVelY;
         isGrounded=false;
       } else {
-        if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY_SPACE; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;jumpCount=0;} }
-        else{ player.position.y=tH+1.2; }
+        if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY_SPACE; if(player.position.y<=tH+1.5){player.position.y=tH+1.5;isGrounded=true;velocityY=0;jumpCount=0;} }
+        else{ player.position.y=tH+1.5; }
       }
       _planetNormal.lerp(new THREE.Vector3(0,1,0),.05).normalize();
     }
@@ -2842,11 +3324,11 @@ function animate(ts=0){
       else if(crouchHeld) flyVelY=Math.max(flyVelY-.04,-.6);
       else flyVelY*=.88;
       player.position.y+=flyVelY;
-      if(player.position.y<tH+1.2){ player.position.y=tH+1.2; if(flyVelY<0) flyVelY=0; }
+      if(player.position.y<tH+1.5){ player.position.y=tH+1.5; if(flyVelY<0) flyVelY=0; }
       isGrounded=false;
     } else {
-      if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY_CUR; if(player.position.y<=tH+1.2){player.position.y=tH+1.2;isGrounded=true;velocityY=0;jumpCount=0;} }
-      else{ player.position.y=tH+1.2; }
+      if(!isGrounded){ player.position.y+=velocityY; velocityY-=GRAVITY_CUR; if(player.position.y<=tH+1.5){player.position.y=tH+1.5;isGrounded=true;velocityY=0;jumpCount=0;} }
+      else{ player.position.y=tH+1.5; }
     }
   }
   disc.position.set(player.position.x,tH+.05,player.position.z);
@@ -2927,6 +3409,87 @@ function animate(ts=0){
       const dx=player.position.x-spaceTablePos.x, dz=player.position.z-spaceTablePos.z;
       if(dx*dx+dz*dz<16) grantSupporter();
     }
+  }
+
+  // ── OXYGEN SYSTEM ──
+  tickOxygen(ts);
+
+  // ── HELMET PICKUP ──
+  if(currentMap===4 && !hasHelmet){
+    for(let i=helmetMeshes.length-1;i>=0;i--){
+      const hm=helmetMeshes[i];
+      const dx=player.position.x-hm.position.x, dy=player.position.y-hm.position.y, dz=player.position.z-hm.position.z;
+      if(dx*dx+dy*dy+dz*dz<16){
+        scene.remove(hm); helmetMeshes.splice(i,1);
+        hasHelmet=true;
+        showToast('⛑️ Helmet found! You can breathe in space now.',3500);
+        break;
+      }
+    }
+  }
+
+  // ── TSS ARRIVAL CUTSCENE ──
+  if(currentMap===4 && tssBuilt && !tssArrivalShown){
+    const dx=player.position.x-tssPos.x, dy=player.position.y-tssPos.y, dz=player.position.z-tssPos.z;
+    if(dx*dx+dy*dy+dz*dz<3600){ // within 60 units
+      tssArrivalShown=true;
+      showCutscene('tss_arrival',()=>showToast('🚀 Welcome to the Tiny Space Station!',3000));
+    }
+  }
+
+  // ── SHUTTLE PROXIMITY ──
+  if(currentMap===4 && shuttles.length && !_shuttleActive){
+    shuttles.forEach(sh=>{
+      const bp=sh.mesh.position;
+      const dx=player.position.x-bp.x, dz=player.position.z-bp.z;
+      const d2=dx*dx+dz*dz;
+      if(sh.mesh.userData.prompt) sh.mesh.userData.prompt.visible=(d2<100);
+      if(d2<25){
+        _shuttleActive=sh;
+        const dest=sh.dock==='planet'?'TSS':'planet';
+        const csKey=sh.dock==='planet'?'shuttle_launch':'shuttle_return';
+        showCutscene(csKey,()=>{
+          // Teleport player to destination
+          if(sh.dock==='planet'){
+            player.position.set(tssPos.x+12,tssPos.y-4,tssPos.z+25);
+          } else {
+            player.position.set(65,5,20);
+          }
+          _shuttleActive=null;
+        });
+      }
+    });
+  }
+
+  // ── SUPPORTER NPC PROXIMITY ──
+  if(currentMap===4 && supporterNpcMesh){
+    const dx=player.position.x-supporterNpcMesh.position.x, dz=player.position.z-supporterNpcMesh.position.z;
+    if(dx*dx+dz*dz<16) showSupporterMenu();
+    // Rotate to face camera
+    supporterNpcMesh.lookAt(camera.position.x,supporterNpcMesh.position.y,camera.position.z);
+    // Update label
+    if(supporterNpcMesh.userData.labelDiv) label3D(supporterNpcMesh,supporterNpcMesh.userData.labelDiv);
+  }
+
+  // ── ASTRO MEET CUTSCENE ──
+  if(currentMap===4 && !scene.userData._astroMeetShown){
+    const astroFams=familyMeshes.filter(f=>f.type==='astrodad'||f.type==='astromum');
+    for(const af of astroFams){
+      const dx=player.position.x-af.mesh.position.x, dz=player.position.z-af.mesh.position.z;
+      if(dx*dx+dz*dz<20){
+        scene.userData._astroMeetShown=true;
+        showCutscene('astro_meet',null);
+        break;
+      }
+    }
+  }
+
+  // ── HOLO display animation ──
+  if(currentMap===4){
+    scene.children.forEach(c=>{
+      if(c.userData.isHolo){ c.material.opacity=0.4+0.2*Math.sin(ts*.003); }
+      if(c.userData.isDockRing){ c.rotation.z+=0.01; }
+    });
   }
 
   // Space effects
@@ -3093,6 +3656,5 @@ function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
 
 window.addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 </script>
-
 </body>
 </html>
