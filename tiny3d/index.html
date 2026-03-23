@@ -376,6 +376,69 @@ body.mobile #toast{top:55px;}
 /* Unlock banner smaller */
 body.mobile #unlock-banner{padding:14px 22px;font-size:1.1rem;border-radius:16px;}
 body.mobile #unlock-banner img{width:56px;height:56px;}
+
+/* ── CUTSCENES ── */
+#cutscene-overlay{
+  position:fixed;inset:0;z-index:3000;pointer-events:auto;
+  background:#000;display:none;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding-bottom:80px;
+}
+#cutscene-overlay.active{ display:flex; }
+#cutscene-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(20,0,60,.7) 0%,rgba(0,0,0,.95) 100%);
+  animation:csIn .4s ease;
+}
+@keyframes csIn{from{opacity:0}to{opacity:1}}
+#cutscene-portrait-wrap{
+  position:absolute;bottom:140px;left:0;right:0;
+  display:flex;justify-content:space-between;
+  padding:0 60px;pointer-events:none;
+}
+.cutscene-portrait{
+  width:100px;height:130px;
+  border-radius:14px 14px 0 0;
+  background:rgba(255,255,255,.06);
+  border:2px solid rgba(255,255,255,.15);
+  background-size:contain;background-repeat:no-repeat;background-position:bottom center;
+  transition:transform .3s, filter .3s;
+  filter:brightness(.5);
+}
+.cutscene-portrait.active-speaker{
+  filter:brightness(1) drop-shadow(0 0 12px rgba(255,209,102,.7));
+  transform:translateY(-8px);
+}
+#cutscene-speaker{
+  font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;
+  color:var(--gold);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:8px;min-height:1.2em;text-align:center;
+  position:relative;z-index:1;
+}
+#cutscene-text{
+  position:relative;z-index:1;
+  max-width:680px;width:90%;
+  background:rgba(10,10,30,.88);
+  border:1.5px solid rgba(255,255,255,.15);border-radius:16px;
+  padding:22px 28px;
+  font-family:'Nunito',sans-serif;font-size:1.15rem;
+  color:#fff;line-height:1.6;text-align:center;
+  box-shadow:0 0 40px rgba(0,0,0,.8);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .35s,transform .35s;
+  min-height:4rem;
+}
+#cutscene-text.visible{ opacity:1;transform:translateY(0); }
+#cutscene-skip{
+  position:absolute;top:20px;right:24px;z-index:1;
+  background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);
+  color:rgba(255,255,255,.7);border-radius:20px;
+  padding:8px 18px;font-family:'Nunito',sans-serif;font-size:.85rem;
+  cursor:pointer;pointer-events:auto;
+  transition:.2s;
+}
+#cutscene-skip:hover{background:rgba(255,255,255,.22);color:#fff;}
+
 </style>
 </head>
 <body>
@@ -599,12 +662,18 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
     </div>
     <div style="background:rgba(255,255,255,.06);border:1px solid rgba(100,200,255,.3);border-radius:16px;padding:24px;">
       <div style="font-size:1.5rem;margin-bottom:8px;">💌 Contact</div>
-      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">Enjoyed the game? Feature ideas? Bugs? Hit us up at <a href="mailto:dacoolkid325@gmail.com" style="color:#4488ff;">dacoolkid325@gmail.com</a> — or use the Feature Request button in-game!</p>
+      <p style="color:rgba(255,255,255,.7);font-size:.9rem;line-height:1.6;">Enjoyed the game? Feature ideas? Bugs? Hit us up at <a href="/cdn-cgi/l/email-protection#e38782808c8c8f888a87d0d1d6a3848e828a8fcd808c8e" style="color:#4488ff;"><span class="__cf_email__" data-cfemail="5733363438383b3c3e3364656217303a363e3b7934383a">[email&#160;protected]</span></a> — or use the Feature Request button in-game!</p>
     </div>
   </div>
   <div style="margin-top:40px;color:rgba(255,255,255,.2);font-size:.75rem;">a-REA Project · Made with ♥ by Aqeel · secret code 212121</div>
 </div>
 <div id="cutscene-overlay">
+  <div id="cutscene-bg"></div>
+  <div id="cutscene-portrait-wrap">
+    <div id="cutscene-portrait-l" class="cutscene-portrait"></div>
+    <div id="cutscene-portrait-r" class="cutscene-portrait"></div>
+  </div>
+  <div id="cutscene-speaker"></div>
   <div id="cutscene-text"></div>
   <button id="cutscene-skip" onclick="skipCutscene()">Skip ▶</button>
 </div>
@@ -644,7 +713,7 @@ body.mobile #unlock-banner img{width:56px;height:56px;}
 <button id="crouch-btn">CROUCH</button>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 'use strict';
 // ════════════════════════════════════════════════════
 //  CONSTANTS & STATE
@@ -1051,12 +1120,14 @@ function submitKey(){
     ks.style.color='#00FF88';
     if(mode==='dev'){
       ks.textContent='✔ Dev Mode unlocked!';
-      // Dev gets dev skin AND admin skin (dev is above admin)
       giveExtraSkins(['dev','admin']);
-    } else {
+    } else if(mode==='admin'){
       ks.textContent='✔ Admin Mode unlocked!';
-      // Admin gets dev + admin skins
       giveExtraSkins(['dev','admin']);
+    } else if(mode==='supporter'){
+      ks.textContent='✔ Supporter unlocked! ✈ Fly mode on.';
+      giveExtraSkins(['supporter']);
+      accessMode='supporter'; flyMode=true;
     }
     if(gameStarted){ buildSkinSel(); updateModeTag(); }
     setTimeout(closeKey,1800);
@@ -1076,65 +1147,95 @@ function updateModeTag(){
 
 // ── CUTSCENE ──
 let _cutsceneCb=null, _cutsceneTimer=null;
+// Each line: string OR {text, speaker, portrait:'l'|'r', camShift:{x,y,z}}
 const CUTSCENES={
   fly:[
-    "You spread your wings and leap into the sky...",
-    "Higher... and higher... the beach shrinks below.",
-    "Stars begin to appear. The air grows thin.",
-    "You burst through the atmosphere... into SPACE! 🚀",
+    {text:"You spread your wings and leap into the sky...", camShift:{y:5}},
+    {text:"Higher and higher — the beach shrinks to a dot below.", camShift:{y:15}},
+    {text:"Stars begin to appear. The air grows dangerously thin.", camShift:{y:25}},
+    {text:"You burst through the atmosphere — into SPACE! 🚀", camShift:{y:40}},
   ],
   rocket:[
-    "You scramble into the rocket. The engine roars! 🔥",
-    "10... 9... 8... the ground shakes beneath you.",
-    "LAUNCH! You're slammed into your seat.",
-    "In seconds — the world disappears. You're in SPACE! 🌌",
+    {text:"You scramble into the rocket. The hatch seals shut! 🔥"},
+    {text:"10... 9... 8... the launch pad shakes beneath you.", camShift:{y:2}},
+    {text:"LAUNCH! You're crushed into your seat by G-force!", camShift:{y:12}},
+    {text:"The world vanishes. Stars fill every window. You're in SPACE! 🌌", camShift:{y:30}},
   ],
   tower:[
-    "You begin climbing the watchtower...",
-    "Each step takes you closer to the clouds.",
-    "The beach looks tiny below. Your hands tremble.",
-    "You leap from the very top and... sail into SPACE! ⭐",
+    {text:"You begin climbing the watchtower — step after step...", camShift:{y:6}},
+    {text:"Halfway up. Your legs burn. Wind howls past your ears.", camShift:{y:18}},
+    {text:"The beach looks tiny below. The ocean stretches forever.", camShift:{y:32}},
+    {text:"You leap from the very top — and sail into SPACE! ⭐", camShift:{y:48}},
   ],
   tss_arrival:[
-    "⚠ WARNING: Low oxygen detected outside the station.",
-    "A massive structure looms ahead... the T.S.S.",
-    "The Tiny Space Station — built by the family themselves!",
-    "An airlock cycles open. You float inside... 🌌",
+    {text:"⚠ WARNING: Oxygen levels dropping. Find shelter soon.", camShift:{x:6}},
+    {text:"A massive structure looms ahead in the dark... the T.S.S.", camShift:{x:-6}},
+    {text:"The Tiny Space Station — your family actually built this?!", camShift:{y:4}},
+    {text:"An airlock hisses open. A voice crackles: 'Come in...' 🌌", camShift:{y:-3}},
   ],
   shuttle_launch:[
-    "The shuttle hatch seals with a hiss. 🚀",
-    "Engines ignite — a deep rumble shakes your bones.",
-    "You're pressed into your seat as stars blur past.",
-    "The T.S.S. grows larger on the viewport...",
+    {text:"The shuttle hatch seals with a pressurised hiss. 🚀"},
+    {text:"Main engines ignite — the whole craft shudders violently.", camShift:{y:3}},
+    {text:"LIFTOFF! You're pressed hard back into your seat.", camShift:{y:12}},
+    {text:"Ember planet shrinks behind you. The TSS grows ahead...", camShift:{y:22}},
   ],
   shuttle_return:[
-    "The TSS docking clamps release with a CLUNK.",
-    "Retro-thrusters fire — you're heading home.",
-    "The planet's blue glow fills the window...",
-    "Touchdown! The shuttle lands safely. 🌍",
+    {text:"The docking clamps release with a heavy CLUNK.", camShift:{y:2}},
+    {text:"Retro-thrusters fire — you're heading home.", camShift:{y:-5}},
+    {text:"The planet fills the whole viewport — orange and glowing...", camShift:{y:-15}},
+    {text:"Touchdown! Dust billows across the landing pad. 🌍", camShift:{y:0}},
   ],
   astro_meet:[
-    "👨‍🚀 Astro Dad: 'You made it all the way to space?!'",
-    "👩‍🚀 Astro Mum: 'We've been waiting so long for you!'",
-    "👨‍🚀 Astro Dad: 'We got a little... stuck up here.'",
-    "👩‍🚀 Astro Mum: 'Now let\\'s find Tiny and go home! 💛'",
+    {text:"You made it all the way to SPACE?!", speaker:"👨‍🚀 Astro Dad", portrait:'l', camShift:{x:-5}},
+    {text:"We've been waiting so long for you!", speaker:"👩‍🚀 Astro Mum", portrait:'r', camShift:{x:5}},
+    {text:"We got a little... stuck up here. Long story.", speaker:"👨‍🚀 Astro Dad", portrait:'l', camShift:{x:-5}},
+    {text:"Now let's find Tiny and go home together! 💛", speaker:"👩‍🚀 Astro Mum", portrait:'r', camShift:{x:5}},
   ],
 };
+let _csBaseCamPos=null, _csBaseCamPitch=0;
 function showCutscene(type, cb){
   _cutsceneCb=cb;
   const lines=CUTSCENES[type]||CUTSCENES.fly;
   const ov=document.getElementById('cutscene-overlay');
   const tx=document.getElementById('cutscene-text');
+  const spk=document.getElementById('cutscene-speaker');
+  const pl=document.getElementById('cutscene-portrait-l');
+  const pr=document.getElementById('cutscene-portrait-r');
   ov.classList.add('active');
+  // Freeze camera base for drift
+  _csBaseCamPos={x:camera.position.x,y:camera.position.y,z:camera.position.z};
+  _csBaseCamPitch=camPitch;
+  // Load astro portraits if needed
+  pl.style.backgroundImage=''; pr.style.backgroundImage='';
+  pl.classList.remove('active-speaker'); pr.classList.remove('active-speaker');
+  if(type==='astro_meet'){
+    pl.style.backgroundImage="url('astrodad.png')";
+    pr.style.backgroundImage="url('astromum.png')";
+    pl.style.display='block'; pr.style.display='block';
+  } else { pl.style.display='none'; pr.style.display='none'; }
   let i=0;
   function nextLine(){
     tx.classList.remove('visible');
     setTimeout(()=>{
       if(i>=lines.length){ endCutscene(); return; }
-      tx.textContent=lines[i++];
+      const line=lines[i++];
+      const text=typeof line==='string'?line:line.text;
+      const speaker=typeof line==='object'?line.speaker||'':'';
+      const portrait=typeof line==='object'?line.portrait||'':'';
+      const shift=typeof line==='object'?line.camShift||{}:{};
+      tx.textContent=text;
+      spk.textContent=speaker;
       tx.classList.add('visible');
-      _cutsceneTimer=setTimeout(nextLine,2400);
-    },400);
+      // Portrait highlight
+      pl.classList.toggle('active-speaker', portrait==='l');
+      pr.classList.toggle('active-speaker', portrait==='r');
+      // Gentle camera drift
+      if(_csBaseCamPos){
+        camera.position.x=_csBaseCamPos.x+(shift.x||0)*0.3;
+        camera.position.y=_csBaseCamPos.y+(shift.y||0)*0.15;
+      }
+      _cutsceneTimer=setTimeout(nextLine, speaker?3000:2600);
+    },350);
   }
   nextLine();
 }
@@ -1287,11 +1388,8 @@ function buildRocket(){
   // Launch pad
   const pad=mkMesh(new THREE.CylinderGeometry(5,5.5,1,12),{color:0x888877,roughness:.9});
   pad.position.set(rx,.5,rz); pad.userData.deco=true; scene.add(pad);
-  // Obstacle: block sides/back but leave front (+x side) open for entry
-  // Left wall, right wall, back wall
-  [{ox:0,oz:-3.5,w:2.5,d:.4},{ox:0,oz:3.5,w:2.5,d:.4},{ox:-3,oz:0,w:.4,d:7}].forEach(({ox,oz,w,d})=>{
-    obstacles.push({x:rx+ox,z:rz+oz,radius:Math.max(w,d)*.6});
-  });
+  // Rocket has NO obstacles — player walks up freely to button
+  // (rocket body is narrow enough, player goes around)
   // Glowing enter button at hatch side
   const btnGeo=new THREE.SphereGeometry(.55,8,8);
   const btn=mkMesh(btnGeo,{color:0x00ff88,emissive:0x00ff44,emissiveIntensity:3,roughness:.1});
@@ -1437,8 +1535,8 @@ function renderWithMotionBlur(){
 
   const blurLen=Math.sqrt(velX*velX+velY*velY);
   // Separate turn-blur (horizontal) from movement-blur (directional)
-  const motionStrength=Math.min(blurLen*5.0, 0.18); // slightly softer cap
-  const dofStrength=Math.min(blurLen*0.06, 0.018); // DoF only when moving
+  const motionStrength=Math.min(blurLen*2.8, 0.10); // soft cinematic blur
+  const dofStrength=Math.min(blurLen*0.03, 0.010); // DoF only when moving
 
   // Pass 1: render scene → rtCurrent
   renderer.setRenderTarget(rtCurrent);
@@ -1739,6 +1837,12 @@ const terrainMats={
   2:new THREE.MeshStandardMaterial({color:0xf0d090,roughness:.85,metalness:0}),
   3:new THREE.MeshStandardMaterial({color:0xd4c4a0,roughness:.7,metalness:0})
 };
+// Load grass.png as map texture for map 1
+tLoader.load('grass.png', tex=>{
+  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+  tex.repeat.set(40,40);
+  terrainMats[1].map=tex; terrainMats[1].color.set(0xffffff); terrainMats[1].needsUpdate=true;
+},null,()=>{}); // silent fallback if missing
 
 let terrain=null;
 const HOUSE_PADS=[
@@ -2075,10 +2179,12 @@ function tickOxygen(ts){
   const dx=player.position.x-tssPos.x,dy=player.position.y-tssPos.y,dz=player.position.z-tssPos.z;
   const inTSS=(dx*dx+dy*dy+dz*dz)<1225; // 35^2
 
-  if(inTSS || hasHelmet){
+  // Code holders have infinite oxygen (dev/admin/supporter)
+  if(accessMode!=='normal'){ oxygenLevel=100; }
+  else if(inTSS || hasHelmet){
     oxygenLevel=Math.min(100,oxygenLevel+2.0); // recover 2%/s in TSS
   } else {
-    oxygenLevel=Math.max(0,oxygenLevel-0.15*0.5*2); // drain ~0.15%/s (0.075 per 0.5s tick)
+    oxygenLevel=Math.max(0,oxygenLevel-0.075); // drain ~0.15%/s (0.075 per 0.5s tick)
   }
 
   // Update HUD
@@ -2207,7 +2313,7 @@ function setMapBounds(m){
   if(m===1) mapBounds={halfSize:560};
   else if(m===2) mapBounds={halfSize:420};
   else if(m===4) mapBounds={halfSize:2000};
-  else mapBounds={halfSize:35}; // classroom interior
+  else mapBounds={halfSize:110}; // school building
 }
 
 // ── PLAYER ──
@@ -2491,6 +2597,9 @@ function loadMap(m){
   if(m===2){ beachLaunchBuilt=false; beachRocketPos=null; }
   // map-opt-4 revealed by cutscene callback after first visit
   document.getElementById('c-map').textContent='Map '+m;
+  // Sync map selector label to current map
+  const ms2=document.getElementById('map-sel');
+  if(ms2) ms2.value=m;
   updateHUD();
   if(batterySaver) applyBatteryMode();
   // no auto-collect — admin/dev collect manually
@@ -2518,10 +2627,11 @@ function setLighting(m){
     ambient.color.set(0xbbeeff); ambient.intensity=.35;
     scene.fog.color.set(0x88ccff); scene.fog.density=.001;
     scene.background=new THREE.Color(0x88ccff);
-  } else {
-    hemiLight.color.set(0xffeedd); hemiLight.groundColor.set(0x997755); hemiLight.intensity=.8;
-    ambient.color.set(0xffddbf); ambient.intensity=.5;
-    scene.fog.color.set(0xeeddcc); scene.fog.density=.007;
+  } else { // map 3: school
+    hemiLight.color.set(0xfff0e0); hemiLight.groundColor.set(0x997755); hemiLight.intensity=1.0;
+    ambient.color.set(0xffeedd); ambient.intensity=0.8;
+    scene.fog.color.set(0xeeddcc); scene.fog.density=0.004;
+    scene.background=new THREE.Color(0xddd8cc);
   }
 }
 
@@ -2747,250 +2857,284 @@ function addShell(x,z){
 
 // ── MAP 3: CLASSROOM ──
 function buildClassroom(){
-  const W=80, D=60, H=9, WT=1.5;
-  const wMat=new THREE.MeshStandardMaterial({color:0xF2EFE8,roughness:.85});
-  const fMat=new THREE.MeshStandardMaterial({color:0xD4C4A0,roughness:.65});
+  buildSchool();
+}
 
-  function cbox(geo,mat,px,py,pz){
-    const m=new THREE.Mesh(geo,mat);
-    m.position.set(px,py,pz);
-    m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
+// ════════════════════════════════════════════════════
+//  MAP 3: TINY'S SCHOOL — full building with proper collision
+// ════════════════════════════════════════════════════
+// Layout (top-down, all coords relative to world origin 0,0):
+//
+//  ┌──────────────────────────────────────────────────┐
+//  │  SCIENCE LAB        │  LIBRARY           │       │
+//  │  (-70,-50)          │  (0,-50)           │ ART   │
+//  ├─────────────────────┴────────────────────┤ ROOM  │
+//  │           MAIN CORRIDOR (z=0)            │(60,-25│
+//  ├─────────────────────┬────────────────────┤       │
+//  │  TINY'S CLASSROOM   │  PRINCIPAL'S OFFICE│       │
+//  │  (-40, 40)          │  (40, 40)          │       │
+//  └──────────────────────────────────────────┘
+//  Exterior: 180 wide × 130 deep, centred at origin
+
+let _principalDir=1, _principalTimer=0; // for moving principal
+
+function buildSchool(){
+  const H=10, WT=1.2; // wall height, wall thickness
+  const WALL=new THREE.MeshStandardMaterial({color:0xF0EAE0,roughness:.85});
+  const WALL2=new THREE.MeshStandardMaterial({color:0xE8E0D0,roughness:.85});
+  const FLOOR=new THREE.MeshStandardMaterial({color:0xD8C9A8,roughness:.65});
+  const CEIL=new THREE.MeshStandardMaterial({color:0xF5F3EE,roughness:.9});
+  const LOCKER=new THREE.MeshStandardMaterial({color:0x4477AA,roughness:.5,metalness:.4});
+  const LOCKER2=new THREE.MeshStandardMaterial({color:0x44AA77,roughness:.5,metalness:.4});
+
+  // Helper: build a box mesh with optional collision
+  function w(geo,mat,x,y,z,col=true){
+    const m=new THREE.Mesh(geo,mat||WALL);
+    m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m);
+    return m;
+  }
+  // Wall segment with collision
+  function wall(x,y,z,sx,sy,sz,mat){
+    w(new THREE.BoxGeometry(sx,sy,sz),mat||WALL,x,y,z);
+  }
+  function wallC(x,z,sx,sz,mat){ // wall + collision
+    wall(x,H/2,z,sx,H,sz,mat);
+    // Add obstacle points along the wall
+    const steps=Math.max(2,Math.ceil(Math.max(sx,sz)/3));
+    for(let i=0;i<steps;i++){
+      const t=i/(steps-1)-.5;
+      obstacles.push({x:x+t*sx*(sx>sz?1:0),z:z+t*sz*(sz>sx?1:0),radius:Math.max(sx,sz)/steps+1.2});
+    }
+  }
+  // Floor tile
+  function floor(x,z,sx,sz){ w(new THREE.BoxGeometry(sx,.25,sz),FLOOR,x,.12,z,false); }
+  function ceil(x,z,sx,sz){ w(new THREE.BoxGeometry(sx,.25,sz),CEIL,x,H+.12,z,false); }
+
+  // ─────────────────────────────────────────
+  // EXTERIOR SHELL  (180×130, walls only)
+  // ─────────────────────────────────────────
+  const EW=180, ED=130; // exterior width/depth
+  // North outer wall
+  wallC(0,   -ED/2,   EW,WT);
+  // South outer wall
+  wallC(0,    ED/2,   EW,WT);
+  // West outer wall
+  wallC(-EW/2, 0,   WT,ED);
+  // East outer wall
+  wallC( EW/2, 0,   WT,ED);
+
+  // ─────────────────────────────────────────
+  // MAIN CORRIDOR (z from -10 to +10, full width)
+  // ─────────────────────────────────────────
+  const CZ=0, CW=EW-WT*2, CH=20;
+  // Corridor north inner wall (with doorways)
+  // Rooms north of corridor: science lab (x=-70), library (x=0), art room (x=70)
+  // Doorways at x=-105, x=-35, x=35, x=105 (8 wide each)
+  const DOOR=9;
+  function wallRow(segments){ // segments: [{x1,x2}] draw wall, gaps are doors
+    segments.forEach(([x1,x2])=>{
+      const cx=(x1+x2)/2, sw=x2-x1;
+      wallC(cx, -CH/2, sw, WT);
+    });
+  }
+  // North wall of corridor (rooms above)  z=-CH/2
+  wallRow([[-EW/2+WT,-EW/2+WT+36],[-EW/2+WT+36+DOOR,-EW/2+WT+36+DOOR+36],[-EW/2+WT+36+DOOR+36+DOOR, -WT/2+DOOR/2],[WT/2+DOOR/2, EW/2-WT]]);
+  // South wall of corridor (rooms below)  z=+CH/2
+  wallRow([[-EW/2+WT,-EW/2+WT+36],[-EW/2+WT+36+DOOR,-EW/2+WT+36+DOOR+42],[-EW/2+WT+36+DOOR+42+DOOR, EW/2-WT]]);
+
+  // Corridor floors & ceiling
+  floor(0,0, EW-WT*2, CH);
+  ceil(0,0, EW-WT*2, CH);
+  // Corridor lights
+  for(let lx=-60;lx<=60;lx+=40){
+    const pl=new THREE.PointLight(0xFFF8EE,2,35); pl.position.set(lx,H-1,0); pl.userData.deco=true; scene.add(pl);
+    w(new THREE.BoxGeometry(8,.15,.3),new THREE.MeshBasicMaterial({color:0xFFFFCC,emissive:0xFFFFAA}),lx,H-.1,0,false);
   }
 
-  cbox(new THREE.BoxGeometry(W+WT*2,8,D+WT*2),fMat, 0,-3.5,0);
-  cbox(new THREE.BoxGeometry(W-.5,.15,D-.5),new THREE.MeshStandardMaterial({color:0xDDD0B0,roughness:.6}), 0,.07,0);
+  // ─────────────────────────────────────────
+  // LOCKERS along corridor north & south walls
+  // ─────────────────────────────────────────
+  const lockerY=1.4, lockerH=2.8, lockerW=1.2, lockerD=.55;
+  for(let lx=-85;lx<=85;lx+=1.6){
+    // North side lockers
+    const lmat=Math.abs(Math.round(lx/1.6))%2===0?LOCKER:LOCKER2;
+    w(new THREE.BoxGeometry(lockerW,lockerH,lockerD),lmat,lx,lockerY,-CH/2+lockerD*.5+WT,false);
+    // South side
+    w(new THREE.BoxGeometry(lockerW,lockerH,lockerD),lmat,lx,lockerY, CH/2-lockerD*.5-WT,false);
+    // Locker handle
+    w(new THREE.BoxGeometry(.08,.08,.12),new THREE.MeshStandardMaterial({color:0xCCCCCC,metalness:.8}),lx+.3,lockerY+.3,-CH/2+lockerD+WT,false);
+  }
 
-  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,-D/2-WT/2);
-  for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:-D/2-WT/2,radius:WT+.9});
-  cbox(new THREE.BoxGeometry(W+WT*2,H,WT),wMat, 0,H/2,D/2+WT/2);
-  for(let ix=-W/2-WT;ix<=W/2+WT;ix+=2.5) obstacles.push({x:ix,z:D/2+WT/2,radius:WT+.9});
-  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, -W/2-WT/2,H/2,0);
-  for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:-W/2-WT/2,z:iz,radius:WT+.9});
-  cbox(new THREE.BoxGeometry(WT,H,D+WT*2),wMat, W/2+WT/2,H/2,0);
-  for(let iz=-D/2-WT;iz<=D/2+WT;iz+=2.5) obstacles.push({x:W/2+WT/2,z:iz,radius:WT+.9});
+  // ─────────────────────────────────────────
+  // ROOM: TINY'S CLASSROOM  bottom-left  centre (-50,50)
+  // ─────────────────────────────────────────
+  const TCX=-50, TCZ=50, TCW=68, TCD=42;
+  floor(TCX,TCZ, TCW,TCD); ceil(TCX,TCZ, TCW,TCD);
+  // inner walls (south and west already outer walls)
+  wallC(TCX+TCW/2, TCZ, WT, TCD); // east wall
+  // south wall with no doorway (outer wall already there)
+  // north wall has doorway at corridor
+  // Dividing wall (east side from corridor to south wall)
+  wallC(TCX+TCW/2+WT/2, TCZ-TCD/2+WT/2+TCD/4, WT, TCD/2);
+  // Lights
+  for(let lx=-1;lx<=1;lx++){
+    const pl=new THREE.PointLight(0xFFF8EE,1.8,30); pl.position.set(TCX+lx*18,H-1,TCZ); pl.userData.deco=true; scene.add(pl);
+  }
+  // Blackboard
+  w(new THREE.BoxGeometry(32,6,.4),new THREE.MeshStandardMaterial({color:0x1B5E30,roughness:.75}),TCX,5,TCZ-TCD/2+WT+.2,false);
+  // Teacher desk
+  w(new THREE.BoxGeometry(9,.25,5),new THREE.MeshStandardMaterial({color:0x6B3A1F,roughness:.7}),TCX,1.6,TCZ-TCD/2+8,false);
+  // Student desks
+  for(let row=0;row<3;row++) for(let col=0;col<4;col++) addDesk(TCX-22+col*15, TCZ-8+row*11);
+  // Windows east wall
+  const winM=new THREE.MeshStandardMaterial({color:0x88CCFF,transparent:true,opacity:.5,roughness:.05});
+  [-15,0,15].forEach(wz=>{ w(new THREE.BoxGeometry(.2,3.5,4),winM,TCX+TCW/2,5.5,TCZ+wz,false); });
 
-  cbox(new THREE.BoxGeometry(W+WT*2,.3,D+WT*2),new THREE.MeshStandardMaterial({color:0xF5F5F0,roughness:.9}), 0,H+.15,0);
-
-  cbox(new THREE.BoxGeometry(32,6,.6),new THREE.MeshStandardMaterial({color:0x1B5E30,roughness:.75}), 0,5,-D/2+WT*.4);
-
-  // Secret painting — only visible to access code holders
+  // SECRET PAINTING on north wall (east side) — dev room trigger
   if(accessMode!=='normal'){
-    const paintingFrame=new THREE.Mesh(new THREE.BoxGeometry(4.5,3.5,.15),new THREE.MeshStandardMaterial({color:0x7B5B2A,roughness:.8}));
-    paintingFrame.position.set(W/2-.1,5.5,8); paintingFrame.rotation.y=-Math.PI/2;
-    paintingFrame.userData.deco=true; paintingFrame.userData.isPainting=true; scene.add(paintingFrame);
-    // Load painting.png onto canvas surface
+    const pfMat=new THREE.MeshStandardMaterial({color:0x7B5B2A,roughness:.8});
+    const pf=new THREE.Mesh(new THREE.BoxGeometry(4.5,3.5,.15),pfMat);
+    pf.position.set(TCX+TCW/2-.1,5.5,TCZ-10); pf.rotation.y=-Math.PI/2;
+    pf.userData.deco=true; pf.userData.isPainting=true; scene.add(pf);
     const pvMat=new THREE.MeshStandardMaterial({color:0x1a3a6e,emissive:0x112244,emissiveIntensity:.3,roughness:.2});
     tLoader.load('painting.png',tex=>{pvMat.map=tex;pvMat.color.set(0xFFFFFF);pvMat.emissiveIntensity=0;pvMat.needsUpdate=true;},null,()=>{});
-    const canvas2=new THREE.Mesh(new THREE.BoxGeometry(3.8,2.8,.18),pvMat);
-    canvas2.position.set(W/2-.15,5.5,8); canvas2.rotation.y=-Math.PI/2;
-    canvas2.userData.deco=true; canvas2.userData.isPainting=true; scene.add(canvas2);
-    // Glowing sparkle on the painting
-    const pl=new THREE.PointLight(0x4488ff,2,6); pl.position.set(W/2-.3,5.5,8); pl.userData.deco=true; scene.add(pl);
-    // Text prompt (shown via proximity in animate loop)
-    paintingPos={x:W/2,z:8};
-  }
-  cbox(new THREE.BoxGeometry(33,6.6,.3),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.85}), 0,5,-D/2+WT*.1);
-  for(let i=0;i<4;i++){
-    cbox(new THREE.BoxGeometry(6+Math.random()*3,.15,.1),
-      new THREE.MeshStandardMaterial({color:0xF5F5F5,emissive:0xEEEEEE,emissiveIntensity:.12}),
-      -12+i*8, 4.5+Math.random()*2, -D/2+WT*.5);
+    const pv=new THREE.Mesh(new THREE.BoxGeometry(3.8,2.8,.18),pvMat);
+    pv.position.set(TCX+TCW/2-.15,5.5,TCZ-10); pv.rotation.y=-Math.PI/2;
+    pv.userData.deco=true; pv.userData.isPainting=true; scene.add(pv);
+    const paintLight=new THREE.PointLight(0x4488ff,2,6); paintLight.position.set(TCX+TCW/2-.3,5.5,TCZ-10); paintLight.userData.deco=true; scene.add(paintLight);
+    paintingPos={x:TCX+TCW/2,z:TCZ-10};
+    // Floor glow indicator
+    const ind=new THREE.Mesh(new THREE.CircleGeometry(1.2,16),new THREE.MeshBasicMaterial({color:0x4488ff,transparent:true,opacity:.5}));
+    ind.rotation.x=-Math.PI/2; ind.position.set(TCX+TCW/2-.8,.15,TCZ-10); ind.userData.deco=true; scene.add(ind);
   }
 
-  for(let row=0;row<4;row++) for(let col=0;col<4;col++) addDesk(-24+col*16,-20+row*12);
-  addDesk(0,-D/2+8,true);
-
-  [-37,37].forEach(sx=>{
-    cbox(new THREE.BoxGeometry(WT+.5,7,D*.65),new THREE.MeshStandardMaterial({color:0x8B6535,roughness:.9}), sx,3.5,2);
-    for(let sz=-D*.32;sz<=D*.32;sz+=2.5) obstacles.push({x:sx,z:2+sz,radius:WT+1.0});
-    const bookCols=[0xCC2222,0x2255CC,0x22AA44,0xCC8822,0x884499,0x226688,0xAA3355,0x558833];
-    for(let b=0;b<12;b++){
-      cbox(new THREE.BoxGeometry(.35,1.3+Math.random()*.3,.65),
-        new THREE.MeshStandardMaterial({color:bookCols[b%8],roughness:.85}),
-        sx+(sx>0?-.5:.5), .7+b*.55, -18+b*3);
-    }
-  });
-
-  for(let i=0;i<3;i++){
-    const bx=-20+i*20;
-    cbox(new THREE.BoxGeometry(10,.2,.4),new THREE.MeshStandardMaterial({color:0xEEEECC,emissive:0xDDDDAA,emissiveIntensity:1.1}), bx,H-.15,0);
-    const pl=new THREE.PointLight(0xFFF8EE,2.0,28);
-    pl.position.set(bx,H-1,0); pl.userData.deco=true; pl.castShadow=false; scene.add(pl);
-  }
-
-  const winMat2=new THREE.MeshStandardMaterial({color:0x88CCFF,transparent:true,opacity:.5,roughness:.05});
-  [-18,0,18].forEach(wz=>{
-    cbox(new THREE.BoxGeometry(WT+.1,3.5,4.5),winMat2, W/2+WT/2,5.5,wz);
-    cbox(new THREE.BoxGeometry(WT+.5,4,5),new THREE.MeshStandardMaterial({color:0xDDDDDD,roughness:.8}), W/2+WT/2,5.5,wz);
-  });
-
-  cbox(new THREE.BoxGeometry(.2,2.5,.2),new THREE.MeshStandardMaterial({color:0x888888}), 8,1.5,-D/2+10);
-  cbox(new THREE.SphereGeometry(1.4,8,6),new THREE.MeshStandardMaterial({color:0x3388EE,roughness:.35}), 8,3.8,-D/2+10);
-
-  // Tiny is always right in the centre of the classroom, slightly bigger and flashing
+  // Tiny sprite — centre of classroom
   const tinyMat=new THREE.MeshStandardMaterial({color:typeCol('tiny'),side:THREE.DoubleSide,transparent:true,alphaTest:.05});
   tLoader.load('tiny.png',tex=>{tinyMat.map=tex;tinyMat.color.set(0xFFFFFF);tinyMat.needsUpdate=true;},null,()=>{});
   const tinyMesh=new THREE.Mesh(new THREE.PlaneGeometry(1.4,1.82),tinyMat);
-  tinyMesh.position.set(0, 1.1, 0); // dead centre of classroom, feet on floor
-  tinyMesh.castShadow=true;
-  tinyMesh.userData.isTiny=true; // flag for flash animation
-  scene.add(tinyMesh);
+  tinyMesh.position.set(TCX,1.1,TCZ); tinyMesh.castShadow=true;
+  tinyMesh.userData.isTiny=true; scene.add(tinyMesh);
   familyMeshes.push({mesh:tinyMesh,type:'tiny'});
-
-  // ── Principal NPC (collectible) — in principal's office ──
-  const principalMat=new THREE.MeshStandardMaterial({color:typeCol('principal'),side:THREE.DoubleSide,transparent:true,alphaTest:.05});
-  tLoader.load('principal.png',tex=>{principalMat.map=tex;principalMat.color.set(0xFFFFFF);principalMat.needsUpdate=true;},null,()=>{});
-  const principalMesh=new THREE.Mesh(new THREE.PlaneGeometry(2.2,2.86),principalMat);
-  // Will be repositioned by buildPrincipalOffice setTimeout
-  principalMesh.position.set(-80/2-10-12,1.5,60/2+8-2);
-  principalMesh.castShadow=false; scene.add(principalMesh);
-  familyMeshes.push({mesh:principalMesh,type:'principal'});
-
-  // Glowing halo ring beneath Tiny
+  // Halo
   const haloGeo=new THREE.RingGeometry(0.8,1.6,32);
   const haloMat=new THREE.MeshBasicMaterial({color:0xFFD166,side:THREE.DoubleSide,transparent:true,opacity:0.55});
   const halo=new THREE.Mesh(haloGeo,haloMat);
-  halo.rotation.x=-Math.PI/2;
-  halo.position.set(0,0.08,0);
-  halo.userData.isTinyHalo=true;
-  halo.userData.deco=true;
-  scene.add(halo);
+  halo.rotation.x=-Math.PI/2; halo.position.set(TCX,0.08,TCZ);
+  halo.userData.isTinyHalo=true; halo.userData.deco=true; scene.add(halo);
 
-  // ── School expansion: hallway + extra rooms ──
-  buildSchoolHallway();
-  buildLibraryRoom();
-  buildPrincipalOffice();
-  // Dev room hidden passage
-  buildDevRoom();
-}
+  // ─────────────────────────────────────────
+  // ROOM: PRINCIPAL'S OFFICE  bottom-right  centre (50,50)
+  // ─────────────────────────────────────────
+  const PCX=50, PCZ=50, PCW=60, PCD=42;
+  floor(PCX,PCZ, PCW,PCD); ceil(PCX,PCZ, PCW,PCD);
+  wallC(PCX-PCW/2, PCZ, WT, PCD); // west wall
+  // Decorations
+  w(new THREE.BoxGeometry(9,.25,5),new THREE.MeshStandardMaterial({color:0x6B3A1F,roughness:.7}),PCX,1.6,PCZ-10,false);
+  // Certificate on south wall
+  w(new THREE.BoxGeometry(5,3.5,.1),new THREE.MeshStandardMaterial({color:0xf5e6c8,roughness:.6}),PCX,6,PCZ+PCD/2-WT-.05,false);
+  // Nameplate sign above door
+  w(new THREE.BoxGeometry(10,.4,.08),new THREE.MeshStandardMaterial({color:0x8B2222,roughness:.8}),PCX-PCW/2+.1,7,PCZ,false);
+  const offLight=new THREE.PointLight(0xFFF0E0,2,28); offLight.position.set(PCX,H-1,PCZ); offLight.userData.deco=true; scene.add(offLight);
+  // Window
+  w(new THREE.BoxGeometry(.2,3.5,4),winM,PCX+PCW/2,5.5,PCZ,false);
 
-function buildSchoolHallway(){
-  // Hallway extending from the main classroom's left side (negative X)
-  const W=80, D=60, H=9, WT=1.5;
-  const wMat=new THREE.MeshStandardMaterial({color:0xF0EDE6,roughness:.85});
-  const fMat=new THREE.MeshStandardMaterial({color:0xCFBF9A,roughness:.65});
-  function cb(geo,mat,px,py,pz){
-    const m=new THREE.Mesh(geo,mat);
-    m.position.set(px,py,pz); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
-  }
-  // Hallway: 20 wide, 60 long, connects left wall of classroom to two side rooms
-  const HX=-W/2-WT-10, HW=20, HL=60;
-  cb(new THREE.BoxGeometry(HW,H,HL+WT*2),wMat, HX,H/2,0); // hallway fill (walls hollow)
-  // Remove inside: hallway floor
-  cb(new THREE.BoxGeometry(HW-.2,.3,HL),fMat, HX,.15,0);
-  // Ceiling
-  cb(new THREE.BoxGeometry(HW+.2,.3,HL),new THREE.MeshStandardMaterial({color:0xF8F6F0,roughness:.9}), HX,H+.15,0);
-  // Hallway walls (sides)
-  cb(new THREE.BoxGeometry(WT,H,HL),wMat, HX-HW/2+WT/2,H/2,0); // left wall
-  cb(new THREE.BoxGeometry(WT,H,HL),wMat, HX+HW/2-WT/2,H/2,0); // right wall (adjacent to class)
-  // End wall
-  cb(new THREE.BoxGeometry(HW,H,WT),wMat, HX,H/2,-HL/2);
-  // Opening in classroom left wall (doorway): 6 wide, 7 tall at z=0
-  // (leave a gap — no new wall segment at z=0 on classroom side, already open)
-  // Door frame
-  cb(new THREE.BoxGeometry(.3,H,1.5),wMat, -W/2-WT-WT/2,H/2,-3);
-  cb(new THREE.BoxGeometry(.3,H,1.5),wMat, -W/2-WT-WT/2,H/2,3);
-  cb(new THREE.BoxGeometry(.3,1.5,7),wMat, -W/2-WT-WT/2,H-.75,0);
-  // Hallway light
-  const hl=new THREE.PointLight(0xFFF8EE,1.5,28); hl.position.set(HX,H-1,0); hl.userData.deco=true; scene.add(hl);
-  // Hallway obstacles
-  obstacles.push({x:HX-HW/2+1,z:0,radius:1.5}); // left wall
-  obstacles.push({x:HX+HW/2-1,z:0,radius:1.5}); // right wall
-}
+  // Principal NPC
+  const principalMat=new THREE.MeshStandardMaterial({color:typeCol('principal'),side:THREE.DoubleSide,transparent:true,alphaTest:.05});
+  tLoader.load('principal.png',tex=>{principalMat.map=tex;principalMat.color.set(0xFFFFFF);principalMat.needsUpdate=true;},null,()=>{});
+  const principalMesh=new THREE.Mesh(new THREE.PlaneGeometry(2.2,2.86),principalMat);
+  principalMesh.position.set(PCX,1.5,PCZ-4);
+  principalMesh.castShadow=false; principalMesh.userData.isPrincipal=true; scene.add(principalMesh);
+  familyMeshes.push({mesh:principalMesh,type:'principal'});
 
-function buildLibraryRoom(){
-  const W=80, D=60, H=9, WT=1.5;
-  const wMat=new THREE.MeshStandardMaterial({color:0xEDE5D8,roughness:.85});
-  const fMat=new THREE.MeshStandardMaterial({color:0xC8A870,roughness:.65});
-  const LRX=-W/2-WT-20-12, LRW=24, LRD=26; // Library: north end of hallway
-  const LRZ=-D/2-8;
-  function cb(geo,mat,px,py,pz){
-    const m=new THREE.Mesh(geo,mat);
-    m.position.set(px,py,pz); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
-  }
-  // Walls
-  cb(new THREE.BoxGeometry(LRW,H,WT),wMat, LRX,H/2,LRZ-LRD/2);
-  cb(new THREE.BoxGeometry(LRW,H,WT),wMat, LRX,H/2,LRZ+LRD/2);
-  cb(new THREE.BoxGeometry(WT,H,LRD),wMat, LRX-LRW/2,H/2,LRZ);
-  cb(new THREE.BoxGeometry(WT,H,LRD),wMat, LRX+LRW/2,H/2,LRZ);
-  // Floor / ceiling
-  cb(new THREE.BoxGeometry(LRW,.3,LRD),fMat, LRX,.15,LRZ);
-  cb(new THREE.BoxGeometry(LRW,.3,LRD),new THREE.MeshStandardMaterial({color:0xF8F6F0,roughness:.9}), LRX,H+.15,LRZ);
+  // ─────────────────────────────────────────
+  // ROOM: SCIENCE LAB  top-left  centre (-70,-55)
+  // ─────────────────────────────────────────
+  const SLX=-68, SLZ=-50, SLW=60, SLD=45;
+  floor(SLX,SLZ, SLW,SLD); ceil(SLX,SLZ, SLW,SLD);
+  wallC(SLX+SLW/2, SLZ, WT, SLD); // east wall
+  wallC(SLX,      SLZ-SLD/2, SLW, WT); // north wall
+  // Lab benches
+  [[-8,-48],[8,-48],[-8,-60],[8,-60]].forEach(([bx,bz])=>{
+    w(new THREE.BoxGeometry(10,.25,4),new THREE.MeshStandardMaterial({color:0x334455,roughness:.4,metalness:.3}),SLX+bx,1.6,SLZ+bz,false);
+    // Flask
+    w(new THREE.SphereGeometry(.4,8,6),new THREE.MeshBasicMaterial({color:0x44ffaa,transparent:true,opacity:.8}),SLX+bx+2,2.5,SLZ+bz,false);
+  });
+  const slLight=new THREE.PointLight(0xDDEEFF,1.8,35); slLight.position.set(SLX,H-1,SLZ); slLight.userData.deco=true; scene.add(slLight);
+
+  // ─────────────────────────────────────────
+  // ROOM: LIBRARY  top-centre  centre (0,-55)
+  // ─────────────────────────────────────────
+  const LBX=4, LBZ=-50, LBW=62, LBD=45;
+  floor(LBX,LBZ, LBW,LBD); ceil(LBX,LBZ, LBW,LBD);
+  wallC(LBX-LBW/2, LBZ, WT, LBD); // west wall
+  wallC(LBX+LBW/2, LBZ, WT, LBD); // east wall
+  wallC(LBX,       LBZ-LBD/2, LBW, WT); // north wall
   // Bookshelves
-  const bookCols=[0xCC2222,0x2255CC,0x22AA44,0xCC8822,0x884499,0x226688];
-  [-6,6].forEach(bz=>{
-    cb(new THREE.BoxGeometry(WT+.5,6.5,LRD*.4),new THREE.MeshStandardMaterial({color:0x7B4F20,roughness:.9}), LRX-LRW/2+1,3,LRZ+bz);
-    for(let b=0;b<10;b++){
-      cb(new THREE.BoxGeometry(.3,1.2+Math.random()*.4,.7),
-        new THREE.MeshStandardMaterial({color:bookCols[b%6],roughness:.85}),
-        LRX-LRW/2+1.3, .6+b*.58, LRZ+bz-3.5+b*.7);
+  const bookCols=[0xCC2222,0x2255CC,0x22AA44,0xCC8822,0x884499,0x226688,0xAA3355,0x558833];
+  [[-22,-58],[-8,-58],[6,-58],[20,-58]].forEach(([bx,bz])=>{
+    w(new THREE.BoxGeometry(WT+.5,6.5,10),new THREE.MeshStandardMaterial({color:0x7B4F20,roughness:.9}),LBX+bx,3,LBZ+bz,false);
+    obstacles.push({x:LBX+bx,z:LBZ+bz,radius:2.5});
+    for(let b=0;b<14;b++){
+      w(new THREE.BoxGeometry(.3,1.2+Math.random()*.4,.8),
+        new THREE.MeshStandardMaterial({color:bookCols[b%8],roughness:.85}),
+        LBX+bx+.3,.6+b*.52,LBZ+bz-4+b*.6,false);
     }
-    obstacles.push({x:LRX-LRW/2+1,z:LRZ+bz,radius:2});
   });
-  // Sign above door
-  const signMesh=new THREE.Mesh(new THREE.BoxGeometry(6,.5,.08),new THREE.MeshStandardMaterial({color:0x8B4513,roughness:.8}));
-  signMesh.position.set(LRX+LRW/2+.1,7,LRZ); signMesh.rotation.y=-Math.PI/2; signMesh.userData.deco=true; scene.add(signMesh);
-  // Library light
-  const ll=new THREE.PointLight(0xFFF8D0,1.8,22); ll.position.set(LRX,H-1,LRZ); ll.userData.deco=true; scene.add(ll);
-  showToast('📚 Library discovered!',2000);
+  const lbLight=new THREE.PointLight(0xFFF8D0,2,40); lbLight.position.set(LBX,H-1,LBZ); lbLight.userData.deco=true; scene.add(lbLight);
+
+  // ─────────────────────────────────────────
+  // ROOM: ART ROOM  right side  centre (78,0)
+  // ─────────────────────────────────────────
+  const ARX=76, ARZ=-5, ARW=30, ARD=90;
+  floor(ARX,ARZ, ARW,ARD); ceil(ARX,ARZ, ARW,ARD);
+  wallC(ARX-ARW/2, ARZ, WT, ARD); // west wall
+  wallC(ARX,       ARZ-ARD/2, ARW, WT); // north wall
+  wallC(ARX,       ARZ+ARD/2, ARW, WT); // south wall
+  // Easels
+  [-30,-10,10,30].forEach(az=>{
+    w(new THREE.BoxGeometry(.1,4,.1),new THREE.MeshStandardMaterial({color:0x7a5020}),ARX-8,2,ARZ+az,false);
+    w(new THREE.BoxGeometry(3,2.5,.05),new THREE.MeshStandardMaterial({color:0xfffff8,roughness:.9}),ARX-8,2.5,ARZ+az,false);
+  });
+  const arLight=new THREE.PointLight(0xFFEEDD,1.8,35); arLight.position.set(ARX,H-1,ARZ); arLight.userData.deco=true; scene.add(arLight);
+
+  // ─────────────────────────────────────────
+  // EXTERIOR: ground slab + outer decorations
+  // ─────────────────────────────────────────
+  // Ground fill
+  w(new THREE.BoxGeometry(EW+20,2,ED+20),new THREE.MeshStandardMaterial({color:0xD4C4A0,roughness:.7}),-5,-1.2,0,false);
+  // School sign outside
+  w(new THREE.BoxGeometry(20,.4,.1),new THREE.MeshStandardMaterial({color:0x1a3a6e,roughness:.6}),0,2.2,-ED/2-1,false);
+  w(new THREE.BoxGeometry(.3,3,.3),new THREE.MeshStandardMaterial({color:0x888888}),8,1.5,-ED/2-1.2,false);
+  w(new THREE.BoxGeometry(.3,3,.3),new THREE.MeshStandardMaterial({color:0x888888}),-8,1.5,-ED/2-1.2,false);
+  // School name globe/sphere
+  w(new THREE.SphereGeometry(1.4,8,6),new THREE.MeshStandardMaterial({color:0x3388EE,roughness:.35}),0,3.8,-ED/2-1.2,false);
+
+  // Map bounds expanded to fit full school
+  mapBounds.halfSize=110;
 }
 
-function buildPrincipalOffice(){
-  const W=80, D=60, H=9, WT=1.5;
-  const wMat=new THREE.MeshStandardMaterial({color:0xE5DDD0,roughness:.85});
-  const fMat=new THREE.MeshStandardMaterial({color:0xC0A060,roughness:.65});
-  const POX=-W/2-WT-20-12, POW=22, POD=22;
-  const POZ=D/2+8; // south end of hallway
-  function cb(geo,mat,px,py,pz){
-    const m=new THREE.Mesh(geo,mat);
-    m.position.set(px,py,pz); m.castShadow=true; m.receiveShadow=true; m.userData.deco=true; scene.add(m); return m;
-  }
-  // Walls
-  cb(new THREE.BoxGeometry(POW,H,WT),wMat, POX,H/2,POZ-POD/2);
-  cb(new THREE.BoxGeometry(POW,H,WT),wMat, POX,H/2,POZ+POD/2);
-  cb(new THREE.BoxGeometry(WT,H,POD),wMat, POX-POW/2,H/2,POZ);
-  cb(new THREE.BoxGeometry(WT,H,POD),wMat, POX+POW/2,H/2,POZ);
-  // Floor / ceiling
-  cb(new THREE.BoxGeometry(POW,.3,POD),fMat, POX,.15,POZ);
-  cb(new THREE.BoxGeometry(POW,.3,POD),new THREE.MeshStandardMaterial({color:0xF8F6F0,roughness:.9}), POX,H+.15,POZ);
-  // Principal's big desk
-  cb(new THREE.BoxGeometry(9,.25,5),new THREE.MeshStandardMaterial({color:0x6B3A1F,roughness:.7}), POX,1.6,POZ-4);
-  [[-3.8,-1.8],[3.8,-1.8],[-3.8,1.5],[3.8,1.5]].forEach(([ox,oz])=>{
-    cb(new THREE.CylinderGeometry(.15,.15,1.6,4),new THREE.MeshStandardMaterial({color:0x4a2010}), POX+ox,1,POZ-4+oz);
-  });
-  // Certificate on wall
-  cb(new THREE.BoxGeometry(5,3.5,.1),new THREE.MeshStandardMaterial({color:0xf5e6c8,roughness:.6}), POX-POW/2+.1,6,POZ);
-  // Sign: "Principal's Office"
-  const sign=new THREE.Mesh(new THREE.BoxGeometry(8,.5,.08),new THREE.MeshStandardMaterial({color:0x8B2222,roughness:.8}));
-  sign.position.set(POX+POW/2+.1,7,POZ); sign.rotation.y=-Math.PI/2; sign.userData.deco=true; scene.add(sign);
-  // Light
-  const pl=new THREE.PointLight(0xFFF0E0,1.8,20); pl.position.set(POX,H-1,POZ); pl.userData.deco=true; scene.add(pl);
-  // Principal NPC spawn position — set in spawnFamily via MAP_ROSTER but override here
-  setTimeout(()=>{
-    familyMeshes.forEach(f=>{
-      if(f.type==='principal') f.mesh.position.set(POX,1.5,POZ-2);
-    });
-  },300);
-  showToast("🏫 Principal's Office found!",2000);
-}
+function buildSchoolHallway(){ /* handled inside buildSchool */ }
+function buildLibraryRoom(){ /* handled inside buildSchool */ }
+function buildPrincipalOffice(){ /* handled inside buildSchool */ }
 
 function buildDevRoom(){
-  // Hidden dev room: underground below the classroom, accessible via painting
-  // Rendered as an overlay when entered (existing enterDevRoom mechanism)
-  // Place painting on right wall as normal — that's the trigger
-  // Also build a small 3D corridor leading to a door for atmosphere
-  const W=80, H=9, WT=1.5;
-  if(accessMode==='normal') return; // only visible to key holders
-  const DRX=W/2+5, DRZ=8; // matches paintingPos set in buildClassroom
-  paintingPos={x:DRX,z:DRZ}; // ensure paintingPos set
-  // The painting is already built in buildClassroom for non-normal modes
-  // Add a floor indicator glow
-  const indicator=new THREE.Mesh(new THREE.CircleGeometry(1.2,16),
-    new THREE.MeshBasicMaterial({color:0x4488ff,transparent:true,opacity:.5}));
-  indicator.rotation.x=-Math.PI/2;
-  indicator.position.set(DRX-.5,.15,DRZ); indicator.userData.deco=true; scene.add(indicator);
-  const glow=new THREE.PointLight(0x4488ff,2,6); glow.position.set(DRX-.5,1,DRZ); glow.userData.deco=true; scene.add(glow);
+  if(accessMode==='normal') return;
+  // paintingPos set in buildSchool when accessMode !== normal
 }
 
+// Moving principal — called from animate loop on map 3
+function tickPrincipal(ts){
+  if(currentMap!==3) return;
+  const pm=familyMeshes.find(f=>f.type==='principal');
+  if(!pm||!pm.mesh.userData.isPrincipal) return;
+  // Walk back and forth in principal's office (PCX range ±20, PCZ ~50)
+  _principalTimer+=0.005;
+  const PCX=50, PCZ=50;
+  pm.mesh.position.x=PCX+Math.sin(_principalTimer)*16;
+  pm.mesh.position.z=PCZ+Math.cos(_principalTimer*0.4)*8;
+  pm.mesh.position.y=1.5;
+  pm.mesh.lookAt(camera.position.x,pm.mesh.position.y,camera.position.z);
+}
 function addDesk(x,z,big=false){
   const s=big?1.6:1;
   const desk=mkMesh(new THREE.BoxGeometry(7*s,.25,4*s),{color:0xc8a060,roughness:.8}); desk.position.set(x,1.6,z); desk.castShadow=desk.receiveShadow=true; desk.userData.deco=true; scene.add(desk);
@@ -3369,7 +3513,7 @@ function animate(ts=0){
         _rocketHintShown=true;
         showToast('🚀 Touch the green button to launch!', 3000);
       }
-      if(rDist2<6){ // within ~2.5 units of button
+      if(rDist2<18){ // within ~4.2 units of button — wide enough to trigger
         spaceTransitioning=true;
         showCutscene('rocket',()=>{ const o=document.querySelector('#map-opt-4'); if(o) o.style.display=''; loadMap(4); spaceTransitioning=false; });
       }
@@ -3508,7 +3652,7 @@ function animate(ts=0){
   }
 
   // Tiny flash: pulse opacity and scale, halo rotates
-  if(currentMap===3){
+  if(currentMap===3){ tickPrincipal(ts);
     const pulse=0.55+0.45*Math.abs(Math.sin(ts*0.004)); // 0.55–1.0 opacity cycle
     const scl=0.92+0.12*Math.abs(Math.sin(ts*0.004));
     familyMeshes.forEach(f=>{
@@ -3651,7 +3795,7 @@ function startGame(){
 
 // ════════════════════════════════════════════════════
 //  UTILS
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function clamp(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
 
 window.addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
