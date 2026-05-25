@@ -1233,69 +1233,53 @@ function openAlexModal() {
 
 function openTADCModal() {
   document.getElementById('alertTitle').style.color = '#FF2D55';
-<!-- 1. THE HTML STRUCTURE (Where your script will dump the text) -->
-<h1 id="alertTitle"></h1>
-<div id="alertMsg"></div>
-
-<!-- 2. THE JAVASCRIPT LOGIC -->
-<script>
-  // Set the title dynamically
   document.getElementById('alertTitle').innerText = "🎪 The Amazing Digital Circus";
-
-  // Set the content dynamically using template literals
+ 
+  const videoId = "1GcFptpzEt3y1RvrW1K6Vb3l53d48Z1aG";
+ 
   document.getElementById('alertMsg').innerHTML = `
-    <p>Ok so The Amazing Digital Circus is genuinely one of my favourite things to exist on the internet right now. It started on this pretty small YouTube channel called GLITCH and the show was run by <strong>Gooseworx</strong>, and the pilot episode just absolutely went off — like millions of views within days of dropping. The whole premise is people getting trapped inside a digital circus as cartoon characters with no memory of who they were before, and it sounds weird but it's so good.</p>
-
-    <!-- Pilot thumbnail acting as a teaser image -->
+    <p>Ok so The Amazing Digital Circus is genuinely one of my favourite things to exist on the internet right now. It started on this pretty small YouTube channel called GLITCH and the show was run by <strong>Gooseworx</strong>, and the pilot episode just absolutely went off ,  like millions of views within days of dropping. The whole premise is people getting trapped inside a digital circus as cartoon characters with no memory of who they were before, and it sounds weird but it's so good.</p>
+ 
     <img 
       src="https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg"
       alt="TADC Pilot"
       style="width:100%; border-radius:14px; margin: 14px 0; border: 1px solid rgba(255,45,85,0.3);"
       onerror="this.style.display='none'"
     >
-
+ 
     <p>The characters are just incredible. <strong>Pomni</strong> is the main character and she's just trying to keep it together while everyone else has lost the plot (literally). <strong>Jax</strong> is actually so funny and kind of mean in the best way. <strong>Caine</strong> as the ringmaster is just chaotic perfection. I could talk about them for hours.</p>
-
-    <p>AND THEN — it got a <strong>Netflix AND Amazon Prime deal</strong>. For a YouTube show!!! That's insane. And now the final episode is getting a <strong>theatrical release</strong> which is just completely unreal for something that started on YouTube.</p>
-
-    <!-- Season 2 / later episode thumbnail -->
+ 
+    <p>AND THEN ,  it got a <strong>Netflix AND Amazon Prime deal</strong>. For a YouTube show!!! That's insane. And now the final episode is getting a <strong>theatrical release</strong> which is just completely unreal for something that started on YouTube.</p>
+ 
     <img
       src="https://img.youtube.com/vi/DMNlzf8PiEM/maxresdefault.jpg"
       alt="TADC Episode"
       style="width:100%; border-radius:14px; margin: 14px 0; border: 1px solid rgba(255,45,85,0.3);"
       onerror="this.style.display='none'"
     >
-
-    <p>If you haven't watched it yet, go on YouTube right now — the pilot is completely free and it'll hook you immediately. Or find it on Netflix / Amazon Prime if you've got those. Seriously just watch it.</p>
-
+ 
+    <p>If you haven't watched it yet, go on YouTube right now ,  the pilot is completely free and it'll hook you immediately. Or find it on Netflix / Amazon Prime if you've got those. Seriously just watch it.</p>
+ 
     <p>I have waited for the finale for 3 years and finally it's going in cinemas. Well it got leaked. I have spent over 1M hours on this show.</p>
-
+ 
     <a href="https://www.youtube.com/watch?v=HwAPLk_sQ3w" target="_blank" style="display:block; background: #FF2D55; color: white; text-align:center; padding: 14px; border-radius:16px; font-weight:800; text-decoration:none; margin-top:8px;">
       ▶ Watch the Pilot on YouTube
     </a>
+ 
     <p>And the TADC MOVIE!</p>
+ 
+    <div style="max-width: 850px; margin: 20px auto; background: #000; padding: 12px; border-radius: 8px;">
+      <iframe src="https://drive.google.com/file/d/${videoId}/preview" width="100%" height="480" allow="autoplay" style="border: none; background: #000; border-radius: 4px;"></iframe>
+      <div style="text-align: center; padding: 15px 0 5px 0; background: #0a0a0a; margin-top: 8px; border-radius: 4px;">
+        <a href="https://drive.usercontent.google.com/download?id=${videoId}&export=download&confirm=t" target="_blank" style="display: inline-block; padding: 12px 28px; background-color: #0073aa; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 4px;">
+          📥 Download Original Raw Video (600MB)
+        </a>
+      </div>
+    </div>
   `;
-
-  /***********************************************************
-  * CONFIGURATION: YOUR VIDEO ID IS PLACED APART HERE
-  ***********************************************************/
-  const CURRENT_VIDEO_ID = "1GcFptpzEt3y1RvrW1K6Vb3l53d48Z1aG";
-</script>
-
-
-<div class="video-wrapper">
-<!-- Google's Native Large File Streaming Engine (No Black Screen) -->
-<iframe id="googleStreamFrame" src="" width="100%" height="480" allow="autoplay" style="border: none; background: #000; border-radius: 4px;"></iframe>
-
-<!-- Download Link Portal Trigger -->
-<div class="action-bar">
-<a id="downloadButton" href="#" class="download-trigger" target="_blank">
-📥 Download Original Raw Video (600MB)
-</a>
-</div>
-</div>
-
-<script>
+ 
+  document.getElementById('customAlert').style.display = 'flex';
+}
 (function() {
 // 1. Safely bind your ID to Google's specific cloud video rendering player
 document.getElementById('googleStreamFrame').src = "https://drive.google.com/file/d/" + CURRENT_VIDEO_ID + "/preview";
