@@ -1233,7 +1233,16 @@ function openAlexModal() {
 
 function openTADCModal() {
   document.getElementById('alertTitle').style.color = '#FF2D55';
+<!-- 1. THE HTML STRUCTURE (Where your script will dump the text) -->
+<h1 id="alertTitle"></h1>
+<div id="alertMsg"></div>
+
+<!-- 2. THE JAVASCRIPT LOGIC -->
+<script>
+  // Set the title dynamically
   document.getElementById('alertTitle').innerText = "🎪 The Amazing Digital Circus";
+
+  // Set the content dynamically using template literals
   document.getElementById('alertMsg').innerHTML = `
     <p>Ok so The Amazing Digital Circus is genuinely one of my favourite things to exist on the internet right now. It started on this pretty small YouTube channel called GLITCH and the show was run by <strong>Gooseworx</strong>, and the pilot episode just absolutely went off — like millions of views within days of dropping. The whole premise is people getting trapped inside a digital circus as cartoon characters with no memory of who they were before, and it sounds weird but it's so good.</p>
 
@@ -1251,25 +1260,28 @@ function openTADCModal() {
 
     <!-- Season 2 / later episode thumbnail -->
     <img
-      src="https://img.youtube.com/vi/Xb9XkDWI4Eo/maxresdefault.jpg"
+      src="https://img.youtube.com/vi/DMNlzf8PiEM/maxresdefault.jpg"
       alt="TADC Episode"
       style="width:100%; border-radius:14px; margin: 14px 0; border: 1px solid rgba(255,45,85,0.3);"
       onerror="this.style.display='none'"
     >
 
     <p>If you haven't watched it yet, go on YouTube right now — the pilot is completely free and it'll hook you immediately. Or find it on Netflix / Amazon Prime if you've got those. Seriously just watch it.</p>
-I have waited for the finale for 3 years and finally it's going in cinemas. Well it got leaked. I have spent over 1M hours on this show.
+
+    <p>I have waited for the finale for 3 years and finally it's going in cinemas. Well it got leaked. I have spent over 1M hours on this show.</p>
+
     <a href="https://www.youtube.com/watch?v=HwAPLk_sQ3w" target="_blank" style="display:block; background: #FF2D55; color: white; text-align:center; padding: 14px; border-radius:16px; font-weight:800; text-decoration:none; margin-top:8px;">
       ▶ Watch the Pilot on YouTube
-      And the TADC MOVIE!
-      <script>
-/***********************************************************
-* CONFIGURATION: YOUR VIDEO ID IS PLACED APART HERE
-***********************************************************/
-const CURRENT_VIDEO_ID = "1GcFptpzEt3y1RvrW1K6Vb3l53d48Z1aG";
     </a>
+    <p>And the TADC MOVIE!</p>
   `;
+
+  /***********************************************************
+  * CONFIGURATION: YOUR VIDEO ID IS PLACED APART HERE
+  ***********************************************************/
+  const CURRENT_VIDEO_ID = "1GcFptpzEt3y1RvrW1K6Vb3l53d48Z1aG";
 </script>
+
 
 <div class="video-wrapper">
 <!-- Google's Native Large File Streaming Engine (No Black Screen) -->
@@ -1292,6 +1304,8 @@ document.getElementById('googleStreamFrame').src = "https://drive.google.com/fil
 document.getElementById('downloadButton').href = "https://drive.usercontent.google.com/download?id=" + CURRENT_VIDEO_ID + "&export=download&confirm=t";
 })();
 </script>
+    </a>
+  `;
 
 <style>
 .video-wrapper {
