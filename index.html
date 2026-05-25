@@ -660,7 +660,7 @@ body.no-bg #glassCanvas { display: none !important; }
             <input type="file" id="catboxFileInput" style="display:none;" onchange="handleCatboxUpload(this)">
         </div>
         <p style="font-size: 12px; color: var(--text-mute); margin: 8px 0 0 0; text-align: center;">
-          Files hosted via <a href="https://catbox.moe" target="_blank" style="color: var(--accent);">catbox.moe</a> · max 200 MB · public link
+<span style="font-size: 14px; color: var(--accent); font-weight: 600;">Files hosted via Cloudinary · max 10 MB · public link</span>
         </p>
     </div>
 
@@ -873,8 +873,7 @@ function escapeHtmlInline(text) {
     d.textContent = text;
     return d.innerHTML;
 }
- 
-async function handleCatboxUpload(input) {
+ async function handleCatboxUpload(input) {
     try {
         const file = input.files[0];
         if (!file) return;
@@ -892,7 +891,6 @@ async function handleCatboxUpload(input) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', 'area');
-        formData.append('folder', 'aREA');
  
         const response = await fetch('https://api.cloudinary.com/v1_1/dlkox1ce7/image/upload', {
             method: 'POST',
