@@ -879,8 +879,8 @@ async function handleCatboxUpload(input) {
         const file = input.files[0];
         if (!file) return;
  
-        if (file.size > 200 * 1024 * 1024) {
-            showAttachmentState('error', '❌ File too large! Max 200 MB on catbox.moe.');
+        if (file.size > 10 * 1024 * 1024) {
+            showAttachmentState('error', '❌ File too large! Max 10 MB on Cloudinary.');
             input.value = '';
             return;
         }
@@ -890,32 +890,27 @@ async function handleCatboxUpload(input) {
         showAttachmentState('uploading', `⏳ Uploading <strong>${escapeHtmlInline(file.name)}</strong>…`);
  
         const formData = new FormData();
-        formData.append('reqtype', 'fileupload');
-        formData.append('fileToUpload', file);
+        formData.append('file', file);
+        formData.append('upload_preset', 'area');
+        formData.append('folder', 'aREA');
  
-        // Use CORS proxy to bypass browser restrictions
-       const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://catbox.moe/user/api.php');
-        
-        const response = await fetch(proxyUrl, {
+        const response = await fetch('https://api.cloudinary.com/v1_1/dlkox1ce7/image/upload', {
             method: 'POST',
             body: formData
         });
  
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
  
-        const url = (await response.text()).trim();
-        if (!url.startsWith('http')) throw new Error(url || 'Unknown error from catbox');
+        const data = await response.json();
+        if (!data.secure_url) throw new Error('Upload failed');
  
+        const url = data.secure_url;
         catboxAttachmentUrl = url;
         catboxAttachmentName = file.name;
  
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
-        const videoExtensions = ['mp4', 'webm', 'mov', 'mkv'];
-        const audioExtensions = ['mp3', 'ogg', 'wav', 'm4a', 'flac'];
- 
-        const isImage = imageExtensions.some(ext => url.toLowerCase().endsWith('.' + ext));
-        const isVideo = videoExtensions.some(ext => url.toLowerCase().endsWith('.' + ext));
-        const isAudio = audioExtensions.some(ext => url.toLowerCase().endsWith('.' + ext));
+        const isImage = /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
+        const isVideo = /\.(mp4|webm|mov|mkv)$/i.test(url);
+        const isAudio = /\.(mp3|ogg|wav|m4a|flac)$/i.test(url);
  
         let previewHtml = `✅ <strong>${escapeHtmlInline(file.name)}</strong> uploaded! 
             <a href="${url}" target="_blank" style="color:var(--accent); word-break:break-all;">${url}</a>`;
@@ -930,7 +925,7 @@ async function handleCatboxUpload(input) {
  
         showAttachmentState('ready', previewHtml);
     } catch (err) {
-        console.error('Catbox upload error:', err);
+        console.error('Cloudinary upload error:', err);
         showAttachmentState('error', `❌ Upload failed: ${err.message}. Try again or check your connection.`);
         catboxAttachmentUrl = null;
         input.value = '';
