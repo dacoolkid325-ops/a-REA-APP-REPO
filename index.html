@@ -846,8 +846,10 @@ window.adminLogout = () => {
 // ─────────────────────────────────────────────
 let catboxAttachmentUrl = null;
 let catboxAttachmentName = null;
-
-input.addEventListener('change', () => handleCatboxUpload(input))
+ 
+const catboxFileInput = document.getElementById('catboxFileInput');
+catboxFileInput.addEventListener('change', () => handleCatboxUpload(catboxFileInput))
+ 
 function showAttachmentState(state, html) {
     const el = document.getElementById('attachmentPreview');
     el.style.display = 'block';
@@ -856,7 +858,7 @@ function showAttachmentState(state, html) {
     if (state === 'error')     el.classList.add('error');
     el.innerHTML = html;
 }
-
+ 
 function clearAttachment() {
     catboxAttachmentUrl = null;
     catboxAttachmentName = null;
@@ -865,7 +867,7 @@ function clearAttachment() {
     el.innerHTML = '';
     document.getElementById('catboxFileInput').value = '';
 }
-
+ 
 function escapeHtmlInline(text) {
     const d = document.createElement('div');
     d.textContent = text;
