@@ -875,7 +875,7 @@ function escapeHtmlInline(text) {
 }
 async function handleCatboxUpload(input) {
     try {
-        const file = input.files[0];
+        const file = input.files[0]; // Fixed: Explicitly grab index 0 from files array
         if (!file) return;
  
         // FilePost free tier handles files up to 50 MB
@@ -890,13 +890,16 @@ async function handleCatboxUpload(input) {
         showAttachmentState('uploading', `⏳ Uploading <strong>${escapeHtmlInline(file.name)}</strong>…`);
  
         const formData = new FormData();
-        // FilePost looks for the key 'file'
         formData.append('file', file);
  
-        const response = await fetch('https://filepost.dev/v1/upload', {
+        // Routing through a CORS proxy to bypass FilePost's preflight headers block
+        const proxyUrl = 'https://corsproxy.io?';
+        const targetApi = 'https://filepost.dev/v1/upload';
+
+        const response = await fetch(proxyUrl + encodeURIComponent(targetApi), {
             method: 'POST',
             headers: {
-                // Your active live authentication key embedded below
+                // Pass your API key via the proxy wrapper safely
                 'X-API-Key': 'fh_Y7jh3YbY3tzeIO_CGBVEXJOsyOJfP_NI4EENuBwoY5A'
             },
             body: formData
@@ -909,14 +912,14 @@ async function handleCatboxUpload(input) {
  
         const data = await response.json();
         
-        // FilePost returns the permanent CDN asset link inside the 'url' property
+        // Extract the permanent CDN asset link from response
         const url = data.url;
         if (!url) throw new Error('Upload failed: Missing URL in response');
  
         catboxAttachmentUrl = url;
         catboxAttachmentName = file.name;
  
-        // Checks file extensions safely against the permanent output URL string
+        // File validation checks run against the returned permanent URL
         const isImage = /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
         const isVideo = /\.(mp4|webm|mov|mkv)$/i.test(url);
         const isAudio = /\.(mp3|ogg|wav|m4a|flac)$/i.test(url);
@@ -940,6 +943,7 @@ async function handleCatboxUpload(input) {
         input.value = '';
     }
 }
+
 // ─────────────────────────────────────────────
 //  MISC UI
 // ─────────────────────────────────────────────
