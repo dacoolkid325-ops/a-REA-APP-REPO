@@ -146,6 +146,18 @@ section.active { display: block; }
 .glass-card:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--liquid-glass-border)); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
 .glass-card.clickable:active, .btn-ios:active, .song-item:active { transform: scale(0.97); }
 
+/* ── News grid: two cards side by side, stacks on small screens ── */
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 600px) {
+  .news-grid { grid-template-columns: 1fr; }
+}
+.news-grid .glass-card { margin-bottom: 0; }
+
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
 @media (min-width: 900px) {
     .side-by-side-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; }
@@ -336,6 +348,33 @@ body.no-bg #glassCanvas { display: none !important; }
     transition: transform 0.2s var(--spring-bounce);
 }
 .theater-btn:active { transform: scale(0.9); }
+
+/* ── Community file upload area ── */
+.attach-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: auto; padding: 18px 22px; margin-bottom: 20px;
+  background: var(--liquid-glass-bg); border: 1px solid var(--liquid-glass-border);
+  color: var(--text-main); border-radius: 20px; font-weight: 700; font-size: 17px;
+  cursor: pointer; font-family: inherit;
+  transition: transform 0.2s var(--spring-bounce), background 0.2s;
+  flex-shrink: 0;
+}
+.attach-btn:hover { background: rgba(255,255,255,0.12); }
+.attach-btn:active { transform: scale(0.95); }
+.post-row { display: flex; gap: 12px; align-items: stretch; }
+.post-row .btn-ios { margin-bottom: 0; flex: 1; }
+#attachmentPreview {
+  display: none; padding: 14px 18px; border-radius: 16px; margin-top: 12px; font-size: 14px;
+  font-weight: 600; border: 1px solid var(--liquid-glass-border);
+  background: rgba(52, 199, 89, 0.08); color: var(--text-main);
+  transition: all 0.3s ease;
+}
+#attachmentPreview.uploading { background: rgba(0, 122, 255, 0.08); }
+#attachmentPreview.error { background: rgba(255, 59, 48, 0.08); }
+#attachmentPreview img.attach-thumb {
+  display: block; max-width: 100%; max-height: 160px; border-radius: 10px;
+  margin-top: 10px; object-fit: contain;
+}
 </style>
 </head>
 <body class="light ipad-mode">
@@ -387,10 +426,22 @@ body.no-bg #glassCanvas { display: none !important; }
 
 <div id="app-wrapper">
 
+<!-- ═══════════════════════════════ HOME ═══════════════════════════════ -->
 <section id="home" class="active">
-  <div class="glass-card clickable" style="border-left: 6px solid var(--accent);" onclick="openAlexModal()">
-    <strong style="color:var(--accent); font-size: 1.1rem;">Alexandru News AND TADC</strong><br>
-    <span style="font-size: 15px; opacity: 0.85; display: inline-block; margin-top: 6px;">Click here to find out about Alexandru and why I'm committing to his legacy! And even more important than stuff like SATS, TADC!!!</span>
+
+  <!-- Two half-width news cards -->
+  <div class="news-grid">
+    <!-- Alexandru card -->
+    <div class="glass-card clickable" style="border-left: 6px solid var(--accent); cursor: pointer;" onclick="openAlexModal()">
+      <strong style="color:var(--accent); font-size: 1.05rem;">👋 Alexandru News</strong>
+      <p style="font-size: 14px; opacity: 0.85; margin: 8px 0 0 0; line-height: 1.5;">My best friend Alexandru and why I'm committing to his legacy. Click to read more!</p>
+    </div>
+
+    <!-- TADC card -->
+    <div class="glass-card clickable" style="border-left: 6px solid #FF2D55; cursor: pointer;" onclick="openTADCModal()">
+      <strong style="color:#FF2D55; font-size: 1.05rem;">🎪 The Amazing Digital Circus</strong>
+      <p style="font-size: 14px; opacity: 0.85; margin: 8px 0 0 0; line-height: 1.5;">My favourite show right now. IT'S IN THEATRES!! Click to find out why it's the best thing ever.</p>
+    </div>
   </div>
 
   <div class="glass-card iframe-wrapper" id="wixWrapper">
@@ -398,11 +449,11 @@ body.no-bg #glassCanvas { display: none !important; }
   </div>
 </section>
 
+<!-- ═══════════════════════════════ AI-REA ═══════════════════════════════ -->
 <section id="ai-rea">
     <div style="max-width: 900px; margin: 0 auto 10px auto;">
         <h2 style="color: var(--text-main); font-size: 1.4rem; font-weight: 700;"></h2>
     </div>
-
     <div class="glass-card" style="padding: 0; overflow: hidden; max-width: 900px; margin: 20px auto;">
         <div style="width: 100%; text-align: center; padding: 0; border-bottom: 1px solid var(--liquid-glass-border);">
             <img src="icons/IMG_1193.jpeg" alt="ai-REA Icon" style="width: 100%; height: 250px; display: block; object-fit: cover; margin: 0; pointer-events: none;">
@@ -411,75 +462,50 @@ body.no-bg #glassCanvas { display: none !important; }
     </div>
 </section>
 
+<!-- ═══════════════════════════════ SONGS ═══════════════════════════════ -->
 <section id="songs">
   <h1>Musical Story</h1>
-
   <div class="search-wrapper">
     <svg class="search-icon-inside" viewBox="0 0 24 24">
       <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
     </svg>
     <input type="text" class="search-input" placeholder="Search Songs..." oninput="filterSongs(this.value)">
   </div>
-
   <div class="glass-card side-by-side-container">
     <div style="width:100%;">
         <div class="song-item" onclick="triggerDynamicTheming('#007AFF')">
-          <div class="song-header">
-            <span class="song-title">01 – a-REA (Original)</span>
-            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-          </div>
+          <div class="song-header"><span class="song-title">01 – a-REA (Original)</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
           <audio controls="" src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio>
         </div>
         <div class="song-item" onclick="triggerDynamicTheming('#FF2D55')">
-          <div class="song-header">
-            <span class="song-title">02 – L-INE GRAPHS!</span>
-            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-          </div>
+          <div class="song-header"><span class="song-title">02 – L-INE GRAPHS!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
           <audio controls="" src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio>
         </div>
         <div class="song-item" onclick="triggerDynamicTheming('#FF9500')">
-          <div class="song-header">
-            <span class="song-title">03 – T-ABLES!!</span>
-            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-          </div>
+          <div class="song-header"><span class="song-title">03 – T-ABLES!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
           <audio controls="" src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio>
         </div>
     </div>
     <div style="width:100%;">
         <div class="song-item" onclick="triggerDynamicTheming('#34C759')">
-          <div class="song-header">
-            <span class="song-title">04 – T-IMETABLES!!</span>
-            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-          </div>
+          <div class="song-header"><span class="song-title">04 – T-IMETABLES!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
           <audio controls="" src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio>
         </div>
         <div class="song-item" onclick="triggerDynamicTheming('#AF52DE')">
-          <div class="song-header">
-            <span class="song-title">05 – A-NGLES!!!!</span>
-            <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-          </div>
+          <div class="song-header"><span class="song-title">05 – A-NGLES!!!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
           <audio controls="" src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio>
         </div>
         <div style="margin-top:20px; padding-top:10px; border-top: 1px solid var(--liquid-glass-border);">
           <div class="song-item" onclick="triggerDynamicTheming('#5AC8FA')">
-            <div class="song-header">
-              <span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span>
-              <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-            </div>
+            <div class="song-header"><span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
             <audio controls="" src="audio/aREAREVAMP.m4a"></audio>
           </div>
           <div class="song-item" onclick="triggerDynamicTheming('#FFCC00')">
-            <div class="song-header">
-              <span class="song-title">NEW – MASTER</span>
-              <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-            </div>
+            <div class="song-header"><span class="song-title">NEW – MASTER</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
             <audio controls="" src="Music/MASTER.m4a"></audio>
           </div>
           <div class="song-item" onclick="triggerDynamicTheming('#FF3B30')">
-            <div class="song-header">
-              <span class="song-title">FAN FAVOURITE – TINY</span>
-              <div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-            </div>
+            <div class="song-header"><span class="song-title">FAN FAVOURITE – TINY</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div>
             <audio controls="" src="audio/Tiny.m4a"></audio>
           </div>
         </div>
@@ -487,6 +513,7 @@ body.no-bg #glassCanvas { display: none !important; }
   </div>
 </section>
 
+<!-- ═══════════════════════════════ VIDEOS ═══════════════════════════════ -->
 <section id="videos">
   <h1>Videos</h1>
   <div class="card-grid">
@@ -508,6 +535,7 @@ body.no-bg #glassCanvas { display: none !important; }
   </div>
 </section>
 
+<!-- ═══════════════════════════════ GAMES ═══════════════════════════════ -->
 <section id="games" class="ultra-wide-section">
   <h1>Games</h1>
   <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
@@ -526,7 +554,6 @@ body.no-bg #glassCanvas { display: none !important; }
         <iframe src="file.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
       </div>
     </div>
-
     <div class="glass-card game-container-giant">
       <div class="game-ui-header" onclick="setMaxPower(this)">
         <div class="status-dot"></div>
@@ -538,84 +565,68 @@ body.no-bg #glassCanvas { display: none !important; }
       <div class="game-viewport">
         <iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe>
       </div>
-    </div> </div> <script>
+    </div>
+  </div>
+  <script>
     function setMaxPower(headerElement) {
       document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('max-power'));
       headerElement.closest('.game-container-giant').classList.add('max-power');
     }
-
     function handleFullscreen(btn) {
       const card = btn.closest('.game-container-giant');
       setMaxPower(card.querySelector('.game-ui-header'));
-      
       const isNowFull = card.classList.toggle('is-active-fs');
       if (isNowFull) { document.body.style.overflow = 'hidden'; }
       else { document.body.style.overflow = ''; }
-      if (typeof scaleGameIframes === 'function') {
-        setTimeout(scaleGameIframes, 10);
-        setTimeout(scaleGameIframes, 300);
-      }
+      if (typeof scaleGameIframes === 'function') { setTimeout(scaleGameIframes, 10); setTimeout(scaleGameIframes, 300); }
     }
     setTimeout(() => { if (typeof scaleGameIframes === 'function') scaleGameIframes(); }, 500);
   </script>
 </section>
 
-
+<!-- ═══════════════════════════════ BOOKS ═══════════════════════════════ -->
 <section id="books">
   <h1>Library</h1>
   <div class="card-grid">
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Trash
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Trash</a>
       </div>
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/jbxyot1tvss95wmy8oqsp/Skellig.pdf?rlkey=zw8p0z9eatsacec76omwdkoko&st=wi7kelpx&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Skellig
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/jbxyot1tvss95wmy8oqsp/Skellig.pdf?rlkey=zw8p0z9eatsacec76omwdkoko&st=wi7kelpx&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Skellig</a>
       </div>
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/nanpzpw19wlnfniq5r1bj/Who-Let-The-Gods-Out.pdf?rlkey=o7bjbg8wn4utz13la6hf1vc8q&st=8nypr58y&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Who Let The Gods Out
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/nanpzpw19wlnfniq5r1bj/Who-Let-The-Gods-Out.pdf?rlkey=o7bjbg8wn4utz13la6hf1vc8q&st=8nypr58y&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Who Let The Gods Out</a>
       </div>
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/j5ueqmsrzjckzbhgayjen/Simply-The-Quest.pdf?rlkey=vxwebvosureyb5czjj4hbp234&st=y37hii41&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Simply The Quest
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/j5ueqmsrzjckzbhgayjen/Simply-The-Quest.pdf?rlkey=vxwebvosureyb5czjj4hbp234&st=y37hii41&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Simply The Quest</a>
       </div>
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/su16gjex59vbkxou4uamc/Beyond-The-Odyssey.pdf?rlkey=4grk0yo86jt3nevrpdnhnr5pl&st=quahh8l8&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Beyond The Odyssey
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/su16gjex59vbkxou4uamc/Beyond-The-Odyssey.pdf?rlkey=4grk0yo86jt3nevrpdnhnr5pl&st=quahh8l8&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Beyond The Odyssey</a>
       </div>
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/3e4guvjpensetwua192hc/Against-All-Gods.pdf?rlkey=8nuhm2kodofft3z1stjvzkywr&st=o2f7wrud&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Against All Gods
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/3e4guvjpensetwua192hc/Against-All-Gods.pdf?rlkey=8nuhm2kodofft3z1stjvzkywr&st=o2f7wrud&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> Against All Gods</a>
       </div>
       <div class="glass-card book-container" style="position: relative; padding: 16px; height: 500px; display: flex; flex-direction: column; gap: 16px;">
         <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)" aria-label="Toggle Fullscreen">⛶</button>
         <iframe allowfullscreen="true" allow="fullscreen; clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border: 0px; width: 100%; flex-grow: 1; border-radius: 18px; background: transparent;" loading="lazy"></iframe>
-        <a href="https://www.dropbox.com/scl/fi/gm1mn4d0rmjjrmcp5xblo/My-Name-Is-Mina.pdf?rlkey=amdwrin5ice6g4emxbhi95kqz&st=4xuzwdj9&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;">
-          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> My Name Is Mina
-        </a>
+        <a href="https://www.dropbox.com/scl/fi/gm1mn4d0rmjjrmcp5xblo/My-Name-Is-Mina.pdf?rlkey=amdwrin5ice6g4emxbhi95kqz&st=4xuzwdj9&raw=1" target="_blank" class="btn-ios" style="margin-bottom: 0; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path></svg> My Name Is Mina</a>
       </div>
   </div>
 </section>
 
+<!-- ═══════════════════════════════ COMMUNITY ═══════════════════════════════ -->
 <section id="community">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
         <h1 style="margin-bottom: 0;">a-REA Community</h1>
@@ -636,7 +647,21 @@ body.no-bg #glassCanvas { display: none !important; }
             <label style="display:block; margin-bottom:10px; font-weight:700; color:var(--text-mute); font-size:14px; text-transform:uppercase; letter-spacing: 1px;">Message</label>
             <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height: auto; resize: none;"></textarea>
         </div>
-        <button id="postBtn" class="btn-ios">Post Comment</button>
+
+        <!-- File attachment preview area -->
+        <div id="attachmentPreview"></div>
+
+        <!-- Post row: Post button + Attach button -->
+        <div class="post-row">
+            <button id="postBtn" class="btn-ios">Post Comment</button>
+            <button class="attach-btn" onclick="document.getElementById('catboxFileInput').click()" title="Attach a file (image, video, etc.)">
+              📎
+            </button>
+            <input type="file" id="catboxFileInput" style="display:none;" onchange="handleCatboxUpload(this)">
+        </div>
+        <p style="font-size: 12px; color: var(--text-mute); margin: 8px 0 0 0; text-align: center;">
+          Files hosted via <a href="https://catbox.moe" target="_blank" style="color: var(--accent);">catbox.moe</a> · max 200 MB · public link
+        </p>
     </div>
 
     <div id="commentsContainer" style="display: flex; flex-direction: column; gap: 20px;">
@@ -644,6 +669,7 @@ body.no-bg #glassCanvas { display: none !important; }
     </div>
 </section>
 
+<!-- ═══════════════════════════════ EXTRAS ═══════════════════════════════ -->
 <section id="extras">
   <h1>Extras</h1>
   <div class="card-grid">
@@ -666,6 +692,7 @@ body.no-bg #glassCanvas { display: none !important; }
   </div>
 </section>
 
+<!-- ═══════════════════════════════ SETTINGS ═══════════════════════════════ -->
 <section id="settings">
   <h1>Settings</h1>
   <div class="glass-card">
@@ -762,17 +789,24 @@ body.no-bg #glassCanvas { display: none !important; }
     </div>
   </div>
 </section>
-</div> 
+</div>
 
-<div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:none; align-items:center; justify-content:center; z-index:99999; transition: opacity 0.3s;">
-  <div class="glass-card" style="max-width:340px; text-align:center; padding: 30px;">
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- Shared modal backdrop -->
+<div id="customAlert" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:none; align-items:center; justify-content:center; z-index:99999; padding: 20px;">
+  <!-- Inner card: scrollable, max 85vh -->
+  <div class="glass-card" style="max-width:460px; width:100%; text-align:center; padding: 30px; max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch;">
     <h2 id="alertTitle" style="color:var(--accent); margin-top:0; font-weight: 800;"></h2>
-    <p id="alertMsg" style="font-size: 15px; line-height: 1.6;"></p>
-    <button class="btn-ios" style="margin-bottom:0; padding:16px; margin-top: 20px;" onclick="closeAlert()">Close</button>
+    <div id="alertMsg" style="font-size: 15px; line-height: 1.7; text-align: left;"></div>
+    <button class="btn-ios" style="margin-bottom:0; padding:16px; margin-top: 24px;" onclick="closeAlert()">Close</button>
   </div>
 </div>
 
 <script>
+// ─────────────────────────────────────────────
+//  ADMIN
+// ─────────────────────────────────────────────
 window.isAdmin = localStorage.getItem('aREA_isAdmin') === 'true';
 
 function updateAdminUI() {
@@ -807,11 +841,102 @@ window.adminLogout = () => {
     if(typeof window.loadComments === 'function') window.loadComments();
 };
 
+// ─────────────────────────────────────────────
+//  CATBOX.MOE FILE UPLOAD
+// ─────────────────────────────────────────────
+let catboxAttachmentUrl = null;
+let catboxAttachmentName = null;
+
+async function handleCatboxUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Size check — catbox allows up to 200 MB
+    if (file.size > 200 * 1024 * 1024) {
+        showAttachmentState('error', '❌ File too large! Max 200 MB on catbox.moe.');
+        input.value = '';
+        return;
+    }
+
+    catboxAttachmentUrl = null;
+    catboxAttachmentName = null;
+    showAttachmentState('uploading', `⏳ Uploading <strong>${escapeHtmlInline(file.name)}</strong>…`);
+
+    try {
+        const formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('fileToUpload', file);
+
+        const response = await fetch('https://catbox.moe/user/api.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const url = (await response.text()).trim();
+
+        // catbox returns the direct URL on success, an error string otherwise
+        if (!url.startsWith('http')) throw new Error(url || 'Unknown error from catbox');
+
+        catboxAttachmentUrl = url;
+        catboxAttachmentName = file.name;
+
+        const isImage = /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
+        const isVideo = /\.(mp4|webm|mov|mkv)$/i.test(url);
+        const isAudio = /\.(mp3|ogg|wav|m4a|flac)$/i.test(url);
+
+        let previewHtml = `✅ <strong>${escapeHtmlInline(file.name)}</strong> uploaded! 
+            <a href="${url}" target="_blank" style="color:var(--accent); word-break:break-all;">${url}</a>`;
+
+        if (isImage) {
+            previewHtml += `<img src="${url}" class="attach-thumb" alt="preview">`;
+        } else if (isVideo) {
+            previewHtml += `<video src="${url}" controls style="display:block; max-width:100%; max-height:160px; border-radius:10px; margin-top:10px;"></video>`;
+        } else if (isAudio) {
+            previewHtml += `<audio src="${url}" controls style="display:block; width:100%; margin-top:10px;"></audio>`;
+        }
+
+        showAttachmentState('ready', previewHtml);
+    } catch (err) {
+        console.error('Catbox upload error:', err);
+        showAttachmentState('error', `❌ Upload failed: ${err.message}. Try again or check your connection.`);
+        catboxAttachmentUrl = null;
+        input.value = '';
+    }
+}
+
+function showAttachmentState(state, html) {
+    const el = document.getElementById('attachmentPreview');
+    el.style.display = 'block';
+    el.className = ''; // reset
+    if (state === 'uploading') el.classList.add('uploading');
+    if (state === 'error')     el.classList.add('error');
+    el.innerHTML = html;
+}
+
+function clearAttachment() {
+    catboxAttachmentUrl = null;
+    catboxAttachmentName = null;
+    const el = document.getElementById('attachmentPreview');
+    el.style.display = 'none';
+    el.innerHTML = '';
+    document.getElementById('catboxFileInput').value = '';
+}
+
+function escapeHtmlInline(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+}
+
+// ─────────────────────────────────────────────
+//  MISC UI
+// ─────────────────────────────────────────────
 function toggleIframeFullscreen(buttonElement) {
   const card = buttonElement.closest('.book-container');
   card.classList.toggle('ios-pseudo-fullscreen');
-  if (card.classList.contains('ios-pseudo-fullscreen')) { buttonElement.innerHTML = '✕'; } 
-  else { buttonElement.innerHTML = '⛶'; }
+  buttonElement.innerHTML = card.classList.contains('ios-pseudo-fullscreen') ? '✕' : '⛶';
 }
 
 function vibrate(ms = 15) { if(navigator.vibrate) navigator.vibrate(ms); }
@@ -827,15 +952,13 @@ function triggerDynamicTheming(colorHex) {
 function toggleTheaterMode(btn) {
     const card = btn.closest('.glass-card');
     const isTheater = document.body.classList.toggle('theater-mode');
-    if(isTheater) {
-        card.classList.add('theater-focus');
-        btn.innerText = "Exit Theater Mode";
-    } else {
-        card.classList.remove('theater-focus');
-        btn.innerText = "Enter Theater Mode";
-    }
+    if(isTheater) { card.classList.add('theater-focus'); btn.innerText = "Exit Theater Mode"; }
+    else           { card.classList.remove('theater-focus'); btn.innerText = "Enter Theater Mode"; }
 }
 
+// ─────────────────────────────────────────────
+//  BACKGROUND CANVAS
+// ─────────────────────────────────────────────
 const canvas = document.getElementById('glassCanvas');
 const ctx = canvas.getContext('2d');
 let points = [];
@@ -845,11 +968,11 @@ let bgFrameCount = 0;
 document.addEventListener("visibilitychange", () => { isTabActive = !document.hidden; });
 
 const themes = {
-  default: { accent: '#007AFF', colors: ['#FF2D55', '#5856D6', '#AF52DE', '#007AFF', '#5AC8FA', '#FF9500'] }, 
-  sunset:  { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE', '#FF3B30', '#FF9500'] },
-  forest:  { accent: '#34C759', colors: ['#34C759', '#30B0C7', '#007AFF', '#32D74B', '#5AC8FA', '#34C759'] },
-  ocean:   { accent: '#5856D6', colors: ['#5856D6', '#007AFF', '#30B0C7', '#5AC8FA', '#AF52DE', '#5856D6'] },
-  midnight:{ accent: '#AF52DE', colors: ['#AF52DE', '#5856D6', '#FF2D55', '#007AFF', '#30B0C7', '#AF52DE'] }
+  default:  { accent: '#007AFF', colors: ['#FF2D55', '#5856D6', '#AF52DE', '#007AFF', '#5AC8FA', '#FF9500'] }, 
+  sunset:   { accent: '#FF9500', colors: ['#FF9500', '#FF2D55', '#FFCC00', '#AF52DE', '#FF3B30', '#FF9500'] },
+  forest:   { accent: '#34C759', colors: ['#34C759', '#30B0C7', '#007AFF', '#32D74B', '#5AC8FA', '#34C759'] },
+  ocean:    { accent: '#5856D6', colors: ['#5856D6', '#007AFF', '#30B0C7', '#5AC8FA', '#AF52DE', '#5856D6'] },
+  midnight: { accent: '#AF52DE', colors: ['#AF52DE', '#5856D6', '#FF2D55', '#007AFF', '#30B0C7', '#AF52DE'] }
 };
 
 let appSettings = {
@@ -862,8 +985,8 @@ function initCanvas() {
   canvas.width = window.innerWidth; canvas.height = window.innerHeight; points = [];
   let palette;
   if (appSettings.theme === 'custom') {
-      const ct = appSettings.customTheme || { bg1: '#050507', bg2: '#1a1a24', accent: '#007AFF' };
-      palette = [ct.accent, ct.bg1, ct.bg2, ct.accent, '#ffffff', ct.bg1];
+      const ct = appSettings.customTheme || {};
+      palette = [ct.accent||'#007AFF', ct.bg1||'#050507', ct.bg2||'#1a1a24', ct.accent||'#007AFF', '#ffffff', ct.bg1||'#050507'];
   } else {
       const themeKey = appSettings.theme || 'default';
       palette = themes[themeKey] ? themes[themeKey].colors : themes.default.colors;
@@ -881,7 +1004,6 @@ function loop() {
   if (appSettings.noBg || appSettings.ultraSaver) { animFrameId = null; return; }
   bgFrameCount++;
   if (appSettings.batterySaver && bgFrameCount % 2 !== 0) { animFrameId = requestAnimationFrame(loop); return; }
-  
   ctx.clearRect(0,0,canvas.width, canvas.height);
   points.forEach(p => {
     p.x += p.vx; p.y += p.vy;
@@ -894,15 +1016,16 @@ function loop() {
   animFrameId = requestAnimationFrame(loop);
 }
 
+// ─────────────────────────────────────────────
+//  SETTINGS
+// ─────────────────────────────────────────────
 function updateSetting(key, val) {
   appSettings[key] = val; localStorage.setItem('aREASettings', JSON.stringify(appSettings)); applySettings();
 }
 
 function updateThemeSelection(val) {
     updateSetting('theme', val);
-    const customSettings = document.getElementById('customThemeSettings');
-    if (val === 'custom') { customSettings.style.display = 'flex'; } 
-    else { customSettings.style.display = 'none'; }
+    document.getElementById('customThemeSettings').style.display = (val === 'custom') ? 'flex' : 'none';
     applySettings(); initCanvas();
 }
 
@@ -946,7 +1069,7 @@ function applySettings() {
       const themeObj = themes[themeKey] || themes.default;
       document.documentElement.style.setProperty('--accent', themeObj.accent);
       document.body.style.background = '';
-      if(document.getElementById('customThemeSettings')) { document.getElementById('customThemeSettings').style.display = 'none'; }
+      if(document.getElementById('customThemeSettings')) document.getElementById('customThemeSettings').style.display = 'none';
   }
   
   if(document.getElementById('themeSelect')) document.getElementById('themeSelect').value = appSettings.theme;
@@ -986,7 +1109,6 @@ function applySettings() {
   const frame = document.getElementById('wixFrame');
   const wrapper = document.getElementById('wixWrapper');
   const label = document.getElementById('widthLabel');
-  
   if (frame && wrapper) {
     const containerWidth = wrapper.offsetWidth;
     if (containerWidth > 0) {
@@ -997,7 +1119,6 @@ function applySettings() {
             frame.style.height = (100 / scaleFactor) + "%"; 
             frame.style.transform = `scale(${scaleFactor})`;
             label.innerText = `${targetWidth}px ${appSettings.ipadMode ? '(Desktop)' : '(Mobile)'}`;
-            
             lastWixWidth = targetWidth; lastIpadMode = appSettings.ipadMode; lastContainerWidth = containerWidth;
         }
     }
@@ -1006,17 +1127,17 @@ function applySettings() {
   updatePillPosition();
 }
 
+// ─────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────
 function showTab(id, btn) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(id);
   if(target) target.classList.add('active');
-  
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  
   updatePillPosition(btn);
   window.scrollTo({top: 0, behavior: 'smooth'});
-
   if(id === 'home') applySettings();
 }
 
@@ -1034,6 +1155,9 @@ const navResizeObserver = new ResizeObserver(() => { updatePillPosition(); });
 window.addEventListener('resize', () => { updatePillPosition(); initCanvas(); applySettings(); });
 document.querySelector('.nav-container').addEventListener('scroll', () => updatePillPosition());
 
+// ─────────────────────────────────────────────
+//  MINI PLAYER
+// ─────────────────────────────────────────────
 let currentAudio = null;
 const miniPlayer = document.getElementById('miniPlayer');
 const mpTitle = document.getElementById('mpTitle');
@@ -1068,13 +1192,15 @@ function togglePlay() {
     vibrate(20);
 }
 
+// ─────────────────────────────────────────────
+//  SONG SEARCH
+// ─────────────────────────────────────────────
 let searchTimeout;
 function filterSongs(val) {
   clearTimeout(searchTimeout);
   searchTimeout = setTimeout(() => {
     const term = val.toLowerCase().trim();
-    const items = document.querySelectorAll('.song-item');
-    items.forEach(item => {
+    document.querySelectorAll('.song-item').forEach(item => {
       const title = item.querySelector('.song-title').innerText.toLowerCase();
       item.style.display = title.includes(term) ? 'flex' : 'none';
     });
@@ -1085,23 +1211,130 @@ function filterSongs(val) {
   }, 150);
 }
 
+// ─────────────────────────────────────────────
+//  MODALS
+// ─────────────────────────────────────────────
 function openAlexModal() {
+  document.getElementById('alertTitle').style.color = 'var(--accent)';
   document.getElementById('alertTitle').innerText = "Alexandru News";
   document.getElementById('alertMsg').innerHTML = `
-    Alexandru Bojescu was my best friend and loved creating with Arduino (Microchips that could do cool stuff like his lie detector.) He had some really cool friends like Abu (who sadly had appendicitis), Hamid, Aadil and Me. Though, lately, he moved to a more quiet neighbourhood. Now me, Aqeel, is continuing with his legacy by making coding projects including this app. Goodbye, Alexandru.. I still have his contact at least... MORE IMPORTANTLY The Amazing Digital Circus WHICH IS A SHOW MADE BY A LITTLE CHANNEL ON YT THAT GOT SO FAMOUS THAT THEY GOT A NETFLIX AND A AMAZON PRIME DEAL AND THE FINAL EPISODE IS IN THEATRES EARLY!!!! WATCH THE SHOW NOW ON YT OR NETFLIX; THE AMAZING DIGITAL CIRCUS!!
-    <br><br>
-    <div style="border-radius: 16px; overflow: hidden; border: 1px solid var(--liquid-glass-border);">
-    <video width="100%" controls playsinline preload="metadata" style="display:block; border-radius: 0;">
-      <source src="https://www.dropbox.com/scl/fi/wb2pifryo0xfq2ohht6m7/IMG_2399.mov?rlkey=klp54pc6lbpmdy3qtymqvkg8g&st=3oaxf87p&raw=1" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <p>Alexandru Bojescu was my best friend and loved creating with Arduino — microchips that could do really cool stuff, like his lie detector he built from scratch. He had some really cool friends: Abu (who sadly had appendicitis at one point), Hamid, Aadil, and me.</p>
+    <p>Lately he moved to a quieter neighbourhood, which was genuinely sad. But now I, Aqeel, am continuing with his legacy by making coding projects — including this app you're looking at right now. I still have his contact at least, so it's not like he's gone forever.</p>
+    <p style="opacity:0.7; font-style:italic;">Goodbye for now, Alexandru. This one's for you.</p>
+    <div style="border-radius: 16px; overflow: hidden; border: 1px solid var(--liquid-glass-border); margin-top: 16px;">
+      <video width="100%" controls playsinline preload="metadata" style="display:block; border-radius: 0;">
+        <source src="https://www.dropbox.com/scl/fi/wb2pifryo0xfq2ohht6m7/IMG_2399.mov?rlkey=klp54pc6lbpmdy3qtymqvkg8g&st=3oaxf87p&raw=1" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
-  `; 
+  `;
+  document.getElementById('customAlert').style.display = 'flex';
+}
+
+function openTADCModal() {
+  document.getElementById('alertTitle').style.color = '#FF2D55';
+  document.getElementById('alertTitle').innerText = "🎪 The Amazing Digital Circus";
+  document.getElementById('alertMsg').innerHTML = `
+    <p>Ok so The Amazing Digital Circus is genuinely one of my favourite things to exist on the internet right now. It started on this pretty small YouTube channel run by <strong>Gooseworx</strong>, and the pilot episode just absolutely went off — like millions of views within days of dropping. The whole premise is people getting trapped inside a digital circus as cartoon characters with no memory of who they were before, and it sounds weird but it's so good.</p>
+
+    <!-- Pilot thumbnail acting as a teaser image -->
+    <img 
+      src="https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg"
+      alt="TADC Pilot"
+      style="width:100%; border-radius:14px; margin: 14px 0; border: 1px solid rgba(255,45,85,0.3);"
+      onerror="this.style.display='none'"
+    >
+
+    <p>The characters are just incredible. <strong>Pomni</strong> is the main character and she's just trying to keep it together while everyone else has lost the plot (literally). <strong>Jax</strong> is actually so funny and kind of mean in the best way. <strong>Caine</strong> as the ringmaster is just chaotic perfection. I could talk about them for hours.</p>
+
+    <p>AND THEN — it got a <strong>Netflix AND Amazon Prime deal</strong>. For a YouTube show!!! That's insane. And now the final episode is getting a <strong>theatrical release</strong> which is just completely unreal for something that started on YouTube.</p>
+
+    <!-- Season 2 / later episode thumbnail -->
+    <img
+      src="https://img.youtube.com/vi/Xb9XkDWI4Eo/maxresdefault.jpg"
+      alt="TADC Episode"
+      style="width:100%; border-radius:14px; margin: 14px 0; border: 1px solid rgba(255,45,85,0.3);"
+      onerror="this.style.display='none'"
+    >
+
+    <p>If you haven't watched it yet, go on YouTube right now — the pilot is completely free and it'll hook you immediately. Or find it on Netflix / Amazon Prime if you've got those. Seriously just watch it.</p>
+
+    <a href="https://www.youtube.com/watch?v=HwAPLk_sQ3w" target="_blank" style="display:block; background: #FF2D55; color: white; text-align:center; padding: 14px; border-radius:16px; font-weight:800; text-decoration:none; margin-top:8px;">
+      ▶ Watch the Pilot on YouTube
+      And the TADC MOVIE! <script>
+/***********************************************************
+* CONFIGURATION: YOUR VIDEO ID IS PLACED APART HERE
+***********************************************************/
+const CURRENT_VIDEO_ID = "1GcFptpzEt3y1RvrW1K6Vb3l53d48Z1aG";
+</script>
+
+<div class="video-wrapper">
+<!-- Google's Native Large File Streaming Engine (No Black Screen) -->
+<iframe id="googleStreamFrame" src="" width="100%" height="480" allow="autoplay" style="border: none; background: #000; border-radius: 4px;"></iframe>
+
+<!-- Download Link Portal Trigger -->
+<div class="action-bar">
+<a id="downloadButton" href="#" class="download-trigger" target="_blank">
+📥 Download Original Raw Video (600MB)
+</a>
+</div>
+</div>
+
+<script>
+(function() {
+// 1. Safely bind your ID to Google's specific cloud video rendering player
+document.getElementById('googleStreamFrame').src = "https://drive.google.com/file/d/" + CURRENT_VIDEO_ID + "/preview";
+
+// 2. Safely bind your ID to the unblocked usercontent download server
+document.getElementById('downloadButton').href = "https://drive.usercontent.google.com/download?id=" + CURRENT_VIDEO_ID + "&export=download&confirm=t";
+})();
+</script>
+
+<style>
+.video-wrapper {
+max-width: 850px;
+margin: 20px auto;
+background: #000;
+padding: 12px;
+border-radius: 8px;
+font-family: sans-serif;
+}
+iframe {
+display: block;
+background: #000;
+border-radius: 4px;
+}
+.action-bar {
+text-align: center;
+padding: 15px 0 5px 0;
+background: #0a0a0a;
+margin-top: 8px;
+border-radius: 4px;
+}
+.download-trigger {
+display: inline-block;
+padding: 12px 28px;
+background-color: #0073aa;
+color: #ffffff !important;
+text-decoration: none;
+font-weight: bold;
+border-radius: 4px;
+}
+.download-trigger:hover {
+background-color: #005177;
+}
+</style>
+
+    </a>
+  `;
   document.getElementById('customAlert').style.display = 'flex';
 }
 
 function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
 
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
 function loadStoredSettings() {
   try {
     const saved = localStorage.getItem('aREASettings');
@@ -1112,24 +1345,16 @@ function loadStoredSettings() {
   } catch(e) { console.error("Settings corrupted. Resetting...", e); localStorage.removeItem('aREASettings'); }
 }
 
-// -------------------------------------------------------------
-// Lightning Fast Loader (Triggered immediately when HTML is parsed)
-// -------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   navResizeObserver.observe(document.querySelector('.nav-container'));
-  
   loadStoredSettings();
   initCanvas();
   loop();
   applySettings();
   updateAdminUI();
 
-  // Instantly fade out the load screen once settings are grabbed
   const loader = document.getElementById('initialLoader');
-  if(loader) {
-      loader.style.opacity = '0';
-      setTimeout(() => loader.remove(), 400); // Remove after fade completes
-  }
+  if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.remove(), 400); }
   
   const pages = ['home', 'ai-rea', 'songs', 'videos', 'games', 'books', 'community', 'extras', 'settings'];
   const startPage = appSettings.startPage || 'home';
@@ -1143,6 +1368,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ─────────────────────────────────────────────
+//  AUDIO VISUALIZER
+// ─────────────────────────────────────────────
 let audioCtx; let analyser; let dataArray; let sourceNodes = new Map();
 
 function initAudioVisualizer(audioElement) {
@@ -1236,19 +1464,33 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
 
         commentsContainer.innerHTML = comments.map(c => {
             const isOwner = currentUser && c.userId === currentUser.uid;
-            
             const isAuthorAdmin = c.isAdmin && c.username === 'Aqeel';
             const adminTag = isAuthorAdmin ? `<span style="background:gold; color:black; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; margin-left:6px; vertical-align:middle;">[ADMIN]</span>` : '';
             const usernameStyle = isAuthorAdmin ? `color: gold;` : `color: var(--accent);`;
-            
-            // IF ADMIN, SHOW DELETE BUTTON EVERYWHERE
             const canDelete = isOwner || window.isAdmin;
-            const deleteBtn = canDelete ? 
-                `<button onclick="window.confirmDelete('${c.id}')" style="background:none; border:none; color:#FF3B30; cursor:pointer; font-weight:bold; font-size:12px;">DELETE</button>` : '';
+            const deleteBtn = canDelete ? `<button onclick="window.confirmDelete('${c.id}')" style="background:none; border:none; color:#FF3B30; cursor:pointer; font-weight:bold; font-size:12px;">DELETE</button>` : '';
+            const reportBtn = !window.isAdmin ? `<a href="mailto:dacoolkid325@gmail.com?subject=Report Comment ${c.id}&body=Reporting comment by ${c.username}: ${c.message}" style="background:none; border:none; color:#FF9500; cursor:pointer; font-weight:bold; font-size:12px; text-decoration:none; margin-right: 10px;">REPORT</a>` : '';
 
-            // IF ADMIN, HIDE REPORT BUTTON
-            const reportBtn = !window.isAdmin ? 
-                `<a href="mailto:dacoolkid325@gmail.com?subject=Report Comment ${c.id}&body=Reporting comment by ${c.username}: ${c.message}" style="background:none; border:none; color:#FF9500; cursor:pointer; font-weight:bold; font-size:12px; text-decoration:none; margin-right: 10px;">REPORT</a>` : '';
+            // Detect catbox attachment in message
+            const msg = c.message || '';
+            let messageHtml = escapeHtml(msg);
+            // Render catbox image/video/audio inline if URL is at end of message
+            const catboxMatch = msg.match(/(https:\/\/files\.catbox\.moe\/\S+)/);
+            if (catboxMatch) {
+                const url = catboxMatch[1];
+                const cleanMsg = escapeHtml(msg.replace(catboxMatch[0], '').trim());
+                let mediaHtml = '';
+                if (/\.(jpe?g|png|gif|webp|svg)$/i.test(url)) {
+                    mediaHtml = `<a href="${url}" target="_blank"><img src="${url}" style="display:block; max-width:100%; max-height:300px; border-radius:12px; margin-top:10px; object-fit:contain;"></a>`;
+                } else if (/\.(mp4|webm|mov)$/i.test(url)) {
+                    mediaHtml = `<video src="${url}" controls style="display:block; max-width:100%; max-height:300px; border-radius:12px; margin-top:10px;"></video>`;
+                } else if (/\.(mp3|ogg|wav|m4a|flac)$/i.test(url)) {
+                    mediaHtml = `<audio src="${url}" controls style="display:block; width:100%; margin-top:10px;"></audio>`;
+                } else {
+                    mediaHtml = `<a href="${url}" target="_blank" style="display:inline-block; margin-top:8px; color:var(--accent); word-break:break-all; font-size:13px;">📎 ${url}</a>`;
+                }
+                messageHtml = cleanMsg + mediaHtml;
+            }
 
             return `
                 <div class="glass-card" style="padding: 24px; margin-bottom: 0;">
@@ -1257,12 +1499,9 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
                             <span style="font-weight: 800; ${usernameStyle} font-size: 15px;">@${escapeHtml(c.username || 'Anonymous')} ${adminTag}</span>
                             <div style="font-size: 11px; color: var(--text-mute); margin-top:2px;">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString() : 'Just now'}</div>
                         </div>
-                        <div>
-                            ${reportBtn}
-                            ${deleteBtn}
-                        </div>
+                        <div>${reportBtn}${deleteBtn}</div>
                     </div>
-                    <p style="color: var(--text-main); word-break: break-word; line-height: 1.6; margin: 0; font-size: 16px;">${escapeHtml(c.message || '')}</p>
+                    <div style="color: var(--text-main); word-break: break-word; line-height: 1.6; margin: 0; font-size: 16px;">${messageHtml}</div>
                 </div>
             `;
         }).join('');
@@ -1271,20 +1510,24 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
     window.confirmDelete = async (commentId) => {
         if (confirm("Are you sure you want to delete this comment?")) {
             try {
-                const commentRef = doc(db, 'artifacts', appId, 'public', 'data', 'comments', commentId);
-                await deleteDoc(commentRef);
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'comments', commentId));
             } catch (error) {
                 console.error("Delete failed:", error);
-                alert("Error deleting! If you are Admin, make sure your Firebase Rules allow you to delete other people's comments.");
+                alert("Error deleting comment.");
             }
         }
     };
 
     postBtn.addEventListener('click', async () => {
         const username = usernameInput.value.trim();
-        const message = messageInput.value.trim();
+        let message = messageInput.value.trim();
 
         if (!username || !message || !currentUser) return;
+
+        // Append catbox URL to the message if one was uploaded
+        if (window.catboxAttachmentUrl) {
+            message = message + '\n' + window.catboxAttachmentUrl;
+        }
 
         postBtn.disabled = true;
         const originalText = postBtn.innerText;
@@ -1293,13 +1536,15 @@ import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, deleteDo
         try {
             const commentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'comments');
             await addDoc(commentsRef, {
-                username: username,
-                message: message,
+                username,
+                message,
                 timestamp: serverTimestamp(),
                 userId: currentUser.uid,
-                isAdmin: window.isAdmin && username === 'Aqeel' 
+                isAdmin: window.isAdmin && username === 'Aqeel'
             });
             messageInput.value = '';
+            // Clear attachment after successful post
+            if (typeof window.clearAttachment === 'function') window.clearAttachment();
         } catch (error) {
             console.error("Post failed:", error);
             alert("Could not post. Check if Database Rules allow writes.");
