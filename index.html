@@ -406,7 +406,7 @@ body.no-bg #glassCanvas { display:none !important; }
 <!-- ═══ NEWS TAB ═══ -->
 <section id="news">
   <div class="news-header-row">
-    <h1 style="margin-bottom:0;">📰 News</h1>
+    <h1 style="margin-bottom:0;">News</h1>
     <span style="font-size:13px;color:var(--text-mute);font-weight:600;">from the a-REA desk</span>
   </div>
 
@@ -568,7 +568,6 @@ body.no-bg #glassCanvas { display:none !important; }
       <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach file">📎</button>
       <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(this)">
     </div>
-    <p style="font-size:12px;color:var(--text-mute);margin:8px 0 0 0;text-align:center;">Files uploaded via FilePost · max 50 MB · public link</p>
   </div>
 
   <div id="commentsContainer" style="display:flex;flex-direction:column;gap:20px;">
@@ -816,24 +815,20 @@ async function handleFileUpload(input) {
   showAttachmentState('uploading', `⏳ Uploading <strong>${eI(file.name)}</strong>…`);
   
   try {
-    const fd = new FormData();
-    fd.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
     
-    const res = await fetch('https://file.kiwi/upload', {
+    const res = await fetch('https://0x0.st', {
       method: 'POST',
-      body: fd
+      body: formData
     });
     
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     
-    const data = await res.json();
-    const url = data.url || data.link || data.file_url;
+    const url = await res.text();
     
-    if (!url) {
-      console.log('Response:', data);
-      throw new Error('No URL returned');
+    if (!url || url.includes('error')) {
+      throw new Error('Upload failed');
     }
     
     attachmentUrl = url;
@@ -1191,83 +1186,142 @@ function loadArticles(){
 }
 
 // ── Comments ──
-window.loadComments=function(){
-  const ref=collection(db,...COMMENTS_PATH);
-  onSnapshot(ref,(snap)=>{
-    const cs=[];snap.forEach(d=>cs.push({id:d.id,...d.data()}));
-    cs.sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0));
-    renderComments(cs);
-  },()=>{commentsContainer.innerHTML=`<div style="text-align:center;color:#ff6b6b;">Failed to load comments.</div>`;});
-};
-
-function renderComments(comments){
-  if(comments.length===0){commentsContainer.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-mute);font-style:italic;">No comments yet.</div>`;return;}
-  commentsContainer.innerHTML=comments.map(c=>{
-    const isOwner=currentUser&&c.userId===currentUser.uid;
-    const isAdminAuthor=c.isAdmin&&c.username==='Aqeel';
-    const adminTag=isAdminAuthor?`<span style="background:gold;color:black;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">[ADMIN]</span>`:'';
-    const uStyle=isAdminAuthor?`color:gold;`:`color:var(--accent);`;
-    const delBtn=(isOwner||window.isAdmin)?`<button onclick="window.confirmDelete('${c.id}')" style="background:none;border:none;color:#FF3B30;cursor:pointer;font-weight:bold;font-size:12px;">DELETE</button>`:'';
-    const repBtn=!window.isAdmin?`<a href="mailto:dacoolkid325@gmail.com?subject=Report ${c.id}" style="color:#FF9500;font-size:12px;font-weight:bold;text-decoration:none;margin-right:10px;">REPORT</a>`:'';
-    // Build message HTML — render attachment separately from text
-    const msgText=esc(c.message||'');
-    let mediaHtml='';
-    if(c.attachmentUrl){
-      const u=c.attachmentUrl;
-      if(/\.(jpe?g|png|gif|webp|svg)$/i.test(u))
-        mediaHtml=`<a href="${u}" target="_blank"><img src="${u}" style="display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:10px;object-fit:contain;" onerror="this.parentElement.innerHTML='<a href=&quot;${u}&quot; target=&quot;_blank&quot; style=&quot;color:var(--accent);&quot;>📎 View attachment</a>';"></a>`;
-      else if(/\.(mp4|webm|mov|mkv)$/i.test(u))
-        mediaHtml=`<video src="${u}" controls style="display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:10px;"></video>`;
-      else if(/\.(mp3|ogg|wav|m4a|flac)$/i.test(u))
-        mediaHtml=`<audio src="${u}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
-      else
-        mediaHtml=`<a href="${u}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--accent);font-size:13px;font-weight:600;word-break:break-all;">📎 ${esc(c.attachmentName||u)}</a>`;
-    }
-    return `<div class="glass-card" style="padding:24px;margin-bottom:0;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-        <div><span style="font-weight:800;${uStyle}font-size:15px;">@${esc(c.username||'Anonymous')} ${adminTag}</span>
-        <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${c.timestamp?new Date(c.timestamp.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Just now'}</div></div>
-        <div>${repBtn}${delBtn}</div>
-      </div>
-      <div style="color:var(--text-main);word-break:break-word;line-height:1.6;font-size:16px;">${msgText}</div>
-      ${mediaHtml}
-    </div>`;
-  }).join('');
-}
-
-window.confirmDelete=async(id)=>{
-  if(confirm("Delete this comment?")){
-    try{await deleteDoc(doc(db,...COMMENTS_PATH,id));}
-    catch(e){alert("Delete failed: "+e.message);}
+// Replace the COMMENTS_PATH with this:
+const COMMENTS_PATH = ['artifacts', 'a-rea-web-comments', 'public', 'data', 'comments'];
+ 
+// Replace the renderComments function with this:
+function renderComments(comments) {
+  if (comments.length === 0) {
+    commentsContainer.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-mute);font-style:italic;">No comments yet.</div>`;
+    return;
   }
+ 
+  // Build comment tree
+  const commentMap = {};
+  const rootComments = [];
+ 
+  comments.forEach(c => {
+    commentMap[c.id] = { ...c, replies: [] };
+  });
+ 
+  comments.forEach(c => {
+    if (c.parentId && commentMap[c.parentId]) {
+      commentMap[c.parentId].replies.push(commentMap[c.id]);
+    } else {
+      rootComments.push(commentMap[c.id]);
+    }
+  });
+ 
+  // Render function
+  const createCommentHTML = (c, depth = 0) => {
+    const isOwner = currentUser && c.userId === currentUser.uid;
+    const isAdminAuthor = c.isAdmin && c.username === 'Aqeel';
+    const adminTag = isAdminAuthor ? `<span style="background:gold;color:black;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">[ADMIN]</span>` : '';
+    const uStyle = isAdminAuthor ? `color:gold;` : `color:var(--accent);`;
+    const delBtn = (isOwner || window.isAdmin) ? `<button onclick="window.confirmDelete('${c.id}')" style="background:none;border:none;color:#FF3B30;cursor:pointer;font-weight:bold;font-size:12px;">DELETE</button>` : '';
+    const repBtn = !window.isAdmin ? `<button onclick="window.replyToComment('${c.id}')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-weight:bold;font-size:12px;margin-right:10px;">REPLY</button>` : '';
+ 
+    // Build message HTML
+    const msgText = esc(c.message || '');
+    let mediaHtml = '';
+    if (c.attachmentUrl) {
+      const u = c.attachmentUrl;
+      if (/\.(jpe?g|png|gif|webp|svg)$/i.test(u))
+        mediaHtml = `<a href="${u}" target="_blank"><img src="${u}" style="display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:10px;object-fit:contain;" onerror="this.parentElement.innerHTML='<a href=&quot;${u}&quot; target=&quot;_blank&quot; style=&quot;color:var(--accent);&quot;>📎 View attachment</a>';"></a>`;
+      else if (/\.(mp4|webm|mov|mkv)$/i.test(u))
+        mediaHtml = `<video src="${u}" controls style="display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:10px;"></video>`;
+      else if (/\.(mp3|ogg|wav|m4a|flac)$/i.test(u))
+        mediaHtml = `<audio src="${u}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
+      else
+        mediaHtml = `<a href="${u}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--accent);font-size:13px;font-weight:600;word-break:break-all;">📎 ${esc(c.attachmentName || u)}</a>`;
+    }
+ 
+    const replyHTML = c.replies.length > 0 ? `
+      <div style="margin-left:${depth > 0 ? '40px' : '0'};margin-top:16px;border-left:2px solid var(--liquid-glass-border);padding-left:16px;">
+        ${c.replies.map(r => createCommentHTML(r, depth + 1)).join('')}
+      </div>
+    ` : '';
+ 
+    return `
+      <div class="glass-card" style="padding:24px;margin-bottom:0;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div>
+            <span style="font-weight:800;${uStyle}font-size:15px;">@${esc(c.username || 'Anonymous')} ${adminTag}</span>
+            <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Just now'}</div>
+          </div>
+          <div>${repBtn}${delBtn}</div>
+        </div>
+        <div style="color:var(--text-main);word-break:break-word;line-height:1.6;font-size:16px;">${msgText}</div>
+        ${mediaHtml}
+        ${replyHTML}
+      </div>
+    `;
+  };
+ 
+  commentsContainer.innerHTML = rootComments.map(c => createCommentHTML(c)).join('');
+}
+ 
+// Add this function for replying
+window.replyToComment = function(parentId) {
+  const username = usernameInput.value.trim();
+  const message = messageInput.value.trim();
+  
+  if (!username || !message || !currentUser) {
+    alert('Please enter a username and message');
+    return;
+  }
+  
+  // Store the parent ID in a variable
+  window.replyingTo = parentId;
+  
+  // Focus on the message input
+  messageInput.focus();
+  
+  // Show a hint
+  alert('Type your reply and click "Post Comment"');
 };
-
-postBtn.addEventListener('click',async()=>{
-  const username=usernameInput.value.trim();
-  const message=messageInput.value.trim();
-  if(!username||!message||!currentUser)return;
-  postBtn.disabled=true;postBtn.innerText="Posting...";
-  try{
-    await addDoc(collection(db,...COMMENTS_PATH),{
-      username,message,
-      timestamp:serverTimestamp(),
-      userId:currentUser.uid,
-      isAdmin:window.isAdmin&&username==='Aqeel',
-      attachmentUrl:window.attachmentUrl||null,
-      attachmentName:window.attachmentName||null
-    });
-    messageInput.value='';
-    if(typeof window.clearAttachment==='function')window.clearAttachment();
-  }catch(e){alert("Post failed: "+e.message);}
-  finally{postBtn.disabled=false;postBtn.innerText="Post Comment";}
+ 
+// Modify the postBtn click handler
+postBtn.addEventListener('click', async () => {
+  const username = usernameInput.value.trim();
+  const message = messageInput.value.trim();
+  
+  if (!username || !message || !currentUser) {
+    alert('Please enter a username and message');
+    return;
+  }
+  
+  postBtn.disabled = true;
+  postBtn.innerText = 'Posting...';
+  
+  try {
+    const commentData = {
+      username,
+      message,
+      timestamp: serverTimestamp(),
+      userId: currentUser.uid,
+      isAdmin: window.isAdmin && username === 'Aqeel',
+      attachmentUrl: window.attachmentUrl || null,
+      attachmentName: window.attachmentName || null,
+      parentId: window.replyingTo || null  // Add this line
+    };
+    
+    await addDoc(collection(db, ...COMMENTS_PATH), commentData);
+    
+    messageInput.value = '';
+    if (typeof window.clearAttachment === 'function') window.clearAttachment();
+    window.replyingTo = null;  // Clear the reply state
+  } catch (e) {
+    alert('Post failed: ' + e.message);
+  } finally {
+    postBtn.disabled = false;
+    postBtn.innerText = 'Post Comment';
+  }
 });
-
-// expose attachment vars to module scope
-Object.defineProperty(window,'attachmentUrl',{get:()=>attachmentUrl,set:v=>attachmentUrl=v});
-Object.defineProperty(window,'attachmentName',{get:()=>attachmentName,set:v=>attachmentName=v});
-
-function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
-initAuth();
+ 
+// Expose attachment vars to module scope
+Object.defineProperty(window, 'attachmentUrl', { get: () => attachmentUrl, set: v => attachmentUrl = v });
+Object.defineProperty(window, 'attachmentName', { get: () => attachmentName, set: v => attachmentName = v });
 </script>
 </body>
 </html>
