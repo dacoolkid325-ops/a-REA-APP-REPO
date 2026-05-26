@@ -810,41 +810,53 @@ function eI(t){const d=document.createElement('div');d.textContent=t;return d.in
 async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 50*1024*1024) {
-    showAttachmentState('error','❌ File too large! Max 50 MB.');
-    input.value=''; return;
-  }
-  attachmentUrl = null; attachmentName = null;
-  showAttachmentState('uploading',`⏳ Uploading <strong>${eI(file.name)}</strong>…`);
+  
+  attachmentUrl = null;
+  attachmentName = null;
+  showAttachmentState('uploading', `⏳ Uploading <strong>${eI(file.name)}</strong>…`);
+  
   try {
     const fd = new FormData();
     fd.append('file', file);
-    const res = await fetch('https://corsproxy.io?'+encodeURIComponent('https://filepost.dev/v1/upload'),{
-      method:'POST',
-      headers:{'X-API-Key':'fh_Y7jh3YbY3tzeIO_CGBVEXJOsyOJfP_NI4EENuBwoY5A'},
-      body:fd
+    
+    const res = await fetch('https://file.kiwi/upload', {
+      method: 'POST',
+      body: fd
     });
-    if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.message||`HTTP ${res.status}`); }
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    
     const data = await res.json();
-    const url = data.url;
-    if (!url) throw new Error('No URL returned');
+    const url = data.url || data.link || data.file_url;
+    
+    if (!url) {
+      console.log('Response:', data);
+      throw new Error('No URL returned');
+    }
+    
     attachmentUrl = url;
     attachmentName = file.name;
+    
     const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
     const isVid = /\.(mp4|webm|mov|mkv)$/i.test(url);
     const isAud = /\.(mp3|ogg|wav|m4a|flac)$/i.test(url);
+    
     let preview = `✅ <strong>${eI(file.name)}</strong> uploaded! <a href="${url}" target="_blank" style="color:var(--accent);word-break:break-all;font-size:13px;">${url}</a>`;
+    
     if (isImg) preview += `<img src="${url}" class="attach-thumb" alt="preview">`;
     else if (isVid) preview += `<video src="${url}" controls style="display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;"></video>`;
     else if (isAud) preview += `<audio src="${url}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
+    
     showAttachmentState('ready', preview);
-  } catch(err) {
-    console.error(err);
-    showAttachmentState('error',`❌ Upload failed: ${err.message}`);
-    attachmentUrl = null; input.value='';
+  } catch (err) {
+    console.error('Upload error:', err);
+    showAttachmentState('error', `❌ Upload failed: ${err.message}`);
+    attachmentUrl = null;
+    input.value = '';
   }
 }
-
 // ═══════════════════════════════
 //  MISC UI
 // ═══════════════════════════════
