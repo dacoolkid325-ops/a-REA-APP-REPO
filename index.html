@@ -493,7 +493,32 @@ body.no-bg #glassCanvas { display:none !important; }
   </div>
   <script>
     function setMaxPower(h){document.querySelectorAll('.game-container-giant').forEach(c=>c.classList.remove('max-power'));h.closest('.game-container-giant').classList.add('max-power');}
-    function handleFullscreen(btn){const card=btn.closest('.game-container-giant');setMaxPower(card.querySelector('.game-ui-header'));const f=card.classList.toggle('is-active-fs');document.body.style.overflow=f?'hidden':'';if(typeof scaleGameIframes==='function'){setTimeout(scaleGameIframes,10);setTimeout(scaleGameIframes,300);}}
+    function handleFullscreen(btn){
+      const card=btn.closest('.game-container-giant');
+      setMaxPower(card.querySelector('.game-ui-header'));
+      const f=card.classList.toggle('is-active-fs');
+      document.body.style.overflow=f?'hidden':'';
+      if (f) {
+        if (card.requestFullscreen) { card.requestFullscreen().catch(()=>{}); }
+        else if (card.webkitRequestFullscreen) { card.webkitRequestFullscreen().catch(()=>{}); }
+      } else {
+        if (document.exitFullscreen) { document.exitFullscreen().catch(()=>{}); }
+        else if (document.webkitExitFullscreen) { document.webkitExitFullscreen().catch(()=>{}); }
+      }
+      if(typeof scaleGameIframes==='function'){setTimeout(scaleGameIframes,10);setTimeout(scaleGameIframes,300);}
+    }
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('is-active-fs'));
+        document.body.style.overflow = '';
+      }
+    });
+    document.addEventListener('webkitfullscreenchange', () => {
+      if (!document.webkitFullscreenElement) {
+        document.querySelectorAll('.game-container-giant').forEach(c => c.classList.remove('is-active-fs'));
+        document.body.style.overflow = '';
+      }
+    });
     setTimeout(()=>{if(typeof scaleGameIframes==='function')scaleGameIframes();},500);
   </script>
 </section>
@@ -521,6 +546,24 @@ body.no-bg #glassCanvas { display:none !important; }
         <button onclick="window.adminLogout()" class="btn-ios" style="padding:10px 15px;font-size:13px;width:auto;margin:0;background:rgba(255,59,48,0.2);border:1px solid #FF3B30;color:#FF3B30;">Log Out</button>
       </div>
     </div>
+  </div>
+
+  <!-- Aqeel Admin Management Interface -->
+  <div id="adminManagerCard" class="glass-card" style="display:none; background:rgba(0,122,255,0.05); border:1px solid rgba(0,122,255,0.25);">
+    <h3 style="margin-top:0; color:var(--accent);">Create Custom Friend Logins</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+      <input type="text" id="newAdminUser" class="article-input" placeholder="Friend's Username" style="margin-bottom:0;">
+      <input type="password" id="newAdminPass" class="article-input" placeholder="Friend's Password" style="margin-bottom:0;">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+      <input type="text" id="newAdminBadge" class="article-input" placeholder="Badge Name (e.g. Co-Admin, Mod)" style="margin-bottom:0;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <label style="font-size:13px; font-weight:700; opacity:0.8;">Badge Color:</label>
+        <input type="color" id="newAdminColor" value="#007AFF" style="width:50px; height:40px; padding:0; border:1px solid var(--liquid-glass-border); border-radius:10px; cursor:pointer;">
+      </div>
+    </div>
+    <button class="btn-ios" style="margin-bottom:0; background:var(--accent);" onclick="window.createAdminAccount()">Generate Shareable Account</button>
+    <div id="sharedAdminsList" style="margin-top:15px; font-size:13px; opacity:0.8; line-height:1.5;"></div>
   </div>
 
   <div id="articleComposer">
@@ -583,6 +626,16 @@ body.no-bg #glassCanvas { display:none !important; }
       <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 2</span><input type="color" id="customBg2Picker" oninput="updateCustomTheme()" value="#1a1a24" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
       <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Accent Color</span><input type="color" id="customAccentPicker" oninput="updateCustomTheme()" value="#007AFF" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
     </div>
+    
+    <!-- Liquid GL beta button hook -->
+    <div class="toggle-row">
+      <div style="display:flex; flex-direction:column;">
+        <span class="toggle-label">Liquid GL (beta)</span>
+        <small style="opacity:0.6;"><a href="https://github.com/naughtyduk/liquidGL" target="_blank" style="color:var(--accent); text-decoration:none;">github.com/naughtyduk/liquidGL</a></small>
+      </div>
+      <input type="checkbox" id="liquidGLToggle" onchange="updateSetting('liquidGL',this.checked)">
+    </div>
+
     <div class="toggle-row"><span class="toggle-label">Default Page</span><select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage',this.value)"><option value="home">Home</option><option value="news">News</option><option value="ai-rea">ai-REA</option><option value="songs">Songs</option><option value="videos">Videos</option><option value="games">Games</option><option value="books">Books</option><option value="community">Community</option><option value="extras">Extras</option><option value="settings">Settings</option></select></div>
     <div class="toggle-row"><span class="toggle-label">Light Mode</span><input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode',this.checked)"></div>
     <div class="toggle-row"><span class="toggle-label">iPad/PC Mode (Wide)</span><input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode',this.checked);"></div>
@@ -612,65 +665,144 @@ body.no-bg #glassCanvas { display:none !important; }
 
 <script>
 // ═══════════════════════════════
-//  ADMIN
+//  ADMIN LOGINS & SESSIONS
 // ═══════════════════════════════
 window.isAdmin = localStorage.getItem('aREA_isAdmin') === 'true';
+window.currentAdmin = localStorage.getItem('aREA_currentAdmin') || '';
+window.currentAdminBadge = localStorage.getItem('aREA_currentAdminBadge') || 'ADMIN';
+window.currentAdminColor = localStorage.getItem('aREA_currentAdminColor') || 'gold';
 
 function updateAdminUI() {
   const on = window.isAdmin;
   document.getElementById('adminLoginBtn').style.display = on ? 'none' : 'block';
   document.getElementById('adminActiveUI').style.display = on ? 'flex' : 'none';
+  
+  const label = document.getElementById('adminActiveUI')?.querySelector('span');
+  if (label) {
+    label.innerText = `${window.currentAdminBadge} MODE ON`;
+    label.style.background = window.currentAdminColor;
+    label.style.color = '#000';
+  }
+
   const composer = document.getElementById('articleComposer');
   if (composer) composer.classList.toggle('open', on);
+
+  const manager = document.getElementById('adminManagerCard');
+  if (manager) {
+    manager.style.display = (on && window.currentAdmin === 'Aqeel') ? 'block' : 'none';
+  }
+  renderSharedAdmins();
 }
 
 window.adminLogin = () => {
   const user = prompt("Admin Username:");
-  if (user !== "Aqeel") return alert("Invalid Username");
+  if (!user) return;
   const pass = prompt("Admin Password:");
-  if (pass === "area2026") {
+  if (!pass) return;
+
+  if (user === "Aqeel" && pass === "area2026") {
     window.isAdmin = true;
+    window.currentAdmin = "Aqeel";
+    window.currentAdminBadge = "FOUNDER";
+    window.currentAdminColor = "gold";
     localStorage.setItem('aREA_isAdmin','true');
+    localStorage.setItem('aREA_currentAdmin','Aqeel');
+    localStorage.setItem('aREA_currentAdminBadge','FOUNDER');
+    localStorage.setItem('aREA_currentAdminColor','gold');
     updateAdminUI();
     if (typeof window.loadComments === 'function') window.loadComments();
-    alert("Logged in as Admin!");
-  } else { alert("Invalid Password"); }
+    alert("Logged in as Primary Admin!");
+    return;
+  }
+
+  const customAdmins = JSON.parse(localStorage.getItem('aREA_customAdmins') || '[]');
+  const match = customAdmins.find(a => a.username.toLowerCase() === user.toLowerCase() && a.password === pass);
+  
+  if (match) {
+    window.isAdmin = true;
+    window.currentAdmin = match.username;
+    window.currentAdminBadge = match.badgeName;
+    window.currentAdminColor = match.badgeColor;
+    localStorage.setItem('aREA_isAdmin','true');
+    localStorage.setItem('aREA_currentAdmin', match.username);
+    localStorage.setItem('aREA_currentAdminBadge', match.badgeName);
+    localStorage.setItem('aREA_currentAdminColor', match.badgeColor);
+    updateAdminUI();
+    if (typeof window.loadComments === 'function') window.loadComments();
+    alert(`Logged in as ${match.username}!`);
+  } else { 
+    alert("Invalid Credentials"); 
+  }
 };
+
 window.adminLogout = () => {
   window.isAdmin = false;
+  window.currentAdmin = '';
+  window.currentAdminBadge = 'ADMIN';
+  window.currentAdminColor = 'gold';
   localStorage.removeItem('aREA_isAdmin');
+  localStorage.removeItem('aREA_currentAdmin');
+  localStorage.removeItem('aREA_currentAdminBadge');
+  localStorage.removeItem('aREA_currentAdminColor');
   updateAdminUI();
   if (typeof window.loadComments === 'function') window.loadComments();
 };
+
+window.createAdminAccount = () => {
+  const userEl = document.getElementById('newAdminUser');
+  const passEl = document.getElementById('newAdminPass');
+  const badgeEl = document.getElementById('newAdminBadge');
+  const colorEl = document.getElementById('newAdminColor');
+
+  if (!userEl.value || !passEl.value || !badgeEl.value) {
+    alert("Please completely fill out all login credentials fields!");
+    return;
+  }
+
+  const customAdmins = JSON.parse(localStorage.getItem('aREA_customAdmins') || '[]');
+  customAdmins.push({
+    username: userEl.value.trim(),
+    password: passEl.value,
+    badgeName: badgeEl.value.trim(),
+    badgeColor: colorEl.value
+  });
+
+  localStorage.setItem('aREA_customAdmins', JSON.stringify(customAdmins));
+  alert(`Shared login account derived successfully!\nShare these details with your friends:\nUsername: ${userEl.value}\nPassword: ${passEl.value}\nBadge: ${badgeEl.value}`);
+  
+  userEl.value = ''; passEl.value = ''; badgeEl.value = '';
+  renderSharedAdmins();
+};
+
+function renderSharedAdmins() {
+  const list = document.getElementById('sharedAdminsList');
+  if (!list) return;
+  const customAdmins = JSON.parse(localStorage.getItem('aREA_customAdmins') || '[]');
+  if (customAdmins.length === 0) {
+    list.innerHTML = "No custom accounts created yet.";
+    return;
+  }
+  list.innerHTML = '<strong>Active Shared Admin Access Credentials:</strong><br>' + customAdmins.map(a => 
+    `• Username: <span>${esc(a.username)}</span> (Badge Name: <span style="color:${a.badgeColor};font-weight:800;">${esc(a.badgeName)}</span>)`
+  ).join('<br>');
+}
 
 // ═══════════════════════════════
 //  MARKDOWN PARSER
 // ═══════════════════════════════
 function parseMarkdown(md) {
-  // video shorthand: [video](url)
-  md = md.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
-    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
-  // images: ![alt](url)
-  md = md.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;">');
-  // links
-  md = md.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
-  // headings
+  md = md.replace(/\[video\]\((https?:\/\/[^)]+)\)/g, '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
+  md = md.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;">');
+  md = md.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
   md = md.replace(/^### (.+)$/gm,'<h3>$1</h3>');
   md = md.replace(/^## (.+)$/gm,'<h2>$1</h2>');
   md = md.replace(/^# (.+)$/gm,'<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
-  // bold / italic
   md = md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
   md = md.replace(/\*(.+?)\*/g,'<em>$1</em>');
-  // code
   md = md.replace(/`(.+?)`/g,'<code>$1</code>');
-  // blockquote
   md = md.replace(/^> (.+)$/gm,'blockquote>$1</blockquote>');
-  // lists
   md = md.replace(/^- (.+)$/gm,'<li>$1</li>');
   md = md.replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$1</ul>');
-  // paragraphs
   md = md.replace(/\n\n/g,'</p><p>');
   return '<p>' + md.replace(/\n/g,'<br>') + '</p>';
 }
@@ -706,10 +838,7 @@ const STATIC_ARTICLES = [
 ];
 
 function renderNewsTab(dynamicArticles) {
-  // Merge: dynamic articles first (newest), then statics
-  const all = [...dynamicArticles, ...STATIC_ARTICLES]
-    .sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
-
+  const all = [...dynamicArticles, ...STATIC_ARTICLES].sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
   const featured = document.getElementById('newsFeatured');
   const grid = document.getElementById('newsGrid');
   if (!featured || !grid) return;
@@ -720,7 +849,6 @@ function renderNewsTab(dynamicArticles) {
     return;
   }
 
-  // First article = featured
   const f = all[0];
   const fDate = f.timestamp ? new Date(f.timestamp.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '';
   featured.innerHTML = `
@@ -736,7 +864,6 @@ function renderNewsTab(dynamicArticles) {
       </div>
     </div>`;
 
-  // Rest = grid cards
   grid.innerHTML = all.slice(1).map(a => {
     const d = a.timestamp ? new Date(a.timestamp.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
     const clickFn = a.isStatic ? `${a.openFn}()` : `openArticleModal(${JSON.stringify(a).replace(/'/g,"\\'")})`;
@@ -775,8 +902,7 @@ var attachmentName = null;
 
 function showAttachmentState(state, html) {
   const el = document.getElementById('attachmentPreview');
-  el.style.display = 'block';
-  el.className = '';
+  el.style.display = 'block'; el.className = '';
   if (state==='uploading') el.classList.add('uploading');
   if (state==='error')     el.classList.add('error');
   el.innerHTML = html;
@@ -794,52 +920,109 @@ function eI(t){const d=document.createElement('div');d.textContent=t;return d.in
 async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  
-  attachmentUrl = null;
-  attachmentName = null;
+  attachmentUrl = null; attachmentName = null;
   showAttachmentState('uploading', `⏳ Uploading <strong>${eI(file.name)}</strong>…`);
-  
   try {
     const formData = new FormData();
     formData.append('file', file);
-    
-    const res = await fetch('https://0x0.st', {
-      method: 'POST',
-      body: formData
-    });
-    
+    const res = await fetch('https://0x0.st', { method: 'POST', body: formData });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    
     const url = await res.text();
-    
-    if (!url || url.includes('error')) {
-      throw new Error('Upload failed');
-    }
-    
-    attachmentUrl = url;
-    attachmentName = file.name;
-    
-    const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
-    const isVid = /\.(mp4|webm|mov|mkv)$/i.test(url);
-    const isAud = /\.(mp3|ogg|wav|m4a|flac)$/i.test(url);
-    
-    let preview = `✅ <strong>${eI(file.name)}</strong> uploaded! <a href="${url}" target="_blank" style="color:var(--accent);word-break:break-all;font-size:13px;">${url}</a>`;
-    
-    if (isImg) preview += `<img src="${url}" class="attach-thumb" alt="preview">`;
-    else if (isVid) preview += `<video src="${url}" controls style="display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;"></video>`;
-    else if (isAud) preview += `<audio src="${url}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
-    
+    if (!url || url.includes('error')) throw new Error('Upload failed');
+    attachmentUrl = url.trim(); attachmentName = file.name;
+    const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(attachmentUrl);
+    const isVid = /\.(mp4|webm|mov|mkv)$/i.test(attachmentUrl);
+    const isAud = /\.(mp3|ogg|wav|m4a|flac)$/i.test(attachmentUrl);
+    let preview = `✅ <strong>${eI(file.name)}</strong> uploaded! <a href="${attachmentUrl}" target="_blank" style="color:var(--accent);word-break:break-all;font-size:13px;">${attachmentUrl}</a>`;
+    if (isImg) preview += `<img src="${attachmentUrl}" class="attach-thumb" alt="preview">`;
+    else if (isVid) preview += `<video src="${attachmentUrl}" controls style="display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;"></video>`;
+    else if (isAud) preview += `<audio src="${attachmentUrl}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
     showAttachmentState('ready', preview);
   } catch (err) {
     console.error('Upload error:', err);
     showAttachmentState('error', `❌ Upload failed: ${err.message}`);
-    attachmentUrl = null;
-    input.value = '';
+    attachmentUrl = null; input.value = '';
   }
 }
-  
+
 // ═══════════════════════════════
-//  MISC UI
+//  COMMENTS & ADMIN THREAD REPLIES
+// ═══════════════════════════════
+window.loadComments = function() {
+  const container = document.getElementById('commentsContainer');
+  if (!container) return;
+  let comments = JSON.parse(localStorage.getItem('aREA_comments') || '[]');
+  
+  if (comments.length === 0) {
+    comments = [
+      { id: 1, name: "Hamid", message: "Wow, the visual parameters are running flawlessly.", timestamp: Date.now() - 3600000, replies: [] },
+      { id: 2, name: "Harry V", message: "MASTER mode feels completely instantaneous.", timestamp: Date.now() - 7200000, replies: [] }
+    ];
+    localStorage.setItem('aREA_comments', JSON.stringify(comments));
+  }
+
+  container.innerHTML = comments.map(c => {
+    const tStr = new Date(c.timestamp).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+    let rHtml = '';
+    
+    if (c.replies && c.replies.length > 0) {
+      rHtml = `<div style="margin-left:24px; margin-top:14px; border-left:2px solid var(--liquid-glass-border); padding-left:14px; display:flex; flex-direction:column; gap:10px;">` +
+        c.replies.map(r => `
+          <div class="glass-card" style="padding:14px; margin-bottom:0; background:rgba(255,255,255,0.02);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <strong style="font-size:14px;">${esc(r.name)}</strong>
+              <span style="background:${r.badgeColor || 'gold'}; color:#000; font-size:10px; font-weight:900; padding:2px 6px; border-radius:6px; text-transform:uppercase; letter-spacing:0.5px;">${esc(r.badgeName || 'ADMIN')}</span>
+              <small style="margin-left:auto; font-size:11px; color:var(--text-mute);">${new Date(r.timestamp).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'})}</small>
+            </div>
+            <p style="margin:0; font-size:14px; line-height:1.4;">${esc(r.message)}</p>
+          </div>
+        `).join('') + `</div>`;
+    }
+
+    let aHtml = '';
+    if (c.attachmentUrl) {
+      if (/\.(jpe?g|png|gif|webp|svg)$/i.test(c.attachmentUrl)) aHtml = `<img src="${c.attachmentUrl}" style="max-width:100%; max-height:220px; border-radius:12px; margin-top:10px; display:block;">`;
+      else if (/\.(mp4|webm|mov|mkv)$/i.test(c.attachmentUrl)) aHtml = `<video src="${c.attachmentUrl}" controls style="display:block; max-width:100%; max-height:220px; border-radius:12px; margin-top:10px;"></video>`;
+      else aHtml = `<audio src="${c.attachmentUrl}" controls style="display:block; width:100%; margin-top:10px;"></audio>`;
+    }
+
+    const repBtn = window.isAdmin ? `<button class="theater-btn" style="margin-top:10px; padding:6px 12px; font-size:12px;" onclick="window.postAdminReply(${c.id})">💬 Reply as Admin</button>` : '';
+
+    return `
+      <div class="glass-card" style="margin-bottom:0;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+          <strong style="font-size:16px; color:var(--accent);">${esc(c.name)}</strong>
+          <small style="color:var(--text-mute); font-size:12px;">${tStr}</small>
+        </div>
+        <p style="margin:0; font-size:15px; line-height:1.5;">${esc(c.message)}</p>
+        ${aHtml}
+        ${repBtn}
+        ${rHtml}
+      </div>`;
+  }).join('');
+};
+
+window.postAdminReply = (commentId) => {
+  const replyText = prompt(`Enter authorized response thread as ${window.currentAdmin} [${window.currentAdminBadge}]:`);
+  if (!replyText) return;
+  const comments = JSON.parse(localStorage.getItem('aREA_comments') || '[]');
+  const index = comments.findIndex(c => c.id === commentId);
+  if (index !== -1) {
+    if (!comments[index].replies) comments[index].replies = [];
+    comments[index].replies.push({
+      name: window.currentAdmin,
+      message: replyText.trim(),
+      badgeName: window.currentAdminBadge,
+      badgeColor: window.currentAdminColor,
+      timestamp: Date.now()
+    });
+    localStorage.setItem('aREA_comments', JSON.stringify(comments));
+    window.loadComments();
+  }
+};
+
+// ═══════════════════════════════
+//  MISC UI & LIQUID TILT ENGINE
 // ═══════════════════════════════
 function toggleIframeFullscreen(btn) {
   const card = btn.closest('.book-container');
@@ -858,6 +1041,27 @@ function toggleTheaterMode(btn){
   else{card.classList.remove('theater-focus');btn.innerText="Enter Theater Mode";}
 }
 
+/* Dynamic Interactive Element Transform Listeners (Liquid GL Mode) */
+document.addEventListener('mousemove', (e) => {
+  if (!appSettings.liquidGL) return;
+  const target = e.target.closest('.btn-ios, .btn-ios-large, .attach-btn, .glass-card.clickable, .nav-item, .news-card');
+  if (!target) return;
+  const box = target.getBoundingClientRect();
+  const offsetX = e.clientX - box.left - box.width / 2;
+  const offsetY = e.clientY - box.top - box.height / 2;
+  const rotX = (offsetY / (box.height / 2)) * -12;
+  const rotY = (offsetX / (box.width / 2)) * 12;
+  target.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
+  target.style.transition = 'transform 0.04s linear';
+});
+
+document.addEventListener('mouseout', (e) => {
+  const target = e.target.closest('.btn-ios, .btn-ios-large, .attach-btn, .glass-card.clickable, .nav-item, .news-card');
+  if (!target) return;
+  target.style.transform = '';
+  target.style.transition = 'transform 0.4s var(--spring-bounce)';
+});
+
 // ═══════════════════════════════
 //  BACKGROUND CANVAS
 // ═══════════════════════════════
@@ -872,7 +1076,7 @@ const themes={
   ocean:{accent:'#5856D6',colors:['#5856D6','#007AFF','#30B0C7','#5AC8FA','#AF52DE','#5856D6']},
   midnight:{accent:'#AF52DE',colors:['#AF52DE','#5856D6','#FF2D55','#007AFF','#30B0C7','#AF52DE']}
 };
-let appSettings={appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,wixWidth:375,uiScale:0.95,startPage:'home',theme:'default',customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'}};
+let appSettings={appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,wixWidth:375,uiScale:0.95,startPage:'home',theme:'default',customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'},liquidGL:false};
 function initCanvas(){
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;points=[];
   let p;
@@ -897,7 +1101,7 @@ function loop(){
 }
 
 // ═══════════════════════════════
-//  SETTINGS
+//  SETTINGS SYSTEM
 // ═══════════════════════════════
 function updateSetting(k,v){appSettings[k]=v;localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();}
 function updateThemeSelection(v){
@@ -933,7 +1137,8 @@ function applySettings(){
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el[typeof v==='boolean'?'checked':'value']=v;};
   setEl('themeSelect',appSettings.theme);setEl('lightToggle',appSettings.lightMode);setEl('ipadToggle',appSettings.ipadMode);
   setEl('noBgToggle',appSettings.noBg);setEl('solidGlassToggle',appSettings.solidGlass);setEl('batteryToggle',appSettings.batterySaver);
-  setEl('ultraSaverToggle',appSettings.ultraSaver);setEl('removeAireaToggle',appSettings.removeAirea);
+  setEl('ultraSaverToggle',appSettings.ultraSaver);setEl('removeAireaToggle',appSettings.removeAirea);setEl('liquidGLToggle',appSettings.liquidGL);
+  
   document.body.classList.toggle('light',appSettings.lightMode);
   document.body.classList.toggle('ipad-mode',appSettings.ipadMode);
   document.body.classList.toggle('no-bg',appSettings.noBg);
@@ -963,7 +1168,7 @@ function applySettings(){
 }
 
 // ═══════════════════════════════
-//  NAV
+//  NAV SYSTEM
 // ═══════════════════════════════
 function showTab(id,btn){
   document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
@@ -1068,261 +1273,44 @@ function openTADCModal(){
 function closeAlert(){document.getElementById('customAlert').style.display='none';}
 
 // ═══════════════════════════════
-//  INIT
+//  INITIALIZATION INTERFACES
 // ═══════════════════════════════
 function loadStoredSettings(){
   try{const s=localStorage.getItem('aREASettings');if(s){const p=JSON.parse(s);if(p&&typeof p==='object')appSettings={...appSettings,...p};}}
   catch(e){console.error(e);localStorage.removeItem('aREASettings');}
 }
+
 document.addEventListener("DOMContentLoaded",()=>{
   navRO.observe(document.querySelector('.nav-container'));
-  loadStoredSettings();initCanvas();loop();applySettings();updateAdminUI();
+  loadStoredSettings();initCanvas();loop();applySettings();updateAdminUI();window.loadComments();
+  
+  if(typeof renderNewsTab === 'function') renderNewsTab([]);
+
+  document.getElementById('postBtn')?.addEventListener('click', () => {
+    const nameEl = document.getElementById('username');
+    const msgEl = document.getElementById('message');
+    if (!nameEl.value || !msgEl.value) {
+      alert("Please provide both a username and message text before posting!");
+      return;
+    }
+    const comments = JSON.parse(localStorage.getItem('aREA_comments') || '[]');
+    comments.unshift({
+      id: Date.now(),
+      name: nameEl.value.trim(),
+      message: msgEl.value.trim(),
+      attachmentUrl: attachmentUrl,
+      timestamp: Date.now(),
+      replies: []
+    });
+    localStorage.setItem('aREA_comments', JSON.stringify(comments));
+    msgEl.value = '';
+    window.clearAttachment();
+    window.loadComments();
+  });
+
   const loader=document.getElementById('initialLoader');
   if(loader){loader.style.opacity='0';setTimeout(()=>loader.remove(),400);}
-  const pages=['home','news','ai-rea','songs','videos','games','books','community','extras','settings'];
-  const sp=appSettings.startPage||'home';
-  const si=pages.indexOf(sp);
-  if(si>-1){
-    if(sp==='ai-rea'&&appSettings.removeAirea)showTab('home',document.querySelectorAll('.nav-item')[0]);
-    else showTab(sp,document.querySelectorAll('.nav-item')[si]);
-  }
-  // initial news render with just statics (firebase will refresh)
-  renderNewsTab([]);
-});
-
-// ═══════════════════════════════
-//  AUDIO VISUALIZER
-// ═══════════════════════════════
-let audioCtx,analyser,dataArray;const sourceNodes=new Map();
-function initAudioVisualizer(audio){
-  if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
-  if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();analyser=audioCtx.createAnalyser();analyser.fftSize=32;dataArray=new Uint8Array(analyser.frequencyBinCount);}
-  if(!sourceNodes.has(audio)){const s=audioCtx.createMediaElementSource(audio);s.connect(analyser);analyser.connect(audioCtx.destination);sourceNodes.set(audio,s);}
-  let lf=0;
-  function upd(){
-    if(audio.paused||appSettings.ultraSaver)return;lf++;
-    if(appSettings.batterySaver&&lf%2!==0){requestAnimationFrame(upd);return;}
-    analyser.getByteFrequencyData(dataArray);
-    const c=audio.closest('.song-item');if(!c)return;
-    c.querySelectorAll('.bar').forEach((b,i)=>{const v=dataArray[i]/255;b.style.height=(4+v*16)+'px';});
-    requestAnimationFrame(upd);
-  }
-  if(audioCtx.state==='suspended')audioCtx.resume();
-  upd();
-}
-document.querySelectorAll('audio').forEach(a=>a.addEventListener('play',()=>initAudioVisualizer(a)));
-</script>
-
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import{getAuth,signInAnonymously,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import{getFirestore,collection,addDoc,onSnapshot,serverTimestamp,deleteDoc,doc,query,orderBy}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-const firebaseConfig={apiKey:"AIzaSyDNcrCDEby6pkvdwi0_-WPqS8L21RhrOX8",authDomain:"a-rea-220da.firebaseapp.com",projectId:"a-rea-220da",storageBucket:"a-rea-220da.firebasestorage.app",messagingSenderId:"1046969467026",appId:"1:1046969467026:web:f67fffc6312c2996cb664b",measurementId:"G-LE90K55Y65"};
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-const COMMENTS_PATH=['artifacts','a-rea-web-comments','public','data','comments'];
-const ARTICLES_PATH=['artifacts','a-rea-web-articles','public','data','articles'];
-
-const commentsContainer=document.getElementById('commentsContainer');
-const usernameInput=document.getElementById('username');
-const messageInput=document.getElementById('message');
-const postBtn=document.getElementById('postBtn');
-let currentUser=null;
-
-// ── Auth ──
-const initAuth=async()=>{try{await signInAnonymously(auth);}catch(e){console.error(e);commentsContainer.innerHTML=`<div style="text-align:center;color:#ff6b6b;">Auth Error</div>`;}};
-onAuthStateChanged(auth,(u)=>{currentUser=u;if(u){window.loadComments();loadArticles();}});
-initAuth();
-
-// ── Articles ──
-window.postArticle=async function(){
-  if(!window.isAdmin)return;
-  const title=document.getElementById('articleTitle').value.trim();
-  const body=document.getElementById('articleBody').value.trim();
-  const tag=document.getElementById('articleTag').value.trim()||'News';
-  const tagColor=document.getElementById('articleColor').value.trim()||'#007AFF';
-  const coverImg=document.getElementById('articleCover').value.trim();
-  if(!title||!body)return alert('Title and body required!');
-  try{
-    await addDoc(collection(db,...ARTICLES_PATH),{
-      title,body,tag,tagColor,coverImg,
-      summary: body.replace(/[#*`\[\]!]/g,'').substring(0,120)+'…',
-      timestamp:serverTimestamp(),
-      authorUsername:'Aqeel'
-    });
-    document.getElementById('articleTitle').value='';
-    document.getElementById('articleBody').value='';
-    document.getElementById('articleTag').value='';
-    document.getElementById('articleColor').value='';
-    document.getElementById('articleCover').value='';
-    alert('Article published! Check the News tab.');
-  }catch(e){console.error(e);alert('Failed to publish: '+e.message);}
-};
-
-function loadArticles(){
-  const ref=collection(db,...ARTICLES_PATH);
-  onSnapshot(ref,(snap)=>{
-    const arts=[];
-    snap.forEach(d=>arts.push({id:d.id,...d.data()}));
-    arts.sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0));
-    renderNewsTab(arts);
-  });
-}
-
-// ── Comments ──
-
-window.loadComments = function loadComments() {
-  const ref = collection(db, ...COMMENTS_PATH);
-  onSnapshot(ref, (snap) => {
-    const comments = [];
-    snap.forEach(d => comments.push({id: d.id, ...d.data()}));
-    comments.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
-    renderComments(comments);
-  });
-};
-
-window.confirmDelete = async function(id) {
-  if(confirm('Are you sure you want to delete this comment?')) {
-    try {
-      await deleteDoc(doc(db, ...COMMENTS_PATH, id));
-    } catch(e) {
-      alert('Failed to delete: ' + e.message);
-    }
-  }
-};
- 
-function renderComments(comments) {
-  if (comments.length === 0) {
-    commentsContainer.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-mute);font-style:italic;">No comments yet.</div>`;
-    return;
-  }
- 
-  // Build comment tree
-  const commentMap = {};
-  const rootComments = [];
- 
-  comments.forEach(c => {
-    commentMap[c.id] = { ...c, replies: [] };
-  });
- 
-  comments.forEach(c => {
-    if (c.parentId && commentMap[c.parentId]) {
-      commentMap[c.parentId].replies.push(commentMap[c.id]);
-    } else {
-      rootComments.push(commentMap[c.id]);
-    }
-  });
- 
-  // Render function
-  const createCommentHTML = (c, depth = 0) => {
-    const isOwner = currentUser && c.userId === currentUser.uid;
-    const isAdminAuthor = c.isAdmin && c.username === 'Aqeel';
-    const adminTag = isAdminAuthor ? `<span style="background:gold;color:black;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">[ADMIN]</span>` : '';
-    const uStyle = isAdminAuthor ? `color:gold;` : `color:var(--accent);`;
-    const delBtn = (isOwner || window.isAdmin) ? `<button onclick="window.confirmDelete('${c.id}')" style="background:none;border:none;color:#FF3B30;cursor:pointer;font-weight:bold;font-size:12px;">DELETE</button>` : '';
-    const repBtn = !window.isAdmin ? `<button onclick="window.replyToComment('${c.id}')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-weight:bold;font-size:12px;margin-right:10px;">REPLY</button>` : '';
- 
-    // Build message HTML
-    const msgText = esc(c.message || '');
-    let mediaHtml = '';
-    if (c.attachmentUrl) {
-      const u = c.attachmentUrl;
-      if (/\.(jpe?g|png|gif|webp|svg)$/i.test(u))
-        mediaHtml = `<a href="${u}" target="_blank"><img src="${u}" style="display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:10px;object-fit:contain;" onerror="this.parentElement.innerHTML='<a href=&quot;${u}&quot; target=&quot;_blank&quot; style=&quot;color:var(--accent);&quot;>📎 View attachment</a>';"></a>`;
-      else if (/\.(mp4|webm|mov|mkv)$/i.test(u))
-        mediaHtml = `<video src="${u}" controls style="display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:10px;"></video>`;
-      else if (/\.(mp3|ogg|wav|m4a|flac)$/i.test(u))
-        mediaHtml = `<audio src="${u}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
-      else
-        mediaHtml = `<a href="${u}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--accent);font-size:13px;font-weight:600;word-break:break-all;">📎 ${esc(c.attachmentName || u)}</a>`;
-    }
- 
-    const replyHTML = c.replies.length > 0 ? `
-      <div style="margin-left:${depth > 0 ? '40px' : '0'};margin-top:16px;border-left:2px solid var(--liquid-glass-border);padding-left:16px;">
-        ${c.replies.map(r => createCommentHTML(r, depth + 1)).join('')}
-      </div>
-    ` : '';
- 
-    return `
-      <div class="glass-card" style="padding:24px;margin-bottom:0;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-          <div>
-            <span style="font-weight:800;${uStyle}font-size:15px;">@${esc(c.username || 'Anonymous')} ${adminTag}</span>
-            <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${c.timestamp ? new Date(c.timestamp.seconds * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Just now'}</div>
-          </div>
-          <div>${repBtn}${delBtn}</div>
-        </div>
-        <div style="color:var(--text-main);word-break:break-word;line-height:1.6;font-size:16px;">${msgText}</div>
-        ${mediaHtml}
-        ${replyHTML}
-      </div>
-    `;
-  };
- 
-  commentsContainer.innerHTML = rootComments.map(c => createCommentHTML(c)).join('');
-}
- 
-// Add this function for replying
-window.replyToComment = function(parentId) {
-  const username = usernameInput.value.trim();
-  const message = messageInput.value.trim();
-  
-  if (!username || !message || !currentUser) {
-    alert('Please enter a username and message');
-    return;
-  }
-  
-  // Store the parent ID in a variable
-  window.replyingTo = parentId;
-  
-  // Focus on the message input
-  messageInput.focus();
-  
-  // Show a hint
-  alert('Type your reply and click "Post Comment"');
-};
- 
-// Modify the postBtn click handler
-postBtn.addEventListener('click', async () => {
-  const username = usernameInput.value.trim();
-  const message = messageInput.value.trim();
-  
-  if (!username || !message || !currentUser) {
-    alert('Please enter a username and message');
-    return;
-  }
-  
-  postBtn.disabled = true;
-  postBtn.innerText = 'Posting...';
-  
-  try {
-    const commentData = {
-      username,
-      message,
-      timestamp: serverTimestamp(),
-      userId: currentUser.uid,
-      isAdmin: window.isAdmin && username === 'Aqeel',
-      attachmentUrl: window.attachmentUrl || null,
-      attachmentName: window.attachmentName || null,
-      parentId: window.replyingTo || null  // Add this line
-    };
-    
-    await addDoc(collection(db, ...COMMENTS_PATH), commentData);
-    
-    messageInput.value = '';
-    if (typeof window.clearAttachment === 'function') window.clearAttachment();
-    window.replyingTo = null;  // Clear the reply state
-  } catch (e) {
-    alert('Post failed: ' + e.message);
-  } finally {
-    postBtn.disabled = false;
-    postBtn.innerText = 'Post Comment';
-  }
 });
 </script>
 </body>
 </html>
-
-```
