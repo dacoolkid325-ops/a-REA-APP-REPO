@@ -585,9 +585,11 @@ body.no-bg #glassCanvas { display:none !important; }
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Username</label>
       <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left:20px;">
     </div>
-    <div style="margin-bottom:16px;">
+<div style="margin-bottom:16px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</label>
-      <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;padding-left:20px;"></textarea>
+      <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLivePreview()"></textarea>
+      <!-- Live GIF preview container -->
+      <div id="liveGiphyPreview" style="display:none;flex-wrap:wrap;gap:8px;margin-top:10px;padding:10px;border-radius:14px;background:rgba(0,0,0,0.05);border:1px solid var(--liquid-glass-border);"></div>
     </div>
 
     <!-- Giphy Search Drawer -->
@@ -1777,6 +1779,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }, 400);
 });
+  // ═══════════════════════════════════════════════
+//  LIGHTBOX IMAGE MAGNIFICATION
+// ═══════════════════════════════════════════════
+function openLightbox(imgSrc) {
+  let lb = document.getElementById('imgLightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'imgLightbox';
+    lb.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(10px);';
+    lb.innerHTML = `<img id="lightboxImg" style="max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.5);">`;
+    lb.onclick = () => lb.style.display = 'none';
+    document.body.appendChild(lb);
+  }
+  document.getElementById('lightboxImg').src = imgSrc;
+  lb.style.display = 'flex';
+}
 </script>
 </body>
 </html>
