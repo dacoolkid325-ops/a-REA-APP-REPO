@@ -13,6 +13,8 @@
 <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-ipad-76x76.png">
 <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-iphone-retina-120x120.png">
 <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-ipad-retina-152x152.png">
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg-dark:#050507;--text-main:#ffffff;--text-mute:rgba(255,255,255,0.55);
@@ -248,25 +250,44 @@ body.no-bg #glassCanvas { display:none !important; }
 .theater-btn { margin-top:15px;background:rgba(255,255,255,0.1);border:1px solid var(--liquid-glass-border);color:var(--text-main);border-radius:14px;padding:10px 15px;font-weight:600;cursor:pointer;transition:transform 0.2s var(--spring-bounce); }
 .theater-btn:active { transform:scale(0.9); }
 
-/* ── Community upload ── */
+/* ── Community upload & Giphy ── */
 .attach-btn {
-  display:flex;align-items:center;justify-content:center;gap:8px;width:auto;padding:18px 22px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:center;gap:8px;width:auto;padding:18px 20px;margin-bottom:20px;
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
-  border-radius:20px;font-weight:700;font-size:17px;cursor:pointer;font-family:inherit;
+  border-radius:20px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit;
   transition:transform 0.2s var(--spring-bounce),background 0.2s;flex-shrink:0;
 }
 .attach-btn:hover { background:rgba(255,255,255,0.12); }
 .attach-btn:active { transform:scale(0.95); }
-.post-row { display:flex;gap:12px;align-items:stretch; }
+.post-row { display:flex;gap:10px;align-items:stretch; }
 .post-row .btn-ios { margin-bottom:0;flex:1; }
 #attachmentPreview {
-  display:none;padding:14px 18px;border-radius:16px;margin-top:12px;font-size:14px;
+  display:none;padding:14px 18px;border-radius:16px;margin-bottom:14px;font-size:14px;
   font-weight:600;border:1px solid var(--liquid-glass-border);background:rgba(52,199,89,0.08);
   color:var(--text-main);transition:all 0.3s ease;
 }
 #attachmentPreview.uploading { background:rgba(0,122,255,0.08); }
 #attachmentPreview.error { background:rgba(255,59,48,0.08); }
 #attachmentPreview img.attach-thumb { display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;object-fit:contain; }
+
+/* Giphy Drawer */
+#giphyDrawer {
+  display:none;margin-bottom:16px;padding:16px;border-radius:20px;
+  background:rgba(0,0,0,0.06);border:1px solid var(--liquid-glass-border);
+}
+#giphyDrawer.open { display:block; }
+.giphy-grid {
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;max-height:240px;overflow-y:auto;
+}
+@media(max-width:500px){ .giphy-grid{grid-template-columns:repeat(2,1fr);} }
+.giphy-item {
+  width:100%;height:100px;object-fit:cover;border-radius:12px;cursor:pointer;
+  transition:transform 0.2s var(--spring-bounce);border:1px solid var(--liquid-glass-border);
+}
+.giphy-item:hover { transform:scale(1.04);border-color:var(--accent); }
+.comment-giphy {
+  display:block;max-width:260px;width:100%;border-radius:14px;margin:10px 0;border:1px solid var(--liquid-glass-border);
+}
 
 /* ── News Tab – Switch 2 style ── */
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
@@ -288,7 +309,7 @@ body.no-bg #glassCanvas { display:none !important; }
 @media(max-width:580px){ .news-grid-feed{grid-template-columns:1fr;} }
 @media(min-width:900px){ .news-grid-feed{grid-template-columns:1fr 1fr 1fr;} }
 .news-card {
-  border-radius:20px;overflow:hidden;cursor:pointer;
+  border-radius:20px;overflow:hidden;cursor:pointer;position:relative;
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);
   transition:transform 0.3s var(--spring-bounce),box-shadow 0.3s;display:flex;flex-direction:column;
 }
@@ -300,12 +321,12 @@ body.no-bg #glassCanvas { display:none !important; }
 .news-card-title { font-size:14px;font-weight:800;line-height:1.3;color:var(--text-main);margin:0; }
 .news-card-date { font-size:11px;color:var(--text-mute);margin-top:auto; }
 
-/* Admin article composer */
-#articleComposer {
-  display:none;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.25);
+/* Admin panels */
+.admin-box {
+  display:none;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.3);
   border-radius:24px;padding:24px;margin-bottom:24px;
 }
-#articleComposer.open { display:block; }
+.admin-box.open { display:block; }
 .article-input {
   width:100%;padding:14px 18px;border-radius:16px;font-family:inherit;font-weight:500;font-size:15px;
   color:var(--text-main);outline:none;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);
@@ -386,15 +407,9 @@ body.no-bg #glassCanvas { display:none !important; }
 <div id="app-wrapper">
 
 <section id="home" class="active">
-  <div class="news-grid">
-    <div class="glass-card clickable" style="border-left:6px solid var(--accent);cursor:pointer;" onclick="openAlexModal()">
-      <strong style="color:var(--accent);font-size:1.05rem;">👋 Alexandru News</strong>
-      <p style="font-size:14px;opacity:0.85;margin:8px 0 0 0;line-height:1.5;">My best friend Alexandru and why I'm committing to his legacy. Click to read more!</p>
-    </div>
-    <div class="glass-card clickable" style="border-left:6px solid #FF2D55;cursor:pointer;" onclick="openTADCModal()">
-      <strong style="color:#FF2D55;font-size:1.05rem;">🎪 The Amazing Digital Circus</strong>
-      <p style="font-size:14px;opacity:0.85;margin:8px 0 0 0;line-height:1.5;">My favourite show right now. IT'S IN THEATRES!! Click to find out why it's the best thing ever.</p>
-    </div>
+  <!-- Dynamically displays the 2 newest news posts from Supabase (or static fallback) -->
+  <div class="news-grid" id="homeNewsGrid">
+    <div class="glass-card" style="opacity:0.6;">Loading latest news…</div>
   </div>
   <div class="glass-card iframe-wrapper" id="wixWrapper">
     <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width:100%;height:100%;border:none;transform:scale(1);" loading="lazy" fetchpriority="low"></iframe>
@@ -404,11 +419,38 @@ body.no-bg #glassCanvas { display:none !important; }
 <section id="news">
   <div class="news-header-row">
     <h1 style="margin-bottom:0;">News</h1>
-    <span style="font-size:13px;color:var(--text-mute);font-weight:600;">from the a-REA desk</span>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="font-size:13px;color:var(--text-mute);font-weight:600;">from the a-REA desk</span>
+      <button id="newsAdminBtn" onclick="window.adminLogin()" class="btn-ios" style="padding:8px 14px;font-size:12px;width:auto;margin:0;background:rgba(255,215,0,0.2);border:1px solid gold;color:gold;">Admin Login</button>
+    </div>
+  </div>
+
+  <!-- Admin-only News Composer -->
+  <div id="newsTabComposer" class="admin-box">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="font-size:1.1rem;">📰</span>
+      <strong style="color:gold;font-size:15px;">Post News Article (Admin Only)</strong>
+      <span style="font-size:12px;color:var(--text-mute);margin-left:auto;">Markdown supported · appears on Home & News</span>
+    </div>
+    <input type="text" id="articleTitle" class="article-input" placeholder="Article title…" style="font-size:17px;font-weight:700;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <input type="text" id="articleTag" class="article-input" placeholder="Tag (e.g. Update, TADC)">
+      <input type="text" id="articleColor" class="article-input" placeholder="Tag hex color (e.g. #FF2D55)">
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+      <input type="text" id="articleCover" class="article-input" placeholder="Optional cover image URL (or upload →)" style="margin-bottom:0;">
+      <button type="button" class="attach-btn" style="margin-bottom:0;padding:13px 16px;" onclick="document.getElementById('newsImageFile').click()" title="Upload image to Supabase Storage">🖼️</button>
+      <input type="file" id="newsImageFile" accept="image/*" style="display:none;" onchange="uploadNewsCoverImage(this)">
+    </div>
+    <div id="newsUploadStatus" style="font-size:12px;color:var(--accent);margin-bottom:10px;display:none;"></div>
+    <textarea id="articleBody" class="article-input" rows="6" placeholder="Write your news in Markdown…
+# Heading
+**bold**, *italic*, [link](url)
+![Image](url) or [giphy: gifid]"></textarea>
+    <button class="btn-ios" id="publishNewsBtn" style="margin-bottom:0;background:linear-gradient(135deg,gold,#ffaa00);color:#000;font-weight:900;" onclick="postArticle()">📤 Publish News</button>
   </div>
 
   <div id="newsFeatured"></div>
-
   <div class="news-grid-feed" id="newsGrid"></div>
 </section>
 
@@ -517,44 +559,52 @@ body.no-bg #glassCanvas { display:none !important; }
     <div id="adminControls">
       <button onclick="window.adminLogin()" id="adminLoginBtn" class="btn-ios" style="padding:10px 15px;font-size:13px;width:auto;margin:0;background:rgba(255,215,0,0.2);border:1px solid gold;color:gold;">Admin Login</button>
       <div id="adminActiveUI" style="display:none;align-items:center;gap:10px;">
-        <span style="background:gold;color:black;font-weight:800;padding:6px 12px;border-radius:8px;font-size:13px;">ADMIN MODE ON</span>
+        <span id="adminRoleBadge" style="background:gold;color:black;font-weight:800;padding:6px 12px;border-radius:8px;font-size:13px;">ADMIN MODE ON</span>
         <button onclick="window.adminLogout()" class="btn-ios" style="padding:10px 15px;font-size:13px;width:auto;margin:0;background:rgba(255,59,48,0.2);border:1px solid #FF3B30;color:#FF3B30;">Log Out</button>
       </div>
     </div>
   </div>
 
-  <div id="articleComposer">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <span style="font-size:1.1rem;">📰</span>
-      <strong style="color:gold;font-size:15px;">Write News Article</strong>
-      <span style="font-size:12px;color:var(--text-mute);margin-left:auto;">Markdown supported · appears in News tab</span>
+  <!-- Super-Admin Only: Manage Close-Friend Sub-Admins -->
+  <div id="subAdminManager" class="admin-box">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span style="font-size:1.1rem;">👑</span>
+      <strong style="color:gold;font-size:15px;">Friend Admin Accounts (Super Admin Only)</strong>
     </div>
-    <input type="text" id="articleTitle" class="article-input" placeholder="Article title…" style="font-size:17px;font-weight:700;">
-    <input type="text" id="articleTag" class="article-input" placeholder="Tag (e.g. Update, Announcement, TADC)…">
-    <input type="text" id="articleColor" class="article-input" placeholder="Tag colour hex (e.g. #FF2D55) — leave blank for blue">
-    <input type="text" id="articleCover" class="article-input" placeholder="Cover image URL (optional)">
-    <textarea id="articleBody" class="article-input" rows="8" placeholder="Write your article in Markdown…
-# Big heading
-**bold**, *italic*, [link](url)
-![Image caption](image-url)
-[video](video-url)"></textarea>
-    <button class="btn-ios" style="margin-bottom:0;background:linear-gradient(135deg,gold,#ffaa00);color:#000;font-weight:900;" onclick="postArticle()">📤 Publish Article</button>
+    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Create credentials for close friends. They can delete comments and post news, but cannot manage admin accounts.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:14px;">
+      <input type="text" id="newSubUser" class="article-input" placeholder="Friend's username" style="margin-bottom:0;">
+      <input type="text" id="newSubPass" class="article-input" placeholder="Password to share" style="margin-bottom:0;">
+      <button onclick="createSubAdmin()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;background:gold;color:#000;font-weight:800;">+ Add</button>
+    </div>
+    <div id="subAdminsList" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
 
   <div class="glass-card">
     <div style="margin-bottom:20px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Username</label>
-      <input type="text" id="username" placeholder="Enter your name..." class="search-input">
+      <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left:20px;">
     </div>
-    <div style="margin-bottom:20px;">
+    <div style="margin-bottom:16px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</label>
-      <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;"></textarea>
+      <textarea id="message" rows="3" placeholder="What's on your mind? (Use GIF button to insert [giphy: id])" class="search-input" style="height:auto;resize:none;padding-left:20px;"></textarea>
     </div>
+
+    <!-- Giphy Search Drawer -->
+    <div id="giphyDrawer">
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="giphySearchInput" class="article-input" placeholder="Search Giphy..." style="margin-bottom:0;" onkeydown="if(event.key==='Enter')searchGiphy()">
+        <button type="button" onclick="searchGiphy()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;">Search</button>
+      </div>
+      <div id="giphyResults" class="giphy-grid"></div>
+    </div>
+
     <div id="attachmentPreview"></div>
     <div class="post-row">
-      <button id="postBtn" class="btn-ios">Post Comment</button>
-      <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach file">📎</button>
-      <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(this)">
+      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment</button>
+      <button type="button" class="attach-btn" onclick="toggleGiphyDrawer()" title="Insert Giphy GIF">GIF</button>
+      <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Upload Image to Supabase Storage">🖼️</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFileUpload(this)">
     </div>
   </div>
 
@@ -611,83 +661,429 @@ body.no-bg #glassCanvas { display:none !important; }
 </div>
 
 <script>
-// ═══════════════════════════════
-//  ADMIN
-// ═══════════════════════════════
-window.isAdmin = localStorage.getItem('aREA_isAdmin') === 'true';
+// ═══════════════════════════════════════════════
+//  SUPABASE & API CONFIGURATION
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = 'https://ppjfqwfhyneesaaoktxy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_g4V_0jCwL4XE-qj5nBeyZA_lkyqGfHP';
+const GIPHY_API_KEY = 'NaBkjT7EdHosq7xLkRsGBRCGpT8ZrD0n';
+  
+const COMMENTS_TABLE = 'comments'; // Matches your screenshot columns: id, created_at, name, text, image_url
+const STORAGE_BUCKET = 'uploads';  // Create a public bucket named 'uploads' in Supabase Storage
+
+let sb = null;
+if (window.supabase && SUPABASE_URL.startsWith('http')) {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// ═══════════════════════════════════════════════
+//  MULTI-TIER ADMIN SYSTEM
+//  role: 'super' (Aqeel) | 'mod' (Close Friends) | null
+// ═══════════════════════════════════════════════
+window.adminRole = localStorage.getItem('aREA_adminRole') || null;
+window.adminUser = localStorage.getItem('aREA_adminUser') || null;
+window.isAdmin = () => window.adminRole === 'super' || window.adminRole === 'mod';
 
 function updateAdminUI() {
-  const on = window.isAdmin;
-  document.getElementById('adminLoginBtn').style.display = on ? 'none' : 'block';
-  document.getElementById('adminActiveUI').style.display = on ? 'flex' : 'none';
-  const composer = document.getElementById('articleComposer');
-  if (composer) composer.classList.toggle('open', on);
+  const active = window.isAdmin();
+  const isSuper = window.adminRole === 'super';
+
+  document.getElementById('adminLoginBtn').style.display = active ? 'none' : 'block';
+  document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
+  document.getElementById('adminRoleBadge').innerText = isSuper
+    ? '👑 SUPER ADMIN'
+    : `🛡️ MOD (${window.adminUser || 'Friend'})`;
+
+  const newsBtn = document.getElementById('newsAdminBtn');
+  if (newsBtn) newsBtn.style.display = active ? 'none' : 'inline-block';
+
+  // Both Super Admin and Friend Mods can post News
+  const newsComposer = document.getElementById('newsTabComposer');
+  if (newsComposer) newsComposer.classList.toggle('open', active);
+
+  // Only Super Admin (Aqeel) can create/delete Friend Admin accounts
+  const subMgr = document.getElementById('subAdminManager');
+  if (subMgr) subMgr.classList.toggle('open', isSuper);
+
+  if (isSuper) loadSubAdmins();
 }
 
-window.adminLogin = () => {
+window.adminLogin = async () => {
   const user = prompt("Admin Username:");
-  if (user !== "Aqeel") return alert("Invalid Username");
+  if (!user) return;
   const pass = prompt("Admin Password:");
-  if (pass === "area2026") {
-    window.isAdmin = true;
-    localStorage.setItem('aREA_isAdmin','true');
+  if (!pass) return;
+
+  // 1. Check Super Admin
+  if (user === "Aqeel" && pass === "area2026") {
+    window.adminRole = 'super';
+    window.adminUser = 'Aqeel';
+    localStorage.setItem('aREA_adminRole', 'super');
+    localStorage.setItem('aREA_adminUser', 'Aqeel');
     updateAdminUI();
-    if (typeof window.loadComments === 'function') window.loadComments();
-    alert("Logged in as Admin!");
-  } else { alert("Invalid Password"); }
-};
-window.adminLogout = () => {
-  window.isAdmin = false;
-  localStorage.removeItem('aREA_isAdmin');
-  updateAdminUI();
-  if (typeof window.loadComments === 'function') window.loadComments();
+    await loadComments();
+    await loadNews();
+    return alert("Logged in as Super Admin!");
+  }
+
+  // 2. Check Sub-Admins table in Supabase
+  if (sb) {
+    const { data, error } = await sb
+      .from('sub_admins')
+      .select('*')
+      .eq('username', user.trim())
+      .eq('password', pass)
+      .maybeSingle();
+
+    if (data && !error) {
+      window.adminRole = 'mod';
+      window.adminUser = data.username;
+      localStorage.setItem('aREA_adminRole', 'mod');
+      localStorage.setItem('aREA_adminUser', data.username);
+      updateAdminUI();
+      await loadComments();
+      await loadNews();
+      return alert(`Logged in as Friend Admin (${data.username})!`);
+    }
+  }
+
+  alert("Invalid Username or Password");
 };
 
-// ═══════════════════════════════
-//  MARKDOWN PARSER
-// ═══════════════════════════════
-function parseMarkdown(md) {
-  // video shorthand: [video](url)
-  md = md.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
-    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
-  // images: ![alt](url)
-  md = md.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;">');
-  // links
-  md = md.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
-  // headings
-  md = md.replace(/^### (.+)$/gm,'<h3>$1</h3>');
-  md = md.replace(/^## (.+)$/gm,'<h2>$1</h2>');
-  md = md.replace(/^# (.+)$/gm,'<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
-  // bold / italic
-  md = md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  md = md.replace(/\*(.+?)\*/g,'<em>$1</em>');
-  // code
-  md = md.replace(/`(.+?)`/g,'<code>$1</code>');
-  // blockquote
-  md = md.replace(/^> (.+)$/gm,'blockquote>$1</blockquote>');
-  // lists
-  md = md.replace(/^- (.+)$/gm,'<li>$1</li>');
-  md = md.replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$1</ul>');
-  // paragraphs
-  md = md.replace(/\n\n/g,'</p><p>');
-  return '<p>' + md.replace(/\n/g,'<br>') + '</p>';
+window.adminLogout = async () => {
+  window.adminRole = null;
+  window.adminUser = null;
+  localStorage.removeItem('aREA_adminRole');
+  localStorage.removeItem('aREA_adminUser');
+  updateAdminUI();
+  await loadComments();
+  await loadNews();
+};
+
+async function loadSubAdmins() {
+  if (!sb || window.adminRole !== 'super') return;
+  const list = document.getElementById('subAdminsList');
+  const { data, error } = await sb.from('sub_admins').select('*').order('created_at', { ascending: false });
+  if (error) {
+    list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>sub_admins</code> table in Supabase to manage friend admins.</div>`;
+    return;
+  }
+  if (!data || data.length === 0) {
+    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No friend admins added yet.</div>`;
+    return;
+  }
+  list.innerHTML = data.map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+      <div>
+        <strong>${esc(a.username)}</strong>
+        <span style="font-size:12px;color:var(--text-mute);margin-left:10px;">Password: <code>${esc(a.password)}</code></span>
+      </div>
+      <button onclick="deleteSubAdmin(${a.id})" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Remove</button>
+    </div>
+  `).join('');
 }
 
-// ═══════════════════════════════
-//  STATIC NEWS ARTICLES
-// ═══════════════════════════════
+window.createSubAdmin = async () => {
+  if (!sb || window.adminRole !== 'super') return;
+  const username = document.getElementById('newSubUser').value.trim();
+  const password = document.getElementById('newSubPass').value.trim();
+  if (!username || !password) return alert("Enter both a username and password.");
+  if (username === "Aqeel") return alert("Cannot override Super Admin username.");
+
+  const { error } = await sb.from('sub_admins').insert([{ username, password }]);
+  if (error) return alert("Error creating friend admin: " + error.message);
+
+  document.getElementById('newSubUser').value = '';
+  document.getElementById('newSubPass').value = '';
+  loadSubAdmins();
+};
+
+window.deleteSubAdmin = async (id) => {
+  if (!sb || window.adminRole !== 'super') return;
+  if (!confirm("Remove this friend admin's access?")) return;
+  await sb.from('sub_admins').delete().eq('id', id);
+  loadSubAdmins();
+};
+
+// ═══════════════════════════════════════════════
+//  MARKDOWN & GIPHY PARSER
+// ═══════════════════════════════════════════════
+function renderGiphyShortcodes(htmlText) {
+  return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
+    return `<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="GIF" class="comment-giphy" loading="lazy">`;
+  });
+}
+
+function parseMarkdown(md) {
+  let safe = esc(md || '');
+  // Giphy tag: [giphy: gifid]
+  safe = renderGiphyShortcodes(safe);
+  // Video shorthand: [video](url)
+  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
+    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
+  // Images: ![alt](url)
+  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;">');
+  // Links: [label](url)
+  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
+  // Headings
+  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
+  // Bold / Italic / Code
+  safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
+  // Blockquotes & Lists
+  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
+  safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
+  // Paragraphs
+  safe = safe.replace(/\n\n/g, '</p><p>');
+  return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
+}
+
+// ═══════════════════════════════════════════════
+//  SUPABASE STORAGE IMAGE UPLOAD
+// ═══════════════════════════════════════════════
+async function uploadToSupabaseStorage(file, folder = 'community') {
+  if (!sb) throw new Error('Supabase is not configured yet.');
+  const ext = file.name.split('.').pop();
+  const filePath = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await sb.storage
+    .from(STORAGE_BUCKET)
+    .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+  if (uploadError) throw uploadError;
+
+  const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+  return data.publicUrl;
+}
+
+// Comment Image Upload
+var attachmentUrl = null;
+function showAttachmentState(state, html) {
+  const el = document.getElementById('attachmentPreview');
+  el.style.display = 'block';
+  el.className = '';
+  if (state === 'uploading') el.classList.add('uploading');
+  if (state === 'error') el.classList.add('error');
+  el.innerHTML = html;
+}
+
+window.clearAttachment = function() {
+  attachmentUrl = null;
+  const el = document.getElementById('attachmentPreview');
+  el.style.display = 'none';
+  el.innerHTML = '';
+  document.getElementById('fileInput').value = '';
+};
+
+async function handleFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  attachmentUrl = null;
+  showAttachmentState('uploading', `⏳ Uploading <strong>${esc(file.name)}</strong> to Supabase Storage…`);
+
+  try {
+    const publicUrl = await uploadToSupabaseStorage(file, 'comments');
+    attachmentUrl = publicUrl;
+    showAttachmentState('ready', `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span>✅ <strong>${esc(file.name)}</strong> ready!</span>
+        <button type="button" onclick="clearAttachment()" style="background:none;border:none;color:#FF3B30;font-weight:800;cursor:pointer;">✕ Remove</button>
+      </div>
+      <img src="${publicUrl}" class="attach-thumb" alt="Uploaded preview">
+    `);
+  } catch (err) {
+    console.error('Supabase Storage upload error:', err);
+    showAttachmentState('error', `❌ Upload failed: ${esc(err.message)}. Ensure public bucket "${STORAGE_BUCKET}" exists.`);
+    input.value = '';
+  }
+}
+
+// News Cover Image Upload
+async function uploadNewsCoverImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('newsUploadStatus');
+  status.style.display = 'block';
+  status.innerText = `⏳ Uploading ${file.name}…`;
+
+  try {
+    const publicUrl = await uploadToSupabaseStorage(file, 'news');
+    document.getElementById('articleCover').value = publicUrl;
+    status.innerText = `✅ Uploaded! URL filled automatically.`;
+  } catch (err) {
+    status.style.color = '#FF3B30';
+    status.innerText = `❌ Upload failed: ${err.message}`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  GIPHY PICKER ([giphy: gifid])
+// ═══════════════════════════════════════════════
+function toggleGiphyDrawer() {
+  const drawer = document.getElementById('giphyDrawer');
+  const isOpen = drawer.classList.toggle('open');
+  if (isOpen && document.getElementById('giphyResults').innerHTML === '') {
+    searchGiphy(true);
+  }
+}
+
+async function searchGiphy(trending = false) {
+  const resultsEl = document.getElementById('giphyResults');
+  if (!GIPHY_API_KEY || GIPHY_API_KEY === 'YOUR_GIPHY_API_KEY') {
+    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Add your <code>GIPHY_API_KEY</code> in the script config to search GIFs, or type <code>[giphy: gifid]</code> directly in your message!</div>`;
+    return;
+  }
+
+  const query = document.getElementById('giphySearchInput').value.trim();
+  const endpoint = (!query || trending)
+    ? `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=12&rating=pg`
+    : `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=12&rating=pg`;
+
+  resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Searching Giphy…</div>`;
+
+  try {
+    const res = await fetch(endpoint);
+    const json = await res.json();
+    if (!json.data || json.data.length === 0) {
+      resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">No GIFs found.</div>`;
+      return;
+    }
+    resultsEl.innerHTML = json.data.map(gif => {
+      const thumb = gif.images.fixed_height_small.url;
+      return `<img src="${thumb}" class="giphy-item" onclick="insertGiphyTag('${gif.id}')" title="Insert GIF">`;
+    }).join('');
+  } catch (e) {
+    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:#FF3B30;padding:10px;">Giphy error: ${esc(e.message)}</div>`;
+  }
+}
+
+function insertGiphyTag(gifId) {
+  const msgBox = document.getElementById('message');
+  const tag = `[giphy: ${gifId}]`;
+  msgBox.value = msgBox.value ? `${msgBox.value} ${tag}` : tag;
+  document.getElementById('giphyDrawer').classList.remove('open');
+  msgBox.focus();
+}
+
+// ═══════════════════════════════════════════════
+//  COMMUNITY COMMENTS (SUPABASE)
+//  Columns: id, created_at, name, text, image_url
+// ═══════════════════════════════════════════════
+function formatCommentBody(rawText) {
+  let safe = esc(rawText || '');
+  // Render [giphy: gifid] tags as inline GIFs
+  safe = renderGiphyShortcodes(safe);
+  // Preserve line breaks
+  return safe.replace(/\n/g, '<br>');
+}
+
+window.loadComments = async function() {
+  const container = document.getElementById('commentsContainer');
+  if (!sb) {
+    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">Connect your <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> in the script to load live comments.</div>`;
+    return;
+  }
+
+  const { data, error } = await sb
+    .from(COMMENTS_TABLE)
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    container.innerHTML = `<div class="glass-card" style="color:#FF3B30;">Error loading comments: ${esc(error.message)}</div>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">No comments yet. Be the first to say something!</div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(c => {
+    const dateStr = c.created_at
+      ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+      : '';
+    const adminDelBtn = window.isAdmin()
+      ? `<button onclick="deleteComment(${c.id})" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
+      : '';
+    const imgHtml = c.image_url
+      ? `<img src="${esc(c.image_url)}" alt="Attachment" style="display:block;max-width:100%;max-height:320px;border-radius:16px;margin-top:12px;object-fit:contain;border:1px solid var(--liquid-glass-border);" loading="lazy">`
+      : '';
+
+    return `
+      <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;">
+          <strong style="color:var(--accent);font-size:16px;">${esc(c.name || 'Anonymous')}</strong>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:12px;color:var(--text-mute);">${dateStr}</span>
+            ${adminDelBtn}
+          </div>
+        </div>
+        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${formatCommentBody(c.text)}</div>
+        ${imgHtml}
+      </div>
+    `;
+  }).join('');
+};
+
+async function postComment() {
+  if (!sb) return alert("Configure your Supabase URL and Anon Key first!");
+  const name = document.getElementById('username').value.trim() || 'Anonymous';
+  const text = document.getElementById('message').value.trim();
+
+  if (!text && !attachmentUrl) {
+    return alert("Please write a message, pick a GIF, or upload an image!");
+  }
+
+  const btn = document.getElementById('postBtn');
+  btn.disabled = true;
+  btn.innerText = 'Posting…';
+
+  const { error } = await sb.from(COMMENTS_TABLE).insert([{
+    name: name,
+    text: text,
+    image_url: attachmentUrl || null
+  }]);
+
+  btn.disabled = false;
+  btn.innerText = 'Post Comment';
+
+  if (error) {
+    alert("Could not post comment: " + error.message);
+    return;
+  }
+
+  document.getElementById('message').value = '';
+  clearAttachment();
+  await loadComments();
+}
+
+window.deleteComment = async function(id) {
+  if (!window.isAdmin() || !sb) return;
+  if (!confirm("Delete this comment?")) return;
+  await sb.from(COMMENTS_TABLE).delete().eq('id', id);
+  await loadComments();
+};
+
+// ═══════════════════════════════════════════════
+//  NEWS TAB & HOME TOP-2 NEWS FEED
+// ═══════════════════════════════════════════════
 const STATIC_ARTICLES = [
   {
     id: 'static-alex',
     title: "Alexandru News",
     tag: "Personal",
-    tagColor: "#007AFF",
-    coverImg: "",
+    tag_color: "#007AFF",
+    image_url: "",
     coverEmoji: "👋",
     summary: "My best friend Alexandru and why I'm continuing his legacy through coding.",
-    timestamp: { seconds: 1700000000 },
+    created_at: "2023-11-14T22:13:20Z",
     isStatic: true,
     openFn: 'openAlexModal'
   },
@@ -695,21 +1091,61 @@ const STATIC_ARTICLES = [
     id: 'static-tadc',
     title: "The Amazing Digital Circus — IT'S IN THEATRES!!",
     tag: "TADC",
-    tagColor: "#FF2D55",
-    coverImg: "https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg",
+    tag_color: "#FF2D55",
+    image_url: "https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg",
     coverEmoji: "🎪",
-    summary: "My absolute favourite show right now. Started on YouTube, now Netflix + Amazon + THEATRES. How did we get here?",
-    timestamp: { seconds: 1700000100 },
+    summary: "My favourite show right now. Started on YouTube, now Netflix + Amazon + THEATRES. How did we get here?",
+    created_at: "2023-11-14T22:15:00Z",
     isStatic: true,
     openFn: 'openTADCModal'
   }
 ];
 
-function renderNewsTab(dynamicArticles) {
-  // Merge: dynamic articles first (newest), then statics
-  const all = [...dynamicArticles, ...STATIC_ARTICLES]
-    .sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
+let cachedArticles = [];
 
+window.loadNews = async function() {
+  let dynamicArticles = [];
+  if (sb) {
+    const { data, error } = await sb
+      .from('news')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data) {
+      dynamicArticles = data.map(item => ({
+        ...item,
+        summary: (item.body || '').replace(/[#*`>\[\]!]/g, '').slice(0, 120) + ((item.body || '').length > 120 ? '…' : '')
+      }));
+    }
+  }
+  const all = [...dynamicArticles, ...STATIC_ARTICLES]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  cachedArticles = all;
+
+  renderHomeTopNews(all.slice(0, 2));
+  renderNewsTab(all);
+};
+
+// Renders the 2 newest news cards at the top of the Home page
+function renderHomeTopNews(topTwo) {
+  const homeGrid = document.getElementById('homeNewsGrid');
+  if (!homeGrid) return;
+
+  homeGrid.innerHTML = topTwo.map((a, idx) => {
+    const color = a.tag_color || '#007AFF';
+    const clickAttr = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
+    return `
+      <div class="glass-card clickable" style="border-left:6px solid ${esc(color)};cursor:pointer;" onclick="${clickAttr}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <strong style="color:${esc(color)};font-size:1.05rem;">${a.coverEmoji ? a.coverEmoji + ' ' : ''}${esc(a.title)}</strong>
+          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:12px;background:${esc(color)}22;color:${esc(color)};">${esc(a.tag || 'News')}</span>
+        </div>
+        <p style="font-size:14px;opacity:0.85;margin:8px 0 0 0;line-height:1.5;">${esc(a.summary || '')}</p>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderNewsTab(all) {
   const featured = document.getElementById('newsFeatured');
   const grid = document.getElementById('newsGrid');
   if (!featured || !grid) return;
@@ -720,34 +1156,48 @@ function renderNewsTab(dynamicArticles) {
     return;
   }
 
-  // First article = featured
+  // Featured top item
   const f = all[0];
-  const fDate = f.timestamp ? new Date(f.timestamp.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '';
+  const fColor = f.tag_color || '#007AFF';
+  const fDate = f.created_at ? new Date(f.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const fClick = f.isStatic ? `${f.openFn}()` : `openArticleByIndex(0)`;
+  const fDel = (!f.isStatic && window.isAdmin())
+    ? `<button onclick="event.stopPropagation();deleteNewsArticle(${f.id})" style="position:absolute;top:14px;right:14px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-weight:800;cursor:pointer;">Delete</button>`
+    : '';
+
   featured.innerHTML = `
-    <div class="news-featured" onclick="${f.isStatic ? f.openFn+'()' : 'openArticleModal('+JSON.stringify(f).replace(/'/g,"\\'")+')'}">
-      ${f.coverImg
-        ? `<img class="news-featured-img" src="${f.coverImg}" alt="${f.title}" onerror="this.style.display='none'">`
-        : `<div class="news-featured-img" style="background:linear-gradient(135deg,${f.tagColor||'var(--accent)'},#AF52DE);display:flex;align-items:center;justify-content:center;font-size:4rem;">${f.coverEmoji||'📰'}</div>`
+    <div class="news-featured" onclick="${fClick}">
+      ${fDel}
+      ${f.image_url
+        ? `<img class="news-featured-img" src="${esc(f.image_url)}" alt="${esc(f.title)}" onerror="this.style.display='none'">`
+        : `<div class="news-featured-img" style="background:linear-gradient(135deg,${esc(fColor)},#AF52DE);display:flex;align-items:center;justify-content:center;font-size:4rem;">${f.coverEmoji || '📰'}</div>`
       }
       <div class="news-featured-body">
-        <span class="news-featured-tag" style="background:${f.tagColor||'var(--accent)'}22;color:${f.tagColor||'var(--accent)'};">${f.tag||'News'}</span>
+        <span class="news-featured-tag" style="background:${esc(fColor)}22;color:${esc(fColor)};">${esc(f.tag || 'News')}</span>
         <div class="news-featured-title">${esc(f.title)}</div>
-        <p class="news-featured-sub">${esc(f.summary||'')} <span style="font-size:12px;opacity:0.6;">${fDate}</span></p>
+        <p class="news-featured-sub">${esc(f.summary || '')} <span style="font-size:12px;opacity:0.6;">${fDate}</span></p>
       </div>
     </div>`;
 
-  // Rest = grid cards
-  grid.innerHTML = all.slice(1).map(a => {
-    const d = a.timestamp ? new Date(a.timestamp.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
-    const clickFn = a.isStatic ? `${a.openFn}()` : `openArticleModal(${JSON.stringify(a).replace(/'/g,"\\'")})`;
+  // Remaining items
+  grid.innerHTML = all.slice(1).map((a, i) => {
+    const idx = i + 1;
+    const color = a.tag_color || '#007AFF';
+    const d = a.created_at ? new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
+    const clickFn = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
+    const delBtn = (!a.isStatic && window.isAdmin())
+      ? `<button onclick="event.stopPropagation();deleteNewsArticle(${a.id})" style="position:absolute;top:10px;right:10px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:8px;padding:4px 9px;font-size:11px;font-weight:800;cursor:pointer;">Delete</button>`
+      : '';
+
     return `
       <div class="news-card" onclick="${clickFn}">
-        ${a.coverImg
-          ? `<img class="news-card-img" src="${a.coverImg}" alt="${a.title}" onerror="this.className='news-card-img no-img';this.textContent='${a.coverEmoji||'📰'}';">`
-          : `<div class="news-card-img no-img" style="background:linear-gradient(135deg,${a.tagColor||'var(--accent)'}44,#AF52DE33);">${a.coverEmoji||'📰'}</div>`
+        ${delBtn}
+        ${a.image_url
+          ? `<img class="news-card-img" src="${esc(a.image_url)}" alt="${esc(a.title)}" onerror="this.className='news-card-img no-img';this.textContent='${a.coverEmoji || '📰'}';">`
+          : `<div class="news-card-img no-img" style="background:linear-gradient(135deg,${esc(color)}44,#AF52DE33);">${a.coverEmoji || '📰'}</div>`
         }
         <div class="news-card-body">
-          <span class="news-card-tag" style="color:${a.tagColor||'var(--accent)'};">${esc(a.tag||'News')}</span>
+          <span class="news-card-tag" style="color:${esc(color)};">${esc(a.tag || 'News')}</span>
           <div class="news-card-title">${esc(a.title)}</div>
           <div class="news-card-date">${d}</div>
         </div>
@@ -755,92 +1205,80 @@ function renderNewsTab(dynamicArticles) {
   }).join('');
 }
 
-function openArticleModal(a) {
-  document.getElementById('alertTitle').style.color = a.tagColor || 'var(--accent)';
+window.openArticleByIndex = function(idx) {
+  const a = cachedArticles[idx];
+  if (!a) return;
+  const color = a.tag_color || 'var(--accent)';
+  document.getElementById('alertTitle').style.color = color;
   document.getElementById('alertTitle').innerText = a.title;
+
   let html = '';
-  if (a.coverImg) html += `<img src="${a.coverImg}" alt="${a.title}" style="width:100%;border-radius:16px;margin-bottom:16px;">`;
-  html += `<div style="margin-bottom:12px;"><span style="background:${a.tagColor||'var(--accent)'}22;color:${a.tagColor||'var(--accent)'};padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;">${esc(a.tag||'News')}</span> <span style="font-size:12px;color:var(--text-mute);margin-left:8px;">${a.timestamp?new Date(a.timestamp.seconds*1000).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):''}</span></div>`;
+  if (a.image_url) {
+    html += `<img src="${esc(a.image_url)}" alt="${esc(a.title)}" style="width:100%;border-radius:16px;margin-bottom:16px;">`;
+  }
+  const dateStr = a.created_at
+    ? new Date(a.created_at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+  html += `<div style="margin-bottom:12px;">
+    <span style="background:${esc(color)}22;color:${esc(color)};padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;">${esc(a.tag || 'News')}</span>
+    <span style="font-size:12px;color:var(--text-mute);margin-left:8px;">${dateStr}</span>
+  </div>`;
   html += parseMarkdown(a.body || '');
-  if (a.videoUrl) html += `<video src="${a.videoUrl}" controls style="width:100%;border-radius:12px;margin-top:12px;"></video>`;
+
   document.getElementById('alertMsg').innerHTML = html;
   document.getElementById('customAlert').style.display = 'flex';
-}
-
-// ═══════════════════════════════
-//  FILE UPLOAD (FilePost)
-// ═══════════════════════════════
-var attachmentUrl = null;
-var attachmentName = null;
-
-function showAttachmentState(state, html) {
-  const el = document.getElementById('attachmentPreview');
-  el.style.display = 'block';
-  el.className = '';
-  if (state==='uploading') el.classList.add('uploading');
-  if (state==='error')     el.classList.add('error');
-  el.innerHTML = html;
-}
-
-window.clearAttachment = function() {
-  attachmentUrl = null; attachmentName = null;
-  const el = document.getElementById('attachmentPreview');
-  el.style.display = 'none'; el.innerHTML = '';
-  document.getElementById('fileInput').value = '';
 };
 
-function eI(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+window.postArticle = async function() {
+  if (!window.isAdmin()) return alert("Only admins can publish news!");
+  if (!sb) return alert("Configure Supabase first!");
 
-async function handleFileUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  
-  attachmentUrl = null;
-  attachmentName = null;
-  showAttachmentState('uploading', `⏳ Uploading <strong>${eI(file.name)}</strong>…`);
-  
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const res = await fetch('https://0x0.st', {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    
-    const url = await res.text();
-    
-    if (!url || url.includes('error')) {
-      throw new Error('Upload failed');
-    }
-    
-    attachmentUrl = url;
-    attachmentName = file.name;
-    
-    const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
-    const isVid = /\.(mp4|webm|mov|mkv)$/i.test(url);
-    const isAud = /\.(mp3|ogg|wav|m4a|flac)$/i.test(url);
-    
-    let preview = `✅ <strong>${eI(file.name)}</strong> uploaded! <a href="${url}" target="_blank" style="color:var(--accent);word-break:break-all;font-size:13px;">${url}</a>`;
-    
-    if (isImg) preview += `<img src="${url}" class="attach-thumb" alt="preview">`;
-    else if (isVid) preview += `<video src="${url}" controls style="display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;"></video>`;
-    else if (isAud) preview += `<audio src="${url}" controls style="display:block;width:100%;margin-top:10px;"></audio>`;
-    
-    showAttachmentState('ready', preview);
-  } catch (err) {
-    console.error('Upload error:', err);
-    showAttachmentState('error', `❌ Upload failed: ${err.message}`);
-    attachmentUrl = null;
-    input.value = '';
-  }
-}
-  
-// ═══════════════════════════════
-//  MISC UI
-// ═══════════════════════════════
+  const title = document.getElementById('articleTitle').value.trim();
+  const tag = document.getElementById('articleTag').value.trim() || 'News';
+  const tag_color = document.getElementById('articleColor').value.trim() || '#007AFF';
+  const image_url = document.getElementById('articleCover').value.trim() || null;
+  const body = document.getElementById('articleBody').value.trim();
+
+  if (!title || !body) return alert("Please enter a title and body for your news article.");
+
+  const btn = document.getElementById('publishNewsBtn');
+  btn.disabled = true;
+  btn.innerText = 'Publishing…';
+
+  const { error } = await sb.from('news').insert([{
+    title,
+    tag,
+    tag_color,
+    image_url,
+    body
+  }]);
+
+  btn.disabled = false;
+  btn.innerText = '📤 Publish News';
+
+  if (error) return alert("Error publishing news: " + error.message);
+
+  document.getElementById('articleTitle').value = '';
+  document.getElementById('articleTag').value = '';
+  document.getElementById('articleColor').value = '';
+  document.getElementById('articleCover').value = '';
+  document.getElementById('articleBody').value = '';
+  document.getElementById('newsUploadStatus').style.display = 'none';
+
+  await loadNews();
+  alert("News published! It is now live on the News tab and Home page.");
+};
+
+window.deleteNewsArticle = async function(id) {
+  if (!window.isAdmin() || !sb) return;
+  if (!confirm("Delete this news article?")) return;
+  await sb.from('news').delete().eq('id', id);
+  await loadNews();
+};
+
+// ═══════════════════════════════════════════════
+//  MISC UI, CANVAS, SETTINGS, NAV, PLAYER
+// ═══════════════════════════════════════════════
 function toggleIframeFullscreen(btn) {
   const card = btn.closest('.book-container');
   card.classList.toggle('ios-pseudo-fullscreen');
@@ -858,9 +1296,6 @@ function toggleTheaterMode(btn){
   else{card.classList.remove('theater-focus');btn.innerText="Enter Theater Mode";}
 }
 
-// ═══════════════════════════════
-//  BACKGROUND CANVAS
-// ═══════════════════════════════
 const canvas=document.getElementById('glassCanvas');
 const ctx=canvas.getContext('2d');
 let points=[],animFrameId=null,isTabActive=true,bgFrameCount=0;
@@ -896,9 +1331,6 @@ function loop(){
   animFrameId=requestAnimationFrame(loop);
 }
 
-// ═══════════════════════════════
-//  SETTINGS
-// ═══════════════════════════════
 function updateSetting(k,v){appSettings[k]=v;localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();}
 function updateThemeSelection(v){
   updateSetting('theme',v);
@@ -962,9 +1394,6 @@ function applySettings(){
   updatePillPosition();
 }
 
-// ═══════════════════════════════
-//  NAV
-// ═══════════════════════════════
 function showTab(id,btn){
   document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
   const t=document.getElementById(id);if(t)t.classList.add('active');
@@ -987,9 +1416,6 @@ const navRO=new ResizeObserver(()=>updatePillPosition());
 window.addEventListener('resize',()=>{updatePillPosition();initCanvas();applySettings();});
 document.querySelector('.nav-container').addEventListener('scroll',()=>updatePillPosition());
 
-// ═══════════════════════════════
-//  MINI PLAYER
-// ═══════════════════════════════
 let currentAudio=null;
 const miniPlayer=document.getElementById('miniPlayer');
 const mpTitle=document.getElementById('mpTitle');
@@ -1010,9 +1436,6 @@ document.addEventListener('pause',function(e){
 },true);
 function togglePlay(){if(!currentAudio)return;currentAudio.paused?currentAudio.play():currentAudio.pause();vibrate(20);}
 
-// ═══════════════════════════════
-//  SONGS SEARCH
-// ═══════════════════════════════
 let searchTimeout;
 function filterSongs(val){
   clearTimeout(searchTimeout);
@@ -1026,9 +1449,6 @@ function filterSongs(val){
   },150);
 }
 
-// ═══════════════════════════════
-//  MODALS
-// ═══════════════════════════════
 function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
 
 function openAlexModal(){
@@ -1049,56 +1469,52 @@ function openAlexModal(){
 function openTADCModal(){
   document.getElementById('alertTitle').style.color='#FF2D55';
   document.getElementById('alertTitle').innerText="🎪 The Amazing Digital Circus";
-  const videoId="1tXGyxIiBZVMC9g1MVrGOWIzyp1bTu_-7";
   document.getElementById('alertMsg').innerHTML=`
     <p>Ok so The Amazing Digital Circus is genuinely one of my favourite things to exist on the internet right now. It started on this pretty small YouTube channel run by <strong>Gooseworx</strong>, and the pilot episode just absolutely went off — millions of views within days of dropping. The whole premise is people getting trapped inside a digital circus as cartoon characters with no memory of who they were before, and it sounds weird but it is so good.</p>
     <img src="https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg" alt="TADC Pilot" style="width:100%;border-radius:14px;margin:14px 0;border:1px solid rgba(255,45,85,0.3);" onerror="this.style.display='none'">
     <p>The characters are just incredible. <strong>Pomni</strong> is the main character and she's just trying to keep it together while everyone else has lost the plot (literally). <strong>Jax</strong> is actually so funny and kind of mean in the best way. <strong>Caine</strong> as the ringmaster is chaotic perfection.</p>
-    <p>AND THEN — it got a <strong>Netflix AND Amazon Prime deal</strong>. For a YouTube show!!! That's insane. And now the final episode is getting a <strong>theatrical release</strong> which is just completely unreal.</p>
+    <p>AND THEN — it got a <strong>Netflix AND Amazon Prime deal</strong>. For a YouTube show!!! That's insane. And now the final episode has hit <strong>theatres and YouTube</strong> which is just completely unreal.</p>
     <img src="https://img.youtube.com/vi/DMNlzf8PiEM/maxresdefault.jpg" alt="TADC Episode" style="width:100%;border-radius:14px;margin:14px 0;border:1px solid rgba(255,45,85,0.3);" onerror="this.style.display='none'">
-    <p>If you haven't watched it yet, go on YouTube right now — the pilot is completely free and it'll hook you immediately. I have waited for the finale for 3 years and it's finally here.</p>
+    <p>If you haven't watched it yet, go on YouTube right now — the pilot is completely free and it'll hook you immediately. The epic series finale "Remember" is out now!</p>
     <a href="https://www.youtube.com/watch?v=HwAPLk_sQ3w" target="_blank" style="display:block;background:#FF2D55;color:white;text-align:center;padding:14px;border-radius:16px;font-weight:800;text-decoration:none;margin-top:8px;">▶ Watch the Pilot on YouTube</a>
     <div style="margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,45,85,0.3);">
-      <iframe src="https://drive.google.com/file/d/${videoId}/preview" width="100%" height="300" allow="autoplay" style="border:none;display:block;background:#000;"></iframe>
+      <iframe src="https://www.youtube.com/embed/PVy-bcTsO8A" width="100%" height="300" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;display:block;background:#000;"></iframe>
     </div>
-    <p> TADC Ep 9- Remember</p>
-    <a href="https://drive.usercontent.google.com/download?id=${videoId}&export=download&confirm=t" target="_blank" style="display:block;background:#111;color:white;text-align:center;padding:12px;border-radius:14px;font-weight:700;text-decoration:none;margin-top:10px;">📥 Download Episode</a>`;
+    <p style="margin-top:12px;font-weight:700;text-align:center;">TADC Ep 9: Remember (Series Finale)</p>`;
   document.getElementById('customAlert').style.display='flex';
 }
+  
 function closeAlert(){document.getElementById('customAlert').style.display='none';}
 
-// ═══════════════════════════════
-//  INIT
-// ═══════════════════════════════
 function loadStoredSettings(){
   try{const s=localStorage.getItem('aREASettings');if(s){const p=JSON.parse(s);if(p&&typeof p==='object')appSettings={...appSettings,...p};}}
   catch(e){console.error(e);localStorage.removeItem('aREASettings');}
 }
-document.addEventListener("DOMContentLoaded",()=>{
+
+document.addEventListener("DOMContentLoaded", async () => {
   navRO.observe(document.querySelector('.nav-container'));
   loadStoredSettings();
   initCanvas();
   loop();
   applySettings();
   updateAdminUI();
-  
-  // Render the static news out of the box
-  renderNewsTab([]);
-  
-  // Set default page based on settings
+
+  // Load live Supabase data
+  await loadNews();
+  await loadComments();
+
   if (appSettings.startPage) {
     const startBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick')?.includes(appSettings.startPage));
     if (startBtn) showTab(appSettings.startPage, startBtn);
   }
 
-  // Gracefully clear the loading screen
   setTimeout(() => {
     const loader = document.getElementById('initialLoader');
     if (loader) {
       loader.style.opacity = '0';
       setTimeout(() => loader.style.display = 'none', 400);
     }
-  }, 500);
+  }, 400);
 });
 </script>
 </body>
