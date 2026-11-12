@@ -790,19 +790,29 @@ function renderGiphyShortcodes(htmlText) {
 
 function updateLivePreview() {
   const text = document.getElementById('message').value;
-  const previewBox = document.getElementById('liveGiphyPreview');
+  let previewBox = document.getElementById('liveGiphyPreview');
+  
+  if (!previewBox) {
+    previewBox = document.createElement('div');
+    previewBox.id = 'liveGiphyPreview';
+    previewBox.style.cssText = 'display:none;flex-wrap:wrap;gap:8px;margin-top:10px;padding:10px;border-radius:14px;background:rgba(0,0,0,0.2);border:1px solid var(--liquid-glass-border);';
+    const msgBox = document.getElementById('message');
+    msgBox.parentNode.appendChild(previewBox);
+  }
+
   const matches = text.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi);
   if (!matches || matches.length === 0) {
     previewBox.style.display = 'none';
     previewBox.innerHTML = '';
     return;
   }
+  
   previewBox.style.display = 'flex';
-  previewBox.innerHTML = '<span style="font-size:11px;color:var(--text-mute);width:100%;font-weight:700;margin-bottom:4px;">Live GIF Preview:</span>' + 
+  previewBox.innerHTML = '<span style="font-size:11px;color:var(--text-mute);width:100%;font-weight:700;margin-bottom:2px;">Live GIF Preview:</span>' + 
     matches.map(m => {
       const idMatch = m.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/i);
       const gid = idMatch ? idMatch[1] : '';
-      return `<img src="https://media.giphy.com/media/${gid}/giphy.gif" style="height:70px;border-radius:10px;object-fit:cover;">`;
+      return `<img src="https://media.giphy.com/media/${gid}/giphy.gif" style="height:65px;border-radius:10px;object-fit:cover;border:1px solid var(--liquid-glass-border);">`;
     }).join('');
 }
 
