@@ -587,7 +587,7 @@ body.no-bg #glassCanvas { display:none !important; }
     </div>
     <div style="margin-bottom:16px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</label>
-      <textarea id="message" rows="3" placeholder="What's on your mind? (Use GIF button to insert [giphy: id])" class="search-input" style="height:auto;resize:none;padding-left:20px;"></textarea>
+      <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;padding-left:20px;"></textarea>
     </div>
 
     <!-- Giphy Search Drawer -->
@@ -667,9 +667,9 @@ body.no-bg #glassCanvas { display:none !important; }
 const SUPABASE_URL = 'https://ppjfqwfhyneesaaoktxy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_g4V_0jCwL4XE-qj5nBeyZA_lkyqGfHP';
 const GIPHY_API_KEY = 'NaBkjT7EdHosq7xLkRsGBRCGpT8ZrD0n';
-  
-const COMMENTS_TABLE = 'comments'; // Matches your screenshot columns: id, created_at, name, text, image_url
-const STORAGE_BUCKET = 'uploads';  // Create a public bucket named 'uploads' in Supabase Storage
+
+const COMMENTS_TABLE = 'comments'; // id, created_at, name, text, image_url[cite: 3]
+const STORAGE_BUCKET = 'uploads';  
 
 let sb = null;
 if (window.supabase && SUPABASE_URL.startsWith('http')) {
@@ -678,7 +678,6 @@ if (window.supabase && SUPABASE_URL.startsWith('http')) {
 
 // ═══════════════════════════════════════════════
 //  MULTI-TIER ADMIN SYSTEM
-//  role: 'super' (Aqeel) | 'mod' (Close Friends) | null
 // ═══════════════════════════════════════════════
 window.adminRole = localStorage.getItem('aREA_adminRole') || null;
 window.adminUser = localStorage.getItem('aREA_adminUser') || null;
@@ -690,18 +689,14 @@ function updateAdminUI() {
 
   document.getElementById('adminLoginBtn').style.display = active ? 'none' : 'block';
   document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
-  document.getElementById('adminRoleBadge').innerText = isSuper
-    ? '👑 SUPER ADMIN'
-    : `🛡️ MOD (${window.adminUser || 'Friend'})`;
+  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
 
   const newsBtn = document.getElementById('newsAdminBtn');
   if (newsBtn) newsBtn.style.display = active ? 'none' : 'inline-block';
 
-  // Both Super Admin and Friend Mods can post News
   const newsComposer = document.getElementById('newsTabComposer');
   if (newsComposer) newsComposer.classList.toggle('open', active);
 
-  // Only Super Admin (Aqeel) can create/delete Friend Admin accounts
   const subMgr = document.getElementById('subAdminManager');
   if (subMgr) subMgr.classList.toggle('open', isSuper);
 
@@ -714,7 +709,6 @@ window.adminLogin = async () => {
   const pass = prompt("Admin Password:");
   if (!pass) return;
 
-  // 1. Check Super Admin
   if (user === "Aqeel" && pass === "area2026") {
     window.adminRole = 'super';
     window.adminUser = 'Aqeel';
@@ -726,16 +720,9 @@ window.adminLogin = async () => {
     return alert("Logged in as Super Admin!");
   }
 
-  // 2. Check Sub-Admins table in Supabase
   if (sb) {
-    const { data, error } = await sb
-      .from('sub_admins')
-      .select('*')
-      .eq('username', user.trim())
-      .eq('password', pass)
-      .maybeSingle();
-
-    if (data && !error) {
+    const { data } = await sb.from('sub_admins').select('*').eq('username', user.trim()).eq('password', pass).maybeSingle();
+    if (data) {
       window.adminRole = 'mod';
       window.adminUser = data.username;
       localStorage.setItem('aREA_adminRole', 'mod');
@@ -746,7 +733,6 @@ window.adminLogin = async () => {
       return alert(`Logged in as Friend Admin (${data.username})!`);
     }
   }
-
   alert("Invalid Username or Password");
 };
 
@@ -758,6 +744,281 @@ window.adminLogout = async () => {
   updateAdminUI();
   await loadComments();
   await loadNews();
+};
+
+async function loadSubAdmins() {
+  if (!sb || window.adminRole !== 'super') return;
+  const list = document.getElementById('subAdminsList');
+  const { data } = await sb.from('sub_admins').select('*').order('created_at', { ascending: false });
+  if (!data) return;
+  list.innerHTML = data.map(a => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+      <div><strong>${esc(a.username)}</strong> <span style="font-size:12px;color:var(--text-mute);margin-left:10px;">Password: <code>${esc(a.password)}</code></span></div>
+      <button onclick="deleteSubAdmin(${a.id})" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Remove</button>
+    </div>
+  `).join('');
+}
+
+window.createSubAdmin = async () => {
+  if (!sb || window.adminRole !== 'super') return;
+  const username = document.getElementById('newSubUser').value.trim();
+  const password = document.getElementById('newSubPass').value.trim();
+  if (!username || !password) return alert("Enter both username and password.");
+  await sb.from('sub_admins').insert([{ username, password }]);
+  document.getElementById('newSubUser').value = '';
+  document.getElementById('newSubPass').value = '';
+  loadSubAdmins();
+};
+
+window.deleteSubAdmin = async (id) => {
+  if (!sb || window.adminRole !== 'super') return;
+  if (!confirm("Remove friend admin access?")) return;
+  await sb.from('sub_admins').delete().eq('id', id);
+  loadSubAdmins();
+};
+
+// ═══════════════════════════════════════════════
+//  MARKDOWN, GIPHY & REALTIME LIVE PREVIEW
+// ═══════════════════════════════════════════════
+function renderGiphyShortcodes(htmlText) {
+  return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
+    return `<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="GIF" class="comment-giphy" onclick="openLightbox(this.src)" loading="lazy">`;
+  });
+}
+
+function updateLivePreview() {
+  const text = document.getElementById('message').value;
+  const previewBox = document.getElementById('liveGiphyPreview');
+  const matches = text.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi);
+  if (!matches || matches.length === 0) {
+    previewBox.style.display = 'none';
+    previewBox.innerHTML = '';
+    return;
+  }
+  previewBox.style.display = 'flex';
+  previewBox.innerHTML = '<span style="font-size:11px;color:var(--text-mute);width:100%;font-weight:700;margin-bottom:4px;">Live GIF Preview:</span>' + 
+    matches.map(m => {
+      const idMatch = m.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/i);
+      const gid = idMatch ? idMatch[1] : '';
+      return `<img src="https://media.giphy.com/media/${gid}/giphy.gif" style="height:70px;border-radius:10px;object-fit:cover;">`;
+    }).join('');
+}
+
+function parseMarkdown(md) {
+  let safe = esc(md || '');
+  safe = renderGiphyShortcodes(safe);
+  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g, '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
+  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:pointer;" onclick="openLightbox(this.src)">');
+  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
+  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
+  safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
+  safe = safe.replace(/\n\n/g, '</p><p>');
+  return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
+}
+
+// ═══════════════════════════════════════════════
+//  SUPABASE STORAGE & 75MB FILE SUPPORT
+// ═══════════════════════════════════════════════
+async function uploadToSupabaseStorage(file, folder = 'community') {
+  if (!sb) throw new Error('Supabase not configured.');
+  const ext = file.name.split('.').pop();
+  const filePath = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error: uploadError } = await sb.storage.from(STORAGE_BUCKET).upload(filePath, file, { cacheControl: '3600', upsert: false });
+  if (uploadError) throw uploadError;
+  const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+  return data.publicUrl;
+}
+
+var attachmentUrl = null;
+function showAttachmentState(state, html) {
+  const el = document.getElementById('attachmentPreview');
+  el.style.display = 'block';
+  el.className = '';
+  if (state === 'uploading') el.classList.add('uploading');
+  if (state === 'error') el.classList.add('error');
+  el.innerHTML = html;
+}
+
+window.clearAttachment = function() {
+  attachmentUrl = null;
+  const el = document.getElementById('attachmentPreview');
+  el.style.display = 'none';
+  el.innerHTML = '';
+  document.getElementById('fileInput').value = '';
+};
+
+async function handleFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const MAX_SIZE = 75 * 1024 * 1024; // 75MB limit
+  if (file.size > MAX_SIZE) {
+    alert("File exceeds the 75MB maximum size limit.");
+    input.value = '';
+    return;
+  }
+
+  attachmentUrl = null;
+  showAttachmentState('uploading', `⏳ Uploading <strong>${esc(file.name)}</strong> (${(file.size / (1024*1024)).toFixed(1)}MB) to Supabase...`);
+
+  try {
+    const publicUrl = await uploadToSupabaseStorage(file, 'community');
+    attachmentUrl = publicUrl;
+    const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(file.name);
+
+    showAttachmentState('ready', `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span>📎 <strong>${esc(file.name)}</strong> attached!</span>
+        <button type="button" onclick="clearAttachment()" style="background:none;border:none;color:#FF3B30;font-weight:800;cursor:pointer;">✕ Remove</button>
+      </div>
+      ${isImg ? `<img src="${publicUrl}" class="attach-thumb" onclick="openLightbox(this.src)">` : `<a href="${publicUrl}" target="_blank" style="display:block;margin-top:8px;color:var(--accent);font-weight:700;">Download / Open File ↗</a>`}
+    `);
+  } catch (err) {
+    showAttachmentState('error', `❌ Upload failed: ${esc(err.message)}`);
+    input.value = '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  GIPHY MULTIPLE GIF SUPPORT
+// ═══════════════════════════════════════════════
+function toggleGiphyDrawer() {
+  const drawer = document.getElementById('giphyDrawer');
+  const isOpen = drawer.classList.toggle('open');
+  if (isOpen && document.getElementById('giphyResults').innerHTML === '') {
+    searchGiphy(true);
+  }
+}
+
+async function searchGiphy(trending = false) {
+  const resultsEl = document.getElementById('giphyResults');
+  if (!GIPHY_API_KEY || GIPHY_API_KEY.includes('YOUR_')) {
+    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Add your Giphy API key in configuration!</div>`;
+    return;
+  }
+  const query = document.getElementById('giphySearchInput').value.trim();
+  const endpoint = (!query || trending)
+    ? `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=12&rating=pg`
+    : `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=12&rating=pg`;
+
+  try {
+    const res = await fetch(endpoint);
+    const json = await res.json();
+    resultsEl.innerHTML = json.data.map(gif => {
+      const thumb = gif.images.fixed_height_small.url;
+      return `<img src="${thumb}" class="giphy-item" onclick="insertGiphyTag('${gif.id}')" title="Insert GIF">`;
+    }).join('');
+  } catch (e) {
+    resultsEl.innerHTML = `<div style="color:#FF3B30;">Giphy error</div>`;
+  }
+}
+
+function insertGiphyTag(gifId) {
+  const msgBox = document.getElementById('message');
+  const tag = `[giphy: ${gifId}]`;
+  msgBox.value = msgBox.value ? `${msgBox.value} ${tag}` : tag;
+  updateLivePreview();
+  msgBox.focus();
+}
+
+// ═══════════════════════════════════════════════
+//  LIGHTBOX IMAGE MAGNIFICATION
+// ═══════════════════════════════════════════════
+function openLightbox(imgSrc) {
+  let lb = document.getElementById('imgLightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'imgLightbox';
+    lb.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(10px);';
+    lb.innerHTML = `<img id="lightboxImg" style="max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.5);">`;
+    lb.onclick = () => lb.style.display = 'none';
+    document.body.appendChild(lb);
+  }
+  document.getElementById('lightboxImg').src = imgSrc;
+  lb.style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════
+//  COMMUNITY COMMENTS (SUPABASE)
+// ═══════════════════════════════════════════════
+function formatCommentBody(rawText) {
+  let safe = esc(rawText || '');
+  safe = renderGiphyShortcodes(safe);
+  return safe.replace(/\n/g, '<br>');
+}
+
+window.loadComments = async function() {
+  const container = document.getElementById('commentsContainer');
+  if (!sb) {
+    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">Connect Supabase credentials.</div>`;
+    return;
+  }
+
+  const { data } = await sb.from(COMMENTS_TABLE).select('*').order('created_at', { ascending: false });
+  if (!data || data.length === 0) {
+    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">No comments yet.</div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(c => {
+    const dateStr = c.created_at ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+    const adminDelBtn = window.isAdmin() ? `<button onclick="deleteComment(${c.id})" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>` : '';
+    
+    let attachmentHtml = '';
+    if (c.image_url) {
+      const url = c.image_url;
+      const isImg = /\.(jpe?g|png|gif|webp|svg)/i.test(url) || url.includes('giphy') || url.includes('supabase.co');
+      if (isImg) {
+        attachmentHtml = `<img src="${esc(url)}" alt="Attachment" style="display:block;max-width:100%;max-height:320px;border-radius:16px;margin-top:12px;object-fit:contain;cursor:zoom-in;border:1px solid var(--liquid-glass-border);" onclick="openLightbox(this.src)" loading="lazy">`;
+      } else {
+        attachmentHtml = `<a href="${esc(url)}" target="_blank" style="display:block;margin-top:12px;padding:12px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--accent);font-weight:700;text-decoration:none;">📎 Download Attached File ↗</a>`;
+      }
+    }
+
+    return `
+      <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;">
+          <strong style="color:var(--accent);font-size:16px;">${esc(c.name || 'Anonymous')}</strong>
+          <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:12px;color:var(--text-mute);">${dateStr}</span>${adminDelBtn}</div>
+        </div>
+        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${formatCommentBody(c.text)}</div>
+        ${attachmentHtml}
+      </div>
+    `;
+  }).join('');
+};
+
+async function postComment() {
+  if (!sb) return alert("Configure Supabase!");
+  const name = document.getElementById('username').value.trim() || 'Anonymous';
+  const text = document.getElementById('message').value.trim();
+
+  if (!text && !attachmentUrl) return alert("Please write a message or attach a file/GIF!");
+
+  const btn = document.getElementById('postBtn');
+  btn.disabled = true;
+  btn.innerText = 'Posting…';
+
+  await sb.from(COMMENTS_TABLE).insert([{ name, text, image_url: attachmentUrl || null }]);
+
+  btn.disabled = false;
+  btn.innerText = 'Post Comment';
+
+  document.getElementById('message').value = '';
+  document.getElementById('liveGiphyPreview').style.display = 'none';
+  clearAttachment();
+  await loadComments();
+}
+
+window.deleteComment = async function(id) {
+  if (!window.isAdmin() || !sb) return;
+  if (!confirm("Delete comment?")) return;
+  await sb.from(COMMENTS_TABLE).delete().eq('id', id);
+  await loadComments();
 };
 
 async function loadSubAdmins() {
