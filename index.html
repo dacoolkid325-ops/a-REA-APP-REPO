@@ -57,6 +57,12 @@ body.font-default,body.font-default * {
   z-index:99999 !important;margin:0 !important;padding:0 !important;border-radius:0 !important;background:#000 !important;
 }
 .ios-pseudo-fullscreen .btn-ios { display:none !important; }
+/* position:fixed is trapped by transform / content-visibility / filter on ancestors, so drop them while fullscreen */
+body.fs-active #app-wrapper { transform:none !important;width:100% !important;filter:none !important;will-change:auto !important;contain:none !important; }
+body.fs-active section { animation:none !important;content-visibility:visible !important;contain:none !important;transform:none !important;filter:none !important; }
+body.fs-active .glass-card:has(.is-active-fs,.ios-pseudo-fullscreen) { backdrop-filter:none !important;-webkit-backdrop-filter:none !important;transform:none !important;overflow:visible !important; }
+.ios-pseudo-fullscreen { height:100dvh !important; }
+.game-container-giant.is-active-fs { height:100dvh !important; }
 .ios-pseudo-fullscreen .fp-iframe { height:100% !important;border-radius:0 !important; }
 #app-wrapper {
   transform:scale(var(--ui-zoom));transform-origin:top center;width:calc(100% / var(--ui-zoom));
@@ -546,7 +552,7 @@ body.no-bg #glassCanvas { display:none !important; }
   </div>
   <script>
     function setMaxPower(h){document.querySelectorAll('.game-container-giant').forEach(c=>c.classList.remove('max-power'));h.closest('.game-container-giant').classList.add('max-power');}
-    function handleFullscreen(btn){const card=btn.closest('.game-container-giant');setMaxPower(card.querySelector('.game-ui-header'));const f=card.classList.toggle('is-active-fs');document.body.style.overflow=f?'hidden':'';if(typeof scaleGameIframes==='function'){setTimeout(scaleGameIframes,10);setTimeout(scaleGameIframes,300);}}
+    function handleFullscreen(btn){const card=btn.closest('.game-container-giant');setMaxPower(card.querySelector('.game-ui-header'));const was=card.classList.contains('is-active-fs');exitAllFullscreen();if(!was){card.classList.add('is-active-fs');setFsActive(true);}if(typeof scaleGameIframes==='function'){setTimeout(scaleGameIframes,10);setTimeout(scaleGameIframes,300);}}
     setTimeout(()=>{if(typeof scaleGameIframes==='function')scaleGameIframes();},500);
   </script>
 </section>
@@ -798,7 +804,7 @@ async function loadSubAdmins() {
         <strong>${esc(a.username)}</strong>
         <span style="font-size:12px;color:var(--text-mute);margin-left:10px;">Password: <code>${esc(a.password)}</code></span>
       </div>
-      <button onclick="deleteSubAdmin(${a.id})" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Remove</button>
+      <button onclick="deleteSubAdmin('${a.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Remove</button>
     </div>
   `).join('');
 }
@@ -1153,12 +1159,14 @@ window.loadComments = async function() {
     return;
   }
 
+  window._commentsCache = {};
+  data.forEach(c => { window._commentsCache[String(c.id)] = c; });
   container.innerHTML = data.map(c => {
     const dateStr = c.created_at
       ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
       : '';
     const adminDelBtn = window.isAdmin()
-      ? `<button onclick="deleteComment(${c.id}, '${c.image_url || ''}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
+      ? `<button type="button" data-del-comment="${esc(String(c.id))}" onclick="deleteComment(this.dataset.delComment)" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
       : '';
     
     let fileMeta = { name: 'Attachment', size: '', type: '' };
@@ -1263,31 +1271,31 @@ async function postComment() {
   await loadComments();
 }
 
-window.deleteComment = async function(id, imageUrl) {
+window.deleteComment = async function(id) {
   if (!window.isAdmin() || !sb) return;
   if (!confirm("Delete this comment and its attached file?")) return;
+
+  const c = (window._commentsCache || {})[String(id)] || {};
+  const imageUrl = c.image_url || '';
+
+  const { data: deleted, error } = await sb.from(COMMENTS_TABLE).delete().eq('id', id).select();
+  if (error) { alert("Could not delete comment: " + error.message); return; }
+  if (!deleted || deleted.length === 0) {
+    alert("Nothing was deleted. Supabase is blocking it (Row Level Security). Add a DELETE policy on the 'comments' table for the anon role.");
+    return;
+  }
 
   if (imageUrl) {
     try {
       const cleanUrl = imageUrl.split('#')[0].split('?')[0];
       const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
       if (cleanUrl.includes(marker)) {
-        const filePath = cleanUrl.split(marker)[1];
-        if (filePath) {
-          await sb.storage.from(STORAGE_BUCKET).remove([filePath]);
-        }
+        const filePath = decodeURIComponent(cleanUrl.split(marker)[1] || '');
+        if (filePath) await sb.storage.from(STORAGE_BUCKET).remove([filePath]);
       }
-    } catch (err) {
-      console.error("Storage file deletion error:", err);
-    }
+    } catch (err) { console.error("Storage file deletion error:", err); }
   }
-
-  const { error } = await sb.from(COMMENTS_TABLE).delete().eq('id', id);
-  if (error) {
-    alert("Could not delete comment: " + error.message);
-  } else {
-    await loadComments();
-  }
+  await loadComments();
 };
 
 // ═══════════════════════════════════════════════
@@ -1379,7 +1387,7 @@ function renderNewsTab(all) {
   const fDate = f.created_at ? new Date(f.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const fClick = f.isStatic ? `${f.openFn}()` : `openArticleByIndex(0)`;
   const fDel = (!f.isStatic && window.isAdmin())
-    ? `<button onclick="event.stopPropagation();deleteNewsArticle(${f.id})" style="position:absolute;top:14px;right:14px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-weight:800;cursor:pointer;">Delete</button>`
+    ? `<button onclick="event.stopPropagation();deleteNewsArticle('${f.id}')" style="position:absolute;top:14px;right:14px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-weight:800;cursor:pointer;">Delete</button>`
     : '';
 
   featured.innerHTML = `
@@ -1402,7 +1410,7 @@ function renderNewsTab(all) {
     const d = a.created_at ? new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
     const clickFn = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
     const delBtn = (!a.isStatic && window.isAdmin())
-      ? `<button onclick="event.stopPropagation();deleteNewsArticle(${a.id})" style="position:absolute;top:10px;right:10px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:8px;padding:4px 9px;font-size:11px;font-weight:800;cursor:pointer;">Delete</button>`
+      ? `<button onclick="event.stopPropagation();deleteNewsArticle('${a.id}')" style="position:absolute;top:10px;right:10px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:8px;padding:4px 9px;font-size:11px;font-weight:800;cursor:pointer;">Delete</button>`
       : '';
 
     return `
@@ -1489,18 +1497,41 @@ window.postArticle = async function() {
 window.deleteNewsArticle = async function(id) {
   if (!window.isAdmin() || !sb) return;
   if (!confirm("Delete this news article?")) return;
-  await sb.from('news').delete().eq('id', id);
+  const { data: deleted, error } = await sb.from('news').delete().eq('id', id).select();
+  if (error) { alert("Could not delete article: " + error.message); return; }
+  if (!deleted || deleted.length === 0) { alert("Nothing was deleted. Supabase is blocking it (Row Level Security). Add a DELETE policy on the 'news' table."); return; }
   await loadNews();
 };
 
 // ═══════════════════════════════════════════════
 //  MISC UI, CANVAS, SETTINGS, NAV, PLAYER
 // ═══════════════════════════════════════════════
+let _fsScrollY = 0;
+function setFsActive(on) {
+  if (on) { _fsScrollY = window.scrollY; document.body.classList.add('fs-active'); document.body.style.overflow = 'hidden'; }
+  else { document.body.classList.remove('fs-active'); document.body.style.overflow = ''; window.scrollTo(0, _fsScrollY); }
+}
+function exitAllFullscreen() {
+  document.querySelectorAll('.ios-pseudo-fullscreen').forEach(c => {
+    c.classList.remove('ios-pseudo-fullscreen');
+    const b = c.querySelector('.custom-fs-btn'); if (b) b.innerHTML = '⛶';
+  });
+  document.querySelectorAll('.is-active-fs').forEach(c => c.classList.remove('is-active-fs'));
+  setFsActive(false);
+  if (typeof scaleGameIframes === 'function') setTimeout(scaleGameIframes, 50);
+}
 function toggleIframeFullscreen(btn) {
   const card = btn.closest('.book-container');
-  card.classList.toggle('ios-pseudo-fullscreen');
-  btn.innerHTML = card.classList.contains('ios-pseudo-fullscreen') ? '✕' : '⛶';
+  const entering = !card.classList.contains('ios-pseudo-fullscreen');
+  if (!entering) { exitAllFullscreen(); return; }
+  exitAllFullscreen();
+  card.classList.add('ios-pseudo-fullscreen');
+  btn.innerHTML = '✕';
+  setFsActive(true);
 }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.body.classList.contains('fs-active')) exitAllFullscreen();
+});
 function vibrate(ms=15){if(navigator.vibrate)navigator.vibrate(ms);}
 document.addEventListener('click',(e)=>{
   if(e.target.closest('button,a,input,select,.clickable,.song-item,.game-ui-header,.news-featured,.news-card'))vibrate(15);
