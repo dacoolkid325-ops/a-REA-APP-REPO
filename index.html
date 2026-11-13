@@ -413,7 +413,6 @@ body.no-bg #glassCanvas { display:none !important; }
 <div id="app-wrapper">
 
 <section id="home" class="active">
-  <!-- Dynamically displays the 2 newest news posts from Supabase (or static fallback) -->
   <div class="news-grid" id="homeNewsGrid">
     <div class="glass-card" style="opacity:0.6;">Loading latest news…</div>
   </div>
@@ -431,7 +430,6 @@ body.no-bg #glassCanvas { display:none !important; }
     </div>
   </div>
 
-  <!-- Admin-only News Composer -->
   <div id="newsTabComposer" class="admin-box">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <span style="font-size:1.1rem;">📰</span>
@@ -571,7 +569,6 @@ body.no-bg #glassCanvas { display:none !important; }
     </div>
   </div>
 
-  <!-- Super-Admin Only: Manage Close-Friend Sub-Admins -->
   <div id="subAdminManager" class="admin-box">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span style="font-size:1.1rem;">👑</span>
@@ -596,10 +593,8 @@ body.no-bg #glassCanvas { display:none !important; }
       <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLivePreview()"></textarea>
     </div>
 
-    <!-- Live GIF Preview Container -->
     <div id="liveGiphyPreview"></div>
 
-    <!-- Giphy Search Drawer -->
     <div id="giphyDrawer">
       <div style="display:flex;gap:8px;">
         <input type="text" id="giphySearchInput" class="article-input" placeholder="Search Giphy..." style="margin-bottom:0;" onkeydown="if(event.key==='Enter')searchGiphy()">
@@ -636,6 +631,19 @@ body.no-bg #glassCanvas { display:none !important; }
   <h1>Settings</h1>
   <div class="glass-card">
     <div class="toggle-row"><span class="toggle-label">App Font Family</span><select id="fontSelect" class="setting-select" onchange="updateSetting('appFont',this.value)"><option value="imported">Inter / Jakarta</option><option value="default">Default</option></select></div>
+    
+    <!-- Google Fonts Search & Selector via API Key -->
+    <div class="toggle-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
+      <span class="toggle-label">Google Fonts Library Search</span>
+      <div style="display:flex;gap:8px;width:100%;">
+        <input type="text" id="fontSearchInput" class="article-input" placeholder="Search Google Fonts (e.g. Roboto, Montserrat)..." style="margin-bottom:0;" oninput="filterGoogleFonts(this.value)">
+        <button onclick="fetchGoogleFonts()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;">Load All</button>
+      </div>
+      <select id="googleFontSelect" class="setting-select" style="width:100%;" onchange="applyGoogleFont(this.value)">
+        <option value="">-- Load & Select any Google Font --</option>
+      </select>
+    </div>
+
     <div class="toggle-row"><span class="toggle-label">Moods</span><select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)"><option value="default">Default (Blue)</option><option value="sunset">Sunset (Orange)</option><option value="forest">Forest (Green)</option><option value="ocean">Ocean (Deep Blue)</option><option value="midnight">Midnight (Purple)</option><option value="custom">Custom Color</option></select></div>
     <div id="customThemeSettings" style="display:none;flex-direction:column;gap:15px;padding:20px;background:rgba(0,0,0,0.05);border-radius:16px;margin-bottom:20px;border:1px solid var(--liquid-glass-border);">
       <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 1</span><input type="color" id="customBg1Picker" oninput="updateCustomTheme()" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
@@ -676,8 +684,9 @@ body.no-bg #glassCanvas { display:none !important; }
 const SUPABASE_URL = 'https://ppjfqwfhyneesaaoktxy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_g4V_0jCwL4XE-qj5nBeyZA_lkyqGfHP';
 const GIPHY_API_KEY = 'NaBkjT7EdHosq7xLkRsGBRCGpT8ZrD0n';
+const GOOGLE_FONTS_API_KEY = 'AIzaSyC29kIY4y046mXV1kCI7byX_dB1LO9AYPE';
 
-const COMMENTS_TABLE = 'comments'; // id, created_at, name, text, image_url
+const COMMENTS_TABLE = 'comments';
 const STORAGE_BUCKET = 'uploads';  
 
 let sb = null;
@@ -691,6 +700,7 @@ if (window.supabase && SUPABASE_URL.startsWith('http')) {
 window.adminRole = localStorage.getItem('aREA_adminRole') || null;
 window.adminUser = localStorage.getItem('aREA_adminUser') || null;
 window.isAdmin = () => window.adminRole === 'super' || window.adminRole === 'mod';
+window.subAdminNames = [];
 
 function updateAdminUI() {
   const active = window.isAdmin();
@@ -710,6 +720,15 @@ function updateAdminUI() {
   if (subMgr) subMgr.classList.toggle('open', isSuper);
 
   if (isSuper) loadSubAdmins();
+  loadSubAdminNamesCache();
+}
+
+async function loadSubAdminNamesCache() {
+  if (!sb) return;
+  const { data } = await sb.from('sub_admins').select('username');
+  if (data) {
+    window.subAdminNames = data.map(d => d.username.toLowerCase());
+  }
 }
 
 window.adminLogin = async () => {
@@ -791,6 +810,7 @@ window.createSubAdmin = async () => {
   document.getElementById('newSubUser').value = '';
   document.getElementById('newSubPass').value = '';
   loadSubAdmins();
+  loadSubAdminNamesCache();
 };
 
 window.deleteSubAdmin = async (id) => {
@@ -798,7 +818,70 @@ window.deleteSubAdmin = async (id) => {
   if (!confirm("Remove this friend admin's access?")) return;
   await sb.from('sub_admins').delete().eq('id', id);
   loadSubAdmins();
+  loadSubAdminNamesCache();
 };
+
+// ═══════════════════════════════════════════════
+//  GOOGLE FONTS API BROWSER & SELECTOR
+// ═══════════════════════════════════════════════
+let allGoogleFonts = [];
+async function fetchGoogleFonts() {
+  const select = document.getElementById('googleFontSelect');
+  select.innerHTML = '<option>Loading Google Fonts…</option>';
+  try {
+    const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?key=${GOOGLE_FONTS_API_KEY}&sort=alpha`);
+    const json = await res.json();
+    if (json.items) {
+      allGoogleFonts = json.items;
+      renderFontDropdown(allGoogleFonts);
+    } else {
+      select.innerHTML = '<option>Failed to load fonts</option>';
+    }
+  } catch (e) {
+    select.innerHTML = '<option>Error loading fonts</option>';
+  }
+}
+
+function renderFontDropdown(fonts) {
+  const select = document.getElementById('googleFontSelect');
+  select.innerHTML = '<option value="">-- Select a Google Font (' + fonts.length + ' available) --</option>' +
+    fonts.map(f => `<option value="${f.family}">${f.family}</option>`).join('');
+}
+
+function filterGoogleFonts(query) {
+  if (!allGoogleFonts.length) return;
+  const q = query.toLowerCase();
+  const filtered = allGoogleFonts.filter(f => f.family.toLowerCase().includes(q));
+  renderFontDropdown(filtered);
+}
+
+function applyGoogleFont(fontName) {
+  if (!fontName) return;
+  const fontId = 'dynamicGoogleFont';
+  let link = document.getElementById(fontId);
+  const fontQueryName = fontName.replace(/\s+/g, '+');
+  const href = `https://fonts.googleapis.com/css2?family=${fontQueryName}:wght@400;600;700;800;900&display=swap`;
+  if (!link) {
+    link = document.createElement('link');
+    link.id = fontId;
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }
+  link.href = href;
+  
+  document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
+  const styleTagId = 'dynamicFontStyle';
+  let styleTag = document.getElementById(styleTagId);
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.id = styleTagId;
+    document.head.appendChild(styleTag);
+  }
+  styleTag.innerHTML = `body, body * { font-family: var(--custom-font) !important; }`;
+  appSettings.activeGoogleFont = fontName;
+  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+  alert(`Applied Google Font: ${fontName}!`);
+}
 
 // ═══════════════════════════════════════════════
 //  MARKDOWN, GIPHY & REALTIME LIVE PREVIEW
@@ -830,30 +913,22 @@ function updateLivePreview() {
 
 function parseMarkdown(md) {
   let safe = esc(md || '');
-  // Giphy tag: [giphy: gifid]
   safe = renderGiphyShortcodes(safe);
-  // Video shorthand: [video](url)
   safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
     '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
-  // Images: ![alt](url)
   safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
     '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
-  // Links: [label](url)
   safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
     '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
-  // Headings
   safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
-  // Bold / Italic / Code
   safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
   safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
-  // Blockquotes & Lists
   safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
   safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
   safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
-  // Paragraphs
   safe = safe.replace(/\n\n/g, '</p><p>');
   return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
@@ -877,6 +952,8 @@ async function uploadToSupabaseStorage(file, folder = 'community') {
 }
 
 var attachmentUrl = null;
+var pendingFileMeta = null;
+
 function showAttachmentState(state, html) {
   const el = document.getElementById('attachmentPreview');
   el.style.display = 'block';
@@ -888,6 +965,7 @@ function showAttachmentState(state, html) {
 
 window.clearAttachment = function() {
   attachmentUrl = null;
+  pendingFileMeta = null;
   const el = document.getElementById('attachmentPreview');
   el.style.display = 'none';
   el.innerHTML = '';
@@ -898,7 +976,7 @@ async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
 
-  const MAX_SIZE = 75 * 1024 * 1024; // 75MB limit
+  const MAX_SIZE = 75 * 1024 * 1024;
   if (file.size > MAX_SIZE) {
     alert("File exceeds the 75MB maximum size limit.");
     input.value = '';
@@ -906,16 +984,18 @@ async function handleFileUpload(input) {
   }
 
   attachmentUrl = null;
+  pendingFileMeta = { name: file.name, size: file.size, type: file.type || file.name.split('.').pop() };
   showAttachmentState('uploading', `⏳ Uploading <strong>${esc(file.name)}</strong> (${(file.size / (1024*1024)).toFixed(1)}MB) to Supabase Storage…`);
 
   try {
     const publicUrl = await uploadToSupabaseStorage(file, 'community');
-    attachmentUrl = publicUrl;
+    const metaStr = encodeURIComponent(JSON.stringify(pendingFileMeta));
+    attachmentUrl = `${publicUrl}#meta=${metaStr}`;
     const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(file.name);
 
     showAttachmentState('ready', `
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span>📎 <strong>${esc(file.name)}</strong> ready!</span>
+        <span>📎 <strong>${esc(file.name)}</strong> ready! (${(file.size / 1024).toFixed(1)} KB)</span>
         <button type="button" onclick="clearAttachment()" style="background:none;border:none;color:#FF3B30;font-weight:800;cursor:pointer;">✕ Remove</button>
       </div>
       ${isImg ? `<img src="${publicUrl}" class="attach-thumb" alt="Uploaded preview" onclick="openLightbox(this.src)">` : `<a href="${publicUrl}" target="_blank" style="display:block;margin-top:8px;color:var(--accent);font-weight:700;">Download / Open File ↗</a>`}
@@ -927,7 +1007,6 @@ async function handleFileUpload(input) {
   }
 }
 
-// News Cover Image Upload
 async function uploadNewsCoverImage(input) {
   const file = input.files[0];
   if (!file) return;
@@ -947,7 +1026,7 @@ async function uploadNewsCoverImage(input) {
 }
 
 // ═══════════════════════════════════════════════
-//  GIPHY PICKER ([giphy: gifid])
+//  GIPHY PICKER
 // ═══════════════════════════════════════════════
 function toggleGiphyDrawer() {
   const drawer = document.getElementById('giphyDrawer');
@@ -960,7 +1039,7 @@ function toggleGiphyDrawer() {
 async function searchGiphy(trending = false) {
   const resultsEl = document.getElementById('giphyResults');
   if (!GIPHY_API_KEY || GIPHY_API_KEY.includes('YOUR_')) {
-    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Add your <code>GIPHY_API_KEY</code> in the script config to search GIFs, or type <code>[giphy: gifid]</code> directly in your message!</div>`;
+    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Add your <code>GIPHY_API_KEY</code> in script config.</div>`;
     return;
   }
 
@@ -996,25 +1075,42 @@ function insertGiphyTag(gifId) {
 }
 
 // ═══════════════════════════════════════════════
-//  LIGHTBOX IMAGE MAGNIFICATION
+//  LIGHTBOX WITH ZOOM SCALING SUPPORT
 // ═══════════════════════════════════════════════
 function openLightbox(imgSrc) {
   let lb = document.getElementById('imgLightbox');
   if (!lb) {
     lb = document.createElement('div');
     lb.id = 'imgLightbox';
-    lb.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(10px);';
-    lb.innerHTML = `<img id="lightboxImg" style="max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.5);">`;
-    lb.onclick = () => lb.style.display = 'none';
+    lb.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(10px);overflow:auto;';
+    lb.innerHTML = `<img id="lightboxImg" style="max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.5);transition:transform 0.3s ease;cursor:zoom-in;" onclick="event.stopPropagation(); toggleLightboxZoom(this);">`;
+    lb.onclick = () => {
+      const img = document.getElementById('lightboxImg');
+      img.style.transform = 'scale(1)';
+      lb.style.display = 'none';
+    };
     document.body.appendChild(lb);
   }
-  document.getElementById('lightboxImg').src = imgSrc;
+  const img = document.getElementById('lightboxImg');
+  img.style.transform = 'scale(1)';
+  img.style.cursor = 'zoom-in';
+  img.src = imgSrc;
   lb.style.display = 'flex';
 }
 
+window.toggleLightboxZoom = function(img) {
+  const currentTransform = img.style.transform;
+  if (currentTransform.includes('scale(2)')) {
+    img.style.transform = 'scale(1)';
+    img.style.cursor = 'zoom-in';
+  } else {
+    img.style.transform = 'scale(2)';
+    img.style.cursor = 'zoom-out';
+  }
+};
+
 // ═══════════════════════════════════════════════
-//  COMMUNITY COMMENTS (SUPABASE)
-//  Columns: id, created_at, name, text, image_url
+//  COMMUNITY COMMENTS (SUPABASE) + FILE CLEANUP
 // ═══════════════════════════════════════════════
 function formatCommentBody(rawText) {
   let safe = esc(rawText || '');
@@ -1025,7 +1121,7 @@ function formatCommentBody(rawText) {
 window.loadComments = async function() {
   const container = document.getElementById('commentsContainer');
   if (!sb) {
-    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">Connect your <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> in the script to load live comments.</div>`;
+    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">Connect your Supabase credentials to load live comments.</div>`;
     return;
   }
 
@@ -1049,24 +1145,64 @@ window.loadComments = async function() {
       ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
       : '';
     const adminDelBtn = window.isAdmin()
-      ? `<button onclick="deleteComment(${c.id})" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
+      ? `<button onclick="deleteComment(${c.id}, '${c.image_url || ''}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
       : '';
     
+    // Parse file metadata & URL
+    let fileMeta = { name: 'Attachment', size: '', type: '' };
+    let displayUrl = c.image_url || '';
+    if (c.image_url && c.image_url.includes('#meta=')) {
+      try {
+        const parts = c.image_url.split('#meta=');
+        displayUrl = parts[0];
+        fileMeta = JSON.parse(decodeURIComponent(parts[1]));
+      } catch (e) {}
+    } else if (c.image_url) {
+      const urlPath = c.image_url.split('?')[0].split('#')[0];
+      const segments = urlPath.split('/');
+      fileMeta.name = decodeURIComponent(segments[segments.length - 1].replace(/^\d+_[a-z0-9]+_/, ''));
+    }
+
+    const formattedSize = fileMeta.size ? (fileMeta.size > 1024 * 1024 ? (fileMeta.size / (1024*1024)).toFixed(1) + ' MB' : (fileMeta.size / 1024).toFixed(1) + ' KB') : '';
+
     let attachmentHtml = '';
-    if (c.image_url) {
-      const url = c.image_url;
-      const isImg = /\.(jpe?g|png|gif|webp|svg)(\?|$)/i.test(url) || url.includes('giphy');
+    if (displayUrl) {
+      const isImg = /\.(jpe?g|png|gif|webp|svg)(\?|$)/i.test(displayUrl) || displayUrl.includes('giphy');
       if (isImg) {
-        attachmentHtml = `<img src="${esc(url)}" alt="Attachment" style="display:block;max-width:100%;max-height:320px;border-radius:16px;margin-top:12px;object-fit:contain;cursor:zoom-in;border:1px solid var(--liquid-glass-border);" onclick="openLightbox(this.src)" loading="lazy">`;
+        attachmentHtml = `
+          <div style="margin-top:12px;padding:12px;border-radius:16px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+            <img src="${esc(displayUrl)}" alt="Attachment" style="display:block;max-width:100%;max-height:320px;border-radius:12px;object-fit:contain;cursor:zoom-in;margin-bottom:8px;" onclick="openLightbox(this.src)" loading="lazy">
+            <div style="font-size:13px;font-weight:600;color:var(--text-mute);display:flex;justify-content:space-between;align-items:center;">
+              <span>📄 ${esc(fileMeta.name)}</span>
+              <span>${formattedSize}</span>
+            </div>
+          </div>`;
       } else {
-        attachmentHtml = `<a href="${esc(url)}" target="_blank" style="display:block;margin-top:12px;padding:12px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--accent);font-weight:700;text-decoration:none;">📎 Download Attached File ↗</a>`;
+        attachmentHtml = `
+          <div style="margin-top:12px;padding:14px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <strong style="font-size:14px;color:var(--text-main);">📎 ${esc(fileMeta.name)}</strong>
+              <span style="font-size:12px;color:var(--text-mute);">${formattedSize} (${esc(fileMeta.type || 'file')})</span>
+            </div>
+            <a href="${esc(displayUrl)}" target="_blank" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">Download / Open File ↗</a>
+          </div>`;
       }
+    }
+
+    // Determine name color: Super Admin = Gold, Normal Mods = Red
+    const authorName = c.name || 'Anonymous';
+    let nameColor = 'var(--accent)';
+    const lowerName = authorName.toLowerCase();
+    if (lowerName === 'aqeel') {
+      nameColor = 'gold';
+    } else if (window.subAdminNames.includes(lowerName)) {
+      nameColor = '#FF3B30';
     }
 
     return `
       <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;">
-          <strong style="color:var(--accent);font-size:16px;">${esc(c.name || 'Anonymous')}</strong>
+          <strong style="color:${nameColor};font-size:16px;">${esc(authorName)}</strong>
           <div style="display:flex;align-items:center;gap:10px;">
             <span style="font-size:12px;color:var(--text-mute);">${dateStr}</span>
             ${adminDelBtn}
@@ -1116,11 +1252,32 @@ async function postComment() {
   await loadComments();
 }
 
-window.deleteComment = async function(id) {
+window.deleteComment = async function(id, imageUrl) {
   if (!window.isAdmin() || !sb) return;
-  if (!confirm("Delete this comment?")) return;
-  await sb.from(COMMENTS_TABLE).delete().eq('id', id);
-  await loadComments();
+  if (!confirm("Delete this comment and its attached file?")) return;
+
+  // Clean up attached file from Supabase storage if present
+  if (imageUrl) {
+    try {
+      const cleanUrl = imageUrl.split('#')[0].split('?')[0];
+      const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+      if (cleanUrl.includes(marker)) {
+        const filePath = cleanUrl.split(marker)[1];
+        if (filePath) {
+          await sb.storage.from(STORAGE_BUCKET).remove([filePath]);
+        }
+      }
+    } catch (err) {
+      console.error("Storage file deletion error:", err);
+    }
+  }
+
+  const { error } = await sb.from(COMMENTS_TABLE).delete().eq('id', id);
+  if (error) {
+    alert("Could not delete comment: " + error.message);
+  } else {
+    await loadComments();
+  }
 };
 
 // ═══════════════════════════════════════════════
@@ -1177,7 +1334,6 @@ window.loadNews = async function() {
   renderNewsTab(all);
 };
 
-// Renders the 2 newest news cards at the top of the Home page
 function renderHomeTopNews(topTwo) {
   const homeGrid = document.getElementById('homeNewsGrid');
   if (!homeGrid) return;
@@ -1208,7 +1364,6 @@ function renderNewsTab(all) {
     return;
   }
 
-  // Featured top item
   const f = all[0];
   const fColor = f.tag_color || '#007AFF';
   const fDate = f.created_at ? new Date(f.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
@@ -1231,7 +1386,6 @@ function renderNewsTab(all) {
       </div>
     </div>`;
 
-  // Remaining items
   grid.innerHTML = all.slice(1).map((a, i) => {
     const idx = i + 1;
     const color = a.tag_color || '#007AFF';
@@ -1318,7 +1472,7 @@ window.postArticle = async function() {
   document.getElementById('newsUploadStatus').style.display = 'none';
 
   await loadNews();
-  alert("News published! It is now live on the News tab and Home page.");
+  alert("News published successfully!");
 };
 
 window.deleteNewsArticle = async function(id) {
@@ -1402,6 +1556,7 @@ function applySettings(){
   if(!appSettings)return;
   document.body.classList.toggle('font-default',appSettings.appFont==='default');
   const fSel=document.getElementById('fontSelect');if(fSel)fSel.value=appSettings.appFont||'imported';
+  if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont);
   if(appSettings.theme==='custom'&&appSettings.customTheme){
     const ct=appSettings.customTheme;
     document.documentElement.style.setProperty('--accent',ct.accent);
@@ -1551,7 +1706,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   applySettings();
   updateAdminUI();
 
-  // Load live Supabase data
   await loadNews();
   await loadComments();
 
