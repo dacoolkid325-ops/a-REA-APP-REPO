@@ -450,7 +450,14 @@ body.no-bg #glassCanvas { display:none !important; }
     <textarea id="articleBody" class="article-input" rows="6" placeholder="Write your news in Markdown…
 # Heading
 **bold**, *italic*, [link](url)
-![Image](url) or [giphy: gifid]"></textarea>
+![Image](url) or [giphy: gifid]" oninput="updateNewsLivePreview()"></textarea>
+    
+    <!-- Live News Markdown Preview Box -->
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Article Preview:</label>
+      <div id="liveNewsPreview" class="article-modal-content" style="padding:14px 18px;border-radius:16px;background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);max-height:200px;overflow-y:auto;font-size:14px;"><em>Start typing above to see live preview...</em></div>
+    </div>
+
     <button class="btn-ios" id="publishNewsBtn" style="margin-bottom:0;background:linear-gradient(135deg,gold,#ffaa00);color:#000;font-weight:900;" onclick="postArticle()">📤 Publish News</button>
   </div>
 
@@ -607,7 +614,7 @@ body.no-bg #glassCanvas { display:none !important; }
     <div class="post-row">
       <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment</button>
       <button type="button" class="attach-btn" onclick="toggleGiphyDrawer()" title="Insert Giphy GIF">GIF</button>
-      <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Upload File (Max 75MB)">📎</button>
+      <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Upload File (Max 50MB)">📎</button>
       <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(this)">
     </div>
   </div>
@@ -632,14 +639,13 @@ body.no-bg #glassCanvas { display:none !important; }
   <div class="glass-card">
     <div class="toggle-row"><span class="toggle-label">App Font Family</span><select id="fontSelect" class="setting-select" onchange="updateSetting('appFont',this.value)"><option value="imported">Inter / Jakarta</option><option value="default">Default</option></select></div>
     
-    <!-- Google Fonts Search & Selector via API Key -->
     <div class="toggle-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
       <span class="toggle-label">Google Fonts Library Search</span>
       <div style="display:flex;gap:8px;width:100%;">
         <input type="text" id="fontSearchInput" class="article-input" placeholder="Search Google Fonts (e.g. Roboto, Montserrat)..." style="margin-bottom:0;" oninput="filterGoogleFonts(this.value)">
         <button onclick="fetchGoogleFonts()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;">Load All</button>
       </div>
-      <select id="googleFontSelect" class="setting-select" style="width:100%;" onchange="applyGoogleFont(this.value)">
+      <select id="googleFontSelect" class="setting-select" style="width:100%;" onchange="applyGoogleFont(this.value, true)">
         <option value="">-- Load & Select any Google Font --</option>
       </select>
     </div>
@@ -855,7 +861,7 @@ function filterGoogleFonts(query) {
   renderFontDropdown(filtered);
 }
 
-function applyGoogleFont(fontName) {
+function applyGoogleFont(fontName, showAlert = false) {
   if (!fontName) return;
   const fontId = 'dynamicGoogleFont';
   let link = document.getElementById(fontId);
@@ -870,21 +876,20 @@ function applyGoogleFont(fontName) {
   link.href = href;
   
   document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
-  const styleTagId = 'dynamicFontStyle';
-  let styleTag = document.getElementById(styleTagId);
+  let styleTag = document.getElementById('dynamicFontStyle');
   if (!styleTag) {
     styleTag = document.createElement('style');
-    styleTag.id = styleTagId;
+    styleTag.id = 'dynamicFontStyle';
     document.head.appendChild(styleTag);
   }
   styleTag.innerHTML = `body, body * { font-family: var(--custom-font) !important; }`;
   appSettings.activeGoogleFont = fontName;
   localStorage.setItem('aREASettings', JSON.stringify(appSettings));
-  alert(`Applied Google Font: ${fontName}!`);
+  if (showAlert) alert(`Applied Google Font: ${fontName}!`);
 }
 
 // ═══════════════════════════════════════════════
-//  MARKDOWN, GIPHY & REALTIME LIVE PREVIEW
+//  MARKDOWN, GIPHY & REALTIME LIVE PREVIEWS
 // ═══════════════════════════════════════════════
 function renderGiphyShortcodes(htmlText) {
   return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
@@ -911,6 +916,14 @@ function updateLivePreview() {
     }).join('');
 }
 
+function updateNewsLivePreview() {
+  const body = document.getElementById('articleBody').value;
+  const prev = document.getElementById('liveNewsPreview');
+  if (prev) {
+    prev.innerHTML = body.trim() ? parseMarkdown(body) : '<em>Start typing above to see live preview...</em>';
+  }
+}
+
 function parseMarkdown(md) {
   let safe = esc(md || '');
   safe = renderGiphyShortcodes(safe);
@@ -934,7 +947,7 @@ function parseMarkdown(md) {
 }
 
 // ═══════════════════════════════════════════════
-//  SUPABASE STORAGE & 75MB FILE SUPPORT
+//  SUPABASE STORAGE & 50MB FILE SUPPORT
 // ═══════════════════════════════════════════════
 async function uploadToSupabaseStorage(file, folder = 'community') {
   if (!sb) throw new Error('Supabase is not configured yet.');
@@ -976,9 +989,9 @@ async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
 
-  const MAX_SIZE = 75 * 1024 * 1024;
+  const MAX_SIZE = 50 * 1024 * 1024; // 50MB limit
   if (file.size > MAX_SIZE) {
-    alert("File exceeds the 75MB maximum size limit.");
+    alert("File exceeds the 50MB maximum size limit.");
     input.value = '';
     return;
   }
@@ -1148,7 +1161,6 @@ window.loadComments = async function() {
       ? `<button onclick="deleteComment(${c.id}, '${c.image_url || ''}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
       : '';
     
-    // Parse file metadata & URL
     let fileMeta = { name: 'Attachment', size: '', type: '' };
     let displayUrl = c.image_url || '';
     if (c.image_url && c.image_url.includes('#meta=')) {
@@ -1189,7 +1201,6 @@ window.loadComments = async function() {
       }
     }
 
-    // Determine name color: Super Admin = Gold, Normal Mods = Red
     const authorName = c.name || 'Anonymous';
     let nameColor = 'var(--accent)';
     const lowerName = authorName.toLowerCase();
@@ -1256,7 +1267,6 @@ window.deleteComment = async function(id, imageUrl) {
   if (!window.isAdmin() || !sb) return;
   if (!confirm("Delete this comment and its attached file?")) return;
 
-  // Clean up attached file from Supabase storage if present
   if (imageUrl) {
     try {
       const cleanUrl = imageUrl.split('#')[0].split('?')[0];
@@ -1470,6 +1480,7 @@ window.postArticle = async function() {
   document.getElementById('articleCover').value = '';
   document.getElementById('articleBody').value = '';
   document.getElementById('newsUploadStatus').style.display = 'none';
+  updateNewsLivePreview();
 
   await loadNews();
   alert("News published successfully!");
@@ -1556,7 +1567,7 @@ function applySettings(){
   if(!appSettings)return;
   document.body.classList.toggle('font-default',appSettings.appFont==='default');
   const fSel=document.getElementById('fontSelect');if(fSel)fSel.value=appSettings.appFont||'imported';
-  if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont);
+  if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont, false);
   if(appSettings.theme==='custom'&&appSettings.customTheme){
     const ct=appSettings.customTheme;
     document.documentElement.style.setProperty('--accent',ct.accent);
@@ -1698,7 +1709,7 @@ function loadStoredSettings(){
   catch(e){console.error(e);localStorage.removeItem('aREASettings');}
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   navRO.observe(document.querySelector('.nav-container'));
   loadStoredSettings();
   initCanvas();
@@ -1706,8 +1717,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   applySettings();
   updateAdminUI();
 
-  await loadNews();
-  await loadComments();
+  // Optimized async loading for faster initial render
+  setTimeout(async () => {
+    await loadNews();
+    await loadComments();
+  }, 10);
 
   if (appSettings.startPage) {
     const startBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick')?.includes(appSettings.startPage));
@@ -1720,7 +1734,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loader.style.opacity = '0';
       setTimeout(() => loader.style.display = 'none', 400);
     }
-  }, 400);
+  }, 300);
 });
 </script>
 </body>
