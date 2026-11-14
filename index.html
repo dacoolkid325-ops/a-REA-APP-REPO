@@ -90,7 +90,7 @@ section.active { display:block; }
 .wix-iframe { will-change:transform,width; }
 #glassCanvas {
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
-  filter:blur(80px) saturate(160%);opacity:0.85;transition:opacity 0.5s;will-change:opacity,transform;
+  filter:blur(60px) saturate(140%);opacity:0.75;transition:opacity 0.5s;will-change:opacity,transform;pointer-events:none;
 }
 .glass-card {
   background:var(--liquid-glass-bg);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
@@ -383,7 +383,8 @@ body.no-bg #glassCanvas { display:none !important; }
 .article-modal-content video { max-width:100%;border-radius:12px;margin:12px 0; }
 .article-modal-content h1,.article-modal-content h2,.article-modal-content h3 { color:var(--text-main);margin:16px 0 8px; }
 .article-modal-content p { margin:10px 0;line-height:1.7; }
-.article-modal-content ul { padding-left:20px;margin:8px 0; }
+.article-modal-content ul { padding-left:20px;margin:8px 0; list-style-type: disc; }
+.article-modal-content ol { padding-left:20px;margin:8px 0; list-style-type: decimal; }
 .article-modal-content li { margin:4px 0; }
 .article-modal-content a { color:var(--accent); }
 .article-modal-content code { background:rgba(0,0,0,0.12);padding:2px 6px;border-radius:4px;font-family:monospace; }
@@ -503,6 +504,7 @@ body.no-bg #glassCanvas { display:none !important; }
       <button type="button" class="md-btn" onclick="formatText('articleBody','~~','~~')"><s>S</s></button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','> ','')">❝ Quote</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','- ','')">• List</button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','[', '](url)')">🔗 Link</button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','![alt](','url)')">🖼️ Img</button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','`','`')">&lt;/&gt;</button>
@@ -510,8 +512,7 @@ body.no-bg #glassCanvas { display:none !important; }
 
     <textarea id="articleBody" class="article-input" rows="6" placeholder="Write your news in Markdown…
 # Heading
-**bold**, *italic*, ~~strikethrough~~, `<u>underline</u>`, [link](url)
-![Image](url) or [giphy: gifid]" oninput="updateNewsLivePreview()"></textarea>
+**bold**, *italic*, - bullet item, [link](url)" oninput="updateNewsLivePreview()"></textarea>
     
     <!-- Live News Markdown Preview Box -->
     <div style="margin-bottom:14px;">
@@ -652,17 +653,23 @@ body.no-bg #glassCanvas { display:none !important; }
   <div class="glass-card">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
       <div>
-        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / New Account</label>
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / Account</label>
         <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
       </div>
-      <div>
+      <div id="passwordFieldWrapper">
         <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Password (for account)</label>
         <input type="password" id="userPassword" placeholder="Password..." class="search-input" style="padding-left:20px;">
       </div>
     </div>
+    
     <div style="margin-bottom:20px;">
-      <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Profile Picture (PFP) URL</label>
-      <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg (optional)..." class="search-input" style="padding-left:20px;" oninput="savePfp(this.value)">
+      <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Profile Picture (PFP)</label>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg or upload →" class="search-input" style="padding-left:20px;margin-bottom:0;" oninput="savePfp(this.value)">
+        <button type="button" class="attach-btn" style="margin-bottom:0;padding:13px 18px;" onclick="document.getElementById('pfpFileInput').click()" title="Upload PFP Image">🖼️</button>
+        <input type="file" id="pfpFileInput" accept="image/*" style="display:none;" onchange="uploadPfpFile(this)">
+      </div>
+      <div id="pfpUploadStatus" style="font-size:12px;color:var(--accent);margin-top:6px;display:none;"></div>
     </div>
 
     <!-- Reply Banner -->
@@ -681,6 +688,7 @@ body.no-bg #glassCanvas { display:none !important; }
         <button type="button" class="md-btn" onclick="formatText('message','~~','~~')"><s>S</s></button>
         <button type="button" class="md-btn" onclick="formatText('message','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
         <button type="button" class="md-btn" onclick="formatText('message','> ','')">❝ Quote</button>
+        <button type="button" class="md-btn" onclick="formatText('message','- ','')">• List</button>
         <button type="button" class="md-btn" onclick="formatText('message','[', '](url)')">🔗 Link</button>
         <button type="button" class="md-btn" onclick="formatText('message','![alt](','url)')">🖼️ Img</button>
         <button type="button" class="md-btn" onclick="formatText('message','`','`')">&lt;/&gt;</button>
@@ -708,7 +716,7 @@ body.no-bg #glassCanvas { display:none !important; }
 
     <div id="attachmentPreview"></div>
     <div class="post-row">
-      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment & Sign Up</button>
+      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment</button>
       <button type="button" class="attach-btn" onclick="toggleGiphyDrawer()" title="Insert Giphy GIF">GIF</button>
       <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Upload File (Max 50MB)">📎</button>
       <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(this)">
@@ -746,12 +754,32 @@ body.no-bg #glassCanvas { display:none !important; }
       </select>
     </div>
 
-    <div class="toggle-row"><span class="toggle-label">Moods</span><select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)"><option value="default">Default (Blue)</option><option value="sunset">Sunset (Orange)</option><option value="forest">Forest (Green)</option><option value="ocean">Ocean (Deep Blue)</option><option value="midnight">Midnight (Purple)</option><option value="custom">Custom Color</option></select></div>
-    <div id="customThemeSettings" style="display:none;flex-direction:column;gap:15px;padding:20px;background:rgba(0,0,0,0.05);border-radius:16px;margin-bottom:20px;border:1px solid var(--liquid-glass-border);">
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 1</span><input type="color" id="customBg1Picker" oninput="updateCustomTheme()" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 2</span><input type="color" id="customBg2Picker" oninput="updateCustomTheme()" value="#1a1a24" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
+    <!-- Theme Type Selector -->
+    <div class="toggle-row"><span class="toggle-label">Theme Type</span><select id="themeTypeSelect" class="setting-select" onchange="updateThemeType(this.value)"><option value="moods">Moods</option><option value="solid">Solid Colour</option><option value="gradient">Gradient</option><option value="image">Image (Upload/Link)</option></select></div>
+
+    <!-- Moods Sub-selector -->
+    <div id="moodsThemeSettings" class="toggle-row"><span class="toggle-label">Mood Selection</span><select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)"><option value="default">Default (Blue)</option><option value="sunset">Sunset (Orange)</option><option value="forest">Forest (Green)</option><option value="ocean">Ocean (Deep Blue)</option><option value="midnight">Midnight (Purple)</option><option value="custom">Custom Color</option></select></div>
+
+    <!-- Solid Colour Picker -->
+    <div id="solidThemeSettings" style="display:none;" class="toggle-row"><span class="toggle-label">Solid Background Color</span><input type="color" id="solidColorPicker" oninput="updateSolidTheme(this.value)" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
+
+    <!-- Gradient Settings -->
+    <div id="gradientThemeSettings" style="display:none;flex-direction:column;gap:15px;padding:20px;background:rgba(0,0,0,0.05);border-radius:16px;margin-bottom:20px;border:1px solid var(--liquid-glass-border);">
+      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Gradient Shade 1</span><input type="color" id="customBg1Picker" oninput="updateCustomTheme()" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
+      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Gradient Shade 2</span><input type="color" id="customBg2Picker" oninput="updateCustomTheme()" value="#1a1a24" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
       <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Accent Color</span><input type="color" id="customAccentPicker" oninput="updateCustomTheme()" value="#007AFF" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
     </div>
+
+    <!-- Image Background Settings -->
+    <div id="imageThemeSettings" style="display:none;flex-direction:column;gap:12px;" class="toggle-row">
+      <span class="toggle-label">Background Image URL or Upload</span>
+      <div style="display:flex;gap:8px;width:100%;">
+        <input type="text" id="bgImageUrlInput" class="article-input" placeholder="https://example.com/bg.jpg..." style="margin-bottom:0;" oninput="updateBgImage(this.value)">
+        <button type="button" class="attach-btn" style="margin-bottom:0;padding:12px 16px;" onclick="document.getElementById('bgImageFileInput').click()" title="Upload Background Image">🖼️</button>
+        <input type="file" id="bgImageFileInput" accept="image/*" style="display:none;" onchange="uploadBgImageFile(this)">
+      </div>
+    </div>
+
     <div class="toggle-row"><span class="toggle-label">Default Page</span><select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage',this.value)"><option value="home">Home</option><option value="news">News</option><option value="ai-rea">ai-REA</option><option value="songs">Songs</option><option value="videos">Videos</option><option value="games">Games</option><option value="books">Books</option><option value="community">Community</option><option value="extras">Extras</option><option value="settings">Settings</option></select></div>
     <div class="toggle-row"><span class="toggle-label">Light Mode</span><input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode',this.checked)"></div>
     <div class="toggle-row"><span class="toggle-label">iPad/PC Mode (Wide)</span><input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode',this.checked);"></div>
@@ -809,6 +837,23 @@ function savePfp(val) {
   localStorage.setItem('aREA_pfp', val.trim());
 }
 
+async function uploadPfpFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('pfpUploadStatus');
+  status.style.display = 'block';
+  status.innerText = `⏳ Uploading PFP…`;
+  try {
+    const publicUrl = await uploadToSupabaseStorage(file, 'pfps');
+    document.getElementById('userPfp').value = publicUrl;
+    savePfp(publicUrl);
+    status.innerText = `✅ PFP Uploaded successfully!`;
+  } catch (err) {
+    status.style.color = '#FF3B30';
+    status.innerText = `❌ Upload failed: ${err.message}`;
+  }
+}
+
 function showNotificationToast(title, msg) {
   document.getElementById('toastTitle').innerText = title;
   document.getElementById('toastMsg').innerText = msg;
@@ -825,12 +870,16 @@ function checkMentions(text, sourceTitle) {
   const myName = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
   if (!myName) return;
   
-  // Ignore emails like @gmail.com
-  if (text.match(new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook)`, 'i'))) return;
+  // Strict check to ignore email addresses like @gmail.com, @yahoo.co.uk
+  const emailRegex = new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\\.`, 'i');
+  if (emailRegex.test(text)) return;
 
-  const mentionRegex = new RegExp(`@${myName}\\b`, 'i');
+  const mentionRegex = new RegExp(`(^|\\s)@${myName}\\b`, 'i');
   if (mentionRegex.test(text)) {
     showNotificationToast("New Mention!", `You were mentioned in ${sourceTitle}`);
+    if (window.Notification && Notification.permission === 'granted') {
+      new Notification("New Mention in a-REA!", { body: `You were mentioned in ${sourceTitle}` });
+    }
   }
 }
 
@@ -875,7 +924,7 @@ function parseMarkdown(md) {
   safe = safe.replace(/^>\s*$/gm, '');
 
   // Highlight @mentions, strictly ignoring email domains like @gmail.com, @yahoo.co.uk etc.
-  safe = safe.replace(/@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud)\.[a-z]+)/gi, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
+  safe = safe.replace(/(^|\s)@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\.[a-z]+)/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$2</span>');
 
   safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
     '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
@@ -890,8 +939,11 @@ function parseMarkdown(md) {
   safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
   safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
   safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-  safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
-  safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
+  
+  // Bullet lists (- or *)
+  safe = safe.replace(/^[-\*] (.+)$/gm, '<li>$1</li>');
+  safe = safe.replace(/(<li>[\s\S]+?<\/li>)+/g, '<ul>$&</ul>');
+
   safe = safe.replace(/\n\n/g, '</p><p>');
   return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
@@ -929,6 +981,12 @@ function updateAdminUI() {
   document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
   document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
 
+  // Hide password field if logged in as admin
+  const pwField = document.getElementById('passwordFieldWrapper');
+  if (pwField) {
+    pwField.style.display = active ? 'none' : 'block';
+  }
+
   const newsBtn = document.getElementById('newsAdminBtn');
   if (newsBtn) newsBtn.style.display = active ? 'none' : 'inline-block';
 
@@ -946,8 +1004,12 @@ window.adminLogin = async function() {
   if (!user) return;
   user = user.trim();
 
-  // Instant check for Super Admin
+  // Enforce area2026 password check for Aqeel so nobody else can spoof admin name
   if (user.toLowerCase() === "aqeel") {
+    let pass = prompt("Enter Super Admin Password (area2026):");
+    if (pass !== "area2026") {
+      return alert("Incorrect Super Admin password!");
+    }
     window.adminRole = 'super';
     window.adminUser = 'Aqeel';
     localStorage.setItem('aREA_adminRole', 'super');
@@ -1477,7 +1539,7 @@ window.loadComments = async function() {
 async function postComment() {
   if (!sb) return alert("Configure your Supabase URL and Anon Key first!");
   const name = document.getElementById('username').value.trim() || 'Anonymous';
-  const pass = document.getElementById('userPassword').value.trim();
+  const pass = document.getElementById('userPassword')?.value.trim() || '';
   const pfp = document.getElementById('userPfp').value.trim();
   saveUsername(name);
   if (pfp) savePfp(pfp);
@@ -1511,7 +1573,7 @@ async function postComment() {
   }]);
 
   btn.disabled = false;
-  btn.innerText = 'Post Comment & Sign Up';
+  btn.innerText = 'Post Comment';
 
   if (error) {
     alert("Could not post comment: " + error.message);
@@ -1802,7 +1864,7 @@ function vibrate(ms=15){if(navigator.vibrate)navigator.vibrate(ms);}
 document.addEventListener('click',(e)=>{
   if(e.target.closest('button,a,input,select,.clickable,.song-item,.game-ui-header,.news-featured,.news-card'))vibrate(15);
 });
-function triggerDynamicTheming(c){if(appSettings.theme!=='dynamic')return;document.documentElement.style.setProperty('--accent',c);}
+function triggerDynamicTheming(c){if(appSettings.themeType!=='moods'||appSettings.theme!=='dynamic')return;document.documentElement.style.setProperty('--accent',c);}
 function toggleTheaterMode(btn){
   const card=btn.closest('.glass-card');
   const t=document.body.classList.toggle('theater-mode');
@@ -1821,16 +1883,28 @@ const themes={
   ocean:{accent:'#5856D6',colors:['#5856D6','#007AFF','#30B0C7','#5AC8FA','#AF52DE','#5856D6']},
   midnight:{accent:'#AF52DE',colors:['#AF52DE','#5856D6','#FF2D55','#007AFF','#30B0C7','#AF52DE']}
 };
-let appSettings={appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,wixWidth:375,uiScale:0.95,startPage:'home',theme:'default',customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'}};
+let appSettings={
+  appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,
+  wixWidth:375,uiScale:0.95,startPage:'home',themeType:'moods',theme:'default',
+  solidColor:'#050507',
+  customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'},
+  bgImageUrl:''
+};
+
 function initCanvas(){
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;points=[];
-  let p;
-  if(appSettings.theme==='custom'){const ct=appSettings.customTheme||{};p=[ct.accent||'#007AFF',ct.bg1||'#050507',ct.bg2||'#1a1a24',ct.accent||'#007AFF','#ffffff',ct.bg1||'#050507'];}
-  else{const tk=appSettings.theme||'default';p=themes[tk]?themes[tk].colors:themes.default.colors;}
-  for(let i=0;i<6;i++)points.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.5,r:Math.random()*400+200,color:p[i%p.length]});
+  if(appSettings.themeType!=='moods')return;
+  let p=themes[appSettings.theme]?themes[appSettings.theme].colors:themes.default.colors;
+  // Keep points comfortably in center/spread to avoid pool grouping in corners
+  for(let i=0;i<5;i++)points.push({
+    x:canvas.width*0.2 + Math.random()*(canvas.width*0.6),
+    y:canvas.height*0.2 + Math.random()*(canvas.height*0.6),
+    vx:(Math.random()-0.5)*1.2,vy:(Math.random()-0.5)*1.2,
+    r:Math.random()*300+180,color:p[i%p.length]
+  });
 }
 function loop(){
-  if(appSettings.noBg||appSettings.ultraSaver){animFrameId=null;return;}
+  if(appSettings.noBg||appSettings.ultraSaver||appSettings.themeType!=='moods'){animFrameId=null;return;}
   bgFrameCount++;
   if(appSettings.batterySaver&&bgFrameCount%2!==0){animFrameId=requestAnimationFrame(loop);return;}
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1846,15 +1920,55 @@ function loop(){
 }
 
 function updateSetting(k,v){appSettings[k]=v;localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();}
+
+function updateThemeType(v){
+  appSettings.themeType=v;
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));
+  
+  document.getElementById('moodsThemeSettings').style.display=(v==='moods')?'flex':'none';
+  document.getElementById('solidThemeSettings').style.display=(v==='solid')?'flex':'none';
+  document.getElementById('gradientThemeSettings').style.display=(v==='gradient')?'flex':'none';
+  document.getElementById('imageThemeSettings').style.display=(v==='image')?'flex':'none';
+  
+  applySettings();
+  if(v==='moods')initCanvas();
+}
+
 function updateThemeSelection(v){
   updateSetting('theme',v);
-  document.getElementById('customThemeSettings').style.display=(v==='custom')?'flex':'none';
   applySettings();initCanvas();
 }
+
+function updateSolidTheme(col){
+  appSettings.solidColor=col;
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));
+  applySettings();
+}
+
 function updateCustomTheme(){
   appSettings.customTheme={bg1:document.getElementById('customBg1Picker').value,bg2:document.getElementById('customBg2Picker').value,accent:document.getElementById('customAccentPicker').value};
-  localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();initCanvas();
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();
 }
+
+function updateBgImage(url){
+  appSettings.bgImageUrl=url;
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));
+  applySettings();
+}
+
+async function uploadBgImageFile(input) {
+  const file = input.files[0];
+  if(!file)return;
+  try {
+    const pubUrl = await uploadToSupabaseStorage(file, 'backgrounds');
+    document.getElementById('bgImageUrlInput').value = pubUrl;
+    updateBgImage(pubUrl);
+    alert("Background image uploaded successfully!");
+  } catch(e) {
+    alert("Upload failed: " + e.message);
+  }
+}
+
 function toggleUltraSaver(on){
   updateSetting('ultraSaver',on);
   if(on){updateSetting('noBg',true);updateSetting('solidGlass',true);updateSetting('batterySaver',true);}
@@ -1865,31 +1979,52 @@ function applySettings(){
   document.body.classList.toggle('font-default',appSettings.appFont==='default');
   const fSel=document.getElementById('fontSelect');if(fSel)fSel.value=appSettings.appFont||'imported';
   if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont, false);
-  if(appSettings.theme==='custom'&&appSettings.customTheme){
-    const ct=appSettings.customTheme;
+  
+  // Theme Type handling
+  const tt=appSettings.themeType||'moods';
+  const selectTt=document.getElementById('themeTypeSelect');
+  if(selectTt) selectTt.value=tt;
+
+  document.getElementById('moodsThemeSettings').style.display=(tt==='moods')?'flex':'none';
+  document.getElementById('solidThemeSettings').style.display=(tt==='solid')?'flex':'none';
+  document.getElementById('gradientThemeSettings').style.display=(tt==='gradient')?'flex':'none';
+  document.getElementById('imageThemeSettings').style.display=(tt==='image')?'flex':'none';
+
+  if(tt==='solid'){
+    document.body.style.background=appSettings.solidColor||'#050507';
+  } else if(tt==='gradient'){
+    const ct=appSettings.customTheme||{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'};
     document.documentElement.style.setProperty('--accent',ct.accent);
     document.body.style.background=`linear-gradient(135deg,${ct.bg1},${ct.bg2})`;
     document.body.style.backgroundAttachment='fixed';
-    if(document.getElementById('customBg1Picker')){document.getElementById('customBg1Picker').value=ct.bg1;document.getElementById('customBg2Picker').value=ct.bg2;document.getElementById('customAccentPicker').value=ct.accent;document.getElementById('customThemeSettings').style.display='flex';}
+  } else if(tt==='image'){
+    if(appSettings.bgImageUrl){
+      document.body.style.background=`url('${appSettings.bgImageUrl}') center/cover no-repeat fixed`;
+    } else {
+      document.body.style.background='#050507';
+    }
   } else {
+    // Moods
     const tk=appSettings.theme||'default';const to=themes[tk]||themes.default;
     document.documentElement.style.setProperty('--accent',to.accent);
     document.body.style.background='';
-    if(document.getElementById('customThemeSettings'))document.getElementById('customThemeSettings').style.display='none';
   }
+
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el[typeof v==='boolean'?'checked':'value']=v;};
   setEl('themeSelect',appSettings.theme);setEl('lightToggle',appSettings.lightMode);setEl('ipadToggle',appSettings.ipadMode);
   setEl('noBgToggle',appSettings.noBg);setEl('solidGlassToggle',appSettings.solidGlass);setEl('batteryToggle',appSettings.batterySaver);
   setEl('ultraSaverToggle',appSettings.ultraSaver);setEl('removeAireaToggle',appSettings.removeAirea);
   document.body.classList.toggle('light',appSettings.lightMode);
   document.body.classList.toggle('ipad-mode',appSettings.ipadMode);
-  document.body.classList.toggle('no-bg',appSettings.noBg);
+  document.body.classList.toggle('no-bg',appSettings.noBg||tt==='solid'||tt==='image'||tt==='gradient');
   document.body.classList.toggle('solid-glass',appSettings.solidGlass);
   document.body.classList.toggle('ultra-saver',appSettings.ultraSaver);
   const aBtn=document.querySelector('.airea-nav-btn');
   if(appSettings.removeAirea){if(aBtn)aBtn.style.display='none';if(document.getElementById('ai-rea').classList.contains('active'))showTab('home',document.querySelectorAll('.nav-item')[0]);}
   else{if(aBtn)aBtn.style.display='flex';}
-  if(!appSettings.noBg&&!appSettings.ultraSaver&&!animFrameId)loop();
+  
+  if(tt==='moods'&&!appSettings.noBg&&!appSettings.ultraSaver&&!animFrameId)loop();
+  
   if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')
     document.documentElement.style.setProperty('--ui-zoom',appSettings.uiScale||0.95);
   if(appSettings.startPage){const s=document.getElementById('startPageSelect');if(s)s.value=appSettings.startPage;}
@@ -2013,6 +2148,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loop();
   applySettings();
   updateAdminUI();
+
+  // Request browser notification permission on startup
+  if (window.Notification && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
 
   const savedName = localStorage.getItem('aREA_username');
   if (savedName && document.getElementById('username')) {
