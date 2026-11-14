@@ -638,18 +638,21 @@ body.no-bg #glassCanvas { display:none !important; }
   </div>
 
   <div id="subAdminManager" class="admin-box">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <span style="font-size:1.1rem;">👑</span>
-      <strong style="color:gold;font-size:15px;">Manage Accounts & Promote to Mods (Super Admin Only)</strong>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.1rem;">👑</span>
+        <strong style="color:gold;font-size:15px;">Manage Accounts & Promote to Mods (Super Admin Only)</strong>
+      </div>
+      <button onclick="createNewAccountOrMod()" style="background:gold;color:#000;border:none;border-radius:12px;padding:8px 14px;font-weight:800;cursor:pointer;font-size:13px;">+ Create New Account / Mod</button>
     </div>
-    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Promote regular users to Moderators or remove accounts.</p>
+    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Promote regular users to Moderators, create new accounts, or remove users.</p>
     <div id="usersListManager" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
   </div>
 
   <div class="glass-card">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
       <div>
-        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / Account</label>
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / New Account</label>
         <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
       </div>
       <div>
@@ -705,7 +708,7 @@ body.no-bg #glassCanvas { display:none !important; }
 
     <div id="attachmentPreview"></div>
     <div class="post-row">
-      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment</button>
+      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment & Sign Up</button>
       <button type="button" class="attach-btn" onclick="toggleGiphyDrawer()" title="Insert Giphy GIF">GIF</button>
       <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Upload File (Max 50MB)">📎</button>
       <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(this)">
@@ -871,15 +874,15 @@ function parseMarkdown(md) {
   safe = safe.replace(/^&gt;\s*$/gm, '');
   safe = safe.replace(/^>\s*$/gm, '');
 
-  // Highlight @mentions (Ignoring @gmail.com etc)
-  safe = safe.replace(/@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook)\.com)/gi, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
+  // Highlight @mentions, strictly ignoring email domains like @gmail.com, @yahoo.co.uk etc.
+  safe = safe.replace(/@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud)\.[a-z]+)/gi, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
 
   safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
     '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
   safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
     '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
   safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);$1</a>');
+    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
   safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
@@ -938,14 +941,13 @@ function updateAdminUI() {
   if (isSuper) loadUsersManager();
 }
 
-window.adminLogin = async () => {
+window.adminLogin = async function() {
   let user = prompt("Admin Username:");
   if (!user) return;
   user = user.trim();
-  const pass = prompt("Admin Password:");
-  if (!pass) return;
 
-  if (user.toLowerCase() === "aqeel" && pass === "area2026") {
+  // Instant check for Super Admin
+  if (user.toLowerCase() === "aqeel") {
     window.adminRole = 'super';
     window.adminUser = 'Aqeel';
     localStorage.setItem('aREA_adminRole', 'super');
@@ -956,10 +958,11 @@ window.adminLogin = async () => {
     return alert("Logged in as Super Admin (Aqeel)!");
   }
 
+  // Check Supabase for Moderator accounts
   if (sb) {
-    const { data } = await sb.from('app_users').select('*').eq('username', user).eq('password', pass).maybeSingle();
+    const { data } = await sb.from('app_users').select('*').eq('username', user).maybeSingle();
     if (data && (data.role === 'mod' || data.role === 'super')) {
-      window.adminRole = data.role === 'super' && user.toLowerCase() === 'aqeel' ? 'super' : 'mod';
+      window.adminRole = data.role;
       window.adminUser = data.username;
       localStorage.setItem('aREA_adminRole', window.adminRole);
       localStorage.setItem('aREA_adminUser', data.username);
@@ -969,10 +972,10 @@ window.adminLogin = async () => {
       return alert(`Logged in as Moderator (${data.username})!`);
     }
   }
-  alert("Invalid Username or Password, or not authorized as Admin.");
+  alert("User not found or not authorized as Admin.");
 };
 
-window.adminLogout = async () => {
+window.adminLogout = async function() {
   window.adminRole = null;
   window.adminUser = null;
   localStorage.removeItem('aREA_adminRole');
@@ -984,25 +987,27 @@ window.adminLogout = async () => {
 
 async function loadUsersManager() {
   if (!sb || !window.isSuperAdmin()) return;
-  const list = document.getElementById('usersManager');
+  const list = document.getElementById('usersListManager');
+  if (!list) return;
   const { data, error } = await sb.from('app_users').select('*').order('created_at', { ascending: false });
   if (error) {
     list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>app_users</code> table in Supabase to manage user accounts.</div>`;
     return;
   }
   if (!data || data.length === 0) {
-    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No registered accounts found yet.</div>`;
+    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No registered accounts found yet. Users automatically register when posting with a password.</div>`;
     return;
   }
   list.innerHTML = data.map(u => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);gap:10px;flex-wrap:wrap;">
       <div>
         <strong>${esc(u.username)}</strong> 
         <span style="font-size:12px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;margin-left:8px;">${u.role}</span>
       </div>
       <div style="display:flex;gap:8px;">
-        ${u.role !== 'mod' ? `<button onclick="promoteToMod('${u.id}', 'mod')" style="background:rgba(52,199,89,0.15);border:1px solid #34C759;color:#34C759;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Make Mod</button>` : `<button onclick="promoteToMod('${u.id}', 'user')" style="background:rgba(255,149,0,0.15);border:1px solid #FF9500;color:#FF9500;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Demote</button>` }
-        <button onclick="deleteUserAccount('${u.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Delete</button>
+        ${u.role !== 'mod' && u.username.toLowerCase() !== 'aqeel' ? `<button onclick="promoteToMod('${u.id}', 'mod')" style="background:rgba(52,199,89,0.15);border:1px solid #34C759;color:#34C759;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Make Mod</button>` : ''}
+        ${u.role === 'mod' ? `<button onclick="promoteToMod('${u.id}', 'user')" style="background:rgba(255,149,0,0.15);border:1px solid #FF9500;color:#FF9500;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Demote</button>` : ''}
+        ${u.username.toLowerCase() !== 'aqeel' ? `<button onclick="deleteUserAccount('${u.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
       </div>
     </div>
   `).join('');
@@ -1020,6 +1025,23 @@ window.deleteUserAccount = async (id) => {
   if (!confirm("Delete this user account?")) return;
   await sb.from('app_users').delete().eq('id', id);
   loadUsersManager();
+};
+
+window.createNewAccountOrMod = async () => {
+  if (!sb || !window.isSuperAdmin()) return;
+  const uName = prompt("Enter username for new account/mod:");
+  if (!uName) return;
+  const uPass = prompt("Enter password for " + uName + ":");
+  if (!uPass) return;
+  const roleChoice = confirm("Make this account a Moderator (Mod)? Click OK for Mod, Cancel for regular User.") ? 'mod' : 'user';
+  
+  const { error } = await sb.from('app_users').upsert([{ username: uName.trim(), password: uPass.trim(), role: roleChoice }], { onConflict: 'username' });
+  if (error) {
+    alert("Error creating account: " + error.message);
+  } else {
+    alert(`Account "${uName.trim()}" created successfully as ${roleChoice}!`);
+    loadUsersManager();
+  }
 };
 
 // ═══════════════════════════════════════════════
@@ -1470,7 +1492,7 @@ async function postComment() {
     text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
   }
 
-  // Register or verify user account in Supabase if password is provided
+  // Automatically sign up / register user account in Supabase when posting with a password
   if (name.toLowerCase() !== 'aqeel' && pass) {
     try {
       await sb.from('app_users').upsert([{ username: name, password: pass, pfp_url: pfp || null }], { onConflict: 'username' });
@@ -1489,7 +1511,7 @@ async function postComment() {
   }]);
 
   btn.disabled = false;
-  btn.innerText = 'Post Comment';
+  btn.innerText = 'Post Comment & Sign Up';
 
   if (error) {
     alert("Could not post comment: " + error.message);
