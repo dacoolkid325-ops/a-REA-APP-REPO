@@ -60,7 +60,6 @@ body.font-default,body.font-default * {
   z-index:99999 !important;margin:0 !important;padding:0 !important;border-radius:0 !important;background:#000 !important;
 }
 .ios-pseudo-fullscreen .btn-ios { display:none !important; }
-/* position:fixed is trapped by transform / content-visibility / filter on ancestors, so drop them while fullscreen */
 body.fs-active #app-wrapper { transform:none !important;width:100% !important;filter:none !important;will-change:auto !important;contain:none !important; }
 body.fs-active section { animation:none !important;content-visibility:visible !important;contain:none !important;transform:none !important;filter:none !important; }
 body.fs-active .glass-card:has(.is-active-fs,.ios-pseudo-fullscreen) { backdrop-filter:none !important;-webkit-backdrop-filter:none !important;transform:none !important;overflow:visible !important; }
@@ -304,6 +303,27 @@ body.no-bg #glassCanvas { display:none !important; }
   display:block;max-width:260px;width:100%;border-radius:14px;margin:10px 0;border:1px solid var(--liquid-glass-border);cursor:zoom-in;
 }
 
+/* Markdown Editor Toolbar */
+.md-toolbar {
+  display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;
+}
+.md-btn {
+  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
+  padding:6px 12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:all 0.2s var(--spring-bounce);
+}
+.md-btn:hover { background:rgba(255,255,255,0.15);border-color:var(--accent); }
+.md-btn:active { transform:scale(0.92); }
+
+/* Notification Toast Banner */
+#notificationToast {
+  position:fixed;top:20px;right:20px;z-index:999999;max-width:360px;width:90%;
+  background:var(--player-bg);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border:1px solid var(--accent);border-radius:20px;padding:16px 20px;box-shadow:0 20px 50px rgba(0,0,0,0.4);
+  transform:translateY(-120%);transition:transform 0.4s var(--spring-bounce);display:flex;align-items:center;gap:14px;
+}
+#notificationToast.show { transform:translateY(0); }
+
 /* ── News Tab – Switch 2 style ── */
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
 .news-featured {
@@ -366,6 +386,16 @@ body.no-bg #glassCanvas { display:none !important; }
 
 <div id="initialLoader"><h2>Loading a-REA...</h2></div>
 <canvas id="glassCanvas" width="1440" height="865"></canvas>
+
+<!-- Notification Toast -->
+<div id="notificationToast">
+  <div style="font-size:24px;">🔔</div>
+  <div style="flex:1;">
+    <strong id="toastTitle" style="display:block;font-size:14px;margin-bottom:2px;">New Mention</strong>
+    <span id="toastMsg" style="font-size:13px;color:var(--text-mute);">You were mentioned in a message!</span>
+  </div>
+  <button onclick="closeNotificationToast()" style="background:none;border:none;color:var(--text-main);font-weight:800;cursor:pointer;">✕</button>
+</div>
 
 <div id="miniPlayer">
   <div class="mp-info">
@@ -456,9 +486,22 @@ body.no-bg #glassCanvas { display:none !important; }
       <input type="file" id="newsImageFile" accept="image/*" style="display:none;" onchange="uploadNewsCoverImage(this)">
     </div>
     <div id="newsUploadStatus" style="font-size:12px;color:var(--accent);margin-bottom:10px;display:none;"></div>
+    
+    <!-- News Editor Toolbar -->
+    <div class="md-toolbar">
+      <button type="button" class="md-btn" onclick="formatText('articleBody','**','**')"><b>B</b></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','*','*')"><i>I</i></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','~~','~~')"><s>S</s></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','> ','')">❝ Quote</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','[', '](url)')">🔗 Link</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','![alt](','url)')">🖼️ Img</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','`','`')">&lt;/&gt;</button>
+    </div>
+
     <textarea id="articleBody" class="article-input" rows="6" placeholder="Write your news in Markdown…
 # Heading
-**bold**, *italic*, [link](url)
+**bold**, *italic*, ~~strikethrough~~, `<u>underline</u>`, [link](url)
 ![Image](url) or [giphy: gifid]" oninput="updateNewsLivePreview()"></textarea>
     
     <!-- Live News Markdown Preview Box -->
@@ -602,11 +645,32 @@ body.no-bg #glassCanvas { display:none !important; }
   <div class="glass-card">
     <div style="margin-bottom:20px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Username</label>
-      <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left:20px;">
+      <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
     </div>
+
+    <!-- Reply Banner -->
+    <div id="replyBanner" style="display:none;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,122,255,0.1);border:1px solid var(--liquid-glass-border);border-radius:14px;margin-bottom:14px;font-size:13px;">
+      <span>Replying to <strong id="replyingToName"></strong>: <span id="replyingToSnippet" style="opacity:0.8;"></span></span>
+      <button type="button" onclick="cancelReply()" style="background:none;border:none;color:var(--text-main);font-weight:800;cursor:pointer;font-size:16px;">✕</button>
+    </div>
+
     <div style="margin-bottom:16px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</label>
-      <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLivePreview()"></textarea>
+      
+      <!-- Markdown Editor Toolbar -->
+      <div class="md-toolbar">
+        <button type="button" class="md-btn" onclick="formatText('message','**','**')"><b>B</b></button>
+        <button type="button" class="md-btn" onclick="formatText('message','*','*')"><i>I</i></button>
+        <button type="button" class="md-btn" onclick="formatText('message','~~','~~')"><s>S</s></button>
+        <button type="button" class="md-btn" onclick="formatText('message','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
+        <button type="button" class="md-btn" onclick="formatText('message','> ','')">❝ Quote</button>
+        <button type="button" class="md-btn" onclick="formatText('message','[', '](url)')">🔗 Link</button>
+        <button type="button" class="md-btn" onclick="formatText('message','![alt](','url)')">🖼️ Img</button>
+        <button type="button" class="md-btn" onclick="formatText('message','`','`')">&lt;/&gt;</button>
+        <button type="button" class="md-btn" onclick="insertAtCursor('message','@')">@Mention</button>
+      </div>
+
+      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username to mention someone..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLivePreview()"></textarea>
     </div>
 
     <div id="liveGiphyPreview"></div>
@@ -707,6 +771,98 @@ const STORAGE_BUCKET = 'uploads';
 let sb = null;
 if (window.supabase && SUPABASE_URL.startsWith('http')) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// ═══════════════════════════════════════════════
+//  USER & MENTION NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════
+let activeReply = null;
+
+function saveUsername(val) {
+  localStorage.setItem('aREA_username', val.trim());
+}
+
+function showNotificationToast(title, msg) {
+  document.getElementById('toastTitle').innerText = title;
+  document.getElementById('toastMsg').innerText = msg;
+  const t = document.getElementById('notificationToast');
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 5000);
+}
+
+function closeNotificationToast() {
+  document.getElementById('notificationToast').classList.remove('show');
+}
+
+function checkMentions(text, sourceTitle) {
+  const myName = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
+  if (!myName) return;
+  const mentionRegex = new RegExp(`@${myName}\\b`, 'i');
+  if (mentionRegex.test(text)) {
+    showNotificationToast("New Mention!", `You were mentioned in ${sourceTitle}`);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  MARKDOWN EDITOR TOOLBAR & PARSER
+// ═══════════════════════════════════════════════
+function formatText(elementId, start, end) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const startPos = el.selectionStart;
+  const endPos = el.selectionEnd;
+  const selectedText = el.value.substring(startPos, endPos);
+  el.value = el.value.substring(0, startPos) + start + selectedText + end + el.value.substring(endPos);
+  el.focus();
+  el.setSelectionRange(startPos + start.length, endPos + start.length);
+  if (elementId === 'message') updateLivePreview();
+  if (elementId === 'articleBody') updateNewsLivePreview();
+}
+
+function insertAtCursor(elementId, text) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const pos = el.selectionStart;
+  el.value = el.value.substring(0, pos) + text + el.value.substring(pos);
+  el.focus();
+  el.setSelectionRange(pos + text.length, pos + text.length);
+  if (elementId === 'message') updateLivePreview();
+}
+
+function parseMarkdown(md) {
+  let safe = esc(md || '');
+  safe = renderGiphyShortcodes(safe);
+
+  // Strikethrough ~~text~~
+  safe = safe.replace(/~~(.+?)~~/g, '<del>$1</del>');
+
+  // Underline <u>...</u> (handling HTML escaped versions)
+  safe = safe.replace(/&lt;u&gt;(.+?)&lt;\/u&gt;|\u003cu\u003e(.+?)\u003c\/u\u003e/gi, '<u>$1$2</u>');
+
+  // Empty line with just > or &gt; does nothing
+  safe = safe.replace(/^&gt;\s*$/gm, '');
+  safe = safe.replace(/^>\s*$/gm, '');
+
+  // Highlight @mentions
+  safe = safe.replace(/@([a-zA-Z0-9_-]+)/g, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
+
+  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
+    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
+  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
+  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
+  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
+  safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
+  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
+  safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
+  safe = safe.replace(/\n\n/g, '</p><p>');
+  return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
 
 // ═══════════════════════════════════════════════
@@ -898,7 +1054,7 @@ function applyGoogleFont(fontName, showAlert = false) {
 }
 
 // ═══════════════════════════════════════════════
-//  MARKDOWN, GIPHY & REALTIME LIVE PREVIEWS
+//  GIPHY & REALTIME LIVE PREVIEWS
 // ═══════════════════════════════════════════════
 function renderGiphyShortcodes(htmlText) {
   return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
@@ -931,28 +1087,6 @@ function updateNewsLivePreview() {
   if (prev) {
     prev.innerHTML = body.trim() ? parseMarkdown(body) : '<em>Start typing above to see live preview...</em>';
   }
-}
-
-function parseMarkdown(md) {
-  let safe = esc(md || '');
-  safe = renderGiphyShortcodes(safe);
-  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
-    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
-  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
-  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
-  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
-  safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
-  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-  safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
-  safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
-  safe = safe.replace(/\n\n/g, '</p><p>');
-  return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
 
 // ═══════════════════════════════════════════════
@@ -1132,13 +1266,42 @@ window.toggleLightboxZoom = function(img) {
 };
 
 // ═══════════════════════════════════════════════
-//  COMMUNITY COMMENTS (SUPABASE) + FILE CLEANUP
+//  COMMUNITY COMMENTS (REPLIES & EDIT HISTORY)
 // ═══════════════════════════════════════════════
-function formatCommentBody(rawText) {
-  let safe = esc(rawText || '');
-  safe = renderGiphyShortcodes(safe);
-  return safe.replace(/\n/g, '<br>');
-}
+window.replyToMessage = function(id, authorName, textSnippet) {
+  activeReply = { id, name: authorName, text: textSnippet };
+  document.getElementById('replyingToName').innerText = authorName;
+  document.getElementById('replyingToSnippet').innerText = `"${textSnippet.slice(0, 50)}..."`;
+  document.getElementById('replyBanner').style.display = 'flex';
+  document.getElementById('message').focus();
+};
+
+window.cancelReply = function() {
+  activeReply = null;
+  document.getElementById('replyBanner').style.display = 'none';
+};
+
+window.editComment = async function(id) {
+  const comment = (window._commentsCache || {})[String(id)];
+  if (!comment) return;
+  const rawText = comment.text.split('\n\n--- Edit History ---')[0];
+  const newText = prompt("Edit your message:", rawText);
+  if (newText === null) return;
+  if (!newText.trim() && !comment.image_url) return alert("Message cannot be empty.");
+
+  const timestamp = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  let historyBlock = comment.edit_history || '';
+  historyBlock += `\n- [${timestamp}] ${rawText.replace(/\n/g, ' ')}`;
+
+  const updatedText = `${newText.trim()}\n\n--- Edit History ---${historyBlock}`;
+
+  const { error } = await sb.from(COMMENTS_TABLE).update({ text: updatedText, edit_history: historyBlock }).eq('id', id);
+  if (error) {
+    alert("Could not update message: " + error.message);
+    return;
+  }
+  await loadComments();
+};
 
 window.loadComments = async function() {
   const container = document.getElementById('commentsContainer');
@@ -1162,16 +1325,45 @@ window.loadComments = async function() {
     return;
   }
 
+  // Check for mentions in latest comment
+  const latestComment = data[0];
+  const lastCheckedId = localStorage.getItem('aREA_lastCheckedCommentId');
+  if (latestComment && String(latestComment.id) !== lastCheckedId) {
+    checkMentions(latestComment.text || '', `message from ${latestComment.name || 'Anonymous'}`);
+    localStorage.setItem('aREA_lastCheckedCommentId', String(latestComment.id));
+  }
+
   window._commentsCache = {};
   data.forEach(c => { window._commentsCache[String(c.id)] = c; });
+
+  const currentUsername = (localStorage.getItem('aREA_username') || '').trim().toLowerCase();
+
   container.innerHTML = data.map(c => {
     const dateStr = c.created_at
       ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
       : '';
-    const adminDelBtn = window.isAdmin()
-      ? `<button type="button" data-del-comment="${esc(String(c.id))}" onclick="deleteComment(this.dataset.delComment)" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
-      : '';
-    
+
+    const authorName = c.name || 'Anonymous';
+    const isAuthor = currentUsername && authorName.toLowerCase() === currentUsername;
+    const canModify = window.isAdmin() || isAuthor;
+
+    const actionBtns = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button type="button" onclick="replyToMessage('${c.id}', '${esc(authorName)}', '${esc(c.text || '')}')" style="background:rgba(0,122,255,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Reply</button>
+        ${canModify ? `<button type="button" onclick="editComment('${c.id}')" style="background:rgba(255,204,0,0.15);border:1px solid #FFCC00;color:#FFCC00;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Edit</button>` : ''}
+        ${window.isAdmin() ? `<button type="button" onclick="deleteComment('${c.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
+      </div>
+    `;
+
+    // Separate main text from edit history
+    let fullText = c.text || '';
+    let historyLines = '';
+    if (fullText.includes('--- Edit History ---')) {
+      const parts = fullText.split('--- Edit History ---');
+      fullText = parts[0];
+      historyLines = parts[1] ? parts[1].trim() : '';
+    }
+
     let fileMeta = { name: 'Attachment', size: '', type: '' };
     let displayUrl = c.image_url || '';
     if (c.image_url && c.image_url.includes('#meta=')) {
@@ -1202,7 +1394,7 @@ window.loadComments = async function() {
           </div>`;
       } else {
         attachmentHtml = `
-          <div style="margin-top:12px;padding:14px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+          <div style="margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
               <strong style="font-size:14px;color:var(--text-main);">📎 ${esc(fileMeta.name)}</strong>
               <span style="font-size:12px;color:var(--text-mute);">${formattedSize} (${esc(fileMeta.type || 'file')})</span>
@@ -1212,7 +1404,6 @@ window.loadComments = async function() {
       }
     }
 
-    const authorName = c.name || 'Anonymous';
     let nameColor = 'var(--accent)';
     const lowerName = authorName.toLowerCase();
     if (lowerName === 'aqeel') {
@@ -1221,17 +1412,29 @@ window.loadComments = async function() {
       nameColor = '#FF3B30';
     }
 
+    let historyHtml = '';
+    if (historyLines) {
+      historyHtml = `
+        <details style="margin-top:10px;font-size:12px;color:var(--text-mute);">
+          <summary style="cursor:pointer;font-weight:600;color:var(--accent);">✏️ Edited (View History)</summary>
+          <div style="margin-top:6px;padding:8px 12px;background:rgba(0,0,0,0.06);border-radius:10px;border:1px solid var(--liquid-glass-border);">
+            ${esc(historyLines).replace(/\n/g, '<br>')}
+          </div>
+        </details>`;
+    }
+
     return `
       <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;">
           <strong style="color:${nameColor};font-size:16px;">${esc(authorName)}</strong>
           <div style="display:flex;align-items:center;gap:10px;">
             <span style="font-size:12px;color:var(--text-mute);">${dateStr}</span>
-            ${adminDelBtn}
+            ${actionBtns}
           </div>
         </div>
-        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${formatCommentBody(c.text)}</div>
+        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${parseMarkdown(fullText)}</div>
         ${attachmentHtml}
+        ${historyHtml}
       </div>
     `;
   }).join('');
@@ -1240,10 +1443,15 @@ window.loadComments = async function() {
 async function postComment() {
   if (!sb) return alert("Configure your Supabase URL and Anon Key first!");
   const name = document.getElementById('username').value.trim() || 'Anonymous';
-  const text = document.getElementById('message').value.trim();
+  saveUsername(name);
+  let text = document.getElementById('message').value.trim();
 
   if (!text && !attachmentUrl) {
     return alert("Please write a message, pick a GIF, or upload a file!");
+  }
+
+  if (activeReply) {
+    text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
   }
 
   const btn = document.getElementById('postBtn');
@@ -1265,6 +1473,7 @@ async function postComment() {
   }
 
   document.getElementById('message').value = '';
+  cancelReply();
   const livePrev = document.getElementById('liveGiphyPreview');
   if (livePrev) {
     livePrev.style.display = 'none';
@@ -1345,6 +1554,14 @@ window.loadNews = async function() {
         ...item,
         summary: (item.body || '').replace(/[#*`>\[\]!]/g, '').slice(0, 120) + ((item.body || '').length > 120 ? '…' : '')
       }));
+      
+      // Check mentions in latest news article
+      const latestNews = dynamicArticles[0];
+      const lastCheckedNewsId = localStorage.getItem('aREA_lastCheckedNewsId');
+      if (latestNews && String(latestNews.id) !== lastCheckedNewsId) {
+        checkMentions(latestNews.body || '', `news article: "${latestNews.title}"`);
+        localStorage.setItem('aREA_lastCheckedNewsId', String(latestNews.id));
+      }
     }
   }
   const all = [...dynamicArticles, ...STATIC_ARTICLES]
@@ -1750,6 +1967,12 @@ document.addEventListener("DOMContentLoaded", () => {
   loop();
   applySettings();
   updateAdminUI();
+
+  // Restore saved username if available
+  const savedName = localStorage.getItem('aREA_username');
+  if (savedName && document.getElementById('username')) {
+    document.getElementById('username').value = savedName;
+  }
 
   // Optimized async loading for faster initial render
   setTimeout(async () => {
