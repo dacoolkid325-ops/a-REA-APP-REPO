@@ -278,10 +278,14 @@ body.no-bg #glassCanvas { display:none !important; }
 #attachmentPreview.error { background:rgba(255,59,48,0.08); }
 #attachmentPreview img.attach-thumb { display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;object-fit:contain;cursor:zoom-in; }
 
-/* Live Giphy Preview Box */
+/* Live Giphy & Live Markdown Preview Box */
 #liveGiphyPreview {
   display:none;flex-wrap:wrap;gap:8px;padding:12px 16px;border-radius:16px;margin-bottom:14px;
   background:rgba(0,122,255,0.06);border:1px solid var(--liquid-glass-border);
+}
+#liveCommentPreview {
+  display:block;padding:14px 18px;border-radius:16px;margin-bottom:16px;
+  background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);font-size:14px;min-height:50px;
 }
 
 /* Giphy Drawer */
@@ -323,6 +327,11 @@ body.no-bg #glassCanvas { display:none !important; }
   transform:translateY(-120%);transition:transform 0.4s var(--spring-bounce);display:flex;align-items:center;gap:14px;
 }
 #notificationToast.show { transform:translateY(0); }
+
+/* PFP styles */
+.user-pfp {
+  width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--liquid-glass-border);flex-shrink:0;
+}
 
 /* ── News Tab – Switch 2 style ── */
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
@@ -631,21 +640,26 @@ body.no-bg #glassCanvas { display:none !important; }
   <div id="subAdminManager" class="admin-box">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span style="font-size:1.1rem;">👑</span>
-      <strong style="color:gold;font-size:15px;">Friend Admin Accounts (Super Admin Only)</strong>
+      <strong style="color:gold;font-size:15px;">Manage Accounts & Promote to Mods (Super Admin Only)</strong>
     </div>
-    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Create credentials for close friends. They can delete comments and post news, but cannot manage admin accounts.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:14px;">
-      <input type="text" id="newSubUser" class="article-input" placeholder="Friend's username" style="margin-bottom:0;">
-      <input type="text" id="newSubPass" class="article-input" placeholder="Password to share" style="margin-bottom:0;">
-      <button onclick="createSubAdmin()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;background:gold;color:#000;font-weight:800;">+ Add</button>
-    </div>
-    <div id="subAdminsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Promote regular users to Moderators or remove accounts.</p>
+    <div id="usersListManager" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
   </div>
 
   <div class="glass-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+      <div>
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / Account</label>
+        <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
+      </div>
+      <div>
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Password (for account)</label>
+        <input type="password" id="userPassword" placeholder="Password..." class="search-input" style="padding-left:20px;">
+      </div>
+    </div>
     <div style="margin-bottom:20px;">
-      <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Username</label>
-      <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
+      <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Profile Picture (PFP) URL</label>
+      <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg (optional)..." class="search-input" style="padding-left:20px;" oninput="savePfp(this.value)">
     </div>
 
     <!-- Reply Banner -->
@@ -670,7 +684,13 @@ body.no-bg #glassCanvas { display:none !important; }
         <button type="button" class="md-btn" onclick="insertAtCursor('message','@')">@Mention</button>
       </div>
 
-      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username to mention someone..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLivePreview()"></textarea>
+      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username to mention someone..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLiveCommentPreview()"></textarea>
+    </div>
+
+    <!-- Live Markdown Preview Box -->
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Message Preview:</label>
+      <div id="liveCommentPreview" class="article-modal-content"><em>Start typing above to see live preview...</em></div>
     </div>
 
     <div id="liveGiphyPreview"></div>
@@ -782,6 +802,10 @@ function saveUsername(val) {
   localStorage.setItem('aREA_username', val.trim());
 }
 
+function savePfp(val) {
+  localStorage.setItem('aREA_pfp', val.trim());
+}
+
 function showNotificationToast(title, msg) {
   document.getElementById('toastTitle').innerText = title;
   document.getElementById('toastMsg').innerText = msg;
@@ -797,6 +821,10 @@ function closeNotificationToast() {
 function checkMentions(text, sourceTitle) {
   const myName = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
   if (!myName) return;
+  
+  // Ignore emails like @gmail.com
+  if (text.match(new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook)`, 'i'))) return;
+
   const mentionRegex = new RegExp(`@${myName}\\b`, 'i');
   if (mentionRegex.test(text)) {
     showNotificationToast("New Mention!", `You were mentioned in ${sourceTitle}`);
@@ -815,7 +843,7 @@ function formatText(elementId, start, end) {
   el.value = el.value.substring(0, startPos) + start + selectedText + end + el.value.substring(endPos);
   el.focus();
   el.setSelectionRange(startPos + start.length, endPos + start.length);
-  if (elementId === 'message') updateLivePreview();
+  if (elementId === 'message') updateLiveCommentPreview();
   if (elementId === 'articleBody') updateNewsLivePreview();
 }
 
@@ -826,7 +854,7 @@ function insertAtCursor(elementId, text) {
   el.value = el.value.substring(0, pos) + text + el.value.substring(pos);
   el.focus();
   el.setSelectionRange(pos + text.length, pos + text.length);
-  if (elementId === 'message') updateLivePreview();
+  if (elementId === 'message') updateLiveCommentPreview();
 }
 
 function parseMarkdown(md) {
@@ -836,22 +864,22 @@ function parseMarkdown(md) {
   // Strikethrough ~~text~~
   safe = safe.replace(/~~(.+?)~~/g, '<del>$1</del>');
 
-  // Underline <u>...</u> (handling HTML escaped versions)
+  // Underline <u>...</u>
   safe = safe.replace(/&lt;u&gt;(.+?)&lt;\/u&gt;|\u003cu\u003e(.+?)\u003c\/u\u003e/gi, '<u>$1$2</u>');
 
-  // Empty line with just > or &gt; does nothing
+  // Ignore empty lines containing just >
   safe = safe.replace(/^&gt;\s*$/gm, '');
   safe = safe.replace(/^>\s*$/gm, '');
 
-  // Highlight @mentions
-  safe = safe.replace(/@([a-zA-Z0-9_-]+)/g, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
+  // Highlight @mentions (Ignoring @gmail.com etc)
+  safe = safe.replace(/@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook)\.com)/gi, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
 
   safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
     '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
   safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
     '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
   safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
+    '<a href="$2" target="_blank" style="color:var(--accent);$1</a>');
   safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
@@ -865,21 +893,38 @@ function parseMarkdown(md) {
   return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
 
+function updateLiveCommentPreview() {
+  const text = document.getElementById('message').value;
+  const prev = document.getElementById('liveCommentPreview');
+  if (prev) {
+    prev.innerHTML = text.trim() ? parseMarkdown(text) : '<em>Start typing above to see live preview...</em>';
+  }
+}
+
 // ═══════════════════════════════════════════════
-//  MULTI-TIER ADMIN SYSTEM
+//  MULTI-TIER ADMIN SYSTEM & ACCOUNT PROMOTION
 // ═══════════════════════════════════════════════
 window.adminRole = localStorage.getItem('aREA_adminRole') || null;
 window.adminUser = localStorage.getItem('aREA_adminUser') || null;
-window.isAdmin = () => window.adminRole === 'super' || window.adminRole === 'mod';
-window.subAdminNames = [];
+
+window.isAdmin = () => {
+  const user = (window.adminUser || '').trim().toLowerCase();
+  if (window.adminRole === 'super') return user === 'aqeel';
+  return window.adminRole === 'mod' || window.adminRole === 'super';
+};
+
+window.isSuperAdmin = () => {
+  const user = (window.adminUser || localStorage.getItem('aREA_username') || '').trim().toLowerCase();
+  return window.adminRole === 'super' && user === 'aqeel';
+};
 
 function updateAdminUI() {
   const active = window.isAdmin();
-  const isSuper = window.adminRole === 'super';
+  const isSuper = window.isSuperAdmin();
 
   document.getElementById('adminLoginBtn').style.display = active ? 'none' : 'block';
   document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
-  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
+  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
 
   const newsBtn = document.getElementById('newsAdminBtn');
   if (newsBtn) newsBtn.style.display = active ? 'none' : 'inline-block';
@@ -890,25 +935,17 @@ function updateAdminUI() {
   const subMgr = document.getElementById('subAdminManager');
   if (subMgr) subMgr.classList.toggle('open', isSuper);
 
-  if (isSuper) loadSubAdmins();
-  loadSubAdminNamesCache();
-}
-
-async function loadSubAdminNamesCache() {
-  if (!sb) return;
-  const { data } = await sb.from('sub_admins').select('username');
-  if (data) {
-    window.subAdminNames = data.map(d => d.username.toLowerCase());
-  }
+  if (isSuper) loadUsersManager();
 }
 
 window.adminLogin = async () => {
-  const user = prompt("Admin Username:");
+  let user = prompt("Admin Username:");
   if (!user) return;
+  user = user.trim();
   const pass = prompt("Admin Password:");
   if (!pass) return;
 
-  if (user === "Aqeel" && pass === "area2026") {
+  if (user.toLowerCase() === "aqeel" && pass === "area2026") {
     window.adminRole = 'super';
     window.adminUser = 'Aqeel';
     localStorage.setItem('aREA_adminRole', 'super');
@@ -916,23 +953,23 @@ window.adminLogin = async () => {
     updateAdminUI();
     await loadComments();
     await loadNews();
-    return alert("Logged in as Super Admin!");
+    return alert("Logged in as Super Admin (Aqeel)!");
   }
 
   if (sb) {
-    const { data } = await sb.from('sub_admins').select('*').eq('username', user.trim()).eq('password', pass).maybeSingle();
-    if (data) {
-      window.adminRole = 'mod';
+    const { data } = await sb.from('app_users').select('*').eq('username', user).eq('password', pass).maybeSingle();
+    if (data && (data.role === 'mod' || data.role === 'super')) {
+      window.adminRole = data.role === 'super' && user.toLowerCase() === 'aqeel' ? 'super' : 'mod';
       window.adminUser = data.username;
-      localStorage.setItem('aREA_adminRole', 'mod');
+      localStorage.setItem('aREA_adminRole', window.adminRole);
       localStorage.setItem('aREA_adminUser', data.username);
       updateAdminUI();
       await loadComments();
       await loadNews();
-      return alert(`Logged in as Friend Admin (${data.username})!`);
+      return alert(`Logged in as Moderator (${data.username})!`);
     }
   }
-  alert("Invalid Username or Password");
+  alert("Invalid Username or Password, or not authorized as Admin.");
 };
 
 window.adminLogout = async () => {
@@ -945,51 +982,44 @@ window.adminLogout = async () => {
   await loadNews();
 };
 
-async function loadSubAdmins() {
-  if (!sb || window.adminRole !== 'super') return;
-  const list = document.getElementById('subAdminsList');
-  const { data, error } = await sb.from('sub_admins').select('*').order('created_at', { ascending: false });
+async function loadUsersManager() {
+  if (!sb || !window.isSuperAdmin()) return;
+  const list = document.getElementById('usersManager');
+  const { data, error } = await sb.from('app_users').select('*').order('created_at', { ascending: false });
   if (error) {
-    list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>sub_admins</code> table in Supabase to manage friend admins.</div>`;
+    list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>app_users</code> table in Supabase to manage user accounts.</div>`;
     return;
   }
   if (!data || data.length === 0) {
-    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No friend admins added yet.</div>`;
+    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No registered accounts found yet.</div>`;
     return;
   }
-  list.innerHTML = data.map(a => `
+  list.innerHTML = data.map(u => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
       <div>
-        <strong>${esc(a.username)}</strong>
-        <span style="font-size:12px;color:var(--text-mute);margin-left:10px;">Password: <code>${esc(a.password)}</code></span>
+        <strong>${esc(u.username)}</strong> 
+        <span style="font-size:12px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;margin-left:8px;">${u.role}</span>
       </div>
-      <button onclick="deleteSubAdmin('${a.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Remove</button>
+      <div style="display:flex;gap:8px;">
+        ${u.role !== 'mod' ? `<button onclick="promoteToMod('${u.id}', 'mod')" style="background:rgba(52,199,89,0.15);border:1px solid #34C759;color:#34C759;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Make Mod</button>` : `<button onclick="promoteToMod('${u.id}', 'user')" style="background:rgba(255,149,0,0.15);border:1px solid #FF9500;color:#FF9500;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Demote</button>` }
+        <button onclick="deleteUserAccount('${u.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Delete</button>
+      </div>
     </div>
   `).join('');
 }
 
-window.createSubAdmin = async () => {
-  if (!sb || window.adminRole !== 'super') return;
-  const username = document.getElementById('newSubUser').value.trim();
-  const password = document.getElementById('newSubPass').value.trim();
-  if (!username || !password) return alert("Enter both a username and password.");
-  if (username === "Aqeel") return alert("Cannot override Super Admin username.");
-
-  const { error } = await sb.from('sub_admins').insert([{ username, password }]);
-  if (error) return alert("Error creating friend admin: " + error.message);
-
-  document.getElementById('newSubUser').value = '';
-  document.getElementById('newSubPass').value = '';
-  loadSubAdmins();
-  loadSubAdminNamesCache();
+window.promoteToMod = async (id, newRole) => {
+  if (!sb || !window.isSuperAdmin()) return;
+  await sb.from('app_users').update({ role: newRole }).eq('id', id);
+  loadUsersManager();
+  alert(`Account role updated to ${newRole}!`);
 };
 
-window.deleteSubAdmin = async (id) => {
-  if (!sb || window.adminRole !== 'super') return;
-  if (!confirm("Remove this friend admin's access?")) return;
-  await sb.from('sub_admins').delete().eq('id', id);
-  loadSubAdmins();
-  loadSubAdminNamesCache();
+window.deleteUserAccount = async (id) => {
+  if (!sb || !window.isSuperAdmin()) return;
+  if (!confirm("Delete this user account?")) return;
+  await sb.from('app_users').delete().eq('id', id);
+  loadUsersManager();
 };
 
 // ═══════════════════════════════════════════════
@@ -1060,25 +1090,6 @@ function renderGiphyShortcodes(htmlText) {
   return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
     return `<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="GIF" class="comment-giphy" onclick="openLightbox(this.src)" loading="lazy">`;
   });
-}
-
-function updateLivePreview() {
-  const text = document.getElementById('message').value;
-  const previewBox = document.getElementById('liveGiphyPreview');
-  if (!previewBox) return;
-  const matches = text.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi);
-  if (!matches || matches.length === 0) {
-    previewBox.style.display = 'none';
-    previewBox.innerHTML = '';
-    return;
-  }
-  previewBox.style.display = 'flex';
-  previewBox.innerHTML = '<span style="font-size:11px;color:var(--text-mute);width:100%;font-weight:700;margin-bottom:4px;">Live GIF Preview:</span>' + 
-    matches.map(m => {
-      const idMatch = m.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/i);
-      const gid = idMatch ? idMatch[1] : '';
-      return `<img src="https://media.giphy.com/media/${gid}/giphy.gif" style="height:70px;border-radius:10px;object-fit:cover;cursor:zoom-in;" onclick="openLightbox(this.src)">`;
-    }).join('');
 }
 
 function updateNewsLivePreview() {
@@ -1226,7 +1237,7 @@ function insertGiphyTag(gifId) {
   const msgBox = document.getElementById('message');
   const tag = `[giphy: ${gifId}]`;
   msgBox.value = msgBox.value ? `${msgBox.value} ${tag}` : tag;
-  updateLivePreview();
+  updateLiveCommentPreview();
   msgBox.focus();
 }
 
@@ -1325,7 +1336,6 @@ window.loadComments = async function() {
     return;
   }
 
-  // Check for mentions in latest comment
   const latestComment = data[0];
   const lastCheckedId = localStorage.getItem('aREA_lastCheckedCommentId');
   if (latestComment && String(latestComment.id) !== lastCheckedId) {
@@ -1355,7 +1365,6 @@ window.loadComments = async function() {
       </div>
     `;
 
-    // Separate main text from edit history
     let fullText = c.text || '';
     let historyLines = '';
     if (fullText.includes('--- Edit History ---')) {
@@ -1408,9 +1417,9 @@ window.loadComments = async function() {
     const lowerName = authorName.toLowerCase();
     if (lowerName === 'aqeel') {
       nameColor = 'gold';
-    } else if (window.subAdminNames.includes(lowerName)) {
-      nameColor = '#FF3B30';
     }
+
+    let pfpHtml = c.pfp_url ? `<img src="${esc(c.pfp_url)}" class="user-pfp" alt="PFP" onerror="this.style.display='none'">` : `<div class="user-pfp" style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;">${authorName[0].toUpperCase()}</div>`;
 
     let historyHtml = '';
     if (historyLines) {
@@ -1425,12 +1434,15 @@ window.loadComments = async function() {
 
     return `
       <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;">
-          <strong style="color:${nameColor};font-size:16px;">${esc(authorName)}</strong>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:12px;color:var(--text-mute);">${dateStr}</span>
-            ${actionBtns}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            ${pfpHtml}
+            <div>
+              <strong style="color:${nameColor};font-size:16px;display:block;">${esc(authorName)}</strong>
+              <span style="font-size:11px;color:var(--text-mute);">${dateStr}</span>
+            </div>
           </div>
+          ${actionBtns}
         </div>
         <div style="font-size:15px;line-height:1.6;word-break:break-word;">${parseMarkdown(fullText)}</div>
         ${attachmentHtml}
@@ -1443,7 +1455,11 @@ window.loadComments = async function() {
 async function postComment() {
   if (!sb) return alert("Configure your Supabase URL and Anon Key first!");
   const name = document.getElementById('username').value.trim() || 'Anonymous';
+  const pass = document.getElementById('userPassword').value.trim();
+  const pfp = document.getElementById('userPfp').value.trim();
   saveUsername(name);
+  if (pfp) savePfp(pfp);
+
   let text = document.getElementById('message').value.trim();
 
   if (!text && !attachmentUrl) {
@@ -1454,6 +1470,13 @@ async function postComment() {
     text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
   }
 
+  // Register or verify user account in Supabase if password is provided
+  if (name.toLowerCase() !== 'aqeel' && pass) {
+    try {
+      await sb.from('app_users').upsert([{ username: name, password: pass, pfp_url: pfp || null }], { onConflict: 'username' });
+    } catch (e) {}
+  }
+
   const btn = document.getElementById('postBtn');
   btn.disabled = true;
   btn.innerText = 'Posting…';
@@ -1461,7 +1484,8 @@ async function postComment() {
   const { error } = await sb.from(COMMENTS_TABLE).insert([{
     name: name,
     text: text,
-    image_url: attachmentUrl || null
+    image_url: attachmentUrl || null,
+    pfp_url: pfp || null
   }]);
 
   btn.disabled = false;
@@ -1473,6 +1497,7 @@ async function postComment() {
   }
 
   document.getElementById('message').value = '';
+  document.getElementById('liveCommentPreview').innerHTML = '<em>Start typing above to see live preview...</em>';
   cancelReply();
   const livePrev = document.getElementById('liveGiphyPreview');
   if (livePrev) {
@@ -1555,7 +1580,6 @@ window.loadNews = async function() {
         summary: (item.body || '').replace(/[#*`>\[\]!]/g, '').slice(0, 120) + ((item.body || '').length > 120 ? '…' : '')
       }));
       
-      // Check mentions in latest news article
       const latestNews = dynamicArticles[0];
       const lastCheckedNewsId = localStorage.getItem('aREA_lastCheckedNewsId');
       if (latestNews && String(latestNews.id) !== lastCheckedNewsId) {
@@ -1968,13 +1992,15 @@ document.addEventListener("DOMContentLoaded", () => {
   applySettings();
   updateAdminUI();
 
-  // Restore saved username if available
   const savedName = localStorage.getItem('aREA_username');
   if (savedName && document.getElementById('username')) {
     document.getElementById('username').value = savedName;
   }
+  const savedPfp = localStorage.getItem('aREA_pfp');
+  if (savedPfp && document.getElementById('userPfp')) {
+    document.getElementById('userPfp').value = savedPfp;
+  }
 
-  // Optimized async loading for faster initial render
   setTimeout(async () => {
     await loadNews();
     await loadComments();
