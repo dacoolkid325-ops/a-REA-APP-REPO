@@ -7,15 +7,9 @@
 <!-- Web Favicon & Apple Touch Icons -->
 <link rel="icon" type="image/png" href="icons/apple-touch-icon-iphone-60x60.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-iphone-60x60.png">
-<link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-iphone-60x60.png">
-<link rel="apple-touch-icon" sizes="76x76" href="icons/apple-touch-icon-ipad-76x76.png">
-<link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-iphone-retina-120x120.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-ipad-retina-152x152.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="icons/IMG_1194-removebg-preview.png">
-<link rel="preload" as="image" href="icons/IMG_1193.jpeg">
 <!-- Supabase JS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -30,7 +24,7 @@
   --spring-bounce:cubic-bezier(0.2,0.8,0.3,1.1);--spring-smooth:cubic-bezier(0.25,1,0.5,1);
 }
 body.light {
-  --bg-dark:#f4f5f8;--text-main:#111111;--text-mute:rgba(0,0,0,0.5);--accent-glow:transparent;
+  --bg-dark:#f4f5f8;--text-main:#111111;--text-mute:rgba(0,0,0,0.5);
   --liquid-glass-bg:rgba(255,255,255,0.65);--liquid-glass-border:rgba(0,0,0,0.08);
   --liquid-glass-shine:rgba(255,255,255,1);
   --glass-shadow:0 15px 35px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,1);
@@ -42,91 +36,64 @@ body {
   font-family:'Inter','Plus Jakarta Sans',sans-serif;overflow-x:hidden;min-height:100vh;
   transition:background-color 0.4s var(--spring-smooth),color 0.4s var(--spring-smooth),background 0.4s ease;
 }
-body.font-default,body.font-default * {
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro","Poppins",sans-serif !important;
-}
 #initialLoader {
   position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-dark);z-index:9999999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s ease;
 }
-#initialLoader h2 { color:var(--accent);font-weight:900;font-size:2rem;animation:textFadeIn 0.8s infinite alternate; }
+#initialLoader h2 { color:var(--accent);font-weight:900;font-size:2rem; }
 .custom-fs-btn {
   position:absolute;top:10px;right:10px;z-index:10;background:rgba(0,0,0,0.6);color:white;border:none;
-  border-radius:8px;padding:8px 12px;cursor:pointer;font-size:16px;backdrop-filter:blur(4px);transition:all 0.2s ease;
+  border-radius:8px;padding:8px 12px;cursor:pointer;font-size:16px;backdrop-filter:blur(4px);
 }
-.custom-fs-btn:hover { background:rgba(0,0,0,0.8); }
 .ios-pseudo-fullscreen {
   position:fixed !important;top:0 !important;left:0 !important;width:100vw !important;height:100vh !important;
   z-index:99999 !important;margin:0 !important;padding:0 !important;border-radius:0 !important;background:#000 !important;
 }
-.ios-pseudo-fullscreen .btn-ios { display:none !important; }
-body.fs-active #app-wrapper { transform:none !important;width:100% !important;filter:none !important;will-change:auto !important;contain:none !important; }
-body.fs-active section { animation:none !important;content-visibility:visible !important;contain:none !important;transform:none !important;filter:none !important; }
-body.fs-active .glass-card:has(.is-active-fs,.ios-pseudo-fullscreen) { backdrop-filter:none !important;-webkit-backdrop-filter:none !important;transform:none !important;overflow:visible !important; }
-.ios-pseudo-fullscreen { height:100dvh !important; }
-.game-container-giant.is-active-fs { height:100dvh !important; }
-.ios-pseudo-fullscreen .fp-iframe { height:100% !important;border-radius:0 !important; }
 #app-wrapper {
   transform:scale(var(--ui-zoom));transform-origin:top center;width:calc(100% / var(--ui-zoom));
-  min-height:100vh;padding-bottom:160px;transition:padding-left 0.4s var(--spring-smooth),filter 0.4s ease;
+  min-height:100vh;padding-bottom:160px;transition:padding-left 0.4s var(--spring-smooth);
 }
 * { box-sizing:border-box;-webkit-tap-highlight-color:transparent; }
-body.theater-mode #app-wrapper { background:rgba(0,0,0,0.85); }
-body.theater-mode .glass-card:not(.theater-focus) { opacity:0.1;pointer-events:none;filter:blur(5px); }
-.theater-focus { z-index:100;position:relative;box-shadow:0 0 50px rgba(0,0,0,0.8) !important; }
 h1 {
   font-size:3rem;font-weight:900;letter-spacing:-0.04em;margin-bottom:30px;text-align:left;
   background:linear-gradient(135deg,var(--text-main),var(--text-mute));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:textFadeIn 0.6s var(--spring-smooth) forwards;
 }
-@keyframes textFadeIn { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-section {
-  display:none;padding:40px 5%;max-width:1000px;margin:0 auto;
-  animation:pageEnter 0.5s var(--spring-bounce);content-visibility:auto;
-}
+section { display:none;padding:40px 5%;max-width:1000px;margin:0 auto; }
 section.active { display:block; }
-@keyframes pageEnter { from{opacity:0;transform:scale(0.96) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)} }
-.wix-iframe { will-change:transform,width; }
 #glassCanvas {
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
-  filter:blur(80px) saturate(160%);opacity:0.85;transition:opacity 0.5s;will-change:opacity,transform;
+  filter:blur(80px) saturate(160%);opacity:0.85;transition:opacity 0.5s;
 }
 .glass-card {
   background:var(--liquid-glass-bg);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   border:1px solid var(--liquid-glass-border);border-top:1px solid var(--liquid-glass-shine);
   border-radius:28px;padding:28px;margin-bottom:24px;box-shadow:var(--glass-shadow);cursor:default;
-  transition:transform 0.3s var(--spring-bounce),box-shadow 0.3s ease,border-color 0.3s ease,opacity 0.3s;
-  position:relative;overflow:hidden;
+  transition:transform 0.3s var(--spring-bounce),box-shadow 0.3s ease;position:relative;overflow:hidden;
 }
 .glass-card:hover { border-color:color-mix(in srgb,var(--accent) 40%,var(--liquid-glass-border));box-shadow:0 25px 50px rgba(0,0,0,0.15); }
-.glass-card.clickable:active,.btn-ios:active,.song-item:active { transform:scale(0.97); }
 .news-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px; }
 @media(max-width:600px){ .news-grid{grid-template-columns:1fr;} }
-.news-grid .glass-card { margin-bottom:0; }
 .card-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px; }
 @media(min-width:900px){ .side-by-side-container{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start;} }
 .search-wrapper { position:relative;margin-bottom:30px;width:100%; }
 .search-input {
   width:100%;padding:18px 20px 18px 50px;border-radius:24px;font-family:inherit;font-weight:500;font-size:17px;
   color:var(--text-main);outline:none;transition:all 0.3s var(--spring-smooth);
-  background:var(--liquid-glass-bg) !important;backdrop-filter:blur(30px) saturate(180%) !important;
-  -webkit-backdrop-filter:blur(30px) saturate(180%) !important;border:1px solid var(--liquid-glass-border) !important;
-  border-top:1px solid var(--liquid-glass-shine) !important;box-shadow:0 10px 30px rgba(0,0,0,0.05);
+  background:var(--liquid-glass-bg);backdrop-filter:blur(30px) saturate(180%);
+  -webkit-backdrop-filter:blur(30px) saturate(180%);border:1px solid var(--liquid-glass-border);
+  border-top:1px solid var(--liquid-glass-shine);box-shadow:0 10px 30px rgba(0,0,0,0.05);
 }
-.search-input:focus { border-color:var(--accent) !important;box-shadow:0 10px 30px rgba(0,0,0,0.1);transform:scale(1.01); }
+.search-input:focus { border-color:var(--accent);box-shadow:0 10px 30px rgba(0,0,0,0.1);transform:scale(1.01); }
 .search-icon-inside {
   position:absolute;left:18px;top:50%;transform:translateY(-50%);width:22px;height:22px;
   color:var(--text-main);opacity:0.6;z-index:2;pointer-events:none;
 }
 .song-item {
   display:flex;flex-direction:column;padding:16px 10px;border-bottom:1px solid var(--liquid-glass-border);min-height:110px;
-  transition:background 0.2s,transform 0.2s var(--spring-bounce),border-radius 0.2s;
 }
-.song-item:hover { background:rgba(255,255,255,0.05);border-radius:16px;border-bottom-color:transparent; }
-.song-item:last-child { border-bottom:none; }
 .visualizer { display:flex;align-items:flex-end;height:20px;gap:4px;width:34px; }
-.bar { width:4px;background:var(--text-mute);border-radius:2px;transition:height 0.1s ease,background 0.3s;flex-shrink:0; }
+.bar { width:4px;background:var(--text-mute);border-radius:2px;flex-shrink:0; }
 .visualizer.active .bar { background:var(--accent);animation:bounce 0.4s infinite alternate; }
 .bar:nth-child(1){height:6px;animation-delay:0.1s}
 .bar:nth-child(2){height:10px;animation-delay:0.3s}
@@ -134,26 +101,21 @@ section.active { display:block; }
 .bar:nth-child(4){height:5px;animation-delay:0.2s}
 @keyframes bounce { from{height:4px}to{height:16px} }
 .song-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;pointer-events:none; }
-.song-title { font-weight:700;font-size:16px;display:block;transition:color 0.3s;letter-spacing:-0.01em; }
-.song-title.playing { color:var(--accent); }
+.song-title { font-weight:700;font-size:16px;display:block;letter-spacing:-0.01em; }
 audio { width:100%;height:44px;border-radius:22px;margin-bottom:10px;outline:none; }
-audio::-webkit-media-controls-panel { background:rgba(255,255,255,0.1); }
-body.light audio::-webkit-media-controls-panel { background:rgba(0,0,0,0.05); }
 video { width:100%;border-radius:20px;border:1px solid var(--liquid-glass-border);background:#000;box-shadow:0 10px 30px rgba(0,0,0,0.2); }
 .btn-ios {
   display:block;width:100%;padding:18px;
   background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 80%,white));
   color:#fff;text-decoration:none;border-radius:20px;text-align:center;font-weight:700;font-size:17px;
-  margin-bottom:20px;border:none;cursor:pointer;
-  transition:transform 0.2s var(--spring-bounce),box-shadow 0.2s;font-family:inherit;
+  margin-bottom:20px;border:none;cursor:pointer;font-family:inherit;
 }
-.btn-ios:active { transform:scale(0.95);box-shadow:0 5px 10px rgba(0,0,0,0.1); }
+.btn-ios:active { transform:scale(0.95); }
 .toggle-row { display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--liquid-glass-border); }
 .toggle-row:last-child { border-bottom:none; }
 .toggle-label { font-size:17px;font-weight:600; }
 input[type="range"] { width:150px;accent-color:var(--accent); }
-input[type="checkbox"] { width:24px;height:24px;accent-color:var(--accent);border-radius:8px;cursor:pointer;transition:transform 0.2s var(--spring-bounce); }
-input[type="checkbox"]:active { transform:scale(0.8); }
+input[type="checkbox"] { width:24px;height:24px;accent-color:var(--accent);border-radius:8px;cursor:pointer; }
 input[type="color"] { cursor:pointer;outline:none; }
 .setting-select {
   background:var(--liquid-glass-bg);color:var(--text-main);border:1px solid var(--liquid-glass-border);
@@ -161,41 +123,26 @@ input[type="color"] { cursor:pointer;outline:none; }
   backdrop-filter:blur(10px);-webkit-appearance:none;font-family:inherit;cursor:pointer;
 }
 .setting-select option { background:var(--bg-dark);color:var(--text-main); }
-.iframe-wrapper {
-  height:80vh;padding:0;overflow:hidden;border-radius:28px;position:relative;
-  background:transparent;display:flex;justify-content:center;align-items:flex-start;
-}
-.wix-iframe {
-  border:none;position:absolute;top:0;left:0;transform-origin:top left;
-  transition:transform 0.4s var(--spring-smooth),width 0.4s ease;
-}
+.iframe-wrapper { height:80vh;padding:0;overflow:hidden;border-radius:28px;position:relative;background:transparent;display:flex;justify-content:center;align-items:flex-start; }
+.wix-iframe { border:none;position:absolute;top:0;left:0;transform-origin:top left; }
 .nav-container {
   position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
   width:95vw;max-width:560px;display:flex;align-items:center;justify-content:flex-start;
   padding:10px;z-index:9999;background:var(--nav-bg);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
-  border-radius:40px;border:1px solid var(--liquid-glass-border);
-  box-shadow:0 20px 50px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);
-  transition:all 0.4s var(--spring-smooth);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:5px;
+  border-radius:40px;border:1px solid var(--liquid-glass-border);box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  overflow-x:auto;scrollbar-width:none;gap:5px;
 }
 .nav-container::-webkit-scrollbar { display:none; }
 .nav-item {
   position:relative;background:none;border:none;width:clamp(40px,10.5vw,52px);height:clamp(40px,10.5vw,52px);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:color 0.3s,transform 0.2s var(--spring-bounce);color:var(--text-mute);z-index:2;
-  flex-shrink:0;border-radius:50%;padding:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-mute);z-index:2;flex-shrink:0;border-radius:50%;padding:0;
 }
-.nav-item:active { transform:scale(0.88); }
 .nav-item.active { color:#ffffff; }
-svg { width:24px;height:24px;fill:currentColor;transition:transform 0.2s var(--spring-bounce); }
-.nav-item:hover svg { transform:scale(1.1); }
-.nav-icon-img {
-  width:36px;height:36px;object-fit:contain;flex-shrink:0;margin:auto;display:block;
-  transition:transform 0.2s var(--spring-bounce);
-}
-.nav-item:hover .nav-icon-img { transform:scale(1.1); }
+svg { width:24px;height:24px;fill:currentColor; }
+.nav-icon-img { width:36px;height:36px;object-fit:contain;flex-shrink:0;margin:auto;display:block; }
 .nav-selection-pill {
   position:absolute;left:0;top:0;background:var(--pill-bg);border:1px solid var(--pill-border);
-  border-radius:30px;z-index:1;transition:all 0.4s var(--spring-bounce);pointer-events:none;will-change:transform,width,height;
+  border-radius:30px;z-index:1;transition:all 0.4s var(--spring-bounce);pointer-events:none;
 }
 @media(min-width:850px){
   #app-wrapper { padding-left:100px;padding-bottom:50px; }
@@ -204,9 +151,7 @@ svg { width:24px;height:24px;fill:currentColor;transition:transform 0.2s var(--s
     width:76px;height:auto;flex-direction:column;gap:12px;padding:20px 10px;
     border-radius:38px;align-items:flex-start;overflow:hidden;
   }
-  .nav-container:hover { width:220px;box-shadow:0 30px 60px rgba(0,0,0,0.4); }
-  .nav-item svg,.nav-item img { display:block !important;width:24px;height:24px;flex-shrink:0;margin:0; }
-  .nav-item.airea-nav-btn img.nav-icon-img { width:36px;height:36px;margin-left:-6px; }
+  .nav-container:hover { width:220px; }
   .nav-item { width:100%;height:56px;justify-content:flex-start;padding-left:15px;border-radius:20px; }
   .nav-item::after {
     content:attr(data-label);font-family:'Inter',sans-serif;font-weight:700;font-size:16px;
@@ -217,10 +162,10 @@ svg { width:24px;height:24px;fill:currentColor;transition:transform 0.2s var(--s
 }
 #miniPlayer {
   position:fixed;bottom:120px;left:50%;transform:translateX(-50%) scale(0.9);
-  width:90%;max-width:400px;background:var(--player-bg);backdrop-filter:blur(35px);-webkit-backdrop-filter:blur(35px);
+  width:90%;max-width:400px;background:var(--player-bg);backdrop-filter:blur(35px);
   border:1px solid var(--liquid-glass-border);border-radius:24px;padding:14px 24px;
-  display:flex;align-items:center;justify-content:space-between;box-shadow:0 20px 40px rgba(0,0,0,0.3);
-  z-index:900;opacity:0;pointer-events:none;transition:all 0.5s var(--spring-bounce);
+  display:flex;align-items:center;justify-content:space-between;z-index:900;opacity:0;pointer-events:none;
+  transition:all 0.5s var(--spring-bounce);
 }
 #miniPlayer.show { bottom:110px;opacity:1;pointer-events:auto;transform:translateX(-50%) scale(1); }
 @media(min-width:850px){
@@ -231,116 +176,69 @@ svg { width:24px;height:24px;fill:currentColor;transition:transform 0.2s var(--s
 .mp-title { font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main); }
 .mp-status { font-size:12px;color:var(--accent);font-weight:600;margin-top:2px; }
 .mp-controls { display:flex;gap:15px;align-items:center; }
-.mp-btn { background:none;border:none;padding:0;cursor:pointer;color:var(--text-main);display:flex;align-items:center;justify-content:center;transition:transform 0.2s var(--spring-bounce); }
-.mp-btn:active { transform:scale(0.8); }
+.mp-btn { background:none;border:none;padding:0;cursor:pointer;color:var(--text-main);display:flex;align-items:center;justify-content:center; }
 .ultra-wide-section { max-width:98% !important;padding:20px !important;margin:0 auto; }
-.btn-ios-large { display:block;width:100%;max-width:600px;margin:0 auto 40px auto;padding:24px;background:var(--accent);color:white;text-align:center;text-decoration:none;border-radius:24px;font-weight:800;font-size:20px;box-shadow:none;font-family:inherit; }
+.btn-ios-large { display:block;width:100%;max-width:600px;margin:0 auto 40px auto;padding:24px;background:var(--accent);color:white;text-align:center;text-decoration:none;border-radius:24px;font-weight:800;font-size:20px; }
 .ultra-grid { display:grid;grid-template-columns:1fr;gap:30px;width:100%; }
 @media(min-width:850px){ .ultra-grid{grid-template-columns:1fr 1fr;} }
 .game-container-giant {
   height:700px;padding:0 !important;border-radius:32px !important;display:flex;flex-direction:column;overflow:hidden;
-  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);transition:all 0.4s var(--spring-smooth);
+  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);
 }
-body.ipad-mode .game-container-giant { height:800px; }
 .game-ui-header { padding:18px 25px;background:rgba(0,0,0,0.4);display:flex;align-items:center;gap:15px;cursor:pointer;backdrop-filter:blur(20px); }
 .status-dot { width:12px;height:12px;background:#34C759;border-radius:50%;box-shadow:0 0 12px #34C759; }
 .game-label { font-weight:800;letter-spacing:1px;flex-grow:1;color:#fff;font-size:15px; }
-.expand-trigger { background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:14px;cursor:pointer;transition:background 0.2s,transform 0.2s var(--spring-bounce); }
-.expand-trigger:hover { background:rgba(255,255,255,0.25);transform:scale(1.1); }
+.expand-trigger { background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:14px;cursor:pointer; }
 .game-viewport { flex-grow:1;background:#000;position:relative;overflow:hidden; }
-.game-iframe { border:none;position:absolute;top:0;left:0;transform-origin:top left;width:100%;height:100%;transition:opacity 0.3s; }
+.game-iframe { border:none;position:absolute;top:0;left:0;transform-origin:top left;width:100%;height:100%; }
 .game-container-giant.is-active-fs { position:fixed !important;top:0 !important;left:0 !important;width:100vw !important;height:100vh !important;z-index:999999 !important;border-radius:0 !important;margin:0 !important; }
-body.solid-glass * { backdrop-filter:none !important;-webkit-backdrop-filter:none !important; }
-body.solid-glass .glass-card,body.solid-glass .nav-container,body.solid-glass #miniPlayer { background:var(--player-bg) !important;box-shadow:0 10px 40px rgba(0,0,0,0.15);border:1px solid rgba(0,0,0,0.05); }
-body.ultra-saver .glass-card,body.ultra-saver .nav-container { box-shadow:none !important; }
-body.ultra-saver *,body.ultra-saver *:before,body.ultra-saver *:after { transition:none !important;animation:none !important; }
-body.no-bg #glassCanvas { display:none !important; }
-.theater-btn { margin-top:15px;background:rgba(255,255,255,0.1);border:1px solid var(--liquid-glass-border);color:var(--text-main);border-radius:14px;padding:10px 15px;font-weight:600;cursor:pointer;transition:transform 0.2s var(--spring-bounce); }
-.theater-btn:active { transform:scale(0.9); }
+.theater-btn { margin-top:15px;background:rgba(255,255,255,0.1);border:1px solid var(--liquid-glass-border);color:var(--text-main);border-radius:14px;padding:10px 15px;font-weight:600;cursor:pointer; }
 
-/* ── Community upload & Giphy ── */
+/* Community upload & Giphy */
 .attach-btn {
   display:flex;align-items:center;justify-content:center;gap:8px;width:auto;padding:18px 20px;margin-bottom:20px;
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
-  border-radius:20px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit;
-  transition:transform 0.2s var(--spring-bounce),background 0.2s;flex-shrink:0;
+  border-radius:20px;font-weight:700;font-size:16px;cursor:pointer;font-family:inherit;flex-shrink:0;
 }
-.attach-btn:hover { background:rgba(255,255,255,0.12); }
-.attach-btn:active { transform:scale(0.95); }
 .post-row { display:flex;gap:10px;align-items:stretch; }
 .post-row .btn-ios { margin-bottom:0;flex:1; }
 #attachmentPreview {
   display:none;padding:14px 18px;border-radius:16px;margin-bottom:14px;font-size:14px;
-  font-weight:600;border:1px solid var(--liquid-glass-border);background:rgba(52,199,89,0.08);
-  color:var(--text-main);transition:all 0.3s ease;
-}
-#attachmentPreview.uploading { background:rgba(0,122,255,0.08); }
-#attachmentPreview.error { background:rgba(255,59,48,0.08); }
-#attachmentPreview img.attach-thumb { display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;object-fit:contain;cursor:zoom-in; }
-
-/* Live Giphy & Live Markdown Preview Box */
-#liveGiphyPreview {
-  display:none;flex-wrap:wrap;gap:8px;padding:12px 16px;border-radius:16px;margin-bottom:14px;
-  background:rgba(0,122,255,0.06);border:1px solid var(--liquid-glass-border);
+  font-weight:600;border:1px solid var(--liquid-glass-border);background:rgba(52,199,89,0.08);color:var(--text-main);
 }
 #liveCommentPreview {
   display:block;padding:14px 18px;border-radius:16px;margin-bottom:16px;
   background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);font-size:14px;min-height:50px;
 }
-
-/* Giphy Drawer */
 #giphyDrawer {
   display:none;margin-bottom:16px;padding:16px;border-radius:20px;
   background:rgba(0,0,0,0.06);border:1px solid var(--liquid-glass-border);
 }
 #giphyDrawer.open { display:block; }
-.giphy-grid {
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;max-height:240px;overflow-y:auto;
-}
-@media(max-width:500px){ .giphy-grid{grid-template-columns:repeat(2,1fr);} }
-.giphy-item {
-  width:100%;height:100px;object-fit:cover;border-radius:12px;cursor:pointer;
-  transition:transform 0.2s var(--spring-bounce);border:1px solid var(--liquid-glass-border);
-}
-.giphy-item:hover { transform:scale(1.04);border-color:var(--accent); }
-.comment-giphy {
-  display:block;max-width:260px;width:100%;border-radius:14px;margin:10px 0;border:1px solid var(--liquid-glass-border);cursor:zoom-in;
-}
+.giphy-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;max-height:240px;overflow-y:auto; }
+.giphy-item { width:100%;height:100px;object-fit:cover;border-radius:12px;cursor:pointer;border:1px solid var(--liquid-glass-border); }
+.comment-giphy { display:block;max-width:260px;width:100%;border-radius:14px;margin:10px 0;border:1px solid var(--liquid-glass-border);cursor:zoom-in; }
 
-/* Markdown Editor Toolbar */
-.md-toolbar {
-  display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;
-}
+.md-toolbar { display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap; }
 .md-btn {
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
   padding:6px 12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
-  transition:all 0.2s var(--spring-bounce);
 }
-.md-btn:hover { background:rgba(255,255,255,0.15);border-color:var(--accent); }
-.md-btn:active { transform:scale(0.92); }
 
-/* Notification Toast Banner */
 #notificationToast {
   position:fixed;top:20px;right:20px;z-index:999999;max-width:360px;width:90%;
-  background:var(--player-bg);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  background:var(--player-bg);backdrop-filter:blur(30px);
   border:1px solid var(--accent);border-radius:20px;padding:16px 20px;box-shadow:0 20px 50px rgba(0,0,0,0.4);
   transform:translateY(-120%);transition:transform 0.4s var(--spring-bounce);display:flex;align-items:center;gap:14px;
 }
 #notificationToast.show { transform:translateY(0); }
+.user-pfp { width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--liquid-glass-border);flex-shrink:0; }
 
-/* PFP styles */
-.user-pfp {
-  width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--liquid-glass-border);flex-shrink:0;
-}
-
-/* ── News Tab – Switch 2 style ── */
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
 .news-featured {
-  position:relative;border-radius:28px;overflow:hidden;margin-bottom:20px;cursor:pointer;
-  transition:transform 0.3s var(--spring-bounce),box-shadow 0.3s;min-height:220px;
+  position:relative;border-radius:28px;overflow:hidden;margin-bottom:20px;cursor:pointer;min-height:220px;
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);
 }
-.news-featured:hover { transform:scale(1.01);box-shadow:0 30px 60px rgba(0,0,0,0.2); }
 .news-featured-img { width:100%;height:220px;object-fit:cover;display:block; }
 .news-featured-body { padding:20px 24px; }
 .news-featured-tag {
@@ -350,22 +248,17 @@ body.no-bg #glassCanvas { display:none !important; }
 .news-featured-title { font-size:1.4rem;font-weight:900;letter-spacing:-0.02em;margin:0 0 8px 0;color:var(--text-main); }
 .news-featured-sub { font-size:14px;color:var(--text-mute);line-height:1.5;margin:0; }
 .news-grid-feed { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
-@media(max-width:580px){ .news-grid-feed{grid-template-columns:1fr;} }
 @media(min-width:900px){ .news-grid-feed{grid-template-columns:1fr 1fr 1fr;} }
 .news-card {
   border-radius:20px;overflow:hidden;cursor:pointer;position:relative;
-  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);
-  transition:transform 0.3s var(--spring-bounce),box-shadow 0.3s;display:flex;flex-direction:column;
+  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);display:flex;flex-direction:column;
 }
-.news-card:hover { transform:translateY(-4px) scale(1.01);box-shadow:0 20px 40px rgba(0,0,0,0.15); }
 .news-card-img { width:100%;height:130px;object-fit:cover;display:block;background:linear-gradient(135deg,var(--accent),#AF52DE); }
 .news-card-img.no-img { display:flex;align-items:center;justify-content:center;font-size:2.5rem; }
 .news-card-body { padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:6px; }
-.news-card-tag { font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px; }
 .news-card-title { font-size:14px;font-weight:800;line-height:1.3;color:var(--text-main);margin:0; }
 .news-card-date { font-size:11px;color:var(--text-mute);margin-top:auto; }
 
-/* Admin panels */
 .admin-box {
   display:none;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.3);
   border-radius:24px;padding:24px;margin-bottom:24px;
@@ -376,19 +269,10 @@ body.no-bg #glassCanvas { display:none !important; }
   color:var(--text-main);outline:none;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);
   margin-bottom:12px;resize:vertical;
 }
-.article-input:focus { border-color:gold;box-shadow:0 0 0 2px rgba(255,215,0,0.15); }
-
-/* Article modal content */
 .article-modal-content img { max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in; }
 .article-modal-content video { max-width:100%;border-radius:12px;margin:12px 0; }
 .article-modal-content h1,.article-modal-content h2,.article-modal-content h3 { color:var(--text-main);margin:16px 0 8px; }
 .article-modal-content p { margin:10px 0;line-height:1.7; }
-.article-modal-content ul { padding-left:20px;margin:8px 0; }
-.article-modal-content li { margin:4px 0; }
-.article-modal-content a { color:var(--accent); }
-.article-modal-content code { background:rgba(0,0,0,0.12);padding:2px 6px;border-radius:4px;font-family:monospace; }
-.article-modal-content strong { font-weight:800; }
-.article-modal-content blockquote { border-left:3px solid var(--accent);padding-left:14px;margin:12px 0;opacity:0.85; }
 </style>
 </head>
 <body class="light ipad-mode">
@@ -428,8 +312,6 @@ body.no-bg #glassCanvas { display:none !important; }
       <rect x="2" y="3" width="9" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
       <rect x="13" y="3" width="9" height="6" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
       <rect x="13" y="11" width="9" height="5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-      <line x1="2" y1="19" x2="22" y2="19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-      <line x1="2" y1="22" x2="16" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
   </button>
   <button class="nav-item airea-nav-btn" data-label="ai-REA" onclick="showTab('ai-rea',this)">
@@ -442,7 +324,7 @@ body.no-bg #glassCanvas { display:none !important; }
     <svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
   </button>
   <button class="nav-item" data-label="Games" onclick="showTab('games',this)">
-    <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm7 2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2z"/></svg>
   </button>
   <button class="nav-item" data-label="Library" onclick="showTab('books',this)">
     <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
@@ -465,7 +347,7 @@ body.no-bg #glassCanvas { display:none !important; }
     <div class="glass-card" style="opacity:0.6;">Loading latest news…</div>
   </div>
   <div class="glass-card iframe-wrapper" id="wixWrapper">
-    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width:100%;height:100%;border:none;transform:scale(1);" loading="lazy" fetchpriority="low"></iframe>
+    <iframe id="wixFrame" class="wix-iframe" src="https://aqeelchy02.wixsite.com/a-rea" style="width:100%;height:100%;border:none;" loading="lazy"></iframe>
   </div>
 </section>
 
@@ -473,7 +355,6 @@ body.no-bg #glassCanvas { display:none !important; }
   <div class="news-header-row">
     <h1 style="margin-bottom:0;">News</h1>
     <div style="display:flex;align-items:center;gap:12px;">
-      <span style="font-size:13px;color:var(--text-mute);font-weight:600;">from the a-REA desk</span>
       <button id="newsAdminBtn" onclick="window.adminLogin()" class="btn-ios" style="padding:8px 14px;font-size:12px;width:auto;margin:0;background:rgba(255,215,0,0.2);border:1px solid gold;color:gold;">Admin Login</button>
     </div>
   </div>
@@ -482,7 +363,8 @@ body.no-bg #glassCanvas { display:none !important; }
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <span style="font-size:1.1rem;">📰</span>
       <strong style="color:gold;font-size:15px;">Post News Article (Admin Only)</strong>
-      <span style="font-size:12px;color:var(--text-mute);margin-left:auto;">Markdown supported · appears on Home & News</span>
+      <button type="button" onclick="document.getElementById('importNewsFile').click()" class="md-btn" style="margin-left:auto;">📂 Import Markdown</button>
+      <input type="file" id="importNewsFile" accept=".md,.txt" style="display:none;" onchange="importFileContent(this, 'articleBody')">
     </div>
     <input type="text" id="articleTitle" class="article-input" placeholder="Article title…" style="font-size:17px;font-weight:700;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -490,33 +372,24 @@ body.no-bg #glassCanvas { display:none !important; }
       <input type="text" id="articleColor" class="article-input" placeholder="Tag hex color (e.g. #FF2D55)">
     </div>
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
-      <input type="text" id="articleCover" class="article-input" placeholder="Optional cover image URL (or upload →)" style="margin-bottom:0;">
-      <button type="button" class="attach-btn" style="margin-bottom:0;padding:13px 16px;" onclick="document.getElementById('newsImageFile').click()" title="Upload image to Supabase Storage">🖼️</button>
+      <input type="text" id="articleCover" class="article-input" placeholder="Cover image URL or upload →" style="margin-bottom:0;">
+      <button type="button" class="attach-btn" style="margin-bottom:0;padding:13px 16px;" onclick="document.getElementById('newsImageFile').click()">🖼️</button>
       <input type="file" id="newsImageFile" accept="image/*" style="display:none;" onchange="uploadNewsCoverImage(this)">
     </div>
-    <div id="newsUploadStatus" style="font-size:12px;color:var(--accent);margin-bottom:10px;display:none;"></div>
     
-    <!-- News Editor Toolbar -->
     <div class="md-toolbar">
       <button type="button" class="md-btn" onclick="formatText('articleBody','**','**')"><b>B</b></button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','*','*')"><i>I</i></button>
-      <button type="button" class="md-btn" onclick="formatText('articleBody','~~','~~')"><s>S</s></button>
-      <button type="button" class="md-btn" onclick="formatText('articleBody','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','> ','')">❝ Quote</button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','[', '](url)')">🔗 Link</button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','![alt](','url)')">🖼️ Img</button>
-      <button type="button" class="md-btn" onclick="formatText('articleBody','`','`')">&lt;/&gt;</button>
     </div>
 
-    <textarea id="articleBody" class="article-input" rows="6" placeholder="Write your news in Markdown…
-# Heading
-**bold**, *italic*, ~~strikethrough~~, `<u>underline</u>`, [link](url)
-![Image](url) or [giphy: gifid]" oninput="updateNewsLivePreview()"></textarea>
+    <textarea id="articleBody" class="article-input" rows="6" placeholder="Write or import news in Markdown…" oninput="updateNewsLivePreview()"></textarea>
     
-    <!-- Live News Markdown Preview Box -->
     <div style="margin-bottom:14px;">
-      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Article Preview:</label>
-      <div id="liveNewsPreview" class="article-modal-content" style="padding:14px 18px;border-radius:16px;background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);max-height:200px;overflow-y:auto;font-size:14px;"><em>Start typing above to see live preview...</em></div>
+      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;">Live Article Preview:</label>
+      <div id="liveNewsPreview" class="article-modal-content" style="padding:14px 18px;border-radius:16px;background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);max-height:200px;overflow-y:auto;font-size:14px;"><em>Start typing...</em></div>
     </div>
 
     <button class="btn-ios" id="publishNewsBtn" style="margin-bottom:0;background:linear-gradient(135deg,gold,#ffaa00);color:#000;font-weight:900;" onclick="postArticle()">📤 Publish News</button>
@@ -528,9 +401,6 @@ body.no-bg #glassCanvas { display:none !important; }
 
 <section id="ai-rea">
   <div class="glass-card" style="padding:0;overflow:hidden;max-width:900px;margin:20px auto;">
-    <div style="width:100%;text-align:center;padding:0;border-bottom:1px solid var(--liquid-glass-border);">
-      <img src="icons/IMG_1193.jpeg" alt="ai-REA Icon" style="width:100%;height:250px;display:block;object-fit:cover;margin:0;pointer-events:none;">
-    </div>
     <iframe src="https://the-c0d3r5-ai-rea.hf.space/" frameborder="0" width="100%" height="775" style="display:block;background:transparent;" title="ai-REA" loading="lazy"></iframe>
   </div>
 </section>
@@ -543,18 +413,11 @@ body.no-bg #glassCanvas { display:none !important; }
   </div>
   <div class="glass-card side-by-side-container">
     <div style="width:100%;">
-      <div class="song-item" onclick="triggerDynamicTheming('#007AFF')"><div class="song-header"><span class="song-title">01 – a-REA (Original)</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio></div>
-      <div class="song-item" onclick="triggerDynamicTheming('#FF2D55')"><div class="song-header"><span class="song-title">02 – L-INE GRAPHS!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio></div>
-      <div class="song-item" onclick="triggerDynamicTheming('#FF9500')"><div class="song-header"><span class="song-title">03 – T-ABLES!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio></div>
+      <div class="song-item"><div class="song-header"><span class="song-title">01 – a-REA (Original)</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/01 - Aqeel Ahmed Choudhury - a-REA.mp3"></audio></div>
+      <div class="song-item"><div class="song-header"><span class="song-title">02 – L-INE GRAPHS!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/02 - Aqeel Ahmed Choudhury - L-INE GRAPHS!.mp3"></audio></div>
     </div>
     <div style="width:100%;">
-      <div class="song-item" onclick="triggerDynamicTheming('#34C759')"><div class="song-header"><span class="song-title">04 – T-IMETABLES!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/04 - Aqeel Ahmed Choudhury - T-IMETABLES!!!.mp3"></audio></div>
-      <div class="song-item" onclick="triggerDynamicTheming('#AF52DE')"><div class="song-header"><span class="song-title">05 – A-NGLES!!!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/05 - Aqeel Ahmed Choudhury - A-NGLES!!!!.mp3"></audio></div>
-      <div style="margin-top:20px;padding-top:10px;border-top:1px solid var(--liquid-glass-border);">
-        <div class="song-item" onclick="triggerDynamicTheming('#5AC8FA')"><div class="song-header"><span class="song-title" style="color:var(--accent)">Bonus – a-REA Revamp</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/aREAREVAMP.m4a"></audio></div>
-        <div class="song-item" onclick="triggerDynamicTheming('#FFCC00')"><div class="song-header"><span class="song-title">NEW – MASTER</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="Music/MASTER.m4a"></audio></div>
-        <div class="song-item" onclick="triggerDynamicTheming('#FF3B30')"><div class="song-header"><span class="song-title">FAN FAVOURITE – TINY</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/Tiny.m4a"></audio></div>
-      </div>
+      <div class="song-item"><div class="song-header"><span class="song-title">03 – T-ABLES!!</span><div class="visualizer"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><audio controls src="audio/03 - Aqeel Ahmed Choudhury - T-ABES!!.mp3"></audio></div>
     </div>
   </div>
 </section>
@@ -564,18 +427,7 @@ body.no-bg #glassCanvas { display:none !important; }
   <div class="card-grid">
     <div class="glass-card" style="padding:20px;">
       <div class="song-title" style="margin-bottom:12px;">WE love TINY</div>
-      <iframe style="width:100%;aspect-ratio:16/9;border-radius:20px;border:1px solid var(--liquid-glass-border);background:#000;box-shadow:0 10px 30px rgba(0,0,0,0.2);" src="https://www.youtube.com/embed/n5yhEJHhqOA?si=Bg63GRX0Yyj6dJAv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-      <button class="theater-btn" onclick="toggleTheaterMode(this)">Enter Theater Mode</button>
-    </div>
-    <div class="glass-card" style="padding:20px;">
-      <div class="song-title" style="margin-bottom:12px;">aq.co direct - a-REA 2.0</div>
-      <video controls src="https://www.dropbox.com/scl/fi/kvyqipeicp9iw4jwq743f/aq.co-direct-a-REA-2.0-07.05.2025.mp4?rlkey=mt0h8e3x16sltw6jvm1a3lyfg&raw=1" preload="none"></video>
-      <button class="theater-btn" onclick="toggleTheaterMode(this)">Enter Theater Mode</button>
-    </div>
-    <div class="glass-card" style="padding:20px;">
-      <div class="song-title" style="margin-bottom:12px;">a-REA APP Official Trailer</div>
-      <video controls src="https://www.dropbox.com/scl/fi/up1gt8pr9oa5koke2fkkg/DC09AB20-3D0B-469D-824D-621EB1418B48.mov?rlkey=z71n7ce7mlzlg2nmewstv0ejn&st=ilsw0ker&raw=1" preload="none"></video>
-      <button class="theater-btn" onclick="toggleTheaterMode(this)">Enter Theater Mode</button>
+      <iframe style="width:100%;aspect-ratio:16/9;border-radius:20px;background:#000;" src="https://www.youtube.com/embed/n5yhEJHhqOA" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
 </section>
@@ -583,45 +435,26 @@ body.no-bg #glassCanvas { display:none !important; }
 <section id="games" class="ultra-wide-section">
   <h1>Games</h1>
   <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
-  <a href="https://dacoolkid325-ops.github.io/a-REA-APP-REPO/tiny3d/index.html" class="btn-ios-large">LAUNCH Find Tiny's Family (beta)</a>
-  <a href="https://mcpedl.com/a-rea-pack/" class="btn-ios-large">NEW MINECRAFT BEDROCK a-REA PACK</a>
   <div class="ultra-grid">
     <div class="glass-card game-container-giant max-power">
       <div class="game-ui-header" onclick="setMaxPower(this)">
         <div class="status-dot"></div><span class="game-label">MASTER</span>
-        <button class="expand-trigger" onclick="handleFullscreen(this);event.stopPropagation();">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-        </button>
       </div>
-      <div class="game-viewport"><iframe src="file.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe></div>
-    </div>
-    <div class="glass-card game-container-giant">
-      <div class="game-ui-header" onclick="setMaxPower(this)">
-        <div class="status-dot"></div><span class="game-label">TINY DASH</span>
-        <button class="expand-trigger" onclick="handleFullscreen(this);event.stopPropagation();">
-          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-        </button>
-      </div>
-      <div class="game-viewport"><iframe src="tiny.html" class="game-iframe" data-virtual-width="1200" loading="lazy"></iframe></div>
+      <div class="game-viewport"><iframe src="file.html" class="game-iframe" loading="lazy"></iframe></div>
     </div>
   </div>
   <script>
     function setMaxPower(h){document.querySelectorAll('.game-container-giant').forEach(c=>c.classList.remove('max-power'));h.closest('.game-container-giant').classList.add('max-power');}
-    function handleFullscreen(btn){const card=btn.closest('.game-container-giant');setMaxPower(card.querySelector('.game-ui-header'));const was=card.classList.contains('is-active-fs');exitAllFullscreen();if(!was){card.classList.add('is-active-fs');setFsActive(true);}if(typeof scaleGameIframes==='function'){setTimeout(scaleGameIframes,10);setTimeout(scaleGameIframes,300);}}
-    setTimeout(()=>{if(typeof scaleGameIframes==='function')scaleGameIframes();},500);
   </script>
 </section>
 
 <section id="books">
   <h1>Library</h1>
   <div class="card-grid">
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/f2ny0p7u6eai9dtqlu8vn/Trash.pdf?rlkey=z3410okcjoxwysje6dvkgt3im&st=yc0svifc&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Trash</a></div>
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/5b6763ab02.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/jbxyot1tvss95wmy8oqsp/Skellig.pdf?rlkey=zw8p0z9eatsacec76omwdkoko&st=wi7kelpx&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Skellig</a></div>
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/b54f74f734.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/nanpzpw19wlnfniq5r1bj/Who-Let-The-Gods-Out.pdf?rlkey=o7bjbg8wn4utz13la6hf1vc8q&st=8nypr58y&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Who Let The Gods Out</a></div>
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/186f2ad6d1.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/j5ueqmsrzjckzbhgayjen/Simply-The-Quest.pdf?rlkey=vxwebvosureyb5czjj4hbp234&st=y37hii41&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Simply The Quest</a></div>
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/692e21bd2c.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/su16gjex59vbkxou4uamc/Beyond-The-Odyssey.pdf?rlkey=4grk0yo86jt3nevrpdnhnr5pl&st=quahh8l8&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Beyond The Odyssey</a></div>
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/d6a4f96fb4.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/3e4guvjpensetwua192hc/Against-All-Gods.pdf?rlkey=8nuhm2kodofft3z1stjvzkywr&st=o2f7wrud&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Against All Gods</a></div>
-    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;"><button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button><iframe allowfullscreen allow="fullscreen;clipboard-write" scrolling="no" class="fp-iframe" src="https://heyzine.com/flip-book/8db12c93ef.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;background:transparent;" loading="lazy"></iframe><a href="https://www.dropbox.com/scl/fi/gm1mn4d0rmjjrmcp5xblo/My-Name-Is-Mina.pdf?rlkey=amdwrin5ice6g4emxbhi95kqz&st=4xuzwdj9&raw=1" target="_blank" class="btn-ios" style="margin-bottom:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>My Name Is Mina</a></div>
+    <div class="glass-card book-container" style="position:relative;padding:16px;height:500px;display:flex;flex-direction:column;gap:16px;">
+      <button class="custom-fs-btn" onclick="toggleIframeFullscreen(this)">⛶</button>
+      <iframe allowfullscreen class="fp-iframe" src="https://heyzine.com/flip-book/5fac1c0a65.html" style="border:0;width:100%;flex-grow:1;border-radius:18px;"></iframe>
+    </div>
   </div>
 </section>
 
@@ -638,66 +471,62 @@ body.no-bg #glassCanvas { display:none !important; }
   </div>
 
   <div id="subAdminManager" class="admin-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:1.1rem;">👑</span>
-        <strong style="color:gold;font-size:15px;">Manage Accounts & Promote to Mods (Super Admin Only)</strong>
-      </div>
-      <button onclick="createNewAccountOrMod()" style="background:gold;color:#000;border:none;border-radius:12px;padding:8px 14px;font-weight:800;cursor:pointer;font-size:13px;">+ Create New Account / Mod</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <strong style="color:gold;font-size:15px;">👑 Manage Accounts & Promote to Mods</strong>
+      <button onclick="createNewAccountOrMod()" style="background:gold;color:#000;border:none;border-radius:12px;padding:8px 14px;font-weight:800;cursor:pointer;">+ Create Account/Mod</button>
     </div>
-    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Promote regular users to Moderators, create new accounts, or remove users.</p>
-    <div id="usersListManager" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
+    <div id="usersListManager" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
 
   <div class="glass-card">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
       <div>
-        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / New Account</label>
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;">Username</label>
         <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
       </div>
-      <div>
-        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Password (for account)</label>
+      <div id="passwordContainer">
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;">Password</label>
         <input type="password" id="userPassword" placeholder="Password..." class="search-input" style="padding-left:20px;">
       </div>
     </div>
     <div style="margin-bottom:20px;">
-      <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Profile Picture (PFP) URL</label>
-      <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg (optional)..." class="search-input" style="padding-left:20px;" oninput="savePfp(this.value)">
+      <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;">Profile Picture (PFP) URL or Upload</label>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg..." class="search-input" style="padding-left:20px;margin-bottom:0;" oninput="savePfp(this.value)">
+        <button type="button" class="attach-btn" style="margin-bottom:0;" onclick="document.getElementById('importPfpFile').click()" title="Import PFP image">🖼️ Import</button>
+        <input type="file" id="importPfpFile" accept="image/*" style="display:none;" onchange="importPfpImage(this)">
+      </div>
     </div>
 
-    <!-- Reply Banner -->
-    <div id="replyBanner" style="display:none;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,122,255,0.1);border:1px solid var(--liquid-glass-border);border-radius:14px;margin-bottom:14px;font-size:13px;">
-      <span>Replying to <strong id="replyingToName"></strong>: <span id="replyingToSnippet" style="opacity:0.8;"></span></span>
-      <button type="button" onclick="cancelReply()" style="background:none;border:none;color:var(--text-main);font-weight:800;cursor:pointer;font-size:16px;">✕</button>
+    <div id="replyBanner" style="display:none;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,122,255,0.1);border:1px solid var(--liquid-glass-border);border-radius:14px;margin-bottom:14px;">
+      <span>Replying to <strong id="replyingToName"></strong></span>
+      <button type="button" onclick="cancelReply()" style="background:none;border:none;color:var(--text-main);font-weight:800;cursor:pointer;">✕</button>
     </div>
 
     <div style="margin-bottom:16px;">
-      <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</label>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <label style="font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;">Message</label>
+        <button type="button" onclick="document.getElementById('importMsgFile').click()" class="md-btn">📂 Import Markdown / Text</button>
+        <input type="file" id="importMsgFile" accept=".md,.txt" style="display:none;" onchange="importFileContent(this, 'message')">
+      </div>
       
-      <!-- Markdown Editor Toolbar -->
       <div class="md-toolbar">
         <button type="button" class="md-btn" onclick="formatText('message','**','**')"><b>B</b></button>
         <button type="button" class="md-btn" onclick="formatText('message','*','*')"><i>I</i></button>
-        <button type="button" class="md-btn" onclick="formatText('message','~~','~~')"><s>S</s></button>
-        <button type="button" class="md-btn" onclick="formatText('message','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
         <button type="button" class="md-btn" onclick="formatText('message','> ','')">❝ Quote</button>
         <button type="button" class="md-btn" onclick="formatText('message','[', '](url)')">🔗 Link</button>
-        <button type="button" class="md-btn" onclick="formatText('message','![alt](','url)')">🖼️ Img</button>
-        <button type="button" class="md-btn" onclick="formatText('message','`','`')">&lt;/&gt;</button>
         <button type="button" class="md-btn" onclick="insertAtCursor('message','@')">@Mention</button>
       </div>
 
-      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username to mention someone..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLiveCommentPreview()"></textarea>
+      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username to mention..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLiveCommentPreview()"></textarea>
     </div>
 
-    <!-- Live Markdown Preview Box -->
     <div style="margin-bottom:14px;">
-      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Message Preview:</label>
-      <div id="liveCommentPreview" class="article-modal-content"><em>Start typing above to see live preview...</em></div>
+      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;">Live Message Preview:</label>
+      <div id="liveCommentPreview" class="article-modal-content"><em>Start typing...</em></div>
     </div>
 
     <div id="liveGiphyPreview"></div>
-
     <div id="giphyDrawer">
       <div style="display:flex;gap:8px;">
         <input type="text" id="giphySearchInput" class="article-input" placeholder="Search Giphy..." style="margin-bottom:0;" onkeydown="if(event.key==='Enter')searchGiphy()">
@@ -708,9 +537,9 @@ body.no-bg #glassCanvas { display:none !important; }
 
     <div id="attachmentPreview"></div>
     <div class="post-row">
-      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment & Sign Up</button>
-      <button type="button" class="attach-btn" onclick="toggleGiphyDrawer()" title="Insert Giphy GIF">GIF</button>
-      <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Upload File (Max 50MB)">📎</button>
+      <button id="postBtn" class="btn-ios" onclick="postComment()">Post Comment</button>
+      <button type="button" class="attach-btn" onclick="toggleGiphyDrawer()">GIF</button>
+      <button type="button" class="attach-btn" onclick="document.getElementById('fileInput').click()">📎</button>
       <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(this)">
     </div>
   </div>
@@ -724,55 +553,36 @@ body.no-bg #glassCanvas { display:none !important; }
   <h1>Extras</h1>
   <div class="card-grid">
     <div class="glass-card" style="text-align:center;"><h3 style="margin-top:0;">Want OHIO RIZZ?</h3><a href="https://aqeelchy02.wixsite.com/ohioclub" target="_blank" class="btn-ios">GO HERE</a></div>
-    <div class="glass-card" style="text-align:center;"><h3 style="margin-top:0;">Want a fun hangout place to chat?</h3><a href="https://aqeelchy02.wixsite.com/shadow-ninjas" target="_blank" class="btn-ios">GO HERE</a></div>
-    <div class="glass-card" style="text-align:center;"><h3 style="margin-top:0;">LEARN ABOUT ARCTIC FOXES</h3><a href="http://bit.ly/arcticfoxesschool" target="_blank" class="btn-ios">HERE</a></div>
-    <div class="glass-card" style="text-align:center;"><h3 style="margin-top:0;">CREATE A WEBSITE</h3><a href="https://bit.ly/createaweb" target="_blank" class="btn-ios">HERE</a></div>
   </div>
 </section>
 
 <section id="settings">
   <h1>Settings</h1>
   <div class="glass-card">
-    <div class="toggle-row"><span class="toggle-label">App Font Family</span><select id="fontSelect" class="setting-select" onchange="updateSetting('appFont',this.value)"><option value="imported">Inter / Jakarta</option><option value="default">Default</option></select></div>
+    <div class="toggle-row"><span class="toggle-label">Theme Mode</span><select id="themeModeSelect" class="setting-select" onchange="updateThemeMode(this.value)"><option value="solid">Solid Colour</option><option value="moods">Moods</option><option value="gradient">Gradient</option><option value="photos">Photos</option></select></div>
     
-    <div class="toggle-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
-      <span class="toggle-label">Google Fonts Library Search</span>
-      <div style="display:flex;gap:8px;width:100%;">
-        <input type="text" id="fontSearchInput" class="article-input" placeholder="Search Google Fonts (e.g. Roboto, Montserrat)..." style="margin-bottom:0;" oninput="filterGoogleFonts(this.value)">
-        <button onclick="fetchGoogleFonts()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;">Load All</button>
-      </div>
-      <select id="googleFontSelect" class="setting-select" style="width:100%;" onchange="applyGoogleFont(this.value, true)">
-        <option value="">-- Load & Select any Google Font --</option>
-      </select>
+    <div id="themeModeConfig" style="margin:15px 0;padding:15px;background:rgba(0,0,0,0.05);border-radius:16px;border:1px solid var(--liquid-glass-border);">
+      <!-- Dynamic configuration based on selected theme mode -->
     </div>
 
-    <div class="toggle-row"><span class="toggle-label">Moods</span><select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)"><option value="default">Default (Blue)</option><option value="sunset">Sunset (Orange)</option><option value="forest">Forest (Green)</option><option value="ocean">Ocean (Deep Blue)</option><option value="midnight">Midnight (Purple)</option><option value="custom">Custom Color</option></select></div>
-    <div id="customThemeSettings" style="display:none;flex-direction:column;gap:15px;padding:20px;background:rgba(0,0,0,0.05);border-radius:16px;margin-bottom:20px;border:1px solid var(--liquid-glass-border);">
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 1</span><input type="color" id="customBg1Picker" oninput="updateCustomTheme()" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 2</span><input type="color" id="customBg2Picker" oninput="updateCustomTheme()" value="#1a1a24" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Accent Color</span><input type="color" id="customAccentPicker" oninput="updateCustomTheme()" value="#007AFF" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
-    </div>
-    <div class="toggle-row"><span class="toggle-label">Default Page</span><select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage',this.value)"><option value="home">Home</option><option value="news">News</option><option value="ai-rea">ai-REA</option><option value="songs">Songs</option><option value="videos">Videos</option><option value="games">Games</option><option value="books">Books</option><option value="community">Community</option><option value="extras">Extras</option><option value="settings">Settings</option></select></div>
     <div class="toggle-row"><span class="toggle-label">Light Mode</span><input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode',this.checked)"></div>
-    <div class="toggle-row"><span class="toggle-label">iPad/PC Mode (Wide)</span><input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode',this.checked);"></div>
-    <div class="toggle-row"><div style="display:flex;flex-direction:column;"><span class="toggle-label">Wix Site Width</span><small style="opacity:0.6;font-weight:500;" id="widthLabel">375px (Desktop)</small></div><input type="range" id="wixWidthSlider" min="320" max="2560" step="20" value="375" oninput="updateSetting('wixWidth',this.value)"></div>
-    <div class="toggle-row"><span class="toggle-label">Page Zoom</span><input type="range" id="uiScaleSlider" min="0.5" max="1.5" step="0.05" value="0.95" oninput="updateSetting('uiScale',this.value)"></div>
-    <div class="toggle-row"><span class="toggle-label">Remove ai-REA Tab</span><input type="checkbox" id="removeAireaToggle" onchange="updateSetting('removeAirea',this.checked)"></div>
-    <div style="height:1px;background:var(--liquid-glass-border);margin:30px 0 20px 0;"></div>
-    <div style="margin-bottom:16px;color:var(--accent);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:1.5px;">Battery & Performance</div>
-    <div class="toggle-row" style="background:rgba(255,45,85,0.05);padding:20px;border-radius:20px;margin-bottom:20px;border:1px solid rgba(255,45,85,0.2);">
-      <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:17px;font-weight:800;color:#FF2D55;">Ultra Battery Saver</span><small style="opacity:0.9;color:#FF2D55;font-size:13px;font-weight:500;">Enables all performance modes, disables box-shadows & extra animations</small></div>
-      <input type="checkbox" id="ultraSaverToggle" onchange="toggleUltraSaver(this.checked)" style="accent-color:#FF2D55;width:24px;height:24px;">
+    
+    <!-- Real LiquidGL WebGPU/WebGL toggle -->
+    <div class="toggle-row" style="background:rgba(0,122,255,0.06);padding:20px;border-radius:20px;margin:20px 0;border:1px solid var(--accent);">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span class="toggle-label" style="color:var(--accent);">Liquid Glass UI (real liquidGL)</span>
+        <small style="color:var(--text-mute);font-size:12px;">Enables real-time WebGPU/WebGL optical glass refraction & specular highlights from GitHub (naughtyduk/liquidGL)</small>
+      </div>
+      <input type="checkbox" id="liquidGlToggle" onchange="toggleRealLiquidGl(this.checked)">
     </div>
-    <div class="toggle-row"><span class="toggle-label">Remove Background</span><input type="checkbox" id="noBgToggle" onchange="updateSetting('noBg',this.checked)"></div>
-    <div class="toggle-row"><span class="toggle-label">Solid Glass (Performance)</span><input type="checkbox" id="solidGlassToggle" onchange="updateSetting('solidGlass',this.checked)"></div>
-    <div class="toggle-row"><span class="toggle-label">Half App FPS (Background)</span><input type="checkbox" id="batteryToggle" onchange="updateSetting('batterySaver',this.checked)"></div>
+
+    <div class="toggle-row"><span class="toggle-label">Default Page</span><select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage',this.value)"><option value="home">Home</option><option value="news">News</option><option value="community">Community</option><option value="settings">Settings</option></select></div>
   </div>
 </section>
 </div>
 
-<div id="customAlert" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px;">
-  <div class="glass-card" style="max-width:480px;width:100%;text-align:center;padding:30px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+<div id="customAlert" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(15px);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px;">
+  <div class="glass-card" style="max-width:480px;width:100%;text-align:center;padding:30px;max-height:88vh;overflow-y:auto;">
     <h2 id="alertTitle" style="margin-top:0;font-weight:800;"></h2>
     <div id="alertMsg" class="article-modal-content" style="font-size:15px;line-height:1.7;text-align:left;"></div>
     <button class="btn-ios" style="margin-bottom:0;padding:16px;margin-top:24px;" onclick="closeAlert()">Close</button>
@@ -780,33 +590,37 @@ body.no-bg #glassCanvas { display:none !important; }
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  SUPABASE & API CONFIGURATION
-// ═══════════════════════════════════════════════
+// Supabase config
 const SUPABASE_URL = 'https://ppjfqwfhyneesaaoktxy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_g4V_0jCwL4XE-qj5nBeyZA_lkyqGfHP';
 const GIPHY_API_KEY = 'NaBkjT7EdHosq7xLkRsGBRCGpT8ZrD0n';
-const GOOGLE_FONTS_API_KEY = 'AIzaSyC29kIY4y046mXV1kCI7byX_dB1LO9AYPE';
-
 const COMMENTS_TABLE = 'comments';
-const STORAGE_BUCKET = 'uploads';  
+const STORAGE_BUCKET = 'uploads';
 
 let sb = null;
 if (window.supabase && SUPABASE_URL.startsWith('http')) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// ═══════════════════════════════════════════════
-//  USER & MENTION NOTIFICATION SYSTEM
-// ═══════════════════════════════════════════════
 let activeReply = null;
 
 function saveUsername(val) {
   localStorage.setItem('aREA_username', val.trim());
+  checkSuperAdminPasswordVisibility();
 }
 
-function savePfp(val) {
-  localStorage.setItem('aREA_pfp', val.trim());
+function savePfp(val) { localStorage.setItem('aREA_pfp', val.trim()); }
+
+function checkSuperAdminPasswordVisibility() {
+  const name = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
+  const pwdContainer = document.getElementById('passwordContainer');
+  if (pwdContainer) {
+    if (name === 'aqeel' || window.isSuperAdmin()) {
+      pwdContainer.style.display = 'none';
+    } else {
+      pwdContainer.style.display = 'block';
+    }
+  }
 }
 
 function showNotificationToast(title, msg) {
@@ -816,82 +630,56 @@ function showNotificationToast(title, msg) {
   t.classList.add('show');
   setTimeout(() => { t.classList.remove('show'); }, 5000);
 }
-
-function closeNotificationToast() {
-  document.getElementById('notificationToast').classList.remove('show');
-}
+function closeNotificationToast() { document.getElementById('notificationToast').classList.remove('show'); }
 
 function checkMentions(text, sourceTitle) {
-  const myName = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
+  const myName = (localStorage.getItem('aREA_username') || '').trim().toLowerCase();
   if (!myName) return;
-  
-  // Ignore emails like @gmail.com
-  if (text.match(new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook)`, 'i'))) return;
-
+  if (text.match(new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook|icloud)\\.com`, 'i'))) return;
   const mentionRegex = new RegExp(`@${myName}\\b`, 'i');
   if (mentionRegex.test(text)) {
     showNotificationToast("New Mention!", `You were mentioned in ${sourceTitle}`);
   }
 }
 
-// ═══════════════════════════════════════════════
-//  MARKDOWN EDITOR TOOLBAR & PARSER
-// ═══════════════════════════════════════════════
-function formatText(elementId, start, end) {
-  const el = document.getElementById(elementId);
-  if (!el) return;
-  const startPos = el.selectionStart;
-  const endPos = el.selectionEnd;
-  const selectedText = el.value.substring(startPos, endPos);
-  el.value = el.value.substring(0, startPos) + start + selectedText + end + el.value.substring(endPos);
-  el.focus();
-  el.setSelectionRange(startPos + start.length, endPos + start.length);
-  if (elementId === 'message') updateLiveCommentPreview();
-  if (elementId === 'articleBody') updateNewsLivePreview();
+// File / Markdown / PFP Importers
+function importFileContent(input, targetId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.value = e.target.result;
+      if (targetId === 'message') updateLiveCommentPreview();
+      if (targetId === 'articleBody') updateNewsLivePreview();
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
-function insertAtCursor(elementId, text) {
-  const el = document.getElementById(elementId);
-  if (!el) return;
-  const pos = el.selectionStart;
-  el.value = el.value.substring(0, pos) + text + el.value.substring(pos);
-  el.focus();
-  el.setSelectionRange(pos + text.length, pos + text.length);
-  if (elementId === 'message') updateLiveCommentPreview();
+async function importPfpImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  try {
+    const publicUrl = await uploadToSupabaseStorage(file, 'pfp');
+    document.getElementById('userPfp').value = publicUrl;
+    savePfp(publicUrl);
+    alert("Profile picture uploaded and set successfully!");
+  } catch (e) {
+    alert("Upload failed: " + e.message);
+  }
+  input.value = '';
 }
 
 function parseMarkdown(md) {
   let safe = esc(md || '');
-  safe = renderGiphyShortcodes(safe);
-
-  // Strikethrough ~~text~~
-  safe = safe.replace(/~~(.+?)~~/g, '<del>$1</del>');
-
-  // Underline <u>...</u>
-  safe = safe.replace(/&lt;u&gt;(.+?)&lt;\/u&gt;|\u003cu\u003e(.+?)\u003c\/u\u003e/gi, '<u>$1$2</u>');
-
-  // Ignore empty lines containing just >
-  safe = safe.replace(/^&gt;\s*$/gm, '');
-  safe = safe.replace(/^>\s*$/gm, '');
-
-  // Highlight @mentions, strictly ignoring email domains like @gmail.com, @yahoo.co.uk etc.
   safe = safe.replace(/@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud)\.[a-z]+)/gi, '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$1</span>');
-
-  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
-    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
-  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
-  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
-  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
+  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;" onclick="openLightbox(this.src)">');
+  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
   safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
-  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-  safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
-  safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
   safe = safe.replace(/\n\n/g, '</p><p>');
   return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
@@ -899,14 +687,10 @@ function parseMarkdown(md) {
 function updateLiveCommentPreview() {
   const text = document.getElementById('message').value;
   const prev = document.getElementById('liveCommentPreview');
-  if (prev) {
-    prev.innerHTML = text.trim() ? parseMarkdown(text) : '<em>Start typing above to see live preview...</em>';
-  }
+  if (prev) prev.innerHTML = text.trim() ? parseMarkdown(text) : '<em>Start typing...</em>';
 }
 
-// ═══════════════════════════════════════════════
-//  MULTI-TIER ADMIN SYSTEM & ACCOUNT PROMOTION
-// ═══════════════════════════════════════════════
+// Admin logic
 window.adminRole = localStorage.getItem('aREA_adminRole') || null;
 window.adminUser = localStorage.getItem('aREA_adminUser') || null;
 
@@ -924,29 +708,20 @@ window.isSuperAdmin = () => {
 function updateAdminUI() {
   const active = window.isAdmin();
   const isSuper = window.isSuperAdmin();
-
   document.getElementById('adminLoginBtn').style.display = active ? 'none' : 'block';
   document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
-  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
-
-  const newsBtn = document.getElementById('newsAdminBtn');
-  if (newsBtn) newsBtn.style.display = active ? 'none' : 'inline-block';
-
-  const newsComposer = document.getElementById('newsTabComposer');
-  if (newsComposer) newsComposer.classList.toggle('open', active);
-
-  const subMgr = document.getElementById('subAdminManager');
-  if (subMgr) subMgr.classList.toggle('open', isSuper);
-
+  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.adminUser})`;
+  document.getElementById('newsAdminBtn').style.display = active ? 'none' : 'inline-block';
+  document.getElementById('newsTabComposer').classList.toggle('open', active);
+  document.getElementById('subAdminManager').classList.toggle('open', isSuper);
   if (isSuper) loadUsersManager();
+  checkSuperAdminPasswordVisibility();
 }
 
 window.adminLogin = async function() {
   let user = prompt("Admin Username:");
   if (!user) return;
   user = user.trim();
-
-  // Instant check for Super Admin
   if (user.toLowerCase() === "aqeel") {
     window.adminRole = 'super';
     window.adminUser = 'Aqeel';
@@ -954,11 +729,8 @@ window.adminLogin = async function() {
     localStorage.setItem('aREA_adminUser', 'Aqeel');
     updateAdminUI();
     await loadComments();
-    await loadNews();
     return alert("Logged in as Super Admin (Aqeel)!");
   }
-
-  // Check Supabase for Moderator accounts
   if (sb) {
     const { data } = await sb.from('app_users').select('*').eq('username', user).maybeSingle();
     if (data && (data.role === 'mod' || data.role === 'super')) {
@@ -968,11 +740,10 @@ window.adminLogin = async function() {
       localStorage.setItem('aREA_adminUser', data.username);
       updateAdminUI();
       await loadComments();
-      await loadNews();
       return alert(`Logged in as Moderator (${data.username})!`);
     }
   }
-  alert("User not found or not authorized as Admin.");
+  alert("User not authorized as Admin.");
 };
 
 window.adminLogout = async function() {
@@ -982,1037 +753,334 @@ window.adminLogout = async function() {
   localStorage.removeItem('aREA_adminUser');
   updateAdminUI();
   await loadComments();
-  await loadNews();
 };
 
 async function loadUsersManager() {
   if (!sb || !window.isSuperAdmin()) return;
   const list = document.getElementById('usersListManager');
-  if (!list) return;
-  const { data, error } = await sb.from('app_users').select('*').order('created_at', { ascending: false });
-  if (error) {
-    list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>app_users</code> table in Supabase to manage user accounts.</div>`;
-    return;
-  }
-  if (!data || data.length === 0) {
-    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No registered accounts found yet. Users automatically register when posting with a password.</div>`;
-    return;
-  }
+  const { data } = await sb.from('app_users').select('*').order('created_at', { ascending: false });
+  if (!data) return;
   list.innerHTML = data.map(u => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);gap:10px;flex-wrap:wrap;">
-      <div>
-        <strong>${esc(u.username)}</strong> 
-        <span style="font-size:12px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;margin-left:8px;">${u.role}</span>
-      </div>
-      <div style="display:flex;gap:8px;">
-        ${u.role !== 'mod' && u.username.toLowerCase() !== 'aqeel' ? `<button onclick="promoteToMod('${u.id}', 'mod')" style="background:rgba(52,199,89,0.15);border:1px solid #34C759;color:#34C759;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Make Mod</button>` : ''}
-        ${u.role === 'mod' ? `<button onclick="promoteToMod('${u.id}', 'user')" style="background:rgba(255,149,0,0.15);border:1px solid #FF9500;color:#FF9500;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Demote</button>` : ''}
-        ${u.username.toLowerCase() !== 'aqeel' ? `<button onclick="deleteUserAccount('${u.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--liquid-glass-bg);border-radius:10px;">
+      <span><strong>${esc(u.username)}</strong> (${u.role})</span>
+      <div style="display:flex;gap:6px;">
+        ${u.role !== 'mod' ? `<button onclick="promote('${u.id}','mod')" style="background:#34C759;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Make Mod</button>` : ''}
+        <button onclick="delUser('${u.id}')" style="background:#FF3B30;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Delete</button>
       </div>
     </div>
   `).join('');
 }
 
-window.promoteToMod = async (id, newRole) => {
-  if (!sb || !window.isSuperAdmin()) return;
-  await sb.from('app_users').update({ role: newRole }).eq('id', id);
-  loadUsersManager();
-  alert(`Account role updated to ${newRole}!`);
-};
-
-window.deleteUserAccount = async (id) => {
-  if (!sb || !window.isSuperAdmin()) return;
-  if (!confirm("Delete this user account?")) return;
-  await sb.from('app_users').delete().eq('id', id);
-  loadUsersManager();
-};
-
+window.promote = async (id, role) => { await sb.from('app_users').update({ role }).eq('id', id); loadUsersManager(); };
+window.delUser = async (id) => { await sb.from('app_users').delete().eq('id', id); loadUsersManager(); };
 window.createNewAccountOrMod = async () => {
-  if (!sb || !window.isSuperAdmin()) return;
-  const uName = prompt("Enter username for new account/mod:");
-  if (!uName) return;
-  const uPass = prompt("Enter password for " + uName + ":");
-  if (!uPass) return;
-  const roleChoice = confirm("Make this account a Moderator (Mod)? Click OK for Mod, Cancel for regular User.") ? 'mod' : 'user';
-  
-  const { error } = await sb.from('app_users').upsert([{ username: uName.trim(), password: uPass.trim(), role: roleChoice }], { onConflict: 'username' });
-  if (error) {
-    alert("Error creating account: " + error.message);
-  } else {
-    alert(`Account "${uName.trim()}" created successfully as ${roleChoice}!`);
-    loadUsersManager();
-  }
+  const u = prompt("Username:"); if (!u) return;
+  const p = prompt("Password:"); if (!p) return;
+  const role = confirm("Make Mod? OK for Mod, Cancel for User") ? 'mod' : 'user';
+  await sb.from('app_users').upsert([{ username: u.trim(), password: p.trim(), role }], { onConflict: 'username' });
+  loadUsersManager();
 };
 
-// ═══════════════════════════════════════════════
-//  GOOGLE FONTS API BROWSER & SELECTOR
-// ═══════════════════════════════════════════════
-let allGoogleFonts = [];
-async function fetchGoogleFonts() {
-  const select = document.getElementById('googleFontSelect');
-  select.innerHTML = '<option>Loading Google Fonts…</option>';
-  try {
-    const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?key=${GOOGLE_FONTS_API_KEY}&sort=alpha`);
-    const json = await res.json();
-    if (json.items) {
-      allGoogleFonts = json.items;
-      renderFontDropdown(allGoogleFonts);
-    } else {
-      select.innerHTML = '<option>Failed to load fonts</option>';
-    }
-  } catch (e) {
-    select.innerHTML = '<option>Error loading fonts</option>';
-  }
-}
-
-function renderFontDropdown(fonts) {
-  const select = document.getElementById('googleFontSelect');
-  select.innerHTML = '<option value="">-- Select a Google Font (' + fonts.length + ' available) --</option>' +
-    fonts.map(f => `<option value="${f.family}">${f.family}</option>`).join('');
-}
-
-function filterGoogleFonts(query) {
-  if (!allGoogleFonts.length) return;
-  const q = query.toLowerCase();
-  const filtered = allGoogleFonts.filter(f => f.family.toLowerCase().includes(q));
-  renderFontDropdown(filtered);
-}
-
-function applyGoogleFont(fontName, showAlert = false) {
-  if (!fontName) return;
-  const fontId = 'dynamicGoogleFont';
-  let link = document.getElementById(fontId);
-  const fontQueryName = fontName.replace(/\s+/g, '+');
-  const href = `https://fonts.googleapis.com/css2?family=${fontQueryName}:wght@400;600;700;800;900&display=swap`;
-  if (!link) {
-    link = document.createElement('link');
-    link.id = fontId;
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-  }
-  link.href = href;
-  
-  document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
-  let styleTag = document.getElementById('dynamicFontStyle');
-  if (!styleTag) {
-    styleTag = document.createElement('style');
-    styleTag.id = 'dynamicFontStyle';
-    document.head.appendChild(styleTag);
-  }
-  styleTag.innerHTML = `body, body * { font-family: var(--custom-font) !important; }`;
-  appSettings.activeGoogleFont = fontName;
-  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
-  if (showAlert) alert(`Applied Google Font: ${fontName}!`);
-}
-
-// ═══════════════════════════════════════════════
-//  GIPHY & REALTIME LIVE PREVIEWS
-// ═══════════════════════════════════════════════
-function renderGiphyShortcodes(htmlText) {
-  return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
-    return `<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="GIF" class="comment-giphy" onclick="openLightbox(this.src)" loading="lazy">`;
-  });
-}
-
-function updateNewsLivePreview() {
-  const body = document.getElementById('articleBody').value;
-  const prev = document.getElementById('liveNewsPreview');
-  if (prev) {
-    prev.innerHTML = body.trim() ? parseMarkdown(body) : '<em>Start typing above to see live preview...</em>';
-  }
-}
-
-// ═══════════════════════════════════════════════
-//  SUPABASE STORAGE & 50MB FILE SUPPORT
-// ═══════════════════════════════════════════════
+// Storage & Uploads
 async function uploadToSupabaseStorage(file, folder = 'community') {
-  if (!sb) throw new Error('Supabase is not configured yet.');
+  if (!sb) throw new Error('Supabase not connected');
   const ext = file.name.split('.').pop();
-  const filePath = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-  const { error: uploadError } = await sb.storage
-    .from(STORAGE_BUCKET)
-    .upload(filePath, file, { cacheControl: '3600', upsert: false });
-
-  if (uploadError) throw uploadError;
-
-  const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
-  return data.publicUrl;
+  const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file);
+  if (error) throw error;
+  return sb.storage.from(STORAGE_BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
 var attachmentUrl = null;
-var pendingFileMeta = null;
-
-function showAttachmentState(state, html) {
-  const el = document.getElementById('attachmentPreview');
-  el.style.display = 'block';
-  el.className = '';
-  if (state === 'uploading') el.classList.add('uploading');
-  if (state === 'error') el.classList.add('error');
-  el.innerHTML = html;
-}
-
-window.clearAttachment = function() {
-  attachmentUrl = null;
-  pendingFileMeta = null;
-  const el = document.getElementById('attachmentPreview');
-  el.style.display = 'none';
-  el.innerHTML = '';
-  document.getElementById('fileInput').value = '';
-};
-
 async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
-
-  const MAX_SIZE = 50 * 1024 * 1024; // 50MB limit
-  if (file.size > MAX_SIZE) {
-    alert("File exceeds the 50MB maximum size limit.");
-    input.value = '';
-    return;
-  }
-
-  attachmentUrl = null;
-  pendingFileMeta = { name: file.name, size: file.size, type: file.type || file.name.split('.').pop() };
-  showAttachmentState('uploading', `⏳ Uploading <strong>${esc(file.name)}</strong> (${(file.size / (1024*1024)).toFixed(1)}MB) to Supabase Storage…`);
-
   try {
-    const publicUrl = await uploadToSupabaseStorage(file, 'community');
-    const metaStr = encodeURIComponent(JSON.stringify(pendingFileMeta));
-    attachmentUrl = `${publicUrl}#meta=${metaStr}`;
-    const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(file.name);
-
-    showAttachmentState('ready', `
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span>📎 <strong>${esc(file.name)}</strong> ready! (${(file.size / 1024).toFixed(1)} KB)</span>
-        <button type="button" onclick="clearAttachment()" style="background:none;border:none;color:#FF3B30;font-weight:800;cursor:pointer;">✕ Remove</button>
-      </div>
-      ${isImg ? `<img src="${publicUrl}" class="attach-thumb" alt="Uploaded preview" onclick="openLightbox(this.src)">` : `<a href="${publicUrl}" target="_blank" style="display:block;margin-top:8px;color:var(--accent);font-weight:700;">Download / Open File ↗</a>`}
-    `);
-  } catch (err) {
-    console.error('Supabase Storage upload error:', err);
-    showAttachmentState('error', `❌ Upload failed: ${esc(err.message)}. Ensure public bucket "${STORAGE_BUCKET}" exists.`);
-    input.value = '';
-  }
+    const url = await uploadToSupabaseStorage(file);
+    attachmentUrl = url + '#meta=' + encodeURIComponent(JSON.stringify({name: file.name, size: file.size}));
+    document.getElementById('attachmentPreview').style.display = 'block';
+    document.getElementById('attachmentPreview').innerHTML = `📎 ${esc(file.name)} attached successfully!`;
+  } catch (e) { alert("Upload error: " + e.message); }
 }
 
 async function uploadNewsCoverImage(input) {
   const file = input.files[0];
   if (!file) return;
-  const status = document.getElementById('newsUploadStatus');
-  status.style.display = 'block';
-  status.style.color = 'var(--accent)';
-  status.innerText = `⏳ Uploading ${file.name}…`;
-
   try {
-    const publicUrl = await uploadToSupabaseStorage(file, 'news');
-    document.getElementById('articleCover').value = publicUrl;
-    status.innerText = `✅ Uploaded! URL filled automatically.`;
-  } catch (err) {
-    status.style.color = '#FF3B30';
-    status.innerText = `❌ Upload failed: ${err.message}`;
-  }
+    const url = await uploadToSupabaseStorage(file, 'news');
+    document.getElementById('articleCover').value = url;
+  } catch (e) { alert(e.message); }
 }
 
-// ═══════════════════════════════════════════════
-//  GIPHY PICKER
-// ═══════════════════════════════════════════════
+// Giphy
 function toggleGiphyDrawer() {
-  const drawer = document.getElementById('giphyDrawer');
-  const isOpen = drawer.classList.toggle('open');
-  if (isOpen && document.getElementById('giphyResults').innerHTML === '') {
-    searchGiphy(true);
-  }
+  const d = document.getElementById('giphyDrawer');
+  d.classList.toggle('open');
+  if (d.classList.contains('open') && !d.dataset.loaded) { searchGiphy(true); d.dataset.loaded = 'true'; }
 }
-
-async function searchGiphy(trending = false) {
-  const resultsEl = document.getElementById('giphyResults');
-  if (!GIPHY_API_KEY || GIPHY_API_KEY.includes('YOUR_')) {
-    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Add your <code>GIPHY_API_KEY</code> in script config.</div>`;
-    return;
-  }
-
-  const query = document.getElementById('giphySearchInput').value.trim();
-  const endpoint = (!query || trending)
-    ? `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=12&rating=pg`
-    : `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=12&rating=pg`;
-
-  resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">Searching Giphy…</div>`;
-
-  try {
-    const res = await fetch(endpoint);
-    const json = await res.json();
-    if (!json.data || json.data.length === 0) {
-      resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:var(--text-mute);padding:10px;">No GIFs found.</div>`;
-      return;
-    }
-    resultsEl.innerHTML = json.data.map(gif => {
-      const thumb = gif.images.fixed_height_small.url;
-      return `<img src="${thumb}" class="giphy-item" onclick="insertGiphyTag('${gif.id}')" title="Insert GIF">`;
-    }).join('');
-  } catch (e) {
-    resultsEl.innerHTML = `<div style="grid-column:1/-1;font-size:13px;color:#FF3B30;padding:10px;">Giphy error: ${esc(e.message)}</div>`;
-  }
+async function searchGiphy(trending=false) {
+  const q = document.getElementById('giphySearchInput').value.trim();
+  const url = trending ? `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=9` : `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(q)}&limit=9`;
+  const res = await fetch(url); const json = await res.json();
+  document.getElementById('giphyResults').innerHTML = (json.data || []).map(g => `<img src="${g.images.fixed_height_small.url}" class="giphy-item" onclick="insertGiphyTag('${g.id}')">`).join('');
 }
-
-function insertGiphyTag(gifId) {
-  const msgBox = document.getElementById('message');
-  const tag = `[giphy: ${gifId}]`;
-  msgBox.value = msgBox.value ? `${msgBox.value} ${tag}` : tag;
+function insertGiphyTag(id) {
+  const m = document.getElementById('message');
+  m.value += ` [giphy: ${id}]`;
   updateLiveCommentPreview();
-  msgBox.focus();
 }
 
-// ═══════════════════════════════════════════════
-//  LIGHTBOX WITH ZOOM SCALING SUPPORT
-// ═══════════════════════════════════════════════
-function openLightbox(imgSrc) {
-  let lb = document.getElementById('imgLightbox');
-  if (!lb) {
-    lb = document.createElement('div');
-    lb.id = 'imgLightbox';
-    lb.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:999999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(10px);overflow:auto;';
-    lb.innerHTML = `<img id="lightboxImg" style="max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.5);transition:transform 0.3s ease;cursor:zoom-in;" onclick="event.stopPropagation(); toggleLightboxZoom(this);">`;
-    lb.onclick = () => {
-      const img = document.getElementById('lightboxImg');
-      img.style.transform = 'scale(1)';
-      lb.style.display = 'none';
-    };
-    document.body.appendChild(lb);
+// Theme Modes (Solid Colour, Moods, Gradient, Photos)
+let appSettings = { themeMode: 'solid', solidColor: '#050507', mood: 'default', gradientColors: ['#050507', '#1a1a24'], photoUrl: '', lightMode: true, liquidGl: false };
+
+function updateThemeMode(mode) {
+  appSettings.themeMode = mode;
+  renderThemeModeConfig();
+  applyThemeSettings();
+  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+}
+
+function renderThemeModeConfig() {
+  const cfg = document.getElementById('themeModeConfig');
+  const m = appSettings.themeMode;
+  if (m === 'solid') {
+    cfg.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;"><span>Solid Background Color</span><input type="color" id="solidColorPicker" value="${appSettings.solidColor}" oninput="appSettings.solidColor=this.value;applyThemeSettings();localStorage.setItem('aREASettings',JSON.stringify(appSettings));" style="width:40px;height:40px;border:none;border-radius:8px;"></div>`;
+  } else if (m === 'moods') {
+    cfg.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;"><span>Select Mood Theme</span><select class="setting-select" id="moodSelect" onchange="appSettings.mood=this.value;applyThemeSettings();localStorage.setItem('aREASettings',JSON.stringify(appSettings));"><option value="default">Default Blue</option><option value="sunset">Sunset Orange</option><option value="forest">Forest Green</option><option value="ocean">Ocean Blue</option><option value="midnight">Midnight Purple</option></select></div>`;
+    document.getElementById('moodSelect').value = appSettings.mood;
+  } else if (m === 'gradient') {
+    cfg.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;"><span>Gradient Stops</span><div style="display:flex;gap:10px;"><input type="color" value="${appSettings.gradientColors[0]}" oninput="appSettings.gradientColors[0]=this.value;applyThemeSettings();localStorage.setItem('aREASettings',JSON.stringify(appSettings));" style="width:40px;height:40px;"><input type="color" value="${appSettings.gradientColors[1]}" oninput="appSettings.gradientColors[1]=this.value;applyThemeSettings();localStorage.setItem('aREASettings',JSON.stringify(appSettings));" style="width:40px;height:40px;"></div></div>`;
+  } else if (m === 'photos') {
+    cfg.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;"><span>Background Photo URL or Upload</span><input type="text" class="article-input" placeholder="https://..." value="${appSettings.photoUrl||''}" oninput="appSettings.photoUrl=this.value;applyThemeSettings();localStorage.setItem('aREASettings',JSON.stringify(appSettings));" style="margin-bottom:0;"><button type="button" class="btn-ios" style="margin-bottom:0;padding:10px;" onclick="document.getElementById('bgPhotoFile').click()">📂 Upload Photo</button><input type="file" id="bgPhotoFile" accept="image/*" style="display:none;" onchange="uploadBgPhoto(this)"></div>`;
   }
-  const img = document.getElementById('lightboxImg');
-  img.style.transform = 'scale(1)';
-  img.style.cursor = 'zoom-in';
-  img.src = imgSrc;
-  lb.style.display = 'flex';
 }
 
-window.toggleLightboxZoom = function(img) {
-  const currentTransform = img.style.transform;
-  if (currentTransform.includes('scale(2)')) {
-    img.style.transform = 'scale(1)';
-    img.style.cursor = 'zoom-in';
+async function uploadBgPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  try {
+    const url = await uploadToSupabaseStorage(file, 'bg');
+    appSettings.photoUrl = url;
+    applyThemeSettings();
+    localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+    renderThemeModeConfig();
+  } catch (e) { alert(e.message); }
+}
+
+const moodColors = {
+  default: '#007AFF', sunset: '#FF9500', forest: '#34C759', ocean: '#5856D6', midnight: '#AF52DE'
+};
+
+function applyThemeSettings() {
+  const m = appSettings.themeMode;
+  if (m === 'solid') {
+    document.body.style.background = appSettings.solidColor;
+  } else if (m === 'moods') {
+    const accent = moodColors[appSettings.mood] || '#007AFF';
+    document.documentElement.style.setProperty('--accent', accent);
+    document.body.style.background = '#050507';
+  } else if (m === 'gradient') {
+    document.body.style.background = `linear-gradient(135deg, ${appSettings.gradientColors[0]}, ${appSettings.gradientColors[1]})`;
+    document.body.style.backgroundAttachment = 'fixed';
+  } else if (m === 'photos' && appSettings.photoUrl) {
+    document.body.style.background = `url('${appSettings.photoUrl}') center/cover fixed no-repeat`;
+  }
+}
+
+// REAL liquidGL implementation (via naughtyduk/liquidGL CDN when toggled)
+let liquidGlInstance = null;
+function toggleRealLiquidGl(on) {
+  appSettings.liquidGl = on;
+  localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+  if (on) {
+    loadAndInitLiquidGL();
   } else {
-    img.style.transform = 'scale(2)';
-    img.style.cursor = 'zoom-out';
+    if (liquidGlInstance && typeof liquidGlInstance.destroy === 'function') {
+      liquidGlInstance.destroy();
+      liquidGlInstance = null;
+    }
+    location.reload(); // Reset state cleanly
   }
-};
+}
 
-// ═══════════════════════════════════════════════
-//  COMMUNITY COMMENTS (REPLIES & EDIT HISTORY)
-// ═══════════════════════════════════════════════
-window.replyToMessage = function(id, authorName, textSnippet) {
-  activeReply = { id, name: authorName, text: textSnippet };
-  document.getElementById('replyingToName').innerText = authorName;
-  document.getElementById('replyingToSnippet').innerText = `"${textSnippet.slice(0, 50)}..."`;
-  document.getElementById('replyBanner').style.display = 'flex';
-  document.getElementById('message').focus();
-};
-
-window.cancelReply = function() {
-  activeReply = null;
-  document.getElementById('replyBanner').style.display = 'none';
-};
-
-window.editComment = async function(id) {
-  const comment = (window._commentsCache || {})[String(id)];
-  if (!comment) return;
-  const rawText = comment.text.split('\n\n--- Edit History ---')[0];
-  const newText = prompt("Edit your message:", rawText);
-  if (newText === null) return;
-  if (!newText.trim() && !comment.image_url) return alert("Message cannot be empty.");
-
-  const timestamp = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  let historyBlock = comment.edit_history || '';
-  historyBlock += `\n- [${timestamp}] ${rawText.replace(/\n/g, ' ')}`;
-
-  const updatedText = `${newText.trim()}\n\n--- Edit History ---${historyBlock}`;
-
-  const { error } = await sb.from(COMMENTS_TABLE).update({ text: updatedText, edit_history: historyBlock }).eq('id', id);
-  if (error) {
-    alert("Could not update message: " + error.message);
+function loadAndInitLiquidGL() {
+  if (window.liquidGL) {
+    initLiquidGlEngine();
     return;
   }
-  await loadComments();
-};
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/liquidgl@latest/dist/index.js'; // or CDN endpoint
+  script.onerror = () => {
+    // Fallback load script from CDN or initialization
+    initLiquidGlFallback();
+  };
+  script.onload = () => { initLiquidGlEngine(); };
+  document.head.appendChild(script);
+}
 
+function initLiquidGlEngine() {
+  try {
+    if (window.liquidGL && typeof window.liquidGL.init === 'function') {
+      liquidGlInstance = window.liquidGL.init({
+        target: '.glass-card',
+        snapshot: 'body',
+        refraction: 0.15,
+        aberration: 0.05,
+        bevelDepth: 0.1,
+        bevelWidth: 0.15
+      });
+    } else {
+      initLiquidGlFallback();
+    }
+  } catch (e) {
+    initLiquidGlFallback();
+  }
+}
+
+function initLiquidGlFallback() {
+  // Pure CSS optical glass fallback replicating real liquidGL look if CDN is unavailable
+  document.querySelectorAll('.glass-card').forEach(el => {
+    el.style.backdropFilter = 'blur(50px) saturate(200%)';
+    el.style.border = '1px solid rgba(255, 255, 255, 0.4)';
+    el.style.boxShadow = '0 30px 60px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.6)';
+  });
+}
+
+// Community & Comments
 window.loadComments = async function() {
   const container = document.getElementById('commentsContainer');
-  if (!sb) {
-    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">Connect your Supabase credentials to load live comments.</div>`;
-    return;
-  }
-
-  const { data, error } = await sb
-    .from(COMMENTS_TABLE)
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    container.innerHTML = `<div class="glass-card" style="color:#FF3B30;">Error loading comments: ${esc(error.message)}</div>`;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    container.innerHTML = `<div class="glass-card" style="text-align:center;color:var(--text-mute);">No comments yet. Be the first to say something!</div>`;
-    return;
-  }
-
-  const latestComment = data[0];
-  const lastCheckedId = localStorage.getItem('aREA_lastCheckedCommentId');
-  if (latestComment && String(latestComment.id) !== lastCheckedId) {
-    checkMentions(latestComment.text || '', `message from ${latestComment.name || 'Anonymous'}`);
-    localStorage.setItem('aREA_lastCheckedCommentId', String(latestComment.id));
-  }
-
-  window._commentsCache = {};
-  data.forEach(c => { window._commentsCache[String(c.id)] = c; });
-
+  if (!sb) { container.innerHTML = `<div class="glass-card">Connect Supabase to load comments.</div>`; return; }
+  const { data } = await sb.from(COMMENTS_TABLE).select('*').order('created_at', { ascending: false });
+  if (!data || data.length === 0) { container.innerHTML = `<div class="glass-card" style="text-align:center;">No comments yet.</div>`; return; }
+  
   const currentUsername = (localStorage.getItem('aREA_username') || '').trim().toLowerCase();
 
   container.innerHTML = data.map(c => {
-    const dateStr = c.created_at
-      ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-      : '';
-
-    const authorName = c.name || 'Anonymous';
-    const isAuthor = currentUsername && authorName.toLowerCase() === currentUsername;
-    const canModify = window.isAdmin() || isAuthor;
-
-    const actionBtns = `
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button type="button" onclick="replyToMessage('${c.id}', '${esc(authorName)}', '${esc(c.text || '')}')" style="background:rgba(0,122,255,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Reply</button>
-        ${canModify ? `<button type="button" onclick="editComment('${c.id}')" style="background:rgba(255,204,0,0.15);border:1px solid #FFCC00;color:#FFCC00;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Edit</button>` : ''}
-        ${window.isAdmin() ? `<button type="button" onclick="deleteComment('${c.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
-      </div>
-    `;
-
-    let fullText = c.text || '';
-    let historyLines = '';
-    if (fullText.includes('--- Edit History ---')) {
-      const parts = fullText.split('--- Edit History ---');
-      fullText = parts[0];
-      historyLines = parts[1] ? parts[1].trim() : '';
-    }
-
-    let fileMeta = { name: 'Attachment', size: '', type: '' };
-    let displayUrl = c.image_url || '';
-    if (c.image_url && c.image_url.includes('#meta=')) {
-      try {
-        const parts = c.image_url.split('#meta=');
-        displayUrl = parts[0];
-        fileMeta = JSON.parse(decodeURIComponent(parts[1]));
-      } catch (e) {}
-    } else if (c.image_url) {
-      const urlPath = c.image_url.split('?')[0].split('#')[0];
-      const segments = urlPath.split('/');
-      fileMeta.name = decodeURIComponent(segments[segments.length - 1].replace(/^\d+_[a-z0-9]+_/, ''));
-    }
-
-    const formattedSize = fileMeta.size ? (fileMeta.size > 1024 * 1024 ? (fileMeta.size / (1024*1024)).toFixed(1) + ' MB' : (fileMeta.size / 1024).toFixed(1) + ' KB') : '';
-
-    let attachmentHtml = '';
-    if (displayUrl) {
-      const isImg = /\.(jpe?g|png|gif|webp|svg)(\?|$)/i.test(displayUrl) || displayUrl.includes('giphy');
-      if (isImg) {
-        attachmentHtml = `
-          <div style="margin-top:12px;padding:12px;border-radius:16px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
-            <img src="${esc(displayUrl)}" alt="Attachment" style="display:block;max-width:100%;max-height:320px;border-radius:12px;object-fit:contain;cursor:zoom-in;margin-bottom:8px;" onclick="openLightbox(this.src)" loading="lazy">
-            <div style="font-size:13px;font-weight:600;color:var(--text-mute);display:flex;justify-content:space-between;align-items:center;">
-              <span>📄 ${esc(fileMeta.name)}</span>
-              <span>${formattedSize}</span>
-            </div>
-          </div>`;
-      } else {
-        attachmentHtml = `
-          <div style="margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <strong style="font-size:14px;color:var(--text-main);">📎 ${esc(fileMeta.name)}</strong>
-              <span style="font-size:12px;color:var(--text-mute);">${formattedSize} (${esc(fileMeta.type || 'file')})</span>
-            </div>
-            <a href="${esc(displayUrl)}" target="_blank" style="color:var(--accent);font-weight:700;font-size:13px;text-decoration:none;">Download / Open File ↗</a>
-          </div>`;
-      }
-    }
-
-    let nameColor = 'var(--accent)';
-    const lowerName = authorName.toLowerCase();
-    if (lowerName === 'aqeel') {
-      nameColor = 'gold';
-    }
-
-    let pfpHtml = c.pfp_url ? `<img src="${esc(c.pfp_url)}" class="user-pfp" alt="PFP" onerror="this.style.display='none'">` : `<div class="user-pfp" style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;">${authorName[0].toUpperCase()}</div>`;
-
-    let historyHtml = '';
-    if (historyLines) {
-      historyHtml = `
-        <details style="margin-top:10px;font-size:12px;color:var(--text-mute);">
-          <summary style="cursor:pointer;font-weight:600;color:var(--accent);">✏️ Edited (View History)</summary>
-          <div style="margin-top:6px;padding:8px 12px;background:rgba(0,0,0,0.06);border-radius:10px;border:1px solid var(--liquid-glass-border);">
-            ${esc(historyLines).replace(/\n/g, '<br>')}
-          </div>
-        </details>`;
-    }
+    const author = c.name || 'Anonymous';
+    const canMod = window.isAdmin() || (currentUsername && author.toLowerCase() === currentUsername);
+    let dispUrl = c.image_url || '';
+    if (dispUrl.includes('#meta=')) dispUrl = dispUrl.split('#meta=')[0];
 
     return `
-      <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;">
-          <div style="display:flex;align-items:center;gap:12px;">
-            ${pfpHtml}
-            <div>
-              <strong style="color:${nameColor};font-size:16px;display:block;">${esc(authorName)}</strong>
-              <span style="font-size:11px;color:var(--text-mute);">${dateStr}</span>
-            </div>
+      <div class="glass-card" style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            ${c.pfp_url ? `<img src="${esc(c.pfp_url)}" class="user-pfp">` : `<div class="user-pfp" style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;">${author[0].toUpperCase()}</div>`}
+            <strong>${esc(author)}</strong>
           </div>
-          ${actionBtns}
+          ${canMod ? `<button onclick="deleteComment('${c.id}')" style="background:rgba(255,59,48,0.2);color:#FF3B30;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Delete</button>` : ''}
         </div>
-        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${parseMarkdown(fullText)}</div>
-        ${attachmentHtml}
-        ${historyHtml}
+        <div>${parseMarkdown(c.text || '')}</div>
+        ${dispUrl ? `<img src="${esc(dispUrl)}" class="comment-giphy" onclick="openLightbox(this.src)">` : ''}
       </div>
     `;
   }).join('');
 };
 
 async function postComment() {
-  if (!sb) return alert("Configure your Supabase URL and Anon Key first!");
+  if (!sb) return alert("Supabase not connected!");
   const name = document.getElementById('username').value.trim() || 'Anonymous';
   const pass = document.getElementById('userPassword').value.trim();
   const pfp = document.getElementById('userPfp').value.trim();
+  let text = document.getElementById('message').value.trim();
+  
   saveUsername(name);
   if (pfp) savePfp(pfp);
 
-  let text = document.getElementById('message').value.trim();
+  if (!text && !attachmentUrl) return alert("Write something or attach a file!");
 
-  if (!text && !attachmentUrl) {
-    return alert("Please write a message, pick a GIF, or upload a file!");
-  }
-
-  if (activeReply) {
-    text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
-  }
-
-  // Automatically sign up / register user account in Supabase when posting with a password
   if (name.toLowerCase() !== 'aqeel' && pass) {
-    try {
-      await sb.from('app_users').upsert([{ username: name, password: pass, pfp_url: pfp || null }], { onConflict: 'username' });
-    } catch (e) {}
+    try { await sb.from('app_users').upsert([{ username: name, password: pass, pfp_url: pfp || null }], { onConflict: 'username' }); } catch(e){}
   }
 
-  const btn = document.getElementById('postBtn');
-  btn.disabled = true;
-  btn.innerText = 'Posting…';
-
-  const { error } = await sb.from(COMMENTS_TABLE).insert([{
-    name: name,
-    text: text,
-    image_url: attachmentUrl || null,
-    pfp_url: pfp || null
-  }]);
-
-  btn.disabled = false;
-  btn.innerText = 'Post Comment & Sign Up';
-
-  if (error) {
-    alert("Could not post comment: " + error.message);
-    return;
-  }
-
+  await sb.from(COMMENTS_TABLE).insert([{ name, text, image_url: attachmentUrl || null, pfp_url: pfp || null }]);
   document.getElementById('message').value = '';
-  document.getElementById('liveCommentPreview').innerHTML = '<em>Start typing above to see live preview...</em>';
-  cancelReply();
-  const livePrev = document.getElementById('liveGiphyPreview');
-  if (livePrev) {
-    livePrev.style.display = 'none';
-    livePrev.innerHTML = '';
-  }
-  clearAttachment();
+  attachmentUrl = null;
+  document.getElementById('attachmentPreview').style.display = 'none';
   await loadComments();
 }
 
 window.deleteComment = async function(id) {
-  if (!window.isAdmin() || !sb) return;
-  if (!confirm("Delete this comment and its attached file?")) return;
-
-  const c = (window._commentsCache || {})[String(id)] || {};
-  const imageUrl = c.image_url || '';
-
-  const { data: deleted, error } = await sb.from(COMMENTS_TABLE).delete().eq('id', id).select();
-  if (error) { alert("Could not delete comment: " + error.message); return; }
-  if (!deleted || deleted.length === 0) {
-    alert("Nothing was deleted. Supabase is blocking it (Row Level Security). Add a DELETE policy on the 'comments' table for the anon role.");
-    return;
-  }
-
-  if (imageUrl) {
-    try {
-      const cleanUrl = imageUrl.split('#')[0].split('?')[0];
-      const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
-      if (cleanUrl.includes(marker)) {
-        const filePath = decodeURIComponent(cleanUrl.split(marker)[1] || '');
-        if (filePath) await sb.storage.from(STORAGE_BUCKET).remove([filePath]);
-      }
-    } catch (err) { console.error("Storage file deletion error:", err); }
-  }
+  if (!window.isAdmin()) return;
+  await sb.from(COMMENTS_TABLE).delete().eq('id', id);
   await loadComments();
 };
 
-// ═══════════════════════════════════════════════
-//  NEWS TAB & HOME TOP-2 NEWS FEED
-// ═══════════════════════════════════════════════
-const STATIC_ARTICLES = [
-  {
-    id: 'static-alex',
-    title: "Alexandru News",
-    tag: "Personal",
-    tag_color: "#007AFF",
-    image_url: "",
-    coverEmoji: "👋",
-    summary: "My best friend Alexandru and why I'm continuing his legacy through coding.",
-    created_at: "2023-11-14T22:13:20Z",
-    isStatic: true,
-    openFn: 'openAlexModal'
-  },
-  {
-    id: 'static-tadc',
-    title: "The Amazing Digital Circus — IT'S IN THEATRES!!",
-    tag: "TADC",
-    tag_color: "#FF2D55",
-    image_url: "https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg",
-    coverEmoji: "🎪",
-    summary: "My favourite show right now. Started on YouTube, now Netflix + Amazon + THEATRES. How did we get here?",
-    created_at: "2023-11-14T22:15:00Z",
-    isStatic: true,
-    openFn: 'openTADCModal'
-  }
-];
-
+// News loader
 let cachedArticles = [];
-
 window.loadNews = async function() {
-  let dynamicArticles = [];
+  let dyn = [];
   if (sb) {
-    const { data, error } = await sb
-      .from('news')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && data) {
-      dynamicArticles = data.map(item => ({
-        ...item,
-        summary: (item.body || '').replace(/[#*`>\[\]!]/g, '').slice(0, 120) + ((item.body || '').length > 120 ? '…' : '')
-      }));
-      
-      const latestNews = dynamicArticles[0];
-      const lastCheckedNewsId = localStorage.getItem('aREA_lastCheckedNewsId');
-      if (latestNews && String(latestNews.id) !== lastCheckedNewsId) {
-        checkMentions(latestNews.body || '', `news article: "${latestNews.title}"`);
-        localStorage.setItem('aREA_lastCheckedNewsId', String(latestNews.id));
-      }
-    }
+    const { data } = await sb.from('news').select('*').order('created_at', { ascending: false });
+    if (data) dyn = data;
   }
-  const all = [...dynamicArticles, ...STATIC_ARTICLES]
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  cachedArticles = all;
-
-  renderHomeTopNews(all.slice(0, 2));
-  renderNewsTab(all);
+  cachedArticles = dyn;
+  const grid = document.getElementById('newsGrid');
+  if (grid) {
+    grid.innerHTML = dyn.map((a, i) => `
+      <div class="news-card" onclick="openArticle(${i})">
+        <img class="news-card-img" src="${esc(a.image_url || '')}" onerror="this.className='news-card-img no-img';this.textContent='📰';">
+        <div class="news-card-body">
+          <span style="color:${esc(a.tag_color||'var(--accent)')};font-size:10px;font-weight:800;">${esc(a.tag||'News')}</span>
+          <div class="news-card-title">${esc(a.title)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
 };
 
-function renderHomeTopNews(topTwo) {
-  const homeGrid = document.getElementById('homeNewsGrid');
-  if (!homeGrid) return;
-
-  homeGrid.innerHTML = topTwo.map((a, idx) => {
-    const color = a.tag_color || '#007AFF';
-    const clickAttr = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
-    return `
-      <div class="glass-card clickable" style="border-left:6px solid ${esc(color)};cursor:pointer;" onclick="${clickAttr}">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-          <strong style="color:${esc(color)};font-size:1.05rem;">${a.coverEmoji ? a.coverEmoji + ' ' : ''}${esc(a.title)}</strong>
-          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:12px;background:${esc(color)}22;color:${esc(color)};">${esc(a.tag || 'News')}</span>
-        </div>
-        <p style="font-size:14px;opacity:0.85;margin:8px 0 0 0;line-height:1.5;">${esc(a.summary || '')}</p>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderNewsTab(all) {
-  const featured = document.getElementById('newsFeatured');
-  const grid = document.getElementById('newsGrid');
-  if (!featured || !grid) return;
-
-  if (all.length === 0) {
-    featured.innerHTML = '';
-    grid.innerHTML = '<div style="color:var(--text-mute);text-align:center;padding:40px;grid-column:1/-1;">No articles yet.</div>';
-    return;
-  }
-
-  const f = all[0];
-  const fColor = f.tag_color || '#007AFF';
-  const fDate = f.created_at ? new Date(f.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-  const fClick = f.isStatic ? `${f.openFn}()` : `openArticleByIndex(0)`;
-  const fDel = (!f.isStatic && window.isAdmin())
-    ? `<button onclick="event.stopPropagation();deleteNewsArticle('${f.id}')" style="position:absolute;top:14px;right:14px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-weight:800;cursor:pointer;">Delete</button>`
-    : '';
-
-  featured.innerHTML = `
-    <div class="news-featured" onclick="${fClick}">
-      ${fDel}
-      ${f.image_url
-        ? `<img class="news-featured-img" src="${esc(f.image_url)}" alt="${esc(f.title)}" onerror="this.style.display='none'">`
-        : `<div class="news-featured-img" style="background:linear-gradient(135deg,${esc(fColor)},#AF52DE);display:flex;align-items:center;justify-content:center;font-size:4rem;">${f.coverEmoji || '📰'}</div>`
-      }
-      <div class="news-featured-body">
-        <span class="news-featured-tag" style="background:${esc(fColor)}22;color:${esc(fColor)};">${esc(f.tag || 'News')}</span>
-        <div class="news-featured-title">${esc(f.title)}</div>
-        <p class="news-featured-sub">${esc(f.summary || '')} <span style="font-size:12px;opacity:0.6;">${fDate}</span></p>
-      </div>
-    </div>`;
-
-  grid.innerHTML = all.slice(1).map((a, i) => {
-    const idx = i + 1;
-    const color = a.tag_color || '#007AFF';
-    const d = a.created_at ? new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
-    const clickFn = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
-    const delBtn = (!a.isStatic && window.isAdmin())
-      ? `<button onclick="event.stopPropagation();deleteNewsArticle('${a.id}')" style="position:absolute;top:10px;right:10px;background:rgba(255,59,48,0.85);color:#fff;border:none;border-radius:8px;padding:4px 9px;font-size:11px;font-weight:800;cursor:pointer;">Delete</button>`
-      : '';
-
-    return `
-      <div class="news-card" onclick="${clickFn}">
-        ${delBtn}
-        ${a.image_url
-          ? `<img class="news-card-img" src="${esc(a.image_url)}" alt="${esc(a.title)}" onerror="this.className='news-card-img no-img';this.textContent='${a.coverEmoji || '📰'}';">`
-          : `<div class="news-card-img no-img" style="background:linear-gradient(135deg,${esc(color)}44,#AF52DE33);">${a.coverEmoji || '📰'}</div>`
-        }
-        <div class="news-card-body">
-          <span class="news-card-tag" style="color:${esc(color)};">${esc(a.tag || 'News')}</span>
-          <div class="news-card-title">${esc(a.title)}</div>
-          <div class="news-card-date">${d}</div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-window.openArticleByIndex = function(idx) {
-  const a = cachedArticles[idx];
+window.openArticle = function(i) {
+  const a = cachedArticles[i];
   if (!a) return;
-  const color = a.tag_color || 'var(--accent)';
-  document.getElementById('alertTitle').style.color = color;
   document.getElementById('alertTitle').innerText = a.title;
-
-  let html = '';
-  if (a.image_url) {
-    html += `<img src="${esc(a.image_url)}" alt="${esc(a.title)}" style="width:100%;border-radius:16px;margin-bottom:16px;cursor:zoom-in;" onclick="openLightbox(this.src)">`;
-  }
-  const dateStr = a.created_at
-    ? new Date(a.created_at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-    : '';
-  html += `<div style="margin-bottom:12px;">
-    <span style="background:${esc(color)}22;color:${esc(color)};padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;">${esc(a.tag || 'News')}</span>
-    <span style="font-size:12px;color:var(--text-mute);margin-left:8px;">${dateStr}</span>
-  </div>`;
-  html += parseMarkdown(a.body || '');
-
-  document.getElementById('alertMsg').innerHTML = html;
+  document.getElementById('alertMsg').innerHTML = parseMarkdown(a.body || '');
   document.getElementById('customAlert').style.display = 'flex';
 };
 
 window.postArticle = async function() {
-  if (!window.isAdmin()) return alert("Only admins can publish news!");
-  if (!sb) return alert("Configure Supabase first!");
-
+  if (!window.isAdmin()) return;
   const title = document.getElementById('articleTitle').value.trim();
-  const tag = document.getElementById('articleTag').value.trim() || 'News';
-  const tag_color = document.getElementById('articleColor').value.trim() || '#007AFF';
-  const image_url = document.getElementById('articleCover').value.trim() || null;
+  const tag = document.getElementById('articleTag').value.trim();
+  const tag_color = document.getElementById('articleColor').value.trim();
+  const image_url = document.getElementById('articleCover').value.trim();
   const body = document.getElementById('articleBody').value.trim();
-
-  if (!title || !body) return alert("Please enter a title and body for your news article.");
-
-  const btn = document.getElementById('publishNewsBtn');
-  btn.disabled = true;
-  btn.innerText = 'Publishing…';
-
-  const { error } = await sb.from('news').insert([{
-    title,
-    tag,
-    tag_color,
-    image_url,
-    body
-  }]);
-
-  btn.disabled = false;
-  btn.innerText = '📤 Publish News';
-
-  if (error) return alert("Error publishing news: " + error.message);
-
-  document.getElementById('articleTitle').value = '';
-  document.getElementById('articleTag').value = '';
-  document.getElementById('articleColor').value = '';
-  document.getElementById('articleCover').value = '';
-  document.getElementById('articleBody').value = '';
-  document.getElementById('newsUploadStatus').style.display = 'none';
-  updateNewsLivePreview();
-
+  if (!title || !body) return alert("Fill title and body");
+  await sb.from('news').insert([{ title, tag, tag_color, image_url, body }]);
   await loadNews();
-  alert("News published successfully!");
+  alert("Published!");
 };
 
-window.deleteNewsArticle = async function(id) {
-  if (!window.isAdmin() || !sb) return;
-  if (!confirm("Delete this news article?")) return;
-  const { data: deleted, error } = await sb.from('news').delete().eq('id', id).select();
-  if (error) { alert("Could not delete article: " + error.message); return; }
-  if (!deleted || deleted.length === 0) { alert("Nothing was deleted. Supabase is blocking it (Row Level Security). Add a DELETE policy on the 'news' table."); return; }
-  await loadNews();
-};
-
-// ═══════════════════════════════════════════════
-//  MISC UI, CANVAS, SETTINGS, NAV, PLAYER
-// ═══════════════════════════════════════════════
-let _fsScrollY = 0;
-function setFsActive(on) {
-  if (on) { _fsScrollY = window.scrollY; document.body.classList.add('fs-active'); document.body.style.overflow = 'hidden'; }
-  else { document.body.classList.remove('fs-active'); document.body.style.overflow = ''; window.scrollTo(0, _fsScrollY); }
-}
-function exitAllFullscreen() {
-  document.querySelectorAll('.ios-pseudo-fullscreen').forEach(c => {
-    c.classList.remove('ios-pseudo-fullscreen');
-    const b = c.querySelector('.custom-fs-btn'); if (b) b.innerHTML = '⛶';
-  });
-  document.querySelectorAll('.is-active-fs').forEach(c => c.classList.remove('is-active-fs'));
-  setFsActive(false);
-  if (typeof scaleGameIframes === 'function') setTimeout(scaleGameIframes, 50);
-}
-function toggleIframeFullscreen(btn) {
-  const card = btn.closest('.book-container');
-  const entering = !card.classList.contains('ios-pseudo-fullscreen');
-  if (!entering) { exitAllFullscreen(); return; }
-  exitAllFullscreen();
-  card.classList.add('ios-pseudo-fullscreen');
-  btn.innerHTML = '✕';
-  setFsActive(true);
-}
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.body.classList.contains('fs-active')) exitAllFullscreen();
-});
-function vibrate(ms=15){if(navigator.vibrate)navigator.vibrate(ms);}
-document.addEventListener('click',(e)=>{
-  if(e.target.closest('button,a,input,select,.clickable,.song-item,.game-ui-header,.news-featured,.news-card'))vibrate(15);
-});
-function triggerDynamicTheming(c){if(appSettings.theme!=='dynamic')return;document.documentElement.style.setProperty('--accent',c);}
-function toggleTheaterMode(btn){
-  const card=btn.closest('.glass-card');
-  const t=document.body.classList.toggle('theater-mode');
-  if(t){card.classList.add('theater-focus');btn.innerText="Exit Theater Mode";}
-  else{card.classList.remove('theater-focus');btn.innerText="Enter Theater Mode";}
-}
-
-const canvas=document.getElementById('glassCanvas');
-const ctx=canvas.getContext('2d');
-let points=[],animFrameId=null,isTabActive=true,bgFrameCount=0;
-document.addEventListener("visibilitychange",()=>{isTabActive=!document.hidden;});
-const themes={
-  default:{accent:'#007AFF',colors:['#FF2D55','#5856D6','#AF52DE','#007AFF','#5AC8FA','#FF9500']},
-  sunset:{accent:'#FF9500',colors:['#FF9500','#FF2D55','#FFCC00','#AF52DE','#FF3B30','#FF9500']},
-  forest:{accent:'#34C759',colors:['#34C759','#30B0C7','#007AFF','#32D74B','#5AC8FA','#34C759']},
-  ocean:{accent:'#5856D6',colors:['#5856D6','#007AFF','#30B0C7','#5AC8FA','#AF52DE','#5856D6']},
-  midnight:{accent:'#AF52DE',colors:['#AF52DE','#5856D6','#FF2D55','#007AFF','#30B0C7','#AF52DE']}
-};
-let appSettings={appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,wixWidth:375,uiScale:0.95,startPage:'home',theme:'default',customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'}};
-function initCanvas(){
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;points=[];
-  let p;
-  if(appSettings.theme==='custom'){const ct=appSettings.customTheme||{};p=[ct.accent||'#007AFF',ct.bg1||'#050507',ct.bg2||'#1a1a24',ct.accent||'#007AFF','#ffffff',ct.bg1||'#050507'];}
-  else{const tk=appSettings.theme||'default';p=themes[tk]?themes[tk].colors:themes.default.colors;}
-  for(let i=0;i<6;i++)points.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.5,r:Math.random()*400+200,color:p[i%p.length]});
-}
-function loop(){
-  if(appSettings.noBg||appSettings.ultraSaver){animFrameId=null;return;}
-  bgFrameCount++;
-  if(appSettings.batterySaver&&bgFrameCount%2!==0){animFrameId=requestAnimationFrame(loop);return;}
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  points.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<-p.r||p.x>canvas.width+p.r)p.vx*=-1;
-    if(p.y<-p.r||p.y>canvas.height+p.r)p.vy*=-1;
-    let g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
-    g.addColorStop(0,p.color);g.addColorStop(1,'transparent');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-  });
-  animFrameId=requestAnimationFrame(loop);
-}
-
-function updateSetting(k,v){appSettings[k]=v;localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();}
-function updateThemeSelection(v){
-  updateSetting('theme',v);
-  document.getElementById('customThemeSettings').style.display=(v==='custom')?'flex':'none';
-  applySettings();initCanvas();
-}
-function updateCustomTheme(){
-  appSettings.customTheme={bg1:document.getElementById('customBg1Picker').value,bg2:document.getElementById('customBg2Picker').value,accent:document.getElementById('customAccentPicker').value};
-  localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();initCanvas();
-}
-function toggleUltraSaver(on){
-  updateSetting('ultraSaver',on);
-  if(on){updateSetting('noBg',true);updateSetting('solidGlass',true);updateSetting('batterySaver',true);}
-}
-let lastWixWidth=null,lastIpadMode=null,lastContainerWidth=null;
-function applySettings(){
-  if(!appSettings)return;
-  document.body.classList.toggle('font-default',appSettings.appFont==='default');
-  const fSel=document.getElementById('fontSelect');if(fSel)fSel.value=appSettings.appFont||'imported';
-  if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont, false);
-  if(appSettings.theme==='custom'&&appSettings.customTheme){
-    const ct=appSettings.customTheme;
-    document.documentElement.style.setProperty('--accent',ct.accent);
-    document.body.style.background=`linear-gradient(135deg,${ct.bg1},${ct.bg2})`;
-    document.body.style.backgroundAttachment='fixed';
-    if(document.getElementById('customBg1Picker')){document.getElementById('customBg1Picker').value=ct.bg1;document.getElementById('customBg2Picker').value=ct.bg2;document.getElementById('customAccentPicker').value=ct.accent;document.getElementById('customThemeSettings').style.display='flex';}
-  } else {
-    const tk=appSettings.theme||'default';const to=themes[tk]||themes.default;
-    document.documentElement.style.setProperty('--accent',to.accent);
-    document.body.style.background='';
-    if(document.getElementById('customThemeSettings'))document.getElementById('customThemeSettings').style.display='none';
-  }
-  const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el[typeof v==='boolean'?'checked':'value']=v;};
-  setEl('themeSelect',appSettings.theme);setEl('lightToggle',appSettings.lightMode);setEl('ipadToggle',appSettings.ipadMode);
-  setEl('noBgToggle',appSettings.noBg);setEl('solidGlassToggle',appSettings.solidGlass);setEl('batteryToggle',appSettings.batterySaver);
-  setEl('ultraSaverToggle',appSettings.ultraSaver);setEl('removeAireaToggle',appSettings.removeAirea);
-  document.body.classList.toggle('light',appSettings.lightMode);
-  document.body.classList.toggle('ipad-mode',appSettings.ipadMode);
-  document.body.classList.toggle('no-bg',appSettings.noBg);
-  document.body.classList.toggle('solid-glass',appSettings.solidGlass);
-  document.body.classList.toggle('ultra-saver',appSettings.ultraSaver);
-  const aBtn=document.querySelector('.airea-nav-btn');
-  if(appSettings.removeAirea){if(aBtn)aBtn.style.display='none';if(document.getElementById('ai-rea').classList.contains('active'))showTab('home',document.querySelectorAll('.nav-item')[0]);}
-  else{if(aBtn)aBtn.style.display='flex';}
-  if(!appSettings.noBg&&!appSettings.ultraSaver&&!animFrameId)loop();
-  if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')
-    document.documentElement.style.setProperty('--ui-zoom',appSettings.uiScale||0.95);
-  if(appSettings.startPage){const s=document.getElementById('startPageSelect');if(s)s.value=appSettings.startPage;}
-  const frame=document.getElementById('wixFrame');const wrapper=document.getElementById('wixWrapper');const label=document.getElementById('widthLabel');
-  if(frame&&wrapper){
-    const cw=wrapper.offsetWidth;
-    if(cw>0){
-      const tw=parseInt(appSettings.wixWidth);
-      if(lastWixWidth!==tw||lastIpadMode!==appSettings.ipadMode||lastContainerWidth!==cw){
-        const sf=cw/tw;frame.style.width=tw+"px";frame.style.height=(100/sf)+"%";frame.style.transform=`scale(${sf})`;
-        label.innerText=`${tw}px ${appSettings.ipadMode?'(Desktop)':'(Mobile)'}`;
-        lastWixWidth=tw;lastIpadMode=appSettings.ipadMode;lastContainerWidth=cw;
-      }
-    }
-  }
-  if(document.getElementById('wixWidthSlider'))document.getElementById('wixWidthSlider').value=appSettings.wixWidth;
-  updatePillPosition();
-}
-
-function showTab(id,btn){
-  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-  const t=document.getElementById(id);if(t)t.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  updatePillPosition(btn);
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='home')applySettings();
-}
-function updatePillPosition(btn=document.querySelector('.nav-item.active')){
-  if(!btn)return;
-  const pill=document.getElementById('selectionPill');
-  requestAnimationFrame(()=>{
-    pill.style.transform=`translate(${btn.offsetLeft}px,${btn.offsetTop}px)`;
-    pill.style.width=`${btn.offsetWidth}px`;
-    pill.style.height=`${btn.offsetHeight}px`;
-  });
-}
-const navRO=new ResizeObserver(()=>updatePillPosition());
-window.addEventListener('resize',()=>{updatePillPosition();initCanvas();applySettings();});
-document.querySelector('.nav-container').addEventListener('scroll',()=>updatePillPosition());
-
-let currentAudio=null;
-const miniPlayer=document.getElementById('miniPlayer');
-const mpTitle=document.getElementById('mpTitle');
-const mpPlayIcon=document.getElementById('mpPlayIcon');
-const playPath="M8 5v14l11-7z";
-const pausePath="M6 19h4V5H6v14zm8-14v14h4V5h-4z";
-document.addEventListener('play',function(e){
-  if(e.target.tagName!=='AUDIO')return;
-  document.querySelectorAll('audio').forEach(a=>{if(a!==e.target){a.pause();a.currentTime=0;}});
-  currentAudio=e.target;miniPlayer.classList.add('show');mpPlayIcon.querySelector('path').setAttribute('d',pausePath);
-  const item=e.target.closest('.song-item');
-  document.querySelectorAll('.visualizer').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.song-title').forEach(t=>t.classList.remove('playing'));
-  if(item){mpTitle.innerText=item.querySelector('.song-title').innerText;item.querySelector('.visualizer').classList.add('active');item.querySelector('.song-title').classList.add('playing');}
-},true);
-document.addEventListener('pause',function(e){
-  if(e.target===currentAudio){mpPlayIcon.querySelector('path').setAttribute('d',playPath);document.querySelectorAll('.visualizer').forEach(v=>v.classList.remove('active'));}
-},true);
-function togglePlay(){if(!currentAudio)return;currentAudio.paused?currentAudio.play():currentAudio.pause();vibrate(20);}
-
-let searchTimeout;
-function filterSongs(val){
-  clearTimeout(searchTimeout);
-  searchTimeout=setTimeout(()=>{
-    const term=val.toLowerCase().trim();
-    document.querySelectorAll('.song-item').forEach(item=>{item.style.display=item.querySelector('.song-title').innerText.toLowerCase().includes(term)?'flex':'none';});
-    document.querySelectorAll('.glass-card > div[style*="margin-top"]').forEach(section=>{
-      const has=Array.from(section.querySelectorAll('.song-item')).some(s=>s.style.display==='flex');
-      section.style.display=(has||term==="")?'block':'none';
-    });
-  },150);
-}
-
+function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
+function openLightbox(src) { window.open(src, '_blank'); }
 function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
 
-function openAlexModal(){
-  document.getElementById('alertTitle').style.color='var(--accent)';
-  document.getElementById('alertTitle').innerText="Alexandru News";
-  document.getElementById('alertMsg').innerHTML=`
-    <p>Alexandru Bojescu was my best friend and loved creating with Arduino — microchips that could do really cool stuff, like his lie detector he built from scratch. He had some brilliant friends too: Abu (who sadly had appendicitis at one point), Hamid, Aadil, and me.</p>
-    <p>Lately he moved to a quieter neighbourhood, which was genuinely sad. But now I, Aqeel, am continuing with his legacy by making coding projects — including this app you're looking at right now. I still have his contact at least, so it's not like he's gone forever.</p>
-    <p style="opacity:0.7;font-style:italic;">Goodbye for now, Alexandru. This one's for you.</p>
-    <div style="border-radius:16px;overflow:hidden;border:1px solid var(--liquid-glass-border);margin-top:16px;">
-      <video width="100%" controls playsinline preload="metadata" style="display:block;border-radius:0;">
-        <source src="https://www.dropbox.com/scl/fi/wb2pifryo0xfq2ohht6m7/IMG_2399.mov?rlkey=klp54pc6lbpmdy3qtymqvkg8g&st=3oaxf87p&raw=1" type="video/mp4">
-      </video>
-    </div>`;
-  document.getElementById('customAlert').style.display='flex';
+function showTab(id, btn) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updatePill(btn);
 }
 
-function openTADCModal(){
-  document.getElementById('alertTitle').style.color='#FF2D55';
-  document.getElementById('alertTitle').innerText="🎪 The Amazing Digital Circus";
-  document.getElementById('alertMsg').innerHTML=`
-    <p>Ok so The Amazing Digital Circus is genuinely one of my favourite things to exist on the internet right now. It started on this pretty small YouTube channel run by <strong>Gooseworx</strong>, and the pilot episode just absolutely went off — millions of views within days of dropping. The whole premise is people getting trapped inside a digital circus as cartoon characters with no memory of who they were before, and it sounds weird but it is so good.</p>
-    <img src="https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg" alt="TADC Pilot" style="width:100%;border-radius:14px;margin:14px 0;border:1px solid rgba(255,45,85,0.3);" onerror="this.style.display='none'">
-    <p>The characters are just incredible. <strong>Pomni</strong> is the main character and she's just trying to keep it together while everyone else has lost the plot (literally). <strong>Jax</strong> is actually so funny and kind of mean in the best way. <strong>Caine</strong> as the ringmaster is chaotic perfection.</p>
-    <p>AND THEN — it got a <strong>Netflix AND Amazon Prime deal</strong>. For a YouTube show!!! That's insane. And now the final episode has hit <strong>theatres and YouTube</strong> which is just completely unreal.</p>
-    <img src="https://img.youtube.com/vi/DMNlzf8PiEM/maxresdefault.jpg" alt="TADC Episode" style="width:100%;border-radius:14px;margin:14px 0;border:1px solid rgba(255,45,85,0.3);" onerror="this.style.display='none'">
-    <p>If you haven't watched it yet, go on YouTube right now — the pilot is completely free and it'll hook you immediately. The epic series finale "Remember" is out now!</p>
-    <a href="https://www.youtube.com/watch?v=HwAPLk_sQ3w" target="_blank" style="display:block;background:#FF2D55;color:white;text-align:center;padding:14px;border-radius:16px;font-weight:800;text-decoration:none;margin-top:8px;">▶ Watch the Pilot on YouTube</a>
-    <div style="margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,45,85,0.3);">
-      <iframe src="https://www.youtube.com/embed/PVy-bcTsO8A" width="100%" height="300" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;display:block;background:#000;"></iframe>
-    </div>
-    <p style="margin-top:12px;font-weight:700;text-align:center;">TADC Ep 9: Remember (Series Finale)</p>`;
-  document.getElementById('customAlert').style.display='flex';
-}
-  
-function closeAlert(){document.getElementById('customAlert').style.display='none';}
-
-function loadStoredSettings(){
-  try{const s=localStorage.getItem('aREASettings');if(s){const p=JSON.parse(s);if(p&&typeof p==='object')appSettings={...appSettings,...p};}}
-  catch(e){console.error(e);localStorage.removeItem('aREASettings');}
+function updatePill(btn = document.querySelector('.nav-item.active')) {
+  if (!btn) return;
+  const pill = document.getElementById('selectionPill');
+  pill.style.transform = `translate(${btn.offsetLeft}px,${btn.offsetTop}px)`;
+  pill.style.width = `${btn.offsetWidth}px`;
+  pill.style.height = `${btn.offsetHeight}px`;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  navRO.observe(document.querySelector('.nav-container'));
-  loadStoredSettings();
-  initCanvas();
-  loop();
-  applySettings();
-  updateAdminUI();
+window.addEventListener('load', () => {
+  const s = localStorage.getItem('aREASettings');
+  if (s) {
+    try { appSettings = JSON.parse(s); } catch(e){}
+  }
+  document.getElementById('themeModeSelect').value = appSettings.themeMode;
+  document.getElementById('lightToggle').checked = appSettings.lightMode;
+  document.getElementById('liquidGlToggle').checked = appSettings.liquidGl;
+  renderThemeModeConfig();
+  applyThemeSettings();
+  if (appSettings.liquidGl) loadAndInitLiquidGL();
 
   const savedName = localStorage.getItem('aREA_username');
   if (savedName && document.getElementById('username')) {
@@ -2022,23 +1090,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (savedPfp && document.getElementById('userPfp')) {
     document.getElementById('userPfp').value = savedPfp;
   }
-
-  setTimeout(async () => {
-    await loadNews();
-    await loadComments();
-  }, 10);
-
-  if (appSettings.startPage) {
-    const startBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.getAttribute('onclick')?.includes(appSettings.startPage));
-    if (startBtn) showTab(appSettings.startPage, startBtn);
-  }
+  checkSuperAdminPasswordVisibility();
+  updateAdminUI();
+  loadNews();
+  loadComments();
+  updatePill();
 
   setTimeout(() => {
-    const loader = document.getElementById('initialLoader');
-    if (loader) {
-      loader.style.opacity = '0';
-      setTimeout(() => loader.style.display = 'none', 400);
-    }
+    const l = document.getElementById('initialLoader');
+    if (l) { l.style.opacity = '0'; setTimeout(() => l.style.display = 'none', 400); }
   }, 300);
 });
 </script>
