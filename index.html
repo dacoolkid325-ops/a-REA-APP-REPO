@@ -960,7 +960,7 @@ async function pollForNewActivity() {
 setInterval(pollForNewActivity, 10000);
 
 // ═══════════════════════════════════════════════
-//  MARKDOWN EDITOR TOOLBAR & ROBUST PARSER (LISTS FIXED)
+//  MARKDOWN EDITOR TOOLBAR & ROBUST PARSER (LISTS & EMPTY QUOTES FIXED)
 // ═══════════════════════════════════════════════
 function formatText(elementId, start, end) {
   const el = document.getElementById(elementId);
@@ -1006,29 +1006,86 @@ function parseMarkdown(md) {
   safe = safe.replace(/(^|\s)@all\b/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 800;">@all</span>');
   safe = safe.replace(/(^|\s)@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\.[a-z]+)/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$2</span>');
 
-  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
-  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  const lines = safe.split(/\r?\n/);
+  let out = [];
+  let inList = false;
+  let paraBuffer = [];
 
-  // Bulleted lists
-  safe = safe.replace(/(^[-\*]\s+.+(?:\n^[-\*]\s+.+)*)/gm, (match) => {
-    let items = match.split('\n').map(line => {
-      let content = line.replace(/^[-\*]\s+/, '');
-      return `<li>${content}</li>`;
-    }).join('');
-    return `<ul>${items}</ul>`;
-  });
-
-  let blocks = safe.split(/\n\n+/);
-  return blocks.map(block => {
-    block = block.trim();
-    if (!block) return '';
-    if (/^<(h[1-3]|ul|blockquote|video|img|div)/i.test(block)) {
-      return block;
+  const flushPara = () => {
+    if (paraBuffer.length > 0) {
+      out.push('<p>' + paraBuffer.join('<br>') + '</p>');
+      paraBuffer = [];
     }
-    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
-  }).join('');
+  };
+  const closeList = () => {
+    if (inList) {
+      out.push('</ul>');
+      inList = false;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (/^&gt;\s*$/.test(trimmed)) {
+      continue;
+    }
+
+    if (trimmed === '') {
+      flushPara();
+      closeList();
+      continue;
+    }
+
+    if (/^###\s+(.+)$/.test(trimmed)) {
+      flushPara();
+      closeList();
+      out.push('<h3>' + trimmed.replace(/^###\s+/, '') + '</h3>');
+      continue;
+    }
+    if (/^##\s+(.+)$/.test(trimmed)) {
+      flushPara();
+      closeList();
+      out.push('<h2>' + trimmed.replace(/^##\s+/, '') + '</h2>');
+      continue;
+    }
+    if (/^#\s+(.+)$/.test(trimmed)) {
+      flushPara();
+      closeList();
+      out.push('<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">' + trimmed.replace(/^#\s+/, '') + '</h1>');
+      continue;
+    }
+
+    if (/^&gt;\s+(.+)$/.test(trimmed)) {
+      flushPara();
+      closeList();
+      out.push('<blockquote>' + trimmed.replace(/^&gt;\s+/, '') + '</blockquote>');
+      continue;
+    }
+
+    if (/^[-\*•]\s+(.+)$/.test(trimmed)) {
+      flushPara();
+      if (!inList) {
+        out.push('<ul>');
+        inList = true;
+      }
+      out.push('<li>' + trimmed.replace(/^[-\*•]\s+/, '') + '</li>');
+      continue;
+    }
+
+    if (inList) {
+      out[out.length - 1] = out[out.length - 1].replace(/<\/li>$/, '<br>' + trimmed + '</li>');
+      continue;
+    }
+
+    paraBuffer.push(line);
+  }
+
+  flushPara();
+  closeList();
+
+  return out.join('');
 }
 
 function updateLiveCommentPreview() {
@@ -1373,7 +1430,7 @@ async function uploadNewsCoverImage(input) {
   if (!file) return;
   const status = document.getElementById('newsUploadStatus');
   status.style.display = 'block';
-  status.style.color = 'var(--accent)';
+  status.color = 'var(--accent)';
   status.innerText = `⏳ Uploading ${file.name}…`;
 
   try {
