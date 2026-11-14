@@ -69,6 +69,7 @@ body.fs-active .glass-card:has(.is-active-fs,.ios-pseudo-fullscreen) { backdrop-
 #app-wrapper {
   transform:scale(var(--ui-zoom));transform-origin:top center;width:calc(100% / var(--ui-zoom));
   min-height:100vh;padding-bottom:160px;transition:padding-left 0.4s var(--spring-smooth),filter 0.4s ease;
+  overflow:hidden; /* FIX: Prevents out-of-bounds overflowing artifacts */
 }
 * { box-sizing:border-box;-webkit-tap-highlight-color:transparent; }
 body.theater-mode #app-wrapper { background:rgba(0,0,0,0.85); }
@@ -103,7 +104,7 @@ section.active { display:block; }
 .glass-card.clickable:active,.btn-ios:active,.song-item:active { transform:scale(0.97); }
 .news-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px; }
 @media(max-width:600px){ .news-grid{grid-template-columns:1fr;} }
-.news-grid .glass-card { margin-bottom:0; }
+.news-grid .glass-card { margin-bottom:0; overflow:hidden; } /* FIX: Ensure home news cards clip borders cleanly */
 .card-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px; }
 @media(min-width:900px){ .side-by-side-container{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start;} }
 .search-wrapper { position:relative;margin-bottom:30px;width:100%; }
@@ -258,7 +259,7 @@ body.no-bg #glassCanvas { display:none !important; }
 .theater-btn { margin-top:15px;background:rgba(255,255,255,0.1);border:1px solid var(--liquid-glass-border);color:var(--text-main);border-radius:14px;padding:10px 15px;font-weight:600;cursor:pointer;transition:transform 0.2s var(--spring-bounce); }
 .theater-btn:active { transform:scale(0.9); }
 
-/* ── Community upload & Giphy ── */
+/* Community upload & Giphy */
 .attach-btn {
   display:flex;align-items:center;justify-content:center;gap:8px;width:auto;padding:18px 20px;margin-bottom:20px;
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
@@ -278,7 +279,6 @@ body.no-bg #glassCanvas { display:none !important; }
 #attachmentPreview.error { background:rgba(255,59,48,0.08); }
 #attachmentPreview img.attach-thumb { display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;object-fit:contain;cursor:zoom-in; }
 
-/* Live Giphy & Live Markdown Preview Box */
 #liveGiphyPreview {
   display:none;flex-wrap:wrap;gap:8px;padding:12px 16px;border-radius:16px;margin-bottom:14px;
   background:rgba(0,122,255,0.06);border:1px solid var(--liquid-glass-border);
@@ -288,7 +288,6 @@ body.no-bg #glassCanvas { display:none !important; }
   background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);font-size:14px;min-height:50px;
 }
 
-/* Giphy Drawer */
 #giphyDrawer {
   display:none;margin-bottom:16px;padding:16px;border-radius:20px;
   background:rgba(0,0,0,0.06);border:1px solid var(--liquid-glass-border);
@@ -307,10 +306,7 @@ body.no-bg #glassCanvas { display:none !important; }
   display:block;max-width:260px;width:100%;border-radius:14px;margin:10px 0;border:1px solid var(--liquid-glass-border);cursor:zoom-in;
 }
 
-/* Markdown Editor Toolbar */
-.md-toolbar {
-  display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;
-}
+.md-toolbar { display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap; }
 .md-btn {
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
   padding:6px 12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
@@ -319,7 +315,6 @@ body.no-bg #glassCanvas { display:none !important; }
 .md-btn:hover { background:rgba(255,255,255,0.15);border-color:var(--accent); }
 .md-btn:active { transform:scale(0.92); }
 
-/* Notification Toast Banner */
 #notificationToast {
   position:fixed;top:20px;right:20px;z-index:999999;max-width:360px;width:90%;
   background:var(--player-bg);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
@@ -328,12 +323,10 @@ body.no-bg #glassCanvas { display:none !important; }
 }
 #notificationToast.show { transform:translateY(0); }
 
-/* PFP styles */
 .user-pfp {
   width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--liquid-glass-border);flex-shrink:0;
 }
 
-/* ── News Tab – Switch 2 style ── */
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
 .news-featured {
   position:relative;border-radius:28px;overflow:hidden;margin-bottom:20px;cursor:pointer;
@@ -365,7 +358,6 @@ body.no-bg #glassCanvas { display:none !important; }
 .news-card-title { font-size:14px;font-weight:800;line-height:1.3;color:var(--text-main);margin:0; }
 .news-card-date { font-size:11px;color:var(--text-mute);margin-top:auto; }
 
-/* Admin panels */
 .admin-box {
   display:none;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.3);
   border-radius:24px;padding:24px;margin-bottom:24px;
@@ -378,7 +370,6 @@ body.no-bg #glassCanvas { display:none !important; }
 }
 .article-input:focus { border-color:gold;box-shadow:0 0 0 2px rgba(255,215,0,0.15); }
 
-/* Article modal content */
 .article-modal-content img { max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in; }
 .article-modal-content video { max-width:100%;border-radius:12px;margin:12px 0; }
 .article-modal-content h1,.article-modal-content h2,.article-modal-content h3 { color:var(--text-main);margin:16px 0 8px; }
@@ -497,7 +488,6 @@ body.no-bg #glassCanvas { display:none !important; }
     </div>
     <div id="newsUploadStatus" style="font-size:12px;color:var(--accent);margin-bottom:10px;display:none;"></div>
     
-    <!-- News Editor Toolbar -->
     <div class="md-toolbar">
       <button type="button" class="md-btn" onclick="formatText('articleBody','**','**')"><b>B</b></button>
       <button type="button" class="md-btn" onclick="formatText('articleBody','*','*')"><i>I</i></button>
@@ -514,7 +504,6 @@ body.no-bg #glassCanvas { display:none !important; }
 # Heading
 **bold**, *italic*, - bullet item, [link](url)" oninput="updateNewsLivePreview()"></textarea>
     
-    <!-- Live News Markdown Preview Box -->
     <div style="margin-bottom:14px;">
       <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Article Preview:</label>
       <div id="liveNewsPreview" class="article-modal-content" style="padding:14px 18px;border-radius:16px;background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);max-height:200px;overflow-y:auto;font-size:14px;"><em>Start typing above to see live preview...</em></div>
@@ -693,9 +682,10 @@ body.no-bg #glassCanvas { display:none !important; }
         <button type="button" class="md-btn" onclick="formatText('message','![alt](','url)')">🖼️ Img</button>
         <button type="button" class="md-btn" onclick="formatText('message','`','`')">&lt;/&gt;</button>
         <button type="button" class="md-btn" onclick="insertAtCursor('message','@')">@Mention</button>
+        <button type="button" class="md-btn" onclick="insertAtCursor('message','@all')" style="background:var(--accent);color:#fff;">@all</button>
       </div>
 
-      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username to mention someone..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLiveCommentPreview()"></textarea>
+      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username or @all..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLiveCommentPreview()"></textarea>
     </div>
 
     <!-- Live Markdown Preview Box -->
@@ -825,9 +815,11 @@ if (window.supabase && SUPABASE_URL.startsWith('http')) {
 }
 
 // ═══════════════════════════════════════════════
-//  USER & MENTION NOTIFICATION SYSTEM
+//  USER & NOTIFICATIONS SYSTEM (WITH REALTIME POLLING)
 // ═══════════════════════════════════════════════
 let activeReply = null;
+let lastPolledCommentId = null;
+let lastPolledNewsId = null;
 
 function saveUsername(val) {
   localStorage.setItem('aREA_username', val.trim());
@@ -859,29 +851,68 @@ function showNotificationToast(title, msg) {
   document.getElementById('toastMsg').innerText = msg;
   const t = document.getElementById('notificationToast');
   t.classList.add('show');
-  setTimeout(() => { t.classList.remove('show'); }, 5000);
+  setTimeout(() => { t.classList.remove('show'); }, 6000);
 }
 
 function closeNotificationToast() {
   document.getElementById('notificationToast').classList.remove('show');
 }
 
-function checkMentions(text, sourceTitle) {
+function checkMentions(text, sourceTitle, authorName) {
   const myName = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
-  if (!myName) return;
   
-  // Strict check to ignore email addresses like @gmail.com, @yahoo.co.uk
-  const emailRegex = new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\\.`, 'i');
-  if (emailRegex.test(text)) return;
+  // Do not notify yourself for your own posts
+  if (myName && authorName && authorName.trim().toLowerCase() === myName) return;
 
-  const mentionRegex = new RegExp(`(^|\\s)@${myName}\\b`, 'i');
-  if (mentionRegex.test(text)) {
+  const lowerText = text.toLowerCase();
+  let isMentioned = false;
+
+  // Check for @all
+  if (lowerText.includes('@all')) {
+    isMentioned = true;
+  }
+
+  // Check for specific @username (ignoring email domains)
+  if (myName) {
+    const emailRegex = new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\\.`, 'i');
+    const mentionRegex = new RegExp(`(^|\\s)@${myName}\\b`, 'i');
+    if (!emailRegex.test(lowerText) && mentionRegex.test(lowerText)) {
+      isMentioned = true;
+    }
+  }
+
+  if (isMentioned) {
     showNotificationToast("New Mention!", `You were mentioned in ${sourceTitle}`);
     if (window.Notification && Notification.permission === 'granted') {
       new Notification("New Mention in a-REA!", { body: `You were mentioned in ${sourceTitle}` });
     }
   }
 }
+
+// Background polling check for new notifications/mentions every 10 seconds
+async function pollForNewActivity() {
+  if (!sb) return;
+  try {
+    const { data: comments } = await sb.from(COMMENTS_TABLE).select('*').order('created_at', { ascending: false }).limit(1);
+    if (comments && comments.length > 0) {
+      const latest = comments[0];
+      if (lastPolledCommentId && String(latest.id) !== lastPolledCommentId) {
+        checkMentions(latest.text || '', `message by ${latest.name || 'Someone'}`, latest.name);
+      }
+      lastPolledCommentId = String(latest.id);
+    }
+
+    const { data: news } = await sb.from('news').select('*').order('created_at', { ascending: false }).limit(1);
+    if (news && news.length > 0) {
+      const latestNews = news[0];
+      if (lastPolledNewsId && String(latestNews.id) !== lastPolledNewsId) {
+        checkMentions(latestNews.body || '', `news article: "${latestNews.title}"`, 'Admin');
+      }
+      lastPolledNewsId = String(latestNews.id);
+    }
+  } catch (e) {}
+}
+setInterval(pollForNewActivity, 10000);
 
 // ═══════════════════════════════════════════════
 //  MARKDOWN EDITOR TOOLBAR & PARSER
@@ -919,11 +950,11 @@ function parseMarkdown(md) {
   // Underline <u>...</u>
   safe = safe.replace(/&lt;u&gt;(.+?)&lt;\/u&gt;|\u003cu\u003e(.+?)\u003c\/u\u003e/gi, '<u>$1$2</u>');
 
-  // Ignore empty lines containing just >
   safe = safe.replace(/^&gt;\s*$/gm, '');
   safe = safe.replace(/^>\s*$/gm, '');
 
-  // Highlight @mentions, strictly ignoring email domains like @gmail.com, @yahoo.co.uk etc.
+  // Highlight @all & @mentions, strictly ignoring email domains
+  safe = safe.replace(/(^|\s)@all\b/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 800;">@all</span>');
   safe = safe.replace(/(^|\s)@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\.[a-z]+)/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$2</span>');
 
   safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
@@ -1004,7 +1035,7 @@ window.adminLogin = async function() {
   if (!user) return;
   user = user.trim();
 
-  // Enforce area2026 password check for Aqeel so nobody else can spoof admin name
+  // Enforce area2026 password check for Aqeel so nobody else can spoof super admin
   if (user.toLowerCase() === "aqeel") {
     let pass = prompt("Enter Super Admin Password (area2026):");
     if (pass !== "area2026") {
@@ -1020,7 +1051,6 @@ window.adminLogin = async function() {
     return alert("Logged in as Super Admin (Aqeel)!");
   }
 
-  // Check Supabase for Moderator accounts
   if (sb) {
     const { data } = await sb.from('app_users').select('*').eq('username', user).maybeSingle();
     if (data && (data.role === 'mod' || data.role === 'super')) {
@@ -1227,7 +1257,7 @@ async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
 
-  const MAX_SIZE = 50 * 1024 * 1024; // 50MB limit
+  const MAX_SIZE = 50 * 1024 * 1024;
   if (file.size > MAX_SIZE) {
     alert("File exceeds the 50MB maximum size limit.");
     input.value = '';
@@ -1421,10 +1451,8 @@ window.loadComments = async function() {
   }
 
   const latestComment = data[0];
-  const lastCheckedId = localStorage.getItem('aREA_lastCheckedCommentId');
-  if (latestComment && String(latestComment.id) !== lastCheckedId) {
-    checkMentions(latestComment.text || '', `message from ${latestComment.name || 'Anonymous'}`);
-    localStorage.setItem('aREA_lastCheckedCommentId', String(latestComment.id));
+  if (latestComment) {
+    lastPolledCommentId = String(latestComment.id);
   }
 
   window._commentsCache = {};
@@ -1554,7 +1582,6 @@ async function postComment() {
     text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
   }
 
-  // Automatically sign up / register user account in Supabase when posting with a password
   if (name.toLowerCase() !== 'aqeel' && pass) {
     try {
       await sb.from('app_users').upsert([{ username: name, password: pass, pfp_url: pfp || null }], { onConflict: 'username' });
@@ -1665,10 +1692,8 @@ window.loadNews = async function() {
       }));
       
       const latestNews = dynamicArticles[0];
-      const lastCheckedNewsId = localStorage.getItem('aREA_lastCheckedNewsId');
-      if (latestNews && String(latestNews.id) !== lastCheckedNewsId) {
-        checkMentions(latestNews.body || '', `news article: "${latestNews.title}"`);
-        localStorage.setItem('aREA_lastCheckedNewsId', String(latestNews.id));
+      if (latestNews) {
+        lastPolledNewsId = String(latestNews.id);
       }
     }
   }
@@ -1688,7 +1713,7 @@ function renderHomeTopNews(topTwo) {
     const color = a.tag_color || '#007AFF';
     const clickAttr = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
     return `
-      <div class="glass-card clickable" style="border-left:6px solid ${esc(color)};cursor:pointer;" onclick="${clickAttr}">
+      <div class="glass-card clickable" style="border-left:6px solid ${esc(color)};cursor:pointer;overflow:hidden;" onclick="${clickAttr}">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
           <strong style="color:${esc(color)};font-size:1.05rem;">${a.coverEmoji ? a.coverEmoji + ' ' : ''}${esc(a.title)}</strong>
           <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:12px;background:${esc(color)}22;color:${esc(color)};">${esc(a.tag || 'News')}</span>
@@ -1895,7 +1920,6 @@ function initCanvas(){
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;points=[];
   if(appSettings.themeType!=='moods')return;
   let p=themes[appSettings.theme]?themes[appSettings.theme].colors:themes.default.colors;
-  // Keep points comfortably in center/spread to avoid pool grouping in corners
   for(let i=0;i<5;i++)points.push({
     x:canvas.width*0.2 + Math.random()*(canvas.width*0.6),
     y:canvas.height*0.2 + Math.random()*(canvas.height*0.6),
@@ -1980,7 +2004,6 @@ function applySettings(){
   const fSel=document.getElementById('fontSelect');if(fSel)fSel.value=appSettings.appFont||'imported';
   if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont, false);
   
-  // Theme Type handling
   const tt=appSettings.themeType||'moods';
   const selectTt=document.getElementById('themeTypeSelect');
   if(selectTt) selectTt.value=tt;
@@ -2004,7 +2027,6 @@ function applySettings(){
       document.body.style.background='#050507';
     }
   } else {
-    // Moods
     const tk=appSettings.theme||'default';const to=themes[tk]||themes.default;
     document.documentElement.style.setProperty('--accent',to.accent);
     document.body.style.background='';
