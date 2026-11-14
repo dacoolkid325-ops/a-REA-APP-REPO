@@ -60,7 +60,6 @@ body.font-default,body.font-default * {
   z-index:99999 !important;margin:0 !important;padding:0 !important;border-radius:0 !important;background:#000 !important;
 }
 .ios-pseudo-fullscreen .btn-ios { display:none !important; }
-/* position:fixed is trapped by transform / content-visibility / filter on ancestors, so drop them while fullscreen */
 body.fs-active #app-wrapper { transform:none !important;width:100% !important;filter:none !important;will-change:auto !important;contain:none !important; }
 body.fs-active section { animation:none !important;content-visibility:visible !important;contain:none !important;transform:none !important;filter:none !important; }
 body.fs-active .glass-card:has(.is-active-fs,.ios-pseudo-fullscreen) { backdrop-filter:none !important;-webkit-backdrop-filter:none !important;transform:none !important;overflow:visible !important; }
@@ -70,6 +69,7 @@ body.fs-active .glass-card:has(.is-active-fs,.ios-pseudo-fullscreen) { backdrop-
 #app-wrapper {
   transform:scale(var(--ui-zoom));transform-origin:top center;width:calc(100% / var(--ui-zoom));
   min-height:100vh;padding-bottom:160px;transition:padding-left 0.4s var(--spring-smooth),filter 0.4s ease;
+  overflow:hidden;
 }
 * { box-sizing:border-box;-webkit-tap-highlight-color:transparent; }
 body.theater-mode #app-wrapper { background:rgba(0,0,0,0.85); }
@@ -91,7 +91,7 @@ section.active { display:block; }
 .wix-iframe { will-change:transform,width; }
 #glassCanvas {
   position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
-  filter:blur(80px) saturate(160%);opacity:0.85;transition:opacity 0.5s;will-change:opacity,transform;
+  filter:blur(60px) saturate(140%);opacity:0.75;transition:opacity 0.5s;will-change:opacity,transform;pointer-events:none;
 }
 .glass-card {
   background:var(--liquid-glass-bg);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
@@ -104,7 +104,7 @@ section.active { display:block; }
 .glass-card.clickable:active,.btn-ios:active,.song-item:active { transform:scale(0.97); }
 .news-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px; }
 @media(max-width:600px){ .news-grid{grid-template-columns:1fr;} }
-.news-grid .glass-card { margin-bottom:0; }
+.news-grid .glass-card { margin-bottom:0; overflow:hidden; }
 .card-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px; }
 @media(min-width:900px){ .side-by-side-container{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start;} }
 .search-wrapper { position:relative;margin-bottom:30px;width:100%; }
@@ -259,7 +259,7 @@ body.no-bg #glassCanvas { display:none !important; }
 .theater-btn { margin-top:15px;background:rgba(255,255,255,0.1);border:1px solid var(--liquid-glass-border);color:var(--text-main);border-radius:14px;padding:10px 15px;font-weight:600;cursor:pointer;transition:transform 0.2s var(--spring-bounce); }
 .theater-btn:active { transform:scale(0.9); }
 
-/* ── Community upload & Giphy ── */
+/* Community upload & Giphy */
 .attach-btn {
   display:flex;align-items:center;justify-content:center;gap:8px;width:auto;padding:18px 20px;margin-bottom:20px;
   background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
@@ -279,13 +279,15 @@ body.no-bg #glassCanvas { display:none !important; }
 #attachmentPreview.error { background:rgba(255,59,48,0.08); }
 #attachmentPreview img.attach-thumb { display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;object-fit:contain;cursor:zoom-in; }
 
-/* Live Giphy Preview Box */
 #liveGiphyPreview {
   display:none;flex-wrap:wrap;gap:8px;padding:12px 16px;border-radius:16px;margin-bottom:14px;
   background:rgba(0,122,255,0.06);border:1px solid var(--liquid-glass-border);
 }
+#liveCommentPreview {
+  display:block;padding:14px 18px;border-radius:16px;margin-bottom:16px;
+  background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);font-size:14px;min-height:50px;
+}
 
-/* Giphy Drawer */
 #giphyDrawer {
   display:none;margin-bottom:16px;padding:16px;border-radius:20px;
   background:rgba(0,0,0,0.06);border:1px solid var(--liquid-glass-border);
@@ -304,7 +306,30 @@ body.no-bg #glassCanvas { display:none !important; }
   display:block;max-width:260px;width:100%;border-radius:14px;margin:10px 0;border:1px solid var(--liquid-glass-border);cursor:zoom-in;
 }
 
-/* ── News Tab – Switch 2 style ── */
+.md-toolbar { display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap; }
+.md-btn {
+  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);
+  padding:6px 12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:all 0.2s var(--spring-bounce);
+}
+.md-btn:hover { background:rgba(255,255,255,0.15);border-color:var(--accent); }
+.md-btn:active { transform:scale(0.92); }
+
+/* FIXED: Completely hidden off-screen and invisible when not active so no orange border peeks at top */
+#notificationToast {
+  position:fixed;top:-200px;right:20px;z-index:999999;max-width:360px;width:90%;
+  background:var(--player-bg);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border:1px solid var(--accent);border-radius:20px;padding:16px 20px;box-shadow:0 20px 50px rgba(0,0,0,0.4);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:top 0.4s var(--spring-bounce),opacity 0.3s ease,visibility 0.3s ease;
+  display:flex;align-items:center;gap:14px;
+}
+#notificationToast.show { top:20px;opacity:1;visibility:visible;pointer-events:auto; }
+
+.user-pfp {
+  width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--liquid-glass-border);flex-shrink:0;
+}
+
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
 .news-featured {
   position:relative;border-radius:28px;overflow:hidden;margin-bottom:20px;cursor:pointer;
@@ -336,7 +361,6 @@ body.no-bg #glassCanvas { display:none !important; }
 .news-card-title { font-size:14px;font-weight:800;line-height:1.3;color:var(--text-main);margin:0; }
 .news-card-date { font-size:11px;color:var(--text-mute);margin-top:auto; }
 
-/* Admin panels */
 .admin-box {
   display:none;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.3);
   border-radius:24px;padding:24px;margin-bottom:24px;
@@ -349,12 +373,12 @@ body.no-bg #glassCanvas { display:none !important; }
 }
 .article-input:focus { border-color:gold;box-shadow:0 0 0 2px rgba(255,215,0,0.15); }
 
-/* Article modal content */
 .article-modal-content img { max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in; }
 .article-modal-content video { max-width:100%;border-radius:12px;margin:12px 0; }
 .article-modal-content h1,.article-modal-content h2,.article-modal-content h3 { color:var(--text-main);margin:16px 0 8px; }
 .article-modal-content p { margin:10px 0;line-height:1.7; }
-.article-modal-content ul { padding-left:20px;margin:8px 0; }
+.article-modal-content ul { padding-left:20px;margin:8px 0; list-style-type: disc; }
+.article-modal-content ol { padding-left:20px;margin:8px 0; list-style-type: decimal; }
 .article-modal-content li { margin:4px 0; }
 .article-modal-content a { color:var(--accent); }
 .article-modal-content code { background:rgba(0,0,0,0.12);padding:2px 6px;border-radius:4px;font-family:monospace; }
@@ -366,6 +390,16 @@ body.no-bg #glassCanvas { display:none !important; }
 
 <div id="initialLoader"><h2>Loading a-REA...</h2></div>
 <canvas id="glassCanvas" width="1440" height="865"></canvas>
+
+<!-- Notification Toast -->
+<div id="notificationToast">
+  <div style="font-size:24px;">🔔</div>
+  <div style="flex:1;">
+    <strong id="toastTitle" style="display:block;font-size:14px;margin-bottom:2px;">New Mention</strong>
+    <span id="toastMsg" style="font-size:13px;color:var(--text-mute);">You were mentioned in a message!</span>
+  </div>
+  <button onclick="closeNotificationToast()" style="background:none;border:none;color:var(--text-main);font-weight:800;cursor:pointer;">✕</button>
+</div>
 
 <div id="miniPlayer">
   <div class="mp-info">
@@ -456,12 +490,23 @@ body.no-bg #glassCanvas { display:none !important; }
       <input type="file" id="newsImageFile" accept="image/*" style="display:none;" onchange="uploadNewsCoverImage(this)">
     </div>
     <div id="newsUploadStatus" style="font-size:12px;color:var(--accent);margin-bottom:10px;display:none;"></div>
+    
+    <div class="md-toolbar">
+      <button type="button" class="md-btn" onclick="formatText('articleBody','**','**')"><b>B</b></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','*','*')"><i>I</i></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','~~','~~')"><s>S</s></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','> ','')">❝ Quote</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','- ','')">• List</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','[', '](url)')">🔗 Link</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','![alt](','url)')">🖼️ Img</button>
+      <button type="button" class="md-btn" onclick="formatText('articleBody','`','`')">&lt;/&gt;</button>
+    </div>
+
     <textarea id="articleBody" class="article-input" rows="6" placeholder="Write your news in Markdown…
 # Heading
-**bold**, *italic*, [link](url)
-![Image](url) or [giphy: gifid]" oninput="updateNewsLivePreview()"></textarea>
+**bold**, *italic*, - bullet item, [link](url)" oninput="updateNewsLivePreview()"></textarea>
     
-    <!-- Live News Markdown Preview Box -->
     <div style="margin-bottom:14px;">
       <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Article Preview:</label>
       <div id="liveNewsPreview" class="article-modal-content" style="padding:14px 18px;border-radius:16px;background:rgba(0,0,0,0.12);border:1px solid var(--liquid-glass-border);max-height:200px;overflow-y:auto;font-size:14px;"><em>Start typing above to see live preview...</em></div>
@@ -586,27 +631,70 @@ body.no-bg #glassCanvas { display:none !important; }
   </div>
 
   <div id="subAdminManager" class="admin-box">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <span style="font-size:1.1rem;">👑</span>
-      <strong style="color:gold;font-size:15px;">Friend Admin Accounts (Super Admin Only)</strong>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.1rem;">👑</span>
+        <strong style="color:gold;font-size:15px;">Manage Accounts & Promote to Mods (Super Admin Only)</strong>
+      </div>
+      <button onclick="createNewAccountOrMod()" style="background:gold;color:#000;border:none;border-radius:12px;padding:8px 14px;font-weight:800;cursor:pointer;font-size:13px;">+ Create New Account / Mod</button>
     </div>
-    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Create credentials for close friends. They can delete comments and post news, but cannot manage admin accounts.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:14px;">
-      <input type="text" id="newSubUser" class="article-input" placeholder="Friend's username" style="margin-bottom:0;">
-      <input type="text" id="newSubPass" class="article-input" placeholder="Password to share" style="margin-bottom:0;">
-      <button onclick="createSubAdmin()" class="btn-ios" style="margin-bottom:0;padding:12px 18px;width:auto;background:gold;color:#000;font-weight:800;">+ Add</button>
-    </div>
-    <div id="subAdminsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <p style="font-size:13px;color:var(--text-mute);margin:0 0 14px 0;">Promote regular users to Moderators, create new accounts, or remove users.</p>
+    <div id="usersListManager" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
   </div>
 
   <div class="glass-card">
-    <div style="margin-bottom:20px;">
-      <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Username</label>
-      <input type="text" id="username" placeholder="Enter your name..." class="search-input" style="padding-left:20px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+      <div>
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / Account</label>
+        <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)">
+      </div>
+      <div id="passwordFieldWrapper">
+        <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Password (for account)</label>
+        <input type="password" id="userPassword" placeholder="Password..." class="search-input" style="padding-left:20px;">
+      </div>
     </div>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Profile Picture (PFP)</label>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg or upload →" class="search-input" style="padding-left:20px;margin-bottom:0;" oninput="savePfp(this.value)">
+        <button type="button" class="attach-btn" style="margin-bottom:0;padding:13px 18px;" onclick="document.getElementById('pfpFileInput').click()" title="Upload PFP Image">🖼️</button>
+        <input type="file" id="pfpFileInput" accept="image/*" style="display:none;" onchange="uploadPfpFile(this)">
+      </div>
+      <div id="pfpUploadStatus" style="font-size:12px;color:var(--accent);margin-top:6px;display:none;"></div>
+    </div>
+
+    <!-- Reply Banner -->
+    <div id="replyBanner" style="display:none;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,122,255,0.1);border:1px solid var(--liquid-glass-border);border-radius:14px;margin-bottom:14px;font-size:13px;">
+      <span>Replying to <strong id="replyingToName"></strong>: <span id="replyingToSnippet" style="opacity:0.8;"></span></span>
+      <button type="button" onclick="cancelReply()" style="background:none;border:none;color:var(--text-main);font-weight:800;cursor:pointer;font-size:16px;">✕</button>
+    </div>
+
     <div style="margin-bottom:16px;">
       <label style="display:block;margin-bottom:10px;font-weight:700;color:var(--text-mute);font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</label>
-      <textarea id="message" rows="3" placeholder="What's on your mind?" class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLivePreview()"></textarea>
+      
+      <!-- Markdown Editor Toolbar -->
+      <div class="md-toolbar">
+        <button type="button" class="md-btn" onclick="formatText('message','**','**')"><b>B</b></button>
+        <button type="button" class="md-btn" onclick="formatText('message','*','*')"><i>I</i></button>
+        <button type="button" class="md-btn" onclick="formatText('message','~~','~~')"><s>S</s></button>
+        <button type="button" class="md-btn" onclick="formatText('message','&lt;u&gt;','&lt;/u&gt;')"><u>U</u></button>
+        <button type="button" class="md-btn" onclick="formatText('message','> ','')">❝ Quote</button>
+        <button type="button" class="md-btn" onclick="formatText('message','- ','')">• List</button>
+        <button type="button" class="md-btn" onclick="formatText('message','[', '](url)')">🔗 Link</button>
+        <button type="button" class="md-btn" onclick="formatText('message','![alt](','url)')">🖼️ Img</button>
+        <button type="button" class="md-btn" onclick="formatText('message','`','`')">&lt;/&gt;</button>
+        <button type="button" class="md-btn" onclick="insertAtCursor('message','@')">@Mention</button>
+        <button type="button" class="md-btn" onclick="insertAtCursor('message','@all')" style="background:var(--accent);color:#fff;">@all</button>
+      </div>
+
+      <textarea id="message" rows="3" placeholder="What's on your mind? Type @username or @all..." class="search-input" style="height:auto;resize:none;padding-left:20px;" oninput="updateLiveCommentPreview()"></textarea>
+    </div>
+
+    <!-- Live Markdown Preview Box -->
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;color:var(--text-mute);font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Live Message Preview:</label>
+      <div id="liveCommentPreview" class="article-modal-content"><em>Start typing above to see live preview...</em></div>
     </div>
 
     <div id="liveGiphyPreview"></div>
@@ -659,12 +747,32 @@ body.no-bg #glassCanvas { display:none !important; }
       </select>
     </div>
 
-    <div class="toggle-row"><span class="toggle-label">Moods</span><select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)"><option value="default">Default (Blue)</option><option value="sunset">Sunset (Orange)</option><option value="forest">Forest (Green)</option><option value="ocean">Ocean (Deep Blue)</option><option value="midnight">Midnight (Purple)</option><option value="custom">Custom Color</option></select></div>
-    <div id="customThemeSettings" style="display:none;flex-direction:column;gap:15px;padding:20px;background:rgba(0,0,0,0.05);border-radius:16px;margin-bottom:20px;border:1px solid var(--liquid-glass-border);">
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 1</span><input type="color" id="customBg1Picker" oninput="updateCustomTheme()" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
-      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Background Shade 2</span><input type="color" id="customBg2Picker" oninput="updateCustomTheme()" value="#1a1a24" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
+    <!-- Theme Type Selector -->
+    <div class="toggle-row"><span class="toggle-label">Theme Type</span><select id="themeTypeSelect" class="setting-select" onchange="updateThemeType(this.value)"><option value="moods">Moods</option><option value="solid">Solid Colour</option><option value="gradient">Gradient</option><option value="image">Image (Upload/Link)</option></select></div>
+
+    <!-- Moods Sub-selector -->
+    <div id="moodsThemeSettings" class="toggle-row"><span class="toggle-label">Mood Selection</span><select id="themeSelect" class="setting-select" onchange="updateThemeSelection(this.value)"><option value="default">Default (Blue)</option><option value="sunset">Sunset (Orange)</option><option value="forest">Forest (Green)</option><option value="ocean">Ocean (Deep Blue)</option><option value="midnight">Midnight (Purple)</option><option value="custom">Custom Color</option></select></div>
+
+    <!-- Solid Colour Picker -->
+    <div id="solidThemeSettings" style="display:none;" class="toggle-row"><span class="toggle-label">Solid Background Color</span><input type="color" id="solidColorPicker" oninput="updateSolidTheme(this.value)" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
+
+    <!-- Gradient Settings -->
+    <div id="gradientThemeSettings" style="display:none;flex-direction:column;gap:15px;padding:20px;background:rgba(0,0,0,0.05);border-radius:16px;margin-bottom:20px;border:1px solid var(--liquid-glass-border);">
+      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Gradient Shade 1</span><input type="color" id="customBg1Picker" oninput="updateCustomTheme()" value="#050507" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
+      <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Gradient Shade 2</span><input type="color" id="customBg2Picker" oninput="updateCustomTheme()" value="#1a1a24" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
       <div class="toggle-row" style="padding:0;border:none;"><span class="toggle-label" style="font-size:15px;">Accent Color</span><input type="color" id="customAccentPicker" oninput="updateCustomTheme()" value="#007AFF" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:transparent;"></div>
     </div>
+
+    <!-- Image Background Settings -->
+    <div id="imageThemeSettings" style="display:none;flex-direction:column;gap:12px;" class="toggle-row">
+      <span class="toggle-label">Background Image URL or Upload</span>
+      <div style="display:flex;gap:8px;width:100%;">
+        <input type="text" id="bgImageUrlInput" class="article-input" placeholder="https://example.com/bg.jpg..." style="margin-bottom:0;" oninput="updateBgImage(this.value)">
+        <button type="button" class="attach-btn" style="margin-bottom:0;padding:12px 16px;" onclick="document.getElementById('bgImageFileInput').click()" title="Upload Background Image">🖼️</button>
+        <input type="file" id="bgImageFileInput" accept="image/*" style="display:none;" onchange="uploadBgImageFile(this)">
+      </div>
+    </div>
+
     <div class="toggle-row"><span class="toggle-label">Default Page</span><select id="startPageSelect" class="setting-select" onchange="updateSetting('startPage',this.value)"><option value="home">Home</option><option value="news">News</option><option value="ai-rea">ai-REA</option><option value="songs">Songs</option><option value="videos">Videos</option><option value="games">Games</option><option value="books">Books</option><option value="community">Community</option><option value="extras">Extras</option><option value="settings">Settings</option></select></div>
     <div class="toggle-row"><span class="toggle-label">Light Mode</span><input type="checkbox" id="lightToggle" onchange="updateSetting('lightMode',this.checked)"></div>
     <div class="toggle-row"><span class="toggle-label">iPad/PC Mode (Wide)</span><input type="checkbox" id="ipadToggle" onchange="updateSetting('ipadMode',this.checked);"></div>
@@ -710,20 +818,198 @@ if (window.supabase && SUPABASE_URL.startsWith('http')) {
 }
 
 // ═══════════════════════════════════════════════
-//  MULTI-TIER ADMIN SYSTEM
+//  USER & NOTIFICATIONS SYSTEM (WITH REALTIME POLLING)
+// ═══════════════════════════════════════════════
+let activeReply = null;
+let lastPolledCommentId = null;
+let lastPolledNewsId = null;
+
+function saveUsername(val) {
+  localStorage.setItem('aREA_username', val.trim());
+}
+
+function savePfp(val) {
+  localStorage.setItem('aREA_pfp', val.trim());
+}
+
+async function uploadPfpFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('pfpUploadStatus');
+  status.style.display = 'block';
+  status.innerText = `⏳ Uploading PFP…`;
+  try {
+    const publicUrl = await uploadToSupabaseStorage(file, 'pfps');
+    document.getElementById('userPfp').value = publicUrl;
+    savePfp(publicUrl);
+    status.innerText = `✅ PFP Uploaded successfully!`;
+  } catch (err) {
+    status.style.color = '#FF3B30';
+    status.innerText = `❌ Upload failed: ${err.message}`;
+  }
+}
+
+function showNotificationToast(title, msg) {
+  document.getElementById('toastTitle').innerText = title;
+  document.getElementById('toastMsg').innerText = msg;
+  const t = document.getElementById('notificationToast');
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); }, 6000);
+}
+
+function closeNotificationToast() {
+  document.getElementById('notificationToast').classList.remove('show');
+}
+
+function checkMentions(text, sourceTitle, authorName) {
+  const myName = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || '').trim().toLowerCase();
+  
+  if (myName && authorName && authorName.trim().toLowerCase() === myName) return;
+
+  const lowerText = text.toLowerCase();
+  let isMentioned = false;
+
+  if (lowerText.includes('@all')) {
+    isMentioned = true;
+  }
+
+  if (myName) {
+    const emailRegex = new RegExp(`@${myName}\\b@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\\.`, 'i');
+    const mentionRegex = new RegExp(`(^|\\s)@${myName}\\b`, 'i');
+    if (!emailRegex.test(lowerText) && mentionRegex.test(lowerText)) {
+      isMentioned = true;
+    }
+  }
+
+  if (isMentioned) {
+    showNotificationToast("New Mention!", `You were mentioned in ${sourceTitle}`);
+    if (window.Notification && Notification.permission === 'granted') {
+      new Notification("New Mention in a-REA!", { body: `You were mentioned in ${sourceTitle}` });
+    }
+  }
+}
+
+async function pollForNewActivity() {
+  if (!sb) return;
+  try {
+    const { data: comments } = await sb.from(COMMENTS_TABLE).select('*').order('created_at', { ascending: false }).limit(1);
+    if (comments && comments.length > 0) {
+      const latest = comments[0];
+      if (lastPolledCommentId && String(latest.id) !== lastPolledCommentId) {
+        checkMentions(latest.text || '', `message by ${latest.name || 'Someone'}`, latest.name);
+      }
+      lastPolledCommentId = String(latest.id);
+    }
+
+    const { data: news } = await sb.from('news').select('*').order('created_at', { ascending: false }).limit(1);
+    if (news && news.length > 0) {
+      const latestNews = news[0];
+      if (lastPolledNewsId && String(latestNews.id) !== lastPolledNewsId) {
+        checkMentions(latestNews.body || '', `news article: "${latestNews.title}"`, 'Admin');
+      }
+      lastPolledNewsId = String(latestNews.id);
+    }
+  } catch (e) {}
+}
+setInterval(pollForNewActivity, 10000);
+
+// ═══════════════════════════════════════════════
+//  MARKDOWN EDITOR TOOLBAR & PARSER
+// ═══════════════════════════════════════════════
+function formatText(elementId, start, end) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const startPos = el.selectionStart;
+  const endPos = el.selectionEnd;
+  const selectedText = el.value.substring(startPos, endPos);
+  el.value = el.value.substring(0, startPos) + start + selectedText + end + el.value.substring(endPos);
+  el.focus();
+  el.setSelectionRange(startPos + start.length, endPos + start.length);
+  if (elementId === 'message') updateLiveCommentPreview();
+  if (elementId === 'articleBody') updateNewsLivePreview();
+}
+
+function insertAtCursor(elementId, text) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const pos = el.selectionStart;
+  el.value = el.value.substring(0, pos) + text + el.value.substring(pos);
+  el.focus();
+  el.setSelectionRange(pos + text.length, pos + text.length);
+  if (elementId === 'message') updateLiveCommentPreview();
+}
+
+function parseMarkdown(md) {
+  let safe = esc(md || '');
+  safe = renderGiphyShortcodes(safe);
+
+  safe = safe.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  safe = safe.replace(/&lt;u&gt;(.+?)&lt;\/u&gt;|\u003cu\u003e(.+?)\u003c\/u\u003e/gi, '<u>$1$2</u>');
+
+  safe = safe.replace(/^&gt;\s*$/gm, '');
+  safe = safe.replace(/^>\s*$/gm, '');
+
+  safe = safe.replace(/(^|\s)@all\b/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 800;">@all</span>');
+  safe = safe.replace(/(^|\s)@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\.[a-z]+)/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$2</span>');
+
+  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
+    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
+  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
+  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
+  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
+  safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
+  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  
+  safe = safe.replace(/^[-\*] (.+)$/gm, '<li>$1</li>');
+  safe = safe.replace(/(<li>[\s\S]+?<\/li>)+/g, '<ul>$&</ul>');
+
+  safe = safe.replace(/\n\n/g, '</p><p>');
+  return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
+}
+
+function updateLiveCommentPreview() {
+  const text = document.getElementById('message').value;
+  const prev = document.getElementById('liveCommentPreview');
+  if (prev) {
+    prev.innerHTML = text.trim() ? parseMarkdown(text) : '<em>Start typing above to see live preview...</em>';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  MULTI-TIER ADMIN SYSTEM & ACCOUNT PROMOTION
 // ═══════════════════════════════════════════════
 window.adminRole = localStorage.getItem('aREA_adminRole') || null;
 window.adminUser = localStorage.getItem('aREA_adminUser') || null;
-window.isAdmin = () => window.adminRole === 'super' || window.adminRole === 'mod';
-window.subAdminNames = [];
+
+window.isAdmin = () => {
+  const user = (window.adminUser || '').trim().toLowerCase();
+  if (window.adminRole === 'super') return user === 'aqeel';
+  return window.adminRole === 'mod' || window.adminRole === 'super';
+};
+
+window.isSuperAdmin = () => {
+  const user = (window.adminUser || localStorage.getItem('aREA_username') || '').trim().toLowerCase();
+  return window.adminRole === 'super' && user === 'aqeel';
+};
 
 function updateAdminUI() {
   const active = window.isAdmin();
-  const isSuper = window.adminRole === 'super';
+  const isSuper = window.isSuperAdmin();
 
   document.getElementById('adminLoginBtn').style.display = active ? 'none' : 'block';
   document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
-  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
+  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
+
+  const pwField = document.getElementById('passwordFieldWrapper');
+  if (pwField) {
+    pwField.style.display = active ? 'none' : 'block';
+  }
 
   const newsBtn = document.getElementById('newsAdminBtn');
   if (newsBtn) newsBtn.style.display = active ? 'none' : 'inline-block';
@@ -734,25 +1020,19 @@ function updateAdminUI() {
   const subMgr = document.getElementById('subAdminManager');
   if (subMgr) subMgr.classList.toggle('open', isSuper);
 
-  if (isSuper) loadSubAdmins();
-  loadSubAdminNamesCache();
+  if (isSuper) loadUsersManager();
 }
 
-async function loadSubAdminNamesCache() {
-  if (!sb) return;
-  const { data } = await sb.from('sub_admins').select('username');
-  if (data) {
-    window.subAdminNames = data.map(d => d.username.toLowerCase());
-  }
-}
-
-window.adminLogin = async () => {
-  const user = prompt("Admin Username:");
+window.adminLogin = async function() {
+  let user = prompt("Admin Username:");
   if (!user) return;
-  const pass = prompt("Admin Password:");
-  if (!pass) return;
+  user = user.trim();
 
-  if (user === "Aqeel" && pass === "area2026") {
+  if (user.toLowerCase() === "aqeel") {
+    let pass = prompt("Enter Super Admin Password:");
+    if (pass !== "area2026") {
+      return alert("Incorrect Super Admin password!");
+    }
     window.adminRole = 'super';
     window.adminUser = 'Aqeel';
     localStorage.setItem('aREA_adminRole', 'super');
@@ -760,26 +1040,26 @@ window.adminLogin = async () => {
     updateAdminUI();
     await loadComments();
     await loadNews();
-    return alert("Logged in as Super Admin!");
+    return alert("Logged in as Super Admin (Aqeel)!");
   }
 
   if (sb) {
-    const { data } = await sb.from('sub_admins').select('*').eq('username', user.trim()).eq('password', pass).maybeSingle();
-    if (data) {
-      window.adminRole = 'mod';
+    const { data } = await sb.from('app_users').select('*').eq('username', user).maybeSingle();
+    if (data && (data.role === 'mod' || data.role === 'super')) {
+      window.adminRole = data.role;
       window.adminUser = data.username;
-      localStorage.setItem('aREA_adminRole', 'mod');
+      localStorage.setItem('aREA_adminRole', window.adminRole);
       localStorage.setItem('aREA_adminUser', data.username);
       updateAdminUI();
       await loadComments();
       await loadNews();
-      return alert(`Logged in as Friend Admin (${data.username})!`);
+      return alert(`Logged in as Moderator (${data.username})!`);
     }
   }
-  alert("Invalid Username or Password");
+  alert("User not found or not authorized as Admin.");
 };
 
-window.adminLogout = async () => {
+window.adminLogout = async function() {
   window.adminRole = null;
   window.adminUser = null;
   localStorage.removeItem('aREA_adminRole');
@@ -789,51 +1069,63 @@ window.adminLogout = async () => {
   await loadNews();
 };
 
-async function loadSubAdmins() {
-  if (!sb || window.adminRole !== 'super') return;
-  const list = document.getElementById('subAdminsList');
-  const { data, error } = await sb.from('sub_admins').select('*').order('created_at', { ascending: false });
+async function loadUsersManager() {
+  if (!sb || !window.isSuperAdmin()) return;
+  const list = document.getElementById('usersListManager');
+  if (!list) return;
+  const { data, error } = await sb.from('app_users').select('*').order('created_at', { ascending: false });
   if (error) {
-    list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>sub_admins</code> table in Supabase to manage friend admins.</div>`;
+    list.innerHTML = `<div style="font-size:12px;color:#FF3B30;">Create the <code>app_users</code> table in Supabase to manage user accounts.</div>`;
     return;
   }
   if (!data || data.length === 0) {
-    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No friend admins added yet.</div>`;
+    list.innerHTML = `<div style="font-size:13px;color:var(--text-mute);">No registered accounts found yet. Users automatically register when posting with a password.</div>`;
     return;
   }
-  list.innerHTML = data.map(a => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+  list.innerHTML = data.map(u => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);gap:10px;flex-wrap:wrap;">
       <div>
-        <strong>${esc(a.username)}</strong>
-        <span style="font-size:12px;color:var(--text-mute);margin-left:10px;">Password: <code>${esc(a.password)}</code></span>
+        <strong>${esc(u.username)}</strong> 
+        <span style="font-size:12px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;margin-left:8px;">${u.role}</span>
       </div>
-      <button onclick="deleteSubAdmin('${a.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Remove</button>
+      <div style="display:flex;gap:8px;">
+        ${u.role !== 'mod' && u.username.toLowerCase() !== 'aqeel' ? `<button onclick="promoteToMod('${u.id}', 'mod')" style="background:rgba(52,199,89,0.15);border:1px solid #34C759;color:#34C759;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Make Mod</button>` : ''}
+        ${u.role === 'mod' ? `<button onclick="promoteToMod('${u.id}', 'user')" style="background:rgba(255,149,0,0.15);border:1px solid #FF9500;color:#FF9500;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Demote</button>` : ''}
+        ${u.username.toLowerCase() !== 'aqeel' ? `<button onclick="deleteUserAccount('${u.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
+      </div>
     </div>
   `).join('');
 }
 
-window.createSubAdmin = async () => {
-  if (!sb || window.adminRole !== 'super') return;
-  const username = document.getElementById('newSubUser').value.trim();
-  const password = document.getElementById('newSubPass').value.trim();
-  if (!username || !password) return alert("Enter both a username and password.");
-  if (username === "Aqeel") return alert("Cannot override Super Admin username.");
-
-  const { error } = await sb.from('sub_admins').insert([{ username, password }]);
-  if (error) return alert("Error creating friend admin: " + error.message);
-
-  document.getElementById('newSubUser').value = '';
-  document.getElementById('newSubPass').value = '';
-  loadSubAdmins();
-  loadSubAdminNamesCache();
+window.promoteToMod = async (id, newRole) => {
+  if (!sb || !window.isSuperAdmin()) return;
+  await sb.from('app_users').update({ role: newRole }).eq('id', id);
+  loadUsersManager();
+  alert(`Account role updated to ${newRole}!`);
 };
 
-window.deleteSubAdmin = async (id) => {
-  if (!sb || window.adminRole !== 'super') return;
-  if (!confirm("Remove this friend admin's access?")) return;
-  await sb.from('sub_admins').delete().eq('id', id);
-  loadSubAdmins();
-  loadSubAdminNamesCache();
+window.deleteUserAccount = async (id) => {
+  if (!sb || !window.isSuperAdmin()) return;
+  if (!confirm("Delete this user account?")) return;
+  await sb.from('app_users').delete().eq('id', id);
+  loadUsersManager();
+};
+
+window.createNewAccountOrMod = async () => {
+  if (!sb || !window.isSuperAdmin()) return;
+  const uName = prompt("Enter username for new account/mod:");
+  if (!uName) return;
+  const uPass = prompt("Enter password for " + uName + ":");
+  if (!uPass) return;
+  const roleChoice = confirm("Make this account a Moderator (Mod)? Click OK for Mod, Cancel for regular User.") ? 'mod' : 'user';
+  
+  const { error } = await sb.from('app_users').upsert([{ username: uName.trim(), password: uPass.trim(), role: roleChoice }], { onConflict: 'username' });
+  if (error) {
+    alert("Error creating account: " + error.message);
+  } else {
+    alert(`Account "${uName.trim()}" created successfully as ${roleChoice}!`);
+    loadUsersManager();
+  }
 };
 
 // ═══════════════════════════════════════════════
@@ -898,31 +1190,12 @@ function applyGoogleFont(fontName, showAlert = false) {
 }
 
 // ═══════════════════════════════════════════════
-//  MARKDOWN, GIPHY & REALTIME LIVE PREVIEWS
+//  GIPHY & REALTIME LIVE PREVIEWS
 // ═══════════════════════════════════════════════
 function renderGiphyShortcodes(htmlText) {
   return htmlText.replace(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi, (_, gifId) => {
     return `<img src="https://media.giphy.com/media/${gifId}/giphy.gif" alt="GIF" class="comment-giphy" onclick="openLightbox(this.src)" loading="lazy">`;
   });
-}
-
-function updateLivePreview() {
-  const text = document.getElementById('message').value;
-  const previewBox = document.getElementById('liveGiphyPreview');
-  if (!previewBox) return;
-  const matches = text.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/gi);
-  if (!matches || matches.length === 0) {
-    previewBox.style.display = 'none';
-    previewBox.innerHTML = '';
-    return;
-  }
-  previewBox.style.display = 'flex';
-  previewBox.innerHTML = '<span style="font-size:11px;color:var(--text-mute);width:100%;font-weight:700;margin-bottom:4px;">Live GIF Preview:</span>' + 
-    matches.map(m => {
-      const idMatch = m.match(/\[giphy:\s*([a-zA-Z0-9_-]+)\]/i);
-      const gid = idMatch ? idMatch[1] : '';
-      return `<img src="https://media.giphy.com/media/${gid}/giphy.gif" style="height:70px;border-radius:10px;object-fit:cover;cursor:zoom-in;" onclick="openLightbox(this.src)">`;
-    }).join('');
 }
 
 function updateNewsLivePreview() {
@@ -931,28 +1204,6 @@ function updateNewsLivePreview() {
   if (prev) {
     prev.innerHTML = body.trim() ? parseMarkdown(body) : '<em>Start typing above to see live preview...</em>';
   }
-}
-
-function parseMarkdown(md) {
-  let safe = esc(md || '');
-  safe = renderGiphyShortcodes(safe);
-  safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
-    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
-  safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-    '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
-  safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-    '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
-  safe = safe.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  safe = safe.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  safe = safe.replace(/^# (.+)$/gm, '<h1 style="font-size:1.6rem;letter-spacing:-0.03em;">$1</h1>');
-  safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  safe = safe.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
-  safe = safe.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-  safe = safe.replace(/^- (.+)$/gm, '<li>$1</li>');
-  safe = safe.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
-  safe = safe.replace(/\n\n/g, '</p><p>');
-  return '<p>' + safe.replace(/\n/g, '<br>') + '</p>';
 }
 
 // ═══════════════════════════════════════════════
@@ -998,7 +1249,7 @@ async function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
 
-  const MAX_SIZE = 50 * 1024 * 1024; // 50MB limit
+  const MAX_SIZE = 50 * 1024 * 1024;
   if (file.size > MAX_SIZE) {
     alert("File exceeds the 50MB maximum size limit.");
     input.value = '';
@@ -1092,7 +1343,7 @@ function insertGiphyTag(gifId) {
   const msgBox = document.getElementById('message');
   const tag = `[giphy: ${gifId}]`;
   msgBox.value = msgBox.value ? `${msgBox.value} ${tag}` : tag;
-  updateLivePreview();
+  updateLiveCommentPreview();
   msgBox.focus();
 }
 
@@ -1132,13 +1383,42 @@ window.toggleLightboxZoom = function(img) {
 };
 
 // ═══════════════════════════════════════════════
-//  COMMUNITY COMMENTS (SUPABASE) + FILE CLEANUP
+//  COMMUNITY COMMENTS (REPLIES & EDIT HISTORY)
 // ═══════════════════════════════════════════════
-function formatCommentBody(rawText) {
-  let safe = esc(rawText || '');
-  safe = renderGiphyShortcodes(safe);
-  return safe.replace(/\n/g, '<br>');
-}
+window.replyToMessage = function(id, authorName, textSnippet) {
+  activeReply = { id, name: authorName, text: textSnippet };
+  document.getElementById('replyingToName').innerText = authorName;
+  document.getElementById('replyingToSnippet').innerText = `"${textSnippet.slice(0, 50)}..."`;
+  document.getElementById('replyBanner').style.display = 'flex';
+  document.getElementById('message').focus();
+};
+
+window.cancelReply = function() {
+  activeReply = null;
+  document.getElementById('replyBanner').style.display = 'none';
+};
+
+window.editComment = async function(id) {
+  const comment = (window._commentsCache || {})[String(id)];
+  if (!comment) return;
+  const rawText = comment.text.split('\n\n--- Edit History ---')[0];
+  const newText = prompt("Edit your message:", rawText);
+  if (newText === null) return;
+  if (!newText.trim() && !comment.image_url) return alert("Message cannot be empty.");
+
+  const timestamp = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  let historyBlock = comment.edit_history || '';
+  historyBlock += `\n- [${timestamp}] ${rawText.replace(/\n/g, ' ')}`;
+
+  const updatedText = `${newText.trim()}\n\n--- Edit History ---${historyBlock}`;
+
+  const { error } = await sb.from(COMMENTS_TABLE).update({ text: updatedText, edit_history: historyBlock }).eq('id', id);
+  if (error) {
+    alert("Could not update message: " + error.message);
+    return;
+  }
+  await loadComments();
+};
 
 window.loadComments = async function() {
   const container = document.getElementById('commentsContainer');
@@ -1162,16 +1442,41 @@ window.loadComments = async function() {
     return;
   }
 
+  const latestComment = data[0];
+  if (latestComment) {
+    lastPolledCommentId = String(latestComment.id);
+  }
+
   window._commentsCache = {};
   data.forEach(c => { window._commentsCache[String(c.id)] = c; });
+
+  const currentUsername = (localStorage.getItem('aREA_username') || '').trim().toLowerCase();
+
   container.innerHTML = data.map(c => {
     const dateStr = c.created_at
       ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
       : '';
-    const adminDelBtn = window.isAdmin()
-      ? `<button type="button" data-del-comment="${esc(String(c.id))}" onclick="deleteComment(this.dataset.delComment)" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>`
-      : '';
-    
+
+    const authorName = c.name || 'Anonymous';
+    const isAuthor = currentUsername && authorName.toLowerCase() === currentUsername;
+    const canModify = window.isAdmin() || isAuthor;
+
+    const actionBtns = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button type="button" onclick="replyToMessage('${c.id}', '${esc(authorName)}', '${esc(c.text || '')}')" style="background:rgba(0,122,255,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Reply</button>
+        ${canModify ? `<button type="button" onclick="editComment('${c.id}')" style="background:rgba(255,204,0,0.15);border:1px solid #FFCC00;color:#FFCC00;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Edit</button>` : ''}
+        ${window.isAdmin() ? `<button type="button" onclick="deleteComment('${c.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
+      </div>
+    `;
+
+    let fullText = c.text || '';
+    let historyLines = '';
+    if (fullText.includes('--- Edit History ---')) {
+      const parts = fullText.split('--- Edit History ---');
+      fullText = parts[0];
+      historyLines = parts[1] ? parts[1].trim() : '';
+    }
+
     let fileMeta = { name: 'Attachment', size: '', type: '' };
     let displayUrl = c.image_url || '';
     if (c.image_url && c.image_url.includes('#meta=')) {
@@ -1202,7 +1507,7 @@ window.loadComments = async function() {
           </div>`;
       } else {
         attachmentHtml = `
-          <div style="margin-top:12px;padding:14px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+          <div style="margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
               <strong style="font-size:14px;color:var(--text-main);">📎 ${esc(fileMeta.name)}</strong>
               <span style="font-size:12px;color:var(--text-mute);">${formattedSize} (${esc(fileMeta.type || 'file')})</span>
@@ -1212,26 +1517,40 @@ window.loadComments = async function() {
       }
     }
 
-    const authorName = c.name || 'Anonymous';
     let nameColor = 'var(--accent)';
     const lowerName = authorName.toLowerCase();
     if (lowerName === 'aqeel') {
       nameColor = 'gold';
-    } else if (window.subAdminNames.includes(lowerName)) {
-      nameColor = '#FF3B30';
+    }
+
+    let pfpHtml = c.pfp_url ? `<img src="${esc(c.pfp_url)}" class="user-pfp" alt="PFP" onerror="this.style.display='none'">` : `<div class="user-pfp" style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;">${authorName[0].toUpperCase()}</div>`;
+
+    let historyHtml = '';
+    if (historyLines) {
+      historyHtml = `
+        <details style="margin-top:10px;font-size:12px;color:var(--text-mute);">
+          <summary style="cursor:pointer;font-weight:600;color:var(--accent);">✏️ Edited (View History)</summary>
+          <div style="margin-top:6px;padding:8px 12px;background:rgba(0,0,0,0.06);border-radius:10px;border:1px solid var(--liquid-glass-border);">
+            ${esc(historyLines).replace(/\n/g, '<br>')}
+          </div>
+        </details>`;
     }
 
     return `
       <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;">
-          <strong style="color:${nameColor};font-size:16px;">${esc(authorName)}</strong>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:12px;color:var(--text-mute);">${dateStr}</span>
-            ${adminDelBtn}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            ${pfpHtml}
+            <div>
+              <strong style="color:${nameColor};font-size:16px;display:block;">${esc(authorName)}</strong>
+              <span style="font-size:11px;color:var(--text-mute);">${dateStr}</span>
+            </div>
           </div>
+          ${actionBtns}
         </div>
-        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${formatCommentBody(c.text)}</div>
+        <div style="font-size:15px;line-height:1.6;word-break:break-word;">${parseMarkdown(fullText)}</div>
         ${attachmentHtml}
+        ${historyHtml}
       </div>
     `;
   }).join('');
@@ -1240,10 +1559,25 @@ window.loadComments = async function() {
 async function postComment() {
   if (!sb) return alert("Configure your Supabase URL and Anon Key first!");
   const name = document.getElementById('username').value.trim() || 'Anonymous';
-  const text = document.getElementById('message').value.trim();
+  const pass = document.getElementById('userPassword')?.value.trim() || '';
+  const pfp = document.getElementById('userPfp').value.trim();
+  saveUsername(name);
+  if (pfp) savePfp(pfp);
+
+  let text = document.getElementById('message').value.trim();
 
   if (!text && !attachmentUrl) {
     return alert("Please write a message, pick a GIF, or upload a file!");
+  }
+
+  if (activeReply) {
+    text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
+  }
+
+  if (name.toLowerCase() !== 'aqeel' && pass) {
+    try {
+      await sb.from('app_users').upsert([{ username: name, password: pass, pfp_url: pfp || null }], { onConflict: 'username' });
+    } catch (e) {}
   }
 
   const btn = document.getElementById('postBtn');
@@ -1253,7 +1587,8 @@ async function postComment() {
   const { error } = await sb.from(COMMENTS_TABLE).insert([{
     name: name,
     text: text,
-    image_url: attachmentUrl || null
+    image_url: attachmentUrl || null,
+    pfp_url: pfp || null
   }]);
 
   btn.disabled = false;
@@ -1265,6 +1600,8 @@ async function postComment() {
   }
 
   document.getElementById('message').value = '';
+  document.getElementById('liveCommentPreview').innerHTML = '<em>Start typing above to see live preview...</em>';
+  cancelReply();
   const livePrev = document.getElementById('liveGiphyPreview');
   if (livePrev) {
     livePrev.style.display = 'none';
@@ -1345,6 +1682,11 @@ window.loadNews = async function() {
         ...item,
         summary: (item.body || '').replace(/[#*`>\[\]!]/g, '').slice(0, 120) + ((item.body || '').length > 120 ? '…' : '')
       }));
+      
+      const latestNews = dynamicArticles[0];
+      if (latestNews) {
+        lastPolledNewsId = String(latestNews.id);
+      }
     }
   }
   const all = [...dynamicArticles, ...STATIC_ARTICLES]
@@ -1363,7 +1705,7 @@ function renderHomeTopNews(topTwo) {
     const color = a.tag_color || '#007AFF';
     const clickAttr = a.isStatic ? `${a.openFn}()` : `openArticleByIndex(${idx})`;
     return `
-      <div class="glass-card clickable" style="border-left:6px solid ${esc(color)};cursor:pointer;" onclick="${clickAttr}">
+      <div class="glass-card clickable" style="border-left:6px solid ${esc(color)};cursor:pointer;overflow:hidden;" onclick="${clickAttr}">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
           <strong style="color:${esc(color)};font-size:1.05rem;">${a.coverEmoji ? a.coverEmoji + ' ' : ''}${esc(a.title)}</strong>
           <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:12px;background:${esc(color)}22;color:${esc(color)};">${esc(a.tag || 'News')}</span>
@@ -1539,7 +1881,7 @@ function vibrate(ms=15){if(navigator.vibrate)navigator.vibrate(ms);}
 document.addEventListener('click',(e)=>{
   if(e.target.closest('button,a,input,select,.clickable,.song-item,.game-ui-header,.news-featured,.news-card'))vibrate(15);
 });
-function triggerDynamicTheming(c){if(appSettings.theme!=='dynamic')return;document.documentElement.style.setProperty('--accent',c);}
+function triggerDynamicTheming(c){if(appSettings.themeType!=='moods'||appSettings.theme!=='dynamic')return;document.documentElement.style.setProperty('--accent',c);}
 function toggleTheaterMode(btn){
   const card=btn.closest('.glass-card');
   const t=document.body.classList.toggle('theater-mode');
@@ -1558,16 +1900,27 @@ const themes={
   ocean:{accent:'#5856D6',colors:['#5856D6','#007AFF','#30B0C7','#5AC8FA','#AF52DE','#5856D6']},
   midnight:{accent:'#AF52DE',colors:['#AF52DE','#5856D6','#FF2D55','#007AFF','#30B0C7','#AF52DE']}
 };
-let appSettings={appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,wixWidth:375,uiScale:0.95,startPage:'home',theme:'default',customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'}};
+let appSettings={
+  appFont:'imported',lightMode:true,ipadMode:false,noBg:false,solidGlass:false,batterySaver:false,ultraSaver:false,removeAirea:false,
+  wixWidth:375,uiScale:0.95,startPage:'home',themeType:'moods',theme:'default',
+  solidColor:'#050507',
+  customTheme:{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'},
+  bgImageUrl:''
+};
+
 function initCanvas(){
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;points=[];
-  let p;
-  if(appSettings.theme==='custom'){const ct=appSettings.customTheme||{};p=[ct.accent||'#007AFF',ct.bg1||'#050507',ct.bg2||'#1a1a24',ct.accent||'#007AFF','#ffffff',ct.bg1||'#050507'];}
-  else{const tk=appSettings.theme||'default';p=themes[tk]?themes[tk].colors:themes.default.colors;}
-  for(let i=0;i<6;i++)points.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.5,r:Math.random()*400+200,color:p[i%p.length]});
+  if(appSettings.themeType!=='moods')return;
+  let p=themes[appSettings.theme]?themes[appSettings.theme].colors:themes.default.colors;
+  for(let i=0;i<5;i++)points.push({
+    x:canvas.width*0.2 + Math.random()*(canvas.width*0.6),
+    y:canvas.height*0.2 + Math.random()*(canvas.height*0.6),
+    vx:(Math.random()-0.5)*1.2,vy:(Math.random()-0.5)*1.2,
+    r:Math.random()*300+180,color:p[i%p.length]
+  });
 }
 function loop(){
-  if(appSettings.noBg||appSettings.ultraSaver){animFrameId=null;return;}
+  if(appSettings.noBg||appSettings.ultraSaver||appSettings.themeType!=='moods'){animFrameId=null;return;}
   bgFrameCount++;
   if(appSettings.batterySaver&&bgFrameCount%2!==0){animFrameId=requestAnimationFrame(loop);return;}
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1583,15 +1936,55 @@ function loop(){
 }
 
 function updateSetting(k,v){appSettings[k]=v;localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();}
+
+function updateThemeType(v){
+  appSettings.themeType=v;
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));
+  
+  document.getElementById('moodsThemeSettings').style.display=(v==='moods')?'flex':'none';
+  document.getElementById('solidThemeSettings').style.display=(v==='solid')?'flex':'none';
+  document.getElementById('gradientThemeSettings').style.display=(v==='gradient')?'flex':'none';
+  document.getElementById('imageThemeSettings').style.display=(v==='image')?'flex':'none';
+  
+  applySettings();
+  if(v==='moods')initCanvas();
+}
+
 function updateThemeSelection(v){
   updateSetting('theme',v);
-  document.getElementById('customThemeSettings').style.display=(v==='custom')?'flex':'none';
   applySettings();initCanvas();
 }
+
+function updateSolidTheme(col){
+  appSettings.solidColor=col;
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));
+  applySettings();
+}
+
 function updateCustomTheme(){
   appSettings.customTheme={bg1:document.getElementById('customBg1Picker').value,bg2:document.getElementById('customBg2Picker').value,accent:document.getElementById('customAccentPicker').value};
-  localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();initCanvas();
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();
 }
+
+function updateBgImage(url){
+  appSettings.bgImageUrl=url;
+  localStorage.setItem('aREASettings',JSON.stringify(appSettings));
+  applySettings();
+}
+
+async function uploadBgImageFile(input) {
+  const file = input.files[0];
+  if(!file)return;
+  try {
+    const pubUrl = await uploadToSupabaseStorage(file, 'backgrounds');
+    document.getElementById('bgImageUrlInput').value = pubUrl;
+    updateBgImage(pubUrl);
+    alert("Background image uploaded successfully!");
+  } catch(e) {
+    alert("Upload failed: " + e.message);
+  }
+}
+
 function toggleUltraSaver(on){
   updateSetting('ultraSaver',on);
   if(on){updateSetting('noBg',true);updateSetting('solidGlass',true);updateSetting('batterySaver',true);}
@@ -1602,31 +1995,50 @@ function applySettings(){
   document.body.classList.toggle('font-default',appSettings.appFont==='default');
   const fSel=document.getElementById('fontSelect');if(fSel)fSel.value=appSettings.appFont||'imported';
   if(appSettings.activeGoogleFont) applyGoogleFont(appSettings.activeGoogleFont, false);
-  if(appSettings.theme==='custom'&&appSettings.customTheme){
-    const ct=appSettings.customTheme;
+  
+  const tt=appSettings.themeType||'moods';
+  const selectTt=document.getElementById('themeTypeSelect');
+  if(selectTt) selectTt.value=tt;
+
+  document.getElementById('moodsThemeSettings').style.display=(tt==='moods')?'flex':'none';
+  document.getElementById('solidThemeSettings').style.display=(tt==='solid')?'flex':'none';
+  document.getElementById('gradientThemeSettings').style.display=(tt==='gradient')?'flex':'none';
+  document.getElementById('imageThemeSettings').style.display=(tt==='image')?'flex':'none';
+
+  if(tt==='solid'){
+    document.body.style.background=appSettings.solidColor||'#050507';
+  } else if(tt==='gradient'){
+    const ct=appSettings.customTheme||{bg1:'#050507',bg2:'#1a1a24',accent:'#007AFF'};
     document.documentElement.style.setProperty('--accent',ct.accent);
     document.body.style.background=`linear-gradient(135deg,${ct.bg1},${ct.bg2})`;
     document.body.style.backgroundAttachment='fixed';
-    if(document.getElementById('customBg1Picker')){document.getElementById('customBg1Picker').value=ct.bg1;document.getElementById('customBg2Picker').value=ct.bg2;document.getElementById('customAccentPicker').value=ct.accent;document.getElementById('customThemeSettings').style.display='flex';}
+  } else if(tt==='image'){
+    if(appSettings.bgImageUrl){
+      document.body.style.background=`url('${appSettings.bgImageUrl}') center/cover no-repeat fixed`;
+    } else {
+      document.body.style.background='#050507';
+    }
   } else {
     const tk=appSettings.theme||'default';const to=themes[tk]||themes.default;
     document.documentElement.style.setProperty('--accent',to.accent);
     document.body.style.background='';
-    if(document.getElementById('customThemeSettings'))document.getElementById('customThemeSettings').style.display='none';
   }
+
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el[typeof v==='boolean'?'checked':'value']=v;};
   setEl('themeSelect',appSettings.theme);setEl('lightToggle',appSettings.lightMode);setEl('ipadToggle',appSettings.ipadMode);
   setEl('noBgToggle',appSettings.noBg);setEl('solidGlassToggle',appSettings.solidGlass);setEl('batteryToggle',appSettings.batterySaver);
   setEl('ultraSaverToggle',appSettings.ultraSaver);setEl('removeAireaToggle',appSettings.removeAirea);
   document.body.classList.toggle('light',appSettings.lightMode);
   document.body.classList.toggle('ipad-mode',appSettings.ipadMode);
-  document.body.classList.toggle('no-bg',appSettings.noBg);
+  document.body.classList.toggle('no-bg',appSettings.noBg||tt==='solid'||tt==='image'||tt==='gradient');
   document.body.classList.toggle('solid-glass',appSettings.solidGlass);
   document.body.classList.toggle('ultra-saver',appSettings.ultraSaver);
   const aBtn=document.querySelector('.airea-nav-btn');
   if(appSettings.removeAirea){if(aBtn)aBtn.style.display='none';if(document.getElementById('ai-rea').classList.contains('active'))showTab('home',document.querySelectorAll('.nav-item')[0]);}
   else{if(aBtn)aBtn.style.display='flex';}
-  if(!appSettings.noBg&&!appSettings.ultraSaver&&!animFrameId)loop();
+  
+  if(tt==='moods'&&!appSettings.noBg&&!appSettings.ultraSaver&&!animFrameId)loop();
+  
   if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')
     document.documentElement.style.setProperty('--ui-zoom',appSettings.uiScale||0.95);
   if(appSettings.startPage){const s=document.getElementById('startPageSelect');if(s)s.value=appSettings.startPage;}
@@ -1751,7 +2163,19 @@ document.addEventListener("DOMContentLoaded", () => {
   applySettings();
   updateAdminUI();
 
-  // Optimized async loading for faster initial render
+  if (window.Notification && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
+
+  const savedName = localStorage.getItem('aREA_username');
+  if (savedName && document.getElementById('username')) {
+    document.getElementById('username').value = savedName;
+  }
+  const savedPfp = localStorage.getItem('aREA_pfp');
+  if (savedPfp && document.getElementById('userPfp')) {
+    document.getElementById('userPfp').value = savedPfp;
+  }
+
   setTimeout(async () => {
     await loadNews();
     await loadComments();
