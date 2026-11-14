@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>a-REA</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007AFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <!-- Web Favicon & Apple Touch Icons -->
 <link rel="icon" type="image/png" href="icons/apple-touch-icon-iphone-60x60.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-iphone-60x60.png">
@@ -575,7 +579,7 @@ body.no-bg #glassCanvas { display:none !important; }
 <section id="games" class="ultra-wide-section">
   <h1>Games</h1>
   <a href="https://www.roblox.com/games/70684065412187/a-REA-HANGOUT" class="btn-ios-large">LAUNCH a-REA HANGOUT</a>
-  <a href="https://dacoolkid325-ops.github.io/a-REA-APP-REPO/tiny3d/index.html" class="btn-ios-large">LAUNCH Find Tiny's Family (beta)</a>
+  <a href="https://dacoolkid325-ops.github.io/a-REA-APP-REPO/tiny3d/index.html" class="btn-ios-large">LAUNCH Find Tiny's Family </a>
   <a href="https://mcpedl.com/a-rea-pack/" class="btn-ios-large">NEW MINECRAFT BEDROCK a-REA PACK</a>
   <div class="ultra-grid">
     <div class="glass-card game-container-giant max-power">
@@ -734,6 +738,14 @@ body.no-bg #glassCanvas { display:none !important; }
   <h1>Settings</h1>
   <div class="glass-card">
     <div class="toggle-row">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span class="toggle-label">Background Push Notifications</span>
+        <small id="pushStatusLabel" style="opacity:0.65;font-weight:500;">Receive alerts when tab/browser is closed</small>
+      </div>
+      <button type="button" id="enablePushBtn" class="btn-ios" style="width:auto;margin:0;padding:10px 18px;font-size:14px;" onclick="enableWebPush(true)">Enable</button>
+    </div>
+
+    <div class="toggle-row">
       <span class="toggle-label">App Font Family</span>
       <select id="fontSelect" class="setting-select" onchange="updateFontFamilySetting(this.value)">
         <option value="imported">Inter / Jakarta</option>
@@ -839,6 +851,8 @@ const SUPABASE_URL = 'https://ppjfqwfhyneesaaoktxy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_g4V_0jCwL4XE-qj5nBeyZA_lkyqGfHP';
 const GIPHY_API_KEY = 'NaBkjT7EdHosq7xLkRsGBRCGpT8ZrD0n';
 const GOOGLE_FONTS_API_KEY = 'AIzaSyC29kIY4y046mXV1kCI7byX_dB1LO9AYPE';
+const VAPID_PUBLIC_KEY = 'BExE7ae2lA5Urh2Mfe8Vt3pQ3TnIieL3POjREgpejt4cP_CbmKEc6HTQAKAv3jjHejb7j2NQhyBXXMJUYH7kfsc
+';
 
 const COMMENTS_TABLE = 'comments';
 const STORAGE_BUCKET = 'uploads';  
@@ -846,6 +860,91 @@ const STORAGE_BUCKET = 'uploads';
 let sb = null;
 if (window.supabase && SUPABASE_URL.startsWith('http')) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// ═══════════════════════════════════════════════
+//  WEB PUSH SUBSCRIPTION (CHROME, EDGE & SAFARI PWA)
+// ═══════════════════════════════════════════════
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return null;
+  try {
+    return await navigator.serviceWorker.register('./sw.js');
+  } catch (e) {
+    console.error('SW registration failed:', e);
+    return null;
+  }
+}
+
+async function enableWebPush(interactive = false) {
+  const statusEl = document.getElementById('pushStatusLabel');
+  const btnEl = document.getElementById('enablePushBtn');
+
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    if (statusEl) statusEl.innerText = 'Not supported in this browser (On iPad, Share → Add to Home Screen first)';
+    if (interactive) alert('Push notifications require Chrome/Edge/Firefox or Safari added to your Home Screen.');
+    return;
+  }
+
+  try {
+    const reg = await registerServiceWorker();
+    if (!reg) return;
+
+    let permission = Notification.permission;
+    if (permission === 'default' && interactive) {
+      permission = await Notification.requestPermission();
+    }
+
+    if (permission !== 'granted') {
+      if (statusEl) statusEl.innerText = permission === 'denied' ? 'Blocked in browser site settings' : 'Tap Enable to allow background alerts';
+      return;
+    }
+
+    if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY === 'YOUR_VAPID_PUBLIC_KEY_HERE') {
+      if (statusEl) statusEl.innerText = 'Permission granted — add VAPID_PUBLIC_KEY in index.html';
+      return;
+    }
+
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+
+    const subJson = sub.toJSON();
+    const uname = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || 'Anonymous').trim();
+
+    if (sb && subJson && subJson.endpoint) {
+      await sb.from('push_subscriptions').upsert([{
+        endpoint: subJson.endpoint,
+        username: uname,
+        subscription: subJson
+      }], { onConflict: 'endpoint' });
+    }
+
+    if (statusEl) statusEl.innerText = `Active for ${uname || 'this device'}`;
+    if (btnEl) {
+      btnEl.innerText = 'Enabled ✓';
+      btnEl.style.background = '#34C759';
+    }
+    if (interactive) alert('Background push notifications enabled for Chrome & Safari!');
+  } catch (err) {
+    console.error('Push subscribe error:', err);
+    if (statusEl) statusEl.innerText = 'Error: ' + err.message;
+    if (interactive) alert('Could not enable push: ' + err.message);
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -857,6 +956,9 @@ let lastPolledNewsId = null;
 
 function saveUsername(val) {
   localStorage.setItem('aREA_username', val.trim());
+  if (window.Notification && Notification.permission === 'granted') {
+    enableWebPush(false);
+  }
 }
 
 function savePfp(val) {
@@ -960,7 +1062,7 @@ async function pollForNewActivity() {
 setInterval(pollForNewActivity, 10000);
 
 // ═══════════════════════════════════════════════
-//  MARKDOWN EDITOR TOOLBAR & ROBUST PARSER (LISTS & EMPTY QUOTES FIXED)
+//  MARKDOWN EDITOR TOOLBAR & ROBUST PARSER
 // ═══════════════════════════════════════════════
 function formatText(elementId, start, end) {
   const el = document.getElementById(elementId);
@@ -2374,10 +2476,6 @@ document.addEventListener("DOMContentLoaded", () => {
   applySettings();
   updateAdminUI();
 
-  if (window.Notification && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-    Notification.requestPermission();
-  }
-
   const savedName = localStorage.getItem('aREA_username');
   if (savedName && document.getElementById('username')) {
     document.getElementById('username').value = savedName;
@@ -2387,6 +2485,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (savedPfp && document.getElementById('userPfp')) {
     document.getElementById('userPfp').value = savedPfp;
   }
+
+  registerServiceWorker().then(() => {
+    enableWebPush(false);
+  });
 
   setTimeout(async () => {
     await loadNews();
