@@ -1026,7 +1026,12 @@ function handlePfpUrlInput(val) {
 async function saveProfileFieldsToSupabase(fields) {
   if (!sb || !window.authName) return;
   try {
-    await sb.from('app_users').update(fields).eq('username', window.authName);
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      await sb.from('app_users').update(fields).eq('auth_id', user.id);
+    } else {
+      await sb.from('app_users').update(fields).ilike('username', window.authName);
+    }
   } catch (e) { console.error('Profile save error:', e); }
 }
 
@@ -1319,47 +1324,100 @@ function updateAuthUI() {
 
 async function applySession(session) {
   if (session && session.user) {
-    try { await sb.rpc('ensure_profile'); } catch (e) {}
-    let row = null;
     try {
-      const r = await sb.from('app_users').select('username, role').eq('auth_id', session.user.id).maybeSingle();
-      row = r.data;
-    } catch (e) {}
-    const fallback = (session.user.email || '').split('@')[0];
-    window.authName = (row && row.username) || fallback;
+      await sb.rpc('ensure_profile');
+    } catch (e) {
+      console.warn('ensure_profile rpc skipped/failed:', e);
+    }
+
+    const emailPrefix = (session.user.email || '').split('@')[0];
+    const metaUsername = session.user.user_metadata?.username;
+
+    let { data: row } = await sb
+      .from('app_users')
+      .select('id, username, role, auth_id')
+      .eq('auth_id', session.user.id)
+      .maybeSingle();
+
+    if (!row) {
+      const candidate = (metaUsername || emailPrefix || '').trim();
+      const { data: existingByName } = await sb
+        .from('app_users')
+        .select('id, username, role, auth_id')
+        .ilike('username', candidate)
+        .maybeSingle();
+
+      if (existingByName) {
+        await sb
+          .from('app_users')
+          .update({ auth_id: session.user.id })
+          .eq('id', existingByName.id);
+        row = { ...existingByName, auth_id: session.user.id };
+      }
+    }
+
+    window.authName = (row && row.username) || metaUsername || emailPrefix;
     window.adminUser = window.authName;
-    window.adminRole = (row && row.role) || 'user';
+    window.adminRole = (row && row.role) || (window.authName.toLowerCase() === 'aqeel' ? 'super' : 'user');
   } else {
-    window.authName = null; window.adminUser = null; window.adminRole = null;
+    window.authName = null;
+    window.adminUser = null;
+    window.adminRole = null;
   }
+
   const u = document.getElementById('username');
-  if (u) { if (window.authName) { u.value = window.authName; u.readOnly = true; } else { u.readOnly = false; } }
+  if (u) {
+    if (window.authName) { u.value = window.authName; u.readOnly = true; }
+    else { u.readOnly = false; }
+  }
   updateAdminUI();
-  if (window.authName) syncUserProfile();
+  if (window.authName) await syncUserProfile();
   await loadComments();
   await loadNews();
 }
 
 window.doLogin = async function() {
-  if (!sb) return;
-  const u = document.getElementById('username').value.trim();
+  if (!sb) return alert('Supabase client not initialized.');
+  const raw = document.getElementById('username').value.trim();
   const p = document.getElementById('userPassword').value;
-  if (!validUsername(u) || !p) return alert('Enter your username and password.');
-  const { error } = await sb.auth.signInWithPassword({ email: userToEmail(u), password: p });
-  if (error) return alert('Login failed: ' + (error.message === 'Invalid login credentials' ? 'wrong username or password.' : error.message));
+  if (!raw || !p) return alert('Enter your username and password.');
+
+  const email = raw.includes('@') ? raw.toLowerCase() : userToEmail(raw);
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: p });
+  if (error) {
+    console.error('Login error:', error);
+    return alert(`Login failed for ${email}: ${error.message === 'Invalid login credentials' ? 'wrong username or password.' : error.message}`);
+  }
   document.getElementById('userPassword').value = '';
+  if (data?.session) await applySession(data.session);
 };
 
 window.doSignup = async function() {
-  if (!sb) return;
+  if (!sb) return alert('Supabase client not initialized.');
   const u = document.getElementById('username').value.trim();
   const p = document.getElementById('userPassword').value;
   if (!validUsername(u)) return alert('Username must be 2-24 characters: letters, numbers, dot, dash or underscore.');
   if (p.length < 6) return alert('Password must be at least 6 characters.');
-  const { data, error } = await sb.auth.signUp({ email: userToEmail(u), password: p, options: { data: { username: u } } });
-  if (error) return alert('Sign up failed: ' + error.message);
+
+  const { data, error } = await sb.auth.signUp({
+    email: userToEmail(u),
+    password: p,
+    options: { data: { username: u } }
+  });
+  if (error) {
+    console.error('Signup error:', error);
+    return alert('Sign up failed: ' + error.message);
+  }
   document.getElementById('userPassword').value = '';
-  if (!data.session) alert('Account created, but Supabase still requires email confirmation. Turn off "Confirm email" in Authentication > Providers > Email.');
+
+  if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+    return alert('That account already exists in Supabase Auth — click Log in with its password.');
+  }
+  if (data?.session) {
+    await applySession(data.session);
+    return;
+  }
+  alert('Account created, but no session returned. Check Authentication > Providers > Email settings in Supabase.');
 };
 
 function updateAdminUI() {
@@ -1832,6 +1890,14 @@ window.loadComments = async function() {
     return;
   }
 
+  try {
+    const { data: usersData } = await sb.from('app_users').select('username, role');
+    window._userRolesCache = {};
+    (usersData || []).forEach(u => {
+      if (u.username) window._userRolesCache[u.username.trim().toLowerCase()] = u.role;
+    });
+  } catch (e) {}
+
   const { data, error } = await sb
     .from(COMMENTS_TABLE)
     .select('*')
@@ -1937,8 +2003,11 @@ window.loadComments = async function() {
 
     let nameColor = 'var(--accent)';
     const lowerName = authorName.toLowerCase();
-    if (lowerName === 'aqeel') {
+    const authorRole = (window._userRolesCache || {})[lowerName];
+    if (lowerName === 'aqeel' || authorRole === 'super') {
       nameColor = 'gold';
+    } else if (lowerName === 'aadil' || authorRole === 'mod') {
+      nameColor = '#FF3B30';
     }
 
     let pfpHtml = c.pfp_url ? `<img src="${esc(c.pfp_url)}" class="user-pfp" alt="PFP" onerror="this.style.display='none'">` : `<div class="user-pfp" style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;">${authorName[0].toUpperCase()}</div>`;
