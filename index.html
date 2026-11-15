@@ -372,6 +372,17 @@ body.no-bg #glassCanvas { display:none !important; }
 .news-card-title { font-size:14px;font-weight:800;line-height:1.3;color:var(--text-main);margin:0; }
 .news-card-date { font-size:11px;color:var(--text-mute);margin-top:auto; }
 
+.reaction-bar { display:flex;flex-wrap:wrap;gap:6px;margin-top:14px; }
+.reaction-btn {
+  display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:14px;cursor:pointer;
+  background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);color:var(--text-main);font-family:inherit;
+  transition:transform 0.2s var(--spring-bounce),border-color 0.2s;
+}
+.reaction-btn:hover { border-color:var(--accent); }
+.reaction-btn:active { transform:scale(0.88); }
+.reaction-btn.mine { background:color-mix(in srgb,var(--accent) 25%,transparent);border-color:var(--accent); }
+.reaction-btn .rc { font-size:12px;font-weight:800; }
+.pin-badge { display:inline-block;margin-top:2px;font-size:11px;font-weight:800;color:gold; }
 .admin-box {
   display:none;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.3);
   border-radius:24px;padding:24px;margin-bottom:24px;
@@ -1802,6 +1813,57 @@ window.editComment = async function(id) {
   await loadComments();
 };
 
+const REACTION_EMOJIS = ['👍','❤️','😂','😮','😢','🔥'];
+
+function getReactorId() {
+  const n = getActiveAccountUsername();
+  if (n && n.toLowerCase() !== 'anonymous') return n.toLowerCase();
+  let id = localStorage.getItem('aREA_deviceId');
+  if (!id) { id = 'device_' + Math.random().toString(36).slice(2, 10); localStorage.setItem('aREA_deviceId', id); }
+  return id;
+}
+
+function parseReactions(c) {
+  let r = c.reactions;
+  if (typeof r === 'string') { try { r = JSON.parse(r); } catch (e) { r = {}; } }
+  return (r && typeof r === 'object') ? r : {};
+}
+
+function buildReactionsHtml(c) {
+  const r = parseReactions(c);
+  const me = getReactorId();
+  return `<div class="reaction-bar">` + REACTION_EMOJIS.map(e => {
+    const users = Array.isArray(r[e]) ? r[e] : [];
+    const mine = users.includes(me);
+    return `<button type="button" class="reaction-btn ${mine ? 'mine' : ''}" onclick="toggleReaction('${c.id}','${e}')">${e}${users.length ? `<span class="rc">${users.length}</span>` : ''}</button>`;
+  }).join('') + `</div>`;
+}
+
+window.toggleReaction = async function(id, emoji) {
+  if (!sb) return;
+  const c = (window._commentsCache || {})[String(id)];
+  if (!c) return;
+  const me = getReactorId();
+  const r = parseReactions(c);
+  const users = Array.isArray(r[emoji]) ? [...r[emoji]] : [];
+  const i = users.indexOf(me);
+  if (i >= 0) users.splice(i, 1); else users.push(me);
+  if (users.length) r[emoji] = users; else delete r[emoji];
+
+  const { error } = await sb.from(COMMENTS_TABLE).update({ reactions: r }).eq('id', id);
+  if (error) { alert("Could not save reaction: " + error.message + "\n(Did you run the SQL to add the 'reactions' column?)"); return; }
+  await loadComments();
+};
+
+window.togglePin = async function(id) {
+  if (!window.isAdmin() || !sb) return;
+  const c = (window._commentsCache || {})[String(id)];
+  if (!c) return;
+  const { error } = await sb.from(COMMENTS_TABLE).update({ pinned: !c.pinned }).eq('id', id);
+  if (error) { alert("Could not pin/unpin: " + error.message + "\n(Did you run the SQL to add the 'pinned' column?)"); return; }
+  await loadComments();
+};
+
 window.loadComments = async function() {
   const container = document.getElementById('commentsContainer');
   if (!sb) {
@@ -1831,10 +1893,11 @@ window.loadComments = async function() {
 
   window._commentsCache = {};
   data.forEach(c => { window._commentsCache[String(c.id)] = c; });
+  const ordered = [...data.filter(c => c.pinned), ...data.filter(c => !c.pinned)];
 
   const currentUsername = (localStorage.getItem('aREA_username') || '').trim().toLowerCase();
 
-  container.innerHTML = data.map(c => {
+  container.innerHTML = ordered.map(c => {
     const dateStr = c.created_at
       ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
       : '';
@@ -1847,6 +1910,7 @@ window.loadComments = async function() {
       <div style="display:flex;align-items:center;gap:8px;">
         <button type="button" onclick="replyToMessage('${c.id}', '${esc(authorName)}', '${esc(c.text || '')}')" style="background:rgba(0,122,255,0.15);border:1px solid var(--accent);color:var(--accent);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Reply</button>
         ${canModify ? `<button type="button" onclick="editComment('${c.id}')" style="background:rgba(255,204,0,0.15);border:1px solid #FFCC00;color:#FFCC00;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Edit</button>` : ''}
+        ${window.isAdmin() ? `<button type="button" onclick="togglePin('${c.id}')" style="background:rgba(255,215,0,0.15);border:1px solid gold;color:gold;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">${c.pinned ? 'Unpin' : '📌 Pin'}</button>` : ''}
         ${window.isAdmin() ? `<button type="button" onclick="deleteComment('${c.id}')" style="background:rgba(255,59,48,0.15);border:1px solid #FF3B30;color:#FF3B30;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">Delete</button>` : ''}
       </div>
     `;
@@ -1918,6 +1982,7 @@ window.loadComments = async function() {
 
     let pfpHtml = c.pfp_url ? `<img src="${esc(c.pfp_url)}" class="user-pfp" alt="PFP" onerror="this.style.display='none'">` : `<div class="user-pfp" style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;">${authorName[0].toUpperCase()}</div>`;
 
+    const reactionsHtml = buildReactionsHtml(c);
     let historyHtml = '';
     if (historyLines) {
       historyHtml = `
@@ -1930,12 +1995,13 @@ window.loadComments = async function() {
     }
 
     return `
-      <div class="glass-card" style="padding:20px 24px;margin-bottom:0;">
+      <div class="glass-card" style="padding:20px 24px;margin-bottom:0;${c.pinned ? 'border:1px solid gold;' : ''}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;">
           <div style="display:flex;align-items:center;gap:12px;">
             ${pfpHtml}
             <div>
               <strong style="color:${nameColor};font-size:16px;display:block;">${esc(authorName)}</strong>
+              ${c.pinned ? '<span class="pin-badge">📌 Pinned</span>' : ''}
               <span style="font-size:11px;color:var(--text-mute);">${dateStr}</span>
             </div>
           </div>
@@ -1943,6 +2009,7 @@ window.loadComments = async function() {
         </div>
         <div style="font-size:15px;line-height:1.6;word-break:break-word;">${parseMarkdown(fullText)}</div>
         ${attachmentHtml}
+        ${reactionsHtml}
         ${historyHtml}
       </div>
     `;
