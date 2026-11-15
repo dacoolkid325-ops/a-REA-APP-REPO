@@ -2131,7 +2131,7 @@ const STATIC_ARTICLES = [
     image_url: "",
     coverEmoji: "👋",
     summary: "My best friend Alexandru and why I'm continuing his legacy through coding.",
-    created_at: "2023-11-14T22:13:20Z",
+    created_at: "2026-3-14T22:13:20Z",
     isStatic: true,
     openFn: 'openAlexModal'
   },
@@ -2143,7 +2143,7 @@ const STATIC_ARTICLES = [
     image_url: "https://img.youtube.com/vi/HwAPLk_sQ3w/maxresdefault.jpg",
     coverEmoji: "🎪",
     summary: "My favourite show right now. Started on YouTube, now Netflix + Amazon + THEATRES. How did we get here?",
-    created_at: "2023-11-14T22:15:00Z",
+    created_at: "2026-6-02T22:15:00Z",
     isStatic: true,
     openFn: 'openTADCModal'
   }
@@ -2161,7 +2161,17 @@ window.loadNews = async function() {
     if (!error && data) {
       dynamicArticles = data.map(item => ({
         ...item,
-        summary: (item.body || '').replace(/[#*`>\[\]!]/g, '').slice(0, 120) + ((item.body || '').length > 120 ? '…' : '')
+               summary: (() => {
+          const clean = (item.body || '')
+            .replace(/<\/?u>/gi, '')
+            .replace(/\[giphy:[^\]]*\]/gi, '')
+            .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+            .replace(/~~/g, '')
+            .replace(/[#*`>]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+          return clean.slice(0, 120) + (clean.length > 120 ? '…' : '');
+        })()
       }));
       
       const latestNews = dynamicArticles[0];
