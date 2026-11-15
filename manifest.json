@@ -1,23 +1,18 @@
 {
   "name": "a-REA",
   "short_name": "a-REA",
-  "description": "a-REA APP Portal, Music, Games & Community",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#050507",
-  "theme_color": "#007AFF",
   "icons": [
     {
-      "src": "icons/apple-touch-icon-iphone-retina-120x120.png",
-      "sizes": "120x120",
+      "src": "icons/apple-touch-icon-iphone-60x60.png",
+      "sizes": "60x60",
       "type": "image/png"
     },
     {
       "src": "icons/apple-touch-icon-ipad-retina-152x152.png",
       "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
