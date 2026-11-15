@@ -23,7 +23,7 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: payload.body,
-    icon: 'icons/apple-touch-icon-ipad-retina-152x152.png',
+    icon: 'icons/icon-192.png',
     badge: 'icons/apple-touch-icon-iphone-60x60.png',
     vibrate: [150, 75, 150],
     data: { url: payload.url || './index.html' }
