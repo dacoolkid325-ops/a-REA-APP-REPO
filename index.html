@@ -890,6 +890,12 @@ if (window.supabase && SUPABASE_URL.startsWith('http')) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
+// Helper to Capitalize Account Names
+function capitalizeAccountName(name) {
+  if (!name) return '';
+  return name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
 // ═══════════════════════════════════════════════
 //  WEB PUSH SUBSCRIPTION (CHROME, EDGE & SAFARI PWA)
 // ═══════════════════════════════════════════════
@@ -984,7 +990,7 @@ let lastPolledNewsId = null;
 let profileSyncTimer = null;
 
 function getActiveAccountUsername() {
-  return (window.authName || '').trim();
+  return capitalizeAccountName((window.authName || '').trim());
 }
 
 function updatePfpPreview(url) {
@@ -1002,7 +1008,8 @@ function updatePfpPreview(url) {
 }
 
 function saveUsername(val) {
-  localStorage.setItem('aREA_username', val.trim());
+  const capitalized = capitalizeAccountName(val.trim());
+  localStorage.setItem('aREA_username', capitalized);
   updatePfpPreview(document.getElementById('userPfp')?.value || '');
   if (window.Notification && Notification.permission === 'granted') {
     enableWebPush(false);
@@ -1047,6 +1054,11 @@ async function syncUserProfile(usernameInput) {
       .maybeSingle();
 
     if (data) {
+      if (data.username) {
+        window.authName = capitalizeAccountName(data.username);
+        const uInput = document.getElementById('username');
+        if (uInput) uInput.value = window.authName;
+      }
       if (data.pfp_url) {
         const pfpInput = document.getElementById('userPfp');
         if (pfpInput) pfpInput.value = data.pfp_url;
@@ -1062,8 +1074,6 @@ async function syncUserProfile(usernameInput) {
         const bgInput = document.getElementById('bgImageUrlInput');
         if (bgInput) bgInput.value = data.bg_image_url;
         applySettings();
-      } else if (appSettings.themeType === 'image' && appSettings.bgImageUrl && data.bg_image_url === null) {
-        // Keep local if not cleared, or sync if explicitly empty string
       }
     }
   } catch (e) {
@@ -1137,7 +1147,7 @@ async function pollForNewActivity() {
     if (comments && comments.length > 0) {
       const latest = comments[0];
       if (lastPolledCommentId && String(latest.id) !== lastPolledCommentId) {
-        checkMentions(latest.text || '', `message by ${latest.name || 'Someone'}`, latest.name);
+        checkMentions(latest.text || '', `message by ${capitalizeAccountName(latest.name || 'Someone')}`, latest.name);
       }
       lastPolledCommentId = String(latest.id);
     }
@@ -1199,7 +1209,9 @@ function parseMarkdown(md) {
     '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>');
 
   safe = safe.replace(/(^|\s)@all\b/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 800;">@all</span>');
-  safe = safe.replace(/(^|\s)@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\.[a-z]+)/gi, '$1<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@$2</span>');
+  safe = safe.replace(/(^|\s)@([a-zA-Z0-9_-]+)(?!@(gmail|yahoo|hotmail|outlook|icloud|aol|proton)\.[a-z]+)/gi, (match, space, username) => {
+    return space + '<span style="background:color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); padding: 2px 6px; border-radius: 6px; font-weight: 700;">@' + capitalizeAccountName(username) + '</span>';
+  });
 
   const lines = safe.split(/\r?\n/);
   let out = [];
@@ -1356,7 +1368,8 @@ async function applySession(session) {
       }
     }
 
-    window.authName = (row && row.username) || metaUsername || emailPrefix;
+    const rawName = (row && row.username) || metaUsername || emailPrefix;
+    window.authName = capitalizeAccountName(rawName);
     window.adminUser = window.authName;
     window.adminRole = (row && row.role) || (window.authName.toLowerCase() === 'aqeel' ? 'super' : 'user');
   } else {
@@ -1394,7 +1407,7 @@ window.doLogin = async function() {
 
 window.doSignup = async function() {
   if (!sb) return alert('Supabase client not initialized.');
-  const u = document.getElementById('username').value.trim();
+  const u = capitalizeAccountName(document.getElementById('username').value.trim());
   const p = document.getElementById('userPassword').value;
   if (!validUsername(u)) return alert('Username must be 2-24 characters: letters, numbers, dot, dash or underscore.');
   if (p.length < 6) return alert('Password must be at least 6 characters.');
@@ -1427,7 +1440,7 @@ function updateAdminUI() {
 
   document.getElementById('adminLoginBtn').style.display = active ? 'none' : 'block';
   document.getElementById('adminActiveUI').style.display = active ? 'flex' : 'none';
-  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.adminUser || 'Friend'})`;
+  document.getElementById('adminRoleBadge').innerText = isSuper ? '👑 SUPER ADMIN (Aqeel)' : `🛡️ MOD (${window.authName || 'Friend'})`;
 
   const pwField = document.getElementById('passwordFieldWrapper');
   if (pwField) {
@@ -1474,7 +1487,7 @@ async function loadUsersManager() {
   list.innerHTML = data.map(u => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);gap:10px;flex-wrap:wrap;">
       <div>
-        <strong>${esc(u.username)}</strong> 
+        <strong>${esc(capitalizeAccountName(u.username))}</strong> 
         <span style="font-size:12px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:6px;margin-left:8px;">${u.role}</span>
       </div>
       <div style="display:flex;gap:8px;">
@@ -1929,7 +1942,7 @@ window.loadComments = async function() {
       ? new Date(c.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
       : '';
 
-    const authorName = c.name || 'Anonymous';
+    const authorName = capitalizeAccountName(c.name || 'Anonymous');
     const isAuthor = currentUsername && authorName.toLowerCase() === currentUsername;
     const canModify = window.isAdmin() || isAuthor;
 
@@ -2737,7 +2750,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateAdminUI();
   if (sb) sb.auth.onAuthStateChange((event, session) => { setTimeout(() => applySession(session), 0); });
 
-  const savedName = localStorage.getItem('aREA_username') || window.adminUser;
+  const savedName = capitalizeAccountName(localStorage.getItem('aREA_username') || window.adminUser || '');
   const savedPfp = localStorage.getItem('aREA_pfp');
   if (savedPfp && document.getElementById('userPfp')) {
     document.getElementById('userPfp').value = savedPfp;
