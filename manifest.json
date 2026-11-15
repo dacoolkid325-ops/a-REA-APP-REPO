@@ -7,14 +7,18 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "icons/apple-touch-icon-iphone-60x60.png",
-      "sizes": "60x60",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/apple-touch-icon-ipad-retina-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    }
-  ]
+"icons": [
+  {
+    "src": "icons/apple-touch-icon-iphone-60x60.png",
+    "sizes": "60x60",
+    "type": "image/png",
+    "purpose": "any maskable"
+  },
+  {
+    "src": "icons/apple-touch-icon-ipad-retina-152x152.png",
+    "sizes": "152x152",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }
+ ]
 }
