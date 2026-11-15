@@ -281,6 +281,7 @@ body.no-bg #glassCanvas { display:none !important; }
 #attachmentPreview.uploading { background:rgba(0,122,255,0.08); }
 #attachmentPreview.error { background:rgba(255,59,48,0.08); }
 #attachmentPreview img.attach-thumb { display:block;max-width:100%;max-height:160px;border-radius:10px;margin-top:10px;object-fit:contain;cursor:zoom-in; }
+#attachmentPreview video.attach-video { display:block;width:100%;max-height:260px;border-radius:12px;margin-top:10px;background:#000; }
 
 #liveGiphyPreview {
   display:none;flex-wrap:wrap;gap:8px;padding:12px 16px;border-radius:16px;margin-bottom:14px;
@@ -330,6 +331,14 @@ body.no-bg #glassCanvas { display:none !important; }
 
 .user-pfp {
   width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--liquid-glass-border);flex-shrink:0;
+}
+.pfp-preview-circle {
+  width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);
+  background:var(--liquid-glass-bg);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;color:var(--text-mute);flex-shrink:0;overflow:hidden;cursor:zoom-in;
+}
+.pfp-preview-circle img {
+  width:100%;height:100%;object-fit:cover;display:block;
 }
 
 .news-header-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
@@ -648,7 +657,7 @@ body.no-bg #glassCanvas { display:none !important; }
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
       <div>
         <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Username / Account</label>
-        <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)" onblur="syncUserPfp(this.value)">
+        <input type="text" id="username" placeholder="Your username..." class="search-input" style="padding-left:20px;" oninput="saveUsername(this.value)" onblur="syncUserProfile(this.value)">
       </div>
       <div id="passwordFieldWrapper">
         <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Password (for account)</label>
@@ -659,7 +668,8 @@ body.no-bg #glassCanvas { display:none !important; }
     <div style="margin-bottom:20px;">
       <label style="display:block;margin-bottom:8px;font-weight:700;color:var(--text-mute);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Profile Picture (PFP)</label>
       <div style="display:flex;gap:10px;align-items:center;">
-        <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg or upload →" class="search-input" style="padding-left:20px;margin-bottom:0;" oninput="savePfp(this.value)">
+        <div id="pfpLivePreview" class="pfp-preview-circle" title="Click to enlarge PFP preview" onclick="if(this.querySelector('img')) openLightbox(this.querySelector('img').src)">?</div>
+        <input type="text" id="userPfp" placeholder="https://example.com/pfp.jpg or upload →" class="search-input" style="padding-left:20px;margin-bottom:0;" oninput="handlePfpUrlInput(this.value)">
         <button type="button" class="attach-btn" style="margin-bottom:0;padding:13px 18px;" onclick="document.getElementById('pfpFileInput').click()" title="Upload PFP Image">🖼️</button>
         <input type="file" id="pfpFileInput" accept="image/*" style="display:none;" onchange="uploadPfpFile(this)">
       </div>
@@ -806,9 +816,12 @@ body.no-bg #glassCanvas { display:none !important; }
 
     <!-- Image Background Settings -->
     <div id="imageThemeSettings" style="display:none;flex-direction:column;gap:12px;" class="toggle-row">
-      <span class="toggle-label">Background Image URL or Upload</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+        <span class="toggle-label">Background Image URL or Upload</span>
+        <span style="font-size:12px;color:var(--accent);font-weight:600;">Syncs across devices for your account</span>
+      </div>
       <div style="display:flex;gap:8px;width:100%;flex-wrap:wrap;">
-        <input type="text" id="bgImageUrlInput" class="article-input" placeholder="https://example.com/bg.jpg..." style="margin-bottom:0;flex:1;" oninput="updateBgImage(this.value)">
+        <input type="text" id="bgImageUrlInput" class="article-input" placeholder="https://example.com/bg.jpg..." style="margin-bottom:0;flex:1;" oninput="handleBgImageUrlInput(this.value)">
         <button type="button" class="attach-btn" style="margin-bottom:0;padding:12px 16px;" onclick="document.getElementById('bgImageFileInput').click()" title="Upload Background Image">🖼️</button>
         <input type="file" id="bgImageFileInput" accept="image/*" style="display:none;" onchange="uploadBgImageFile(this)">
         <button type="button" class="attach-btn" style="margin-bottom:0;padding:12px 16px;background:rgba(255,59,48,0.15);border-color:#FF3B30;color:#FF3B30;" onclick="deleteBgImage()" title="Delete Background Image">🗑️ Delete</button>
@@ -922,7 +935,7 @@ async function enableWebPush(interactive = false) {
     }
 
     const subJson = sub.toJSON();
-    const uname = (localStorage.getItem('aREA_username') || document.getElementById('username')?.value || 'Anonymous').trim();
+    const uname = getActiveAccountUsername() || 'Anonymous';
 
     if (sb && subJson && subJson.endpoint) {
       await sb.from('push_subscriptions').upsert([{
@@ -946,32 +959,121 @@ async function enableWebPush(interactive = false) {
 }
 
 // ═══════════════════════════════════════════════
-//  USER & NOTIFICATIONS SYSTEM (WITH REALTIME POLLING & PFP CROSS-DEVICE SYNC)
+//  USER, PFP PREVIEW & CROSS-DEVICE PROFILE SYNC
 // ═══════════════════════════════════════════════
 let activeReply = null;
 let lastPolledCommentId = null;
 let lastPolledNewsId = null;
+let profileSyncTimer = null;
+
+function getActiveAccountUsername() {
+  return (
+    document.getElementById('username')?.value ||
+    localStorage.getItem('aREA_username') ||
+    window.adminUser ||
+    ''
+  ).trim();
+}
+
+function updatePfpPreview(url) {
+  const preview = document.getElementById('pfpLivePreview');
+  if (!preview) return;
+  const cleanUrl = (url || '').trim();
+  const uname = getActiveAccountUsername();
+  const initial = uname ? uname[0].toUpperCase() : '?';
+
+  if (cleanUrl) {
+    preview.innerHTML = `<img src="${esc(cleanUrl)}" alt="PFP Preview" onerror="this.parentElement.innerHTML='${initial}'">`;
+  } else {
+    preview.innerHTML = initial;
+  }
+}
 
 function saveUsername(val) {
   localStorage.setItem('aREA_username', val.trim());
+  updatePfpPreview(document.getElementById('userPfp')?.value || '');
   if (window.Notification && Notification.permission === 'granted') {
     enableWebPush(false);
   }
 }
 
 function savePfp(val) {
-  localStorage.setItem('aREA_pfp', val.trim());
+  const clean = (val || '').trim();
+  localStorage.setItem('aREA_pfp', clean);
+  updatePfpPreview(clean);
 }
 
-async function syncUserPfp(username) {
-  if (!sb || !username.trim()) return;
+function handlePfpUrlInput(val) {
+  savePfp(val);
+  clearTimeout(profileSyncTimer);
+  profileSyncTimer = setTimeout(() => {
+    saveProfileFieldsToSupabase({ pfp_url: (val || '').trim() || null });
+  }, 600);
+}
+
+async function saveProfileFieldsToSupabase(fields) {
+  if (!sb) return;
+  const uname = getActiveAccountUsername();
+  if (!uname || uname.toLowerCase() === 'anonymous') return;
+
   try {
-    const { data } = await sb.from('app_users').select('pfp_url').eq('username', username.trim()).maybeSingle();
-    if (data && data.pfp_url) {
-      document.getElementById('userPfp').value = data.pfp_url;
-      savePfp(data.pfp_url);
+    const { data: existing } = await sb
+      .from('app_users')
+      .select('username, role, password')
+      .ilike('username', uname)
+      .maybeSingle();
+
+    if (existing) {
+      await sb
+        .from('app_users')
+        .update(fields)
+        .eq('username', existing.username);
+    } else {
+      const defaultRole = uname.toLowerCase() === 'aqeel' ? 'super' : 'user';
+      const defaultPass = uname.toLowerCase() === 'aqeel' ? 'area2026' : null;
+      await sb
+        .from('app_users')
+        .insert([{ username: uname, password: defaultPass, role: defaultRole, ...fields }]);
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('Cross-device profile save error:', e);
+  }
+}
+
+async function syncUserProfile(usernameInput) {
+  const uname = (usernameInput || getActiveAccountUsername()).trim();
+  if (!sb || !uname || uname.toLowerCase() === 'anonymous') return;
+
+  try {
+    const { data } = await sb
+      .from('app_users')
+      .select('username, pfp_url, bg_image_url')
+      .ilike('username', uname)
+      .maybeSingle();
+
+    if (data) {
+      if (data.pfp_url) {
+        const pfpInput = document.getElementById('userPfp');
+        if (pfpInput) pfpInput.value = data.pfp_url;
+        savePfp(data.pfp_url);
+      } else {
+        updatePfpPreview(document.getElementById('userPfp')?.value || '');
+      }
+
+      if (data.bg_image_url) {
+        appSettings.bgImageUrl = data.bg_image_url;
+        appSettings.themeType = 'image';
+        localStorage.setItem('aREASettings', JSON.stringify(appSettings));
+        const bgInput = document.getElementById('bgImageUrlInput');
+        if (bgInput) bgInput.value = data.bg_image_url;
+        applySettings();
+      } else if (appSettings.themeType === 'image' && appSettings.bgImageUrl && data.bg_image_url === null) {
+        // Keep local if not cleared, or sync if explicitly empty string
+      }
+    }
+  } catch (e) {
+    console.error('Profile sync error:', e);
+  }
 }
 
 async function uploadPfpFile(input) {
@@ -979,16 +1081,14 @@ async function uploadPfpFile(input) {
   if (!file) return;
   const status = document.getElementById('pfpUploadStatus');
   status.style.display = 'block';
+  status.style.color = 'var(--accent)';
   status.innerText = `⏳ Uploading PFP…`;
   try {
     const publicUrl = await uploadToSupabaseStorage(file, 'pfps');
     document.getElementById('userPfp').value = publicUrl;
     savePfp(publicUrl);
-    status.innerText = `✅ PFP Uploaded successfully!`;
-    const uname = (document.getElementById('username')?.value || '').trim();
-    if (sb && uname) {
-      await sb.from('app_users').update({ pfp_url: publicUrl }).eq('username', uname);
-    }
+    await saveProfileFieldsToSupabase({ pfp_url: publicUrl });
+    status.innerText = `✅ PFP uploaded & synced across devices!`;
   } catch (err) {
     status.style.color = '#FF3B30';
     status.innerText = `❌ Upload failed: ${err.message}`;
@@ -1097,7 +1197,7 @@ function parseMarkdown(md) {
   safe = safe.replace(/`(.+?)`/g, '<code>$1</code>');
 
   safe = safe.replace(/\[video\]\((https?:\/\/[^)]+)\)/g,
-    '<video src="$1" controls style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
+    '<video src="$1" controls playsinline style="max-width:100%;border-radius:12px;margin:12px 0;display:block;"></video>');
   safe = safe.replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
     '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0;display:block;cursor:zoom-in;" onclick="openLightbox(this.src)">');
   safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
@@ -1252,19 +1352,38 @@ window.adminLogin = async function() {
     window.adminUser = 'Aqeel';
     localStorage.setItem('aREA_adminRole', 'super');
     localStorage.setItem('aREA_adminUser', 'Aqeel');
+    localStorage.setItem('aREA_username', 'Aqeel');
+
+    const usernameInput = document.getElementById('username');
+    if (usernameInput) usernameInput.value = 'Aqeel';
+
+    if (sb) {
+      await sb.from('app_users').upsert(
+        [{ username: 'Aqeel', password: pass, role: 'super' }],
+        { onConflict: 'username', ignoreDuplicates: true }
+      );
+      await syncUserProfile('Aqeel');
+    }
+
     updateAdminUI();
     await loadComments();
     await loadNews();
-    return alert("Logged in as Super Admin (Aqeel)!");
+    return alert("Logged in as Super Admin (Aqeel)! Your PFP & background will sync across devices.");
   }
 
   if (sb) {
-    const { data } = await sb.from('app_users').select('*').eq('username', user).maybeSingle();
+    const { data } = await sb.from('app_users').select('*').ilike('username', user).maybeSingle();
     if (data && (data.role === 'mod' || data.role === 'super')) {
       window.adminRole = data.role;
       window.adminUser = data.username;
       localStorage.setItem('aREA_adminRole', window.adminRole);
       localStorage.setItem('aREA_adminUser', data.username);
+      localStorage.setItem('aREA_username', data.username);
+
+      const usernameInput = document.getElementById('username');
+      if (usernameInput) usernameInput.value = data.username;
+      await syncUserProfile(data.username);
+
       updateAdminUI();
       await loadComments();
       await loadNews();
@@ -1452,8 +1571,18 @@ function updateNewsLivePreview() {
 }
 
 // ═══════════════════════════════════════════════
-//  SUPABASE STORAGE & 50MB FILE SUPPORT
+//  SUPABASE STORAGE & 50MB FILE SUPPORT (IMAGE + VIDEO)
 // ═══════════════════════════════════════════════
+function isVideoFile(fileNameOrUrl, mimeType = '') {
+  if (mimeType && mimeType.startsWith('video/')) return true;
+  return /\.(mp4|webm|mov|m4v|ogg|ogv)(\?|$)/i.test(fileNameOrUrl || '');
+}
+
+function isImageFile(fileNameOrUrl, mimeType = '') {
+  if (mimeType && mimeType.startsWith('image/')) return true;
+  return /\.(jpe?g|png|gif|webp|svg|avif)(\?|$)/i.test(fileNameOrUrl || '') || (fileNameOrUrl || '').includes('giphy');
+}
+
 async function uploadToSupabaseStorage(file, folder = 'community') {
   if (!sb) throw new Error('Supabase is not configured yet.');
   const ext = file.name.split('.').pop();
@@ -1509,14 +1638,22 @@ async function handleFileUpload(input) {
     const publicUrl = await uploadToSupabaseStorage(file, 'community');
     const metaStr = encodeURIComponent(JSON.stringify(pendingFileMeta));
     attachmentUrl = `${publicUrl}#meta=${metaStr}`;
-    const isImg = /\.(jpe?g|png|gif|webp|svg)$/i.test(file.name);
+    const isImg = isImageFile(file.name, file.type);
+    const isVid = isVideoFile(file.name, file.type);
+
+    let mediaPreviewHtml = `<a href="${publicUrl}" target="_blank" style="display:block;margin-top:8px;color:var(--accent);font-weight:700;">Download / Open File ↗</a>`;
+    if (isImg) {
+      mediaPreviewHtml = `<img src="${publicUrl}" class="attach-thumb" alt="Uploaded preview" onclick="openLightbox(this.src)">`;
+    } else if (isVid) {
+      mediaPreviewHtml = `<video src="${publicUrl}" class="attach-video" controls playsinline preload="metadata"></video>`;
+    }
 
     showAttachmentState('ready', `
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <span>📎 <strong>${esc(file.name)}</strong> ready! (${(file.size / 1024).toFixed(1)} KB)</span>
         <button type="button" onclick="clearAttachment()" style="background:none;border:none;color:#FF3B30;font-weight:800;cursor:pointer;">✕ Remove</button>
       </div>
-      ${isImg ? `<img src="${publicUrl}" class="attach-thumb" alt="Uploaded preview" onclick="openLightbox(this.src)">` : `<a href="${publicUrl}" target="_blank" style="display:block;margin-top:8px;color:var(--accent);font-weight:700;">Download / Open File ↗</a>`}
+      ${mediaPreviewHtml}
     `);
   } catch (err) {
     console.error('Supabase Storage upload error:', err);
@@ -1530,7 +1667,7 @@ async function uploadNewsCoverImage(input) {
   if (!file) return;
   const status = document.getElementById('newsUploadStatus');
   status.style.display = 'block';
-  status.color = 'var(--accent)';
+  status.style.color = 'var(--accent)';
   status.innerText = `⏳ Uploading ${file.name}…`;
 
   try {
@@ -1740,7 +1877,9 @@ window.loadComments = async function() {
 
     let attachmentHtml = '';
     if (displayUrl) {
-      const isImg = /\.(jpe?g|png|gif|webp|svg)(\?|$)/i.test(displayUrl) || displayUrl.includes('giphy');
+      const isImg = isImageFile(displayUrl, fileMeta.type) || isImageFile(fileMeta.name, fileMeta.type);
+      const isVid = isVideoFile(displayUrl, fileMeta.type) || isVideoFile(fileMeta.name, fileMeta.type);
+
       if (isImg) {
         attachmentHtml = `
           <div style="margin-top:12px;padding:12px;border-radius:16px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
@@ -1748,6 +1887,15 @@ window.loadComments = async function() {
             <div style="font-size:13px;font-weight:600;color:var(--text-mute);display:flex;justify-content:space-between;align-items:center;">
               <span>📄 ${esc(fileMeta.name)}</span>
               <span>${formattedSize}</span>
+            </div>
+          </div>`;
+      } else if (isVid) {
+        attachmentHtml = `
+          <div style="margin-top:12px;padding:12px;border-radius:16px;background:var(--liquid-glass-bg);border:1px solid var(--liquid-glass-border);">
+            <video src="${esc(displayUrl)}" controls playsinline preload="metadata" style="display:block;width:100%;max-height:380px;border-radius:12px;background:#000;margin-bottom:8px;"></video>
+            <div style="font-size:13px;font-weight:600;color:var(--text-mute);display:flex;justify-content:space-between;align-items:center;gap:10px;">
+              <span>🎬 ${esc(fileMeta.name)} ${formattedSize ? '(' + formattedSize + ')' : ''}</span>
+              <a href="${esc(displayUrl)}" target="_blank" style="color:var(--accent);font-weight:700;text-decoration:none;white-space:nowrap;">Open / Download ↗</a>
             </div>
           </div>`;
       } else {
@@ -1819,9 +1967,31 @@ async function postComment() {
     text = `> **Replying to @${activeReply.name}:** "${activeReply.text.slice(0, 60)}..."\n\n${text}`;
   }
 
-  if (sb) {
+  if (sb && name.toLowerCase() !== 'anonymous') {
     try {
-      await sb.from('app_users').upsert([{ username: name, password: pass || null, pfp_url: pfp || null }], { onConflict: 'username' });
+      const { data: existingUser } = await sb
+        .from('app_users')
+        .select('username, role, password')
+        .ilike('username', name)
+        .maybeSingle();
+
+      if (existingUser) {
+        const updatePayload = {};
+        if (pfp) updatePayload.pfp_url = pfp;
+        if (pass && existingUser.username.toLowerCase() !== 'aqeel') updatePayload.password = pass;
+        if (Object.keys(updatePayload).length > 0) {
+          await sb.from('app_users').update(updatePayload).eq('username', existingUser.username);
+        }
+      } else {
+        const roleToUse = name.toLowerCase() === 'aqeel' ? 'super' : 'user';
+        const passToUse = name.toLowerCase() === 'aqeel' ? 'area2026' : (pass || null);
+        await sb.from('app_users').insert([{
+          username: name,
+          password: passToUse,
+          role: roleToUse,
+          pfp_url: pfp || null
+        }]);
+      }
     } catch (e) {}
   }
 
@@ -2242,6 +2412,15 @@ function updateCustomTheme(){
   localStorage.setItem('aREASettings',JSON.stringify(appSettings));applySettings();
 }
 
+let bgSyncTimer = null;
+function handleBgImageUrlInput(url) {
+  updateBgImage(url);
+  clearTimeout(bgSyncTimer);
+  bgSyncTimer = setTimeout(() => {
+    saveProfileFieldsToSupabase({ bg_image_url: (url || '').trim() || null });
+  }, 600);
+}
+
 function updateBgImage(url){
   appSettings.bgImageUrl=url;
   localStorage.setItem('aREASettings',JSON.stringify(appSettings));
@@ -2262,7 +2441,8 @@ async function deleteBgImage() {
   appSettings.bgImageUrl = '';
   document.getElementById('bgImageUrlInput').value = '';
   updateBgImage('');
-  alert("Background image deleted / removed successfully!");
+  await saveProfileFieldsToSupabase({ bg_image_url: null });
+  alert("Background image deleted & cleared across devices!");
 }
 
 async function uploadBgImageFile(input) {
@@ -2272,7 +2452,8 @@ async function uploadBgImageFile(input) {
     const pubUrl = await uploadToSupabaseStorage(file, 'backgrounds');
     document.getElementById('bgImageUrlInput').value = pubUrl;
     updateBgImage(pubUrl);
-    alert("Background image uploaded successfully!");
+    await saveProfileFieldsToSupabase({ bg_image_url: pubUrl });
+    alert("Background image uploaded & synced across devices!");
   } catch(e) {
     alert("Upload failed: " + e.message);
   }
@@ -2333,6 +2514,7 @@ function applySettings(){
 
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el[typeof v==='boolean'?'checked':'value']=v;};
   setEl('themeSelect',appSettings.theme);
+  setEl('bgImageUrlInput',appSettings.bgImageUrl || '');
   const cmEl=document.getElementById('customMoodSettings');
   if(cmEl) cmEl.style.display=(appSettings.theme==='custom')?'flex':'none';
 
@@ -2474,14 +2656,18 @@ document.addEventListener("DOMContentLoaded", () => {
   applySettings();
   updateAdminUI();
 
-  const savedName = localStorage.getItem('aREA_username');
-  if (savedName && document.getElementById('username')) {
-    document.getElementById('username').value = savedName;
-    syncUserPfp(savedName);
-  }
+  const savedName = localStorage.getItem('aREA_username') || window.adminUser;
   const savedPfp = localStorage.getItem('aREA_pfp');
   if (savedPfp && document.getElementById('userPfp')) {
     document.getElementById('userPfp').value = savedPfp;
+  }
+  updatePfpPreview(savedPfp || '');
+
+  if (savedName) {
+    if (document.getElementById('username')) {
+      document.getElementById('username').value = savedName;
+    }
+    syncUserProfile(savedName);
   }
 
   registerServiceWorker().then(() => {
